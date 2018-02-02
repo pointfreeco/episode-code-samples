@@ -1,3 +1,4 @@
+// https://www.pointfree.co/episodes/ep2-side-effects
 
 func compute(_ x: Int) -> Int {
   return x * x + 1
