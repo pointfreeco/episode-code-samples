@@ -9,11 +9,11 @@ func <> <A: AnyObject>(f: @escaping (A) -> Void, g: @escaping (A) -> Void) -> (A
 
 // base
 
-func autolayoutStyle<V: UIView>(_ view: V) -> Void {
+func autolayoutStyle(_ view: UIView) -> Void {
   view.translatesAutoresizingMaskIntoConstraints = false
 }
 
-func aspectRatioStyle<V: UIView>(size: CGSize) -> (V) -> Void {
+func aspectRatioStyle(size: CGSize) -> (UIView) -> Void {
   return {
     $0.widthAnchor
       .constraint(equalTo: $0.heightAnchor, multiplier: size.width / size.height)
@@ -21,11 +21,18 @@ func aspectRatioStyle<V: UIView>(size: CGSize) -> (V) -> Void {
   }
 }
 
-func implicitAspectRatioStyle<V: UIView>(_ view: V) -> Void {
+func borderStyle(color: UIColor, width: CGFloat) -> (UIView) -> Void {
+  return {
+    $0.layer.borderColor = color.cgColor
+    $0.layer.borderWidth = width
+  }
+}
+
+func implicitAspectRatioStyle(_ view: UIView) -> Void {
   aspectRatioStyle(size: view.frame.size)(view)
 }
 
-func roundedRectStyle<View: UIView>(_ view: View) {
+func roundedStyle(_ view: UIView) {
   view.clipsToBounds = true
   view.layer.cornerRadius = 6
 }
@@ -39,7 +46,7 @@ let baseButtonStyle: (UIButton) -> Void = {
 
 let roundedButtonStyle =
   baseButtonStyle
-    <> roundedRectStyle
+    <> roundedStyle
 
 let filledButtonStyle =
   roundedButtonStyle
@@ -50,9 +57,8 @@ let filledButtonStyle =
 
 let borderButtonStyle =
   roundedButtonStyle
+    <> borderStyle(color: .black, width: 2)
     <> {
-      $0.layer.borderColor = UIColor.black.cgColor
-      $0.layer.borderWidth = 2
       $0.setTitleColor(.black, for: .normal)
 }
 
@@ -75,12 +81,11 @@ let gitHubButtonStyle =
 // text fields
 
 let baseTextFieldStyle: (UITextField) -> Void =
-  roundedRectStyle
-    <> {
-      $0.borderStyle = .roundedRect
-      $0.heightAnchor.constraint(equalToConstant: 44).isActive = true
-      $0.layer.borderColor = UIColor(white: 0.75, alpha: 1).cgColor
-      $0.layer.borderWidth = 1
+  roundedStyle
+    <> borderStyle(color: UIColor(white: 0.75, alpha: 1), width: 1)
+    <> { (tf: UITextField) in
+      tf.borderStyle = .roundedRect
+      tf.heightAnchor.constraint(equalToConstant: 44).isActive = true
 }
 
 let emailTextFieldStyle =
