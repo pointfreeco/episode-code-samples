@@ -1,5 +1,3 @@
-@_exported import Foundation
-
 // NB: `@_exported` will make foundation available in our playgrounds
 @_exported import Foundation
 
