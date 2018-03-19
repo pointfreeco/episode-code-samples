@@ -198,3 +198,4 @@ import Foundation
 //Result<(Data, URLResponse), Error>
 //Result<Date, Never>
 //Result<A, Error>?
+//: [See the next page](@next) for exercises!

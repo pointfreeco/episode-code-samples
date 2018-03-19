@@ -181,15 +181,4 @@ users.sorted(by: their(^\.email, >))
 
 users.max(by: their(^\.email.count))?.email
 users.min(by: their(^\.email.count))?.email
-
-import Foundation
-
-//NSObject().observe(<#T##keyPath: KeyPath<NSObject, Value>##KeyPath<NSObject, Value>#>, changeHandler: <#T##(NSObject, NSKeyValueObservedChange<Value>) -> Void#>)
-
-
-
-
-
-
-
-
+//: [See the next page](@next) for exercises!
