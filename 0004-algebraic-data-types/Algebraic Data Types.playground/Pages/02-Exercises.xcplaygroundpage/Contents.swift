@@ -21,6 +21,6 @@ indirect enum List<A> {
  */
 // TODO
 /*:
- 5. Can you overload the `*` and `+` infix operators with functions that take any type and build up an algebraic representation using `Pair` and `Either`?
+ 5. Swift allows you to pass types, like `A.self`, to functions that take arguments of `A.Type`. Overload the `*` and `+` infix operators with functions that take any type and build up an algebraic representation using `Pair` and `Either`. Explore how the precedence rules of both operators manifest themselves in the resulting types.
  */
 // TODO
