@@ -82,3 +82,4 @@ func filter<A>(_ p: @escaping (A) -> Bool) -> ([A]) -> [A] {
 Array(1...10)
   |> filter { $0 > 5 }
   >>> map(incr >>> square)
+//: [See the next page](@next) for exercises!

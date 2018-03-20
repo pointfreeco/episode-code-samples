@@ -180,6 +180,5 @@ User.template
 let boringLocal = .template
   |> noFavoriteFoods
   |> domestic
-
-
+//: [See the next page](@next) for exercises!
 

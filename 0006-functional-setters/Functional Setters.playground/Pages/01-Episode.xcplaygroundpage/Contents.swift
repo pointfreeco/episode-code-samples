@@ -95,16 +95,14 @@ public func map<A, B>(_ f: @escaping (A) -> B) -> ([A]) -> [B] {
   |> first(incr)
 
 dump(
-[(42, ["Swift", "Objective-C"]), (1729, ["Haskell", "Purescript"])]
+[(42, ["Swift", "Objective-C"]), (1729, ["Haskell", "PureScript"])]
   |> (map <<< second <<< map) { $0 + "!" }
 )
 
 //
 
-let data = [(42, ["Swift", "Objective-C"]), (1729, ["Haskell", "Purescript"])]
+let data = [(42, ["Swift", "Objective-C"]), (1729, ["Haskell", "PureScript"])]
 
 data
   .map { ($0.0, $0.1.map { $0 + "!" }) }
-
-
-
+//: [See the next page](@next) for exercises!
