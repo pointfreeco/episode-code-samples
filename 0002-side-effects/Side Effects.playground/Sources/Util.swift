@@ -13,18 +13,6 @@ public func assertEqual<A: Equatable, B: Equatable>(_ lhs: (A, B), _ rhs: (A, B)
   return lhs == rhs ? "✅" : "❌"
 }
 
-// NB: can remove in Swift 4.1
-@discardableResult
-public func assertEqual<A: Equatable, B: Equatable>(_ lhs: (A, [B]), _ rhs: (A, [B])) -> String {
-  return lhs.0 == rhs.0 && lhs.1 == rhs.1 ? "✅" : "❌"
-}
-
-// NB: can remove in Swift 4.1
-@discardableResult
-public func assertEqual<A: Equatable>(_ lhs: [A], _ rhs: [A]) -> String {
-  return lhs == rhs ? "✅" : "❌"
-}
-
 public var __: Void {
   print("--")
 }
