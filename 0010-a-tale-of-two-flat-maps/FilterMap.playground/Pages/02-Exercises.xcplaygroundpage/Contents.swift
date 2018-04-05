@@ -14,7 +14,6 @@
 // TODO
 /*:
  4. Dictionary has `mapValues`, which takes a transform function from `(Value) -> B` to produce a new dictionary of type `[Key: B]`. Define `filterMapValues` on `Dictionary`.
- //    - Define `partitionMapValues` on `Dictionary`.
  */
 // TODO
 /*:
