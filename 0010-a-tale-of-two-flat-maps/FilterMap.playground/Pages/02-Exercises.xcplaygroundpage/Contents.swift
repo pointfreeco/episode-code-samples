@@ -1,5 +1,5 @@
 /*:
- # Algebraic Data Type: Exponents, Exercises
+ # A Tale of Two Flat-Maps, Exercises
 
  1. Define `filtered` as a function from `[A?]` to `[A]`.
  */

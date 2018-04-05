@@ -1,5 +1,5 @@
 /*:
- # Algebraic Data Type: Exponents, Exercises
+ # Algebraic Data Types: Exponents, Exercises
 
  1. Explore the equivalence of `1^a = a`.
  */
