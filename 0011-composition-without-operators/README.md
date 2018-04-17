@@ -1,4 +1,4 @@
-### [Point-Free](https://www.pointfree.co) Episode #10
+### [Point-Free](https://www.pointfree.co) Episode #11
 
 ### Composition without Operators
 
