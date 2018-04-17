@@ -1,5 +1,5 @@
 /*:
- # Composition without Operator
+ # Composition without Operators
 
  1. Write concat for functions (inout A) -> Void.
  */

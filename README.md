@@ -14,3 +14,4 @@ This repository is the home of code written on episodes of
    9. [Algebraic Data Types: Exponents](0009-algebraic-data-types-pt-2)
   10. [A Tale of Two Flat-Maps](0010-a-tale-of-two-flat-maps)
   11. [Composition without Operators](0011-composition-without-operators)
+  12. [Tagged](0012-tagged)
