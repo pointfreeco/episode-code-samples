@@ -1,11 +1,12 @@
-### [Point-Free](https://www.pointfree.co) Episode #10
+### [Point-Free](https://www.pointfree.co) Episode #12
 
-### Composition without Operators
+### Tagged
 
-> While we unabashedly promote custom operators in this series, we understand
-> that not every codebase can adopt them. Composition is too important to miss
-> out on due to operators, so we want to explore some alternatives to unlock
-> these benefits.
+> We typically model our data with very general types, like strings and ints,
+> but the values themselves are often far more specific, like emails and ids.
+> We’ll explore how this can lead to subtle runtime bugs and how we can
+> strengthen these types in an ergonomic way using several features new to
+> Swift 4.1.
 
-This directory contains code from Point-Free Episode #11:
-[Composition without Operators](https://www.pointfree.co/episodes/ep11-composition-without-operators)
+This directory contains code from Point-Free Episode #12:
+[Tagged](https://www.pointfree.co/episodes/ep12-tagged)
