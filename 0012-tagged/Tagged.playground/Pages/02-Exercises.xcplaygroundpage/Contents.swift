@@ -1,5 +1,5 @@
 /*:
- # Tagged
+ # Tagged Exercises
 
  1. Conditionally conform Tagged to ExpressibleByStringLiteral in order to restore the ergonomics of initializing our User’s email property. Note that ExpressibleByStringLiteral requires a couple other prerequisite conformances.
  */
@@ -31,3 +31,4 @@
 /*:
  8. Create Unvalidated and Validated tagged types so that you can create a function that takes an Unvalidated<User> and returns an Optional<Validated<User>> given a valid user. A valid user may be one with a non-empty name and an email that contains an @.
  */
+// TODO

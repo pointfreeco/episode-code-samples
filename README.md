@@ -15,3 +15,4 @@ This repository is the home of code written on episodes of
   10. [A Tale of Two Flat-Maps](0010-a-tale-of-two-flat-maps)
   11. [Composition without Operators](0011-composition-without-operators)
   12. [Tagged](0012-tagged)
+  12. [The Many Faces of Map](0013-the-many-faces-of-map)
