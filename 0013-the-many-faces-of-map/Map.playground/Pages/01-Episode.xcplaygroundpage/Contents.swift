@@ -240,7 +240,7 @@ func map<A, B>(_ f: @escaping (A) -> B) -> (F3<A>) -> F3<B> {
 //return { $0 }
 
 
-// func map<A, B>   (_ f: (A) -> B) -> (F1<A>)    -> F1<B>
-// func map<A, B, C>(_ f: (A) -> B) -> (F2<A, B>) -> F2<A, C>
-// func map<A, B>   (_ f: (A) -> B) -> (F3<A>)    -> F3<B>
+// func map   <A, B>(_ f: (A) -> B) -> (F1   <A>) -> F1   <B>
+// func map<R, A, B>(_ f: (A) -> B) -> (F2<R, A>) -> F2<R, B>
+// func map   <A, B>(_ f: (A) -> B) -> (F3   <A>) -> F3   <B>
 //: [See the next page](@next) for exercises!
