@@ -1,4 +1,4 @@
-### [Point-Free](https://www.pointfree.co) The Many Faces of Map #13
+### [Point-Free](https://www.pointfree.co) Episode #13
 
 ### The Many Faces of Map
 
