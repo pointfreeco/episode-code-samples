@@ -5,6 +5,9 @@
       location = "group:Environment.playground">
    </FileRef>
    <FileRef
+      location = "group:Environment Part 2.playground">
+   </FileRef>
+   <FileRef
       location = "group:Vendor/swift-overture/Overture.xcodeproj">
    </FileRef>
 </Workspace>
