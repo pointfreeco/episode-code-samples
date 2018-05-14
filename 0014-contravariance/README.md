@@ -1,4 +1,4 @@
-### [Point-Free](https://www.pointfree.co) Contravariance #14
+### [Point-Free](https://www.pointfree.co) Episode #14
 
 ### Contravariance
 
