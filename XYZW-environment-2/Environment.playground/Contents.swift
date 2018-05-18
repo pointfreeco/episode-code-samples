@@ -99,14 +99,10 @@ struct Environment {
   var calendar = Calendar.autoupdatingCurrent
   var date: () -> Date = Date.init
   var gitHub = GitHub()
+  var locale = Locale.autoupdatingCurrent
   var screen = Screen()
   var system = System()
   var version = Version()
-
-  var locale: Locale {
-    get { return self.calendar.locale ?? .autoupdatingCurrent }
-    set { self.calendar.locale = newValue }
-  }
 }
 
 var Current = Environment()
@@ -280,6 +276,7 @@ extension Environment {
     calendar: .mock,
     date: { .mock },
     gitHub: .mock,
+    locale: .mock,
     screen: .mock,
     system: .mock,
     version: .mock
@@ -291,7 +288,7 @@ Current = .mock
 let repos: [GitHub.Repo] = [
   with(.mock, set(\.archived, true)),
   with(.mock, concat(
-    set(\GitHub.Repo.pushedAt, .mock - .weeks(2)),
+    set(\GitHub.Repo.pushedAt, .mock - .weeks(2000)),
     set(\.name, "Bloblog 2.0"),
     set(\.description, "Blob's new blog")
   )),
@@ -303,6 +300,7 @@ let repos: [GitHub.Repo] = [
 ]
 
 with(&Current, concat(
+  mut(\.calendar.locale, Locale(identifier: "zh_HK")),
   mut(\.locale, Locale(identifier: "zh_HK")),
   mut(\.gitHub.fetchRepos) { callback in
     callback(
