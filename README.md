@@ -17,3 +17,5 @@ This repository is the home of code written on episodes of
   12. [Tagged](0012-tagged)
   13. [The Many Faces of Map](0013-the-many-faces-of-map)
   14. [Contravariance](0014-contravariance)
+  15. [Setters: Ergonomics & Performance](0015-setters-pt-3)
+  16. [Dependency Injection Made Simple](0016-dependency-injection)
