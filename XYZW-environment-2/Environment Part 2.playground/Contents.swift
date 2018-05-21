@@ -59,6 +59,21 @@ private func dataTask<T: Decodable>(_ path: String, completionHandler: (@escapin
 //
 // =======================================
 
+struct Version {
+  var build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
+  var release = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
+}
+
+struct Screen {
+  var screenHeight = String(describing: UIScreen.main.bounds.height)
+  var screenWidth = String(describing: UIScreen.main.bounds.width)
+}
+
+struct Device {
+  var systemName = UIDevice.current.systemName
+  var systemVersion = UIDevice.current.systemVersion
+}
+
 struct Analytics {
   struct Event {
     var name: String
@@ -69,12 +84,12 @@ struct Analytics {
         name: "tapped_repo",
         properties: [
           "repo_name": repo.name,
-          "build": Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown",
-          "release": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown",
-          "screen_height": String(describing: UIScreen.main.bounds.height),
-          "screen_width": String(describing: UIScreen.main.bounds.width),
-          "system_name": UIDevice.current.systemName,
-          "system_version": UIDevice.current.systemVersion,
+          "build": Current.version.build,
+          "release": Current.version.release,
+          "screen_height": Current.screen.screenHeight,
+          "screen_width": Current.screen.screenWidth,
+          "system_name": Current.device.systemName,
+          "system_version": Current.device.systemVersion,
           ]
       )
     }
@@ -95,8 +110,12 @@ private func track(_ event: Analytics.Event) {
 
 struct Environment {
   var analytics = Analytics()
+  var calendar = Calendar.autoupdatingCurrent
   var date: () -> Date = Date.init
+  var device = Device()
   var gitHub = GitHub()
+  var screen = Screen()
+  var version = Version()
 }
 
 var Current = Environment()
@@ -125,6 +144,7 @@ class ReposViewController: UITableViewController {
         switch result {
         case let .success(repos):
           self?.repos = repos
+//            .filter { !$0.archived }
             .sorted(by: {
               guard let lhs = $0.pushedAt, let rhs = $1.pushedAt else { return false }
               return lhs > rhs
@@ -153,6 +173,7 @@ class ReposViewController: UITableViewController {
     cell.detailTextLabel?.text = repo.description
 
     let dateComponentsFormatter = DateComponentsFormatter()
+    dateComponentsFormatter.calendar = Current.calendar
     dateComponentsFormatter.allowedUnits = [.day, .hour, .minute, .second]
     dateComponentsFormatter.maximumUnitCount = 1
     dateComponentsFormatter.unitsStyle = .abbreviated
@@ -163,12 +184,12 @@ class ReposViewController: UITableViewController {
     }
     label.sizeToFit()
 
-    cell.accessoryView = label
-
-    let color: UIColor = repo.archived ? .gray : .black
+    let color = repo.archived ? UIColor.gray : .black
     cell.textLabel?.textColor = color
     cell.detailTextLabel?.textColor = color
     label.textColor = color
+
+    cell.accessoryView = label
 
     return cell
   }
@@ -187,14 +208,43 @@ class ReposViewController: UITableViewController {
 //
 // =======================================
 
+extension GitHub.Repo {
+  static let mock = GitHub.Repo(
+    archived: false,
+    description: "Blob's blog",
+    htmlUrl: URL(string: "https://www.pointfree.co")!,
+    name: "Bloblog",
+    pushedAt: .mock - 60*60*24*116
+  )
+}
+
+import Overture
+
+extension Array where Element == GitHub.Repo {
+  static let mock = [
+    GitHub.Repo.mock,
+    with(GitHub.Repo.mock, set(\.archived, true)),
+    with(.mock, concat(
+      set(\.name, "Nomadic Blob"),
+      set(\.description, "Where in the world is Blob?"),
+      set(\GitHub.Repo.pushedAt, .mock - 60*60*2)
+    ))
+  ] + mocks(5)
+
+  static func mocks(_ count: Int) -> Array {
+    return (1...count).map { n in
+      with(.mock, concat(
+        over(\.name) { "#\(n): \($0)" },
+        set(\GitHub.Repo.pushedAt, .mock - 60*60*24*TimeInterval(n)*1000)
+      ))
+    }
+  }
+}
+
 extension GitHub {
   static let mock = GitHub(fetchRepos: { callback in
     callback(
-      .success(
-        [
-          GitHub.Repo(archived: false, description: "Blob's blog", htmlUrl: URL(string: "https://www.pointfree.co")!, name: "Bloblog", pushedAt: Date(timeIntervalSinceReferenceDate: 547152021))
-        ]
-      )
+      .success(.mock)
     )
   })
 }
@@ -205,11 +255,42 @@ extension Analytics {
   })
 }
 
+extension Date {
+  static let mock = Date(timeIntervalSinceReferenceDate: 557152051)
+}
+
+extension Device {
+  static let mock = Device(systemName: "Mock iOS", systemVersion: "11.mock")
+}
+
+extension Screen {
+  static let mock = Screen(screenHeight: "568", screenWidth: "376")
+}
+
+extension Version {
+  static let mock = Version(build: "42", release: "0.0.1")
+}
+
+extension Locale {
+  static let mock = Locale(identifier: "en_US")
+}
+
+extension Calendar {
+  static let mock = with(
+    Calendar(identifier: .gregorian),
+    set(\.locale, .mock)
+  )
+}
+
 extension Environment {
   static let mock = Environment(
     analytics: .mock,
-    date: { Date(timeIntervalSinceReferenceDate: 557152051) },
-    gitHub: .mock
+    calendar: .mock,
+    date: { .mock },
+    device: .mock,
+    gitHub: .mock,
+    screen: .mock,
+    version: .mock
   )
 }
 
@@ -220,31 +301,8 @@ extension Environment {
 // =======================================
 
 Current = Environment()
-
-let repos: [GitHub.Repo] = [
-  GitHub.Repo(
-    archived: false,
-    description: "Where in the world is Blob?!",
-    htmlUrl: URL(string: "https://www.pointfree.co")!,
-    name: "Blob’s Blog",
-    pushedAt: Date(timeIntervalSinceReferenceDate: 556142051)
-  ),
-  GitHub.Repo(
-    archived: true,
-    description: "Blob in the Big City",
-    htmlUrl: URL(string: "https://www.pointfree.co")!,
-    name: "Blob’s Old Blog",
-    pushedAt: Date(timeIntervalSinceReferenceDate: 446142051)
-  )
-]
-
-Current = Environment(
-  analytics: .mock,
-  date: { Date(timeIntervalSinceReferenceDate: 557152051) },
-  gitHub: GitHub(fetchRepos: { callback in
-    callback(.success(repos))
-  })
-)
+Current = .mock
+with(&Current, mut(\.calendar.locale, Locale(identifier: "de_DE")))
 
 let reposViewController = ReposViewController()
 
