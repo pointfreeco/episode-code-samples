@@ -1,3 +1,6 @@
 [submodule "0017-styling-pt2/Vendor/swift-overture"]
 	path = 0017-styling-pt2/Vendor/swift-overture
 	url = https://github.com/pointfreeco/swift-overture.git
+[submodule "0018-environment-pt2/Vendor/swift-overture"]
+	path = 0018-environment-pt2/Vendor/swift-overture
+	url = https://github.com/pointfreeco/swift-overture.git
