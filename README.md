@@ -22,3 +22,4 @@ This repository is the home of code written on episodes of
 1. [Styling with Overture](0017-styling-pt2)
 1. [Dependency Injection Made Comfortable](0018-environment-pt2)
 1. [Algebraic Data Types: Generics and Recursion](0019-algebraic-data-types-pt3)
+1. [NonEmpty](0020-nonempty)
