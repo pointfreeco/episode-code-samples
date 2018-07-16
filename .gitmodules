@@ -4,3 +4,9 @@
 [submodule "0018-environment-pt2/Vendor/swift-overture"]
 	path = 0018-environment-pt2/Vendor/swift-overture
 	url = https://github.com/pointfreeco/swift-overture.git
+[submodule "0023-zip-pt1/Vendor/swift-nonempty"]
+	path = 0024-zip-pt2/Vendor/swift-nonempty
+	url = https://github.com/pointfreeco/swift-nonempty.git
+[submodule "0025-zip-pt3/Vendor/swift-nonempty"]
+	path = 0025-zip-pt3/Vendor/swift-nonempty
+	url = https://github.com/pointfreeco/swift-nonempty.git
