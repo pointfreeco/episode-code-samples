@@ -4,3 +4,6 @@
 [submodule "0018-environment-pt2/Vendor/swift-overture"]
 	path = 0018-environment-pt2/Vendor/swift-overture
 	url = https://github.com/pointfreeco/swift-overture.git
+[submodule "0021-playground-driven-development/Vendor/swift-overture"]
+	path = 0021-playground-driven-development/Vendor/swift-overture
+	url = https://github.com/pointfreeco/swift-overture.git
