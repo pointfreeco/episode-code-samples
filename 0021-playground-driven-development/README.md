@@ -2,7 +2,7 @@
 
 > #### This directory contains code from Point-Free Episode: [Playground Driven Development](https://www.pointfree.co/episodes/ep21-playground-driven-development)
 >
-> We revisit an old topic: styling UIKit components. Using some of the machinery we have built from previous episodes, in particular setters and function composition, we refactor a screen’s styles to be more modular and composable.
+> We use Swift playgrounds on this series as a tool to dive deep into functional programming concepts, but they can be so much more. Today we demonstrate a few tricks to allow you to use playgrounds for everyday development, allowing for a faster iteration cycle.
 
 ### Getting Started
 
