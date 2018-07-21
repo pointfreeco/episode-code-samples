@@ -209,18 +209,19 @@ final class SignInViewController: UIViewController {
 
     self.view.addSubview(gradientView)
     self.view.addSubview(rootStackView)
-
-    NSLayoutConstraint.activate([
-      gradientView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-      gradientView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-      gradientView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-      gradientView.bottomAnchor.constraint(equalTo: self.view.centerYAnchor),
-
-      rootStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-      rootStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-      rootStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-      ])
-  }
+    if #available(iOS 11, *) {
+        NSLayoutConstraint.activate([
+            gradientView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            gradientView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            gradientView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            gradientView.bottomAnchor.constraint(equalTo: self.view.centerYAnchor),
+            
+            rootStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            rootStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            rootStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            ])
+        }
+    }
 }
 
 import PlaygroundSupport
