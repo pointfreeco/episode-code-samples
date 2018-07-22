@@ -88,11 +88,11 @@ class BaseButton: UIButton {
   }
 }
 
-class FilledButton: RoundedButton {
+class RoundedButton: BaseButton {
   override init(frame: CGRect) {
     super.init(frame: frame)
-    self.backgroundColor = .black
-    self.tintColor = .white
+    self.clipsToBounds = true
+    self.layer.cornerRadius = 6
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -100,11 +100,11 @@ class FilledButton: RoundedButton {
   }
 }
 
-class RoundedButton: BaseButton {
+class FilledButton: RoundedButton {
   override init(frame: CGRect) {
     super.init(frame: frame)
-    self.clipsToBounds = true
-    self.layer.cornerRadius = 6
+    self.backgroundColor = .black
+    self.tintColor = .white
   }
 
   required init?(coder aDecoder: NSCoder) {
