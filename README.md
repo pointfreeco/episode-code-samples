@@ -26,3 +26,4 @@ This repository is the home of code written on episodes of
 1. [Playground Driven Development](0021-playground-driven-development)
 1. [A Tour of Point-Free](0022-a-tour-of-point-free)
 1. [The Many Faces of Zip: Part 1](0023-zip-pt1)
+1. [The Many Faces of Zip: Part 2](0024-zip-pt2)

@@ -1,5 +1,3 @@
-
-
 // public func zip<Sequence1, Sequence2>(
 //  _ sequence1: Sequence1,                  // A
 //  _ sequence2: Sequence2                   // B
@@ -135,16 +133,3 @@ if let a = a, let b = b, let c = c {
   d = nil
 }
 d
-
-
-
-
-
-
-
-
-
-
-
-
-

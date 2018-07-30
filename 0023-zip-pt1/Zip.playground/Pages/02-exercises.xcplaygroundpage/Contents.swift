@@ -3,7 +3,7 @@
 
  ## Exercises
 
- 1.) In this episode we came across closures of the form `{ ($0, $1.0, $1.1) }` a few times in order to unpack a tuple of the form `(A, (B, C))` to `(A, B, C)`. Create a few overloaded functions named `unpack` to automate
+ 1.) In this episode we came across closures of the form `{ ($0, $1.0, $1.1) }` a few times in order to unpack a tuple of the form `(A, (B, C))` to `(A, B, C)`. Create a few overloaded functions named `unpack` to automate this.
 
  */
 // TODO
