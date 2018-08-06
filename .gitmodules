@@ -7,3 +7,6 @@
 [submodule "0021-playground-driven-development/Vendor/swift-overture"]
 	path = 0021-playground-driven-development/Vendor/swift-overture
 	url = https://github.com/pointfreeco/swift-overture.git
+[submodule "0025-zip-pt3/Vendor/swift-nonempty"]
+	path = 0025-zip-pt3/Vendor/swift-nonempty
+	url = https://github.com/pointfreeco/swift-nonempty.git
