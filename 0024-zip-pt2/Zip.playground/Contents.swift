@@ -6,6 +6,33 @@ func zip2<A, B>(_ xs: [A], _ ys: [B]) -> [(A, B)] {
   return result
 }
 
+//extension Sequence {
+//  static func zip<A, B>(with f: @escaping (Element, A) -> B, _ e: [Element], _ a: [A]) -> [B] {
+//    fatalError()
+//  }
+//
+//  static func zip<A>(_ e: Element, a: A) -> [(Element, A)] {
+//    return zip(with: id, e, a)
+//  }
+//}
+
+func id<A>(_ a: A) -> A {
+  return a
+}
+
+extension Optional {
+  static func zip<A, B>(with f: @escaping (Wrapped, A) -> B, _ w: Optional, _ a: A?) -> B? {
+    guard let w = w, let a = a else { return nil }
+    return f(w, a)
+  }
+
+  static func zip<A>(_ w: Optional, _ a: A?) -> (Wrapped, A)? {
+    return zip(with: id, w, a)
+  }
+}
+
+1
+
 func zip3<A, B, C>(_ xs: [A], _ ys: [B], _ zs: [C]) -> [(A, B, C)] {
   return zip2(xs, zip2(ys, zs)) // [(A, (B, C))]
     .map { a, bc in (a, bc.0, bc.1) }
@@ -206,7 +233,7 @@ randomNumber.apply(())
 
 let aWordFromPointFree = Func<Void, String> {
   (try? String(contentsOf: URL(string: "https://www.pointfree.co")!))
-    .map { $0.split(separator: " ")[1566] }
+    .map { $0.split(separator: " ")[1600] }
     .map(String.init)
     ?? "PointFree"
 }
@@ -297,6 +324,16 @@ zip2(with: [String].init(repeating:count:))(
   ).run { value in
     print(value)
 }
+
+//infix operator
+
+
+//zip2(with: [String].init(repeating:count:)) >>> ^\.isEmpty
+
+
+
+
+
 
 
 // ((A, B) -> C) -> ([A],             [B])             -> [C]

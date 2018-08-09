@@ -283,11 +283,43 @@ let delayedName = Parallel<String> { callback in
   delay(by: 1) { callback("Blob") }
 }
 
+func id<A>(_ a: A) -> A {
+  return a
+}
+
+extension Optional {
+  static func zip<A, B>(with f: @escaping (Wrapped, A) -> B, _ w: Optional, _ a: A?) -> B? {
+    guard let w = w, let a = a else { return nil }
+    return f(w, a)
+  }
+
+  static func zip<A>(_ w: Optional, _ a: A?) -> (Wrapped, A)? {
+    return zip(with: id, w, a)
+  }
+
+  static func zip<A, B, C>(with f: @escaping (Wrapped, A, B) -> C, _ w: Optional, _ a: A?, _ b: B?) -> C? {
+    guard let w = w, let a = a, let b = b else { return nil }
+    return f(w, a, b)
+  }
+
+  static func zip<A, B>(_ w: Optional, _ a: A?, _ b: B?) -> (Wrapped, A, B)? {
+    return zip(with: id, w, a, b)
+  }
+}
+
+1
+
 
 zip3(with: User.init)(
   emails,
   ids,
   names
+)
+Optional.zip(
+  with: User.init,
+  optionalEmail,
+  optionalId,
+  optionalName
 )
 zip3(with: User.init)(
   optionalEmail,
@@ -309,5 +341,137 @@ zip3(with: User.init)(
   delayedId,
   delayedName
 )
+
+
+
+
+
+
+
+@_fixed_layout // FIXME(sil-serialize-all)
+public struct Zip3Sequence<Sequence1 : Sequence, Sequence2 : Sequence, Sequence3 : Sequence> {
+//  @usableFromInline // FIXME(sil-serialize-all)
+  internal let _sequence1: Sequence1
+//  @usableFromInline // FIXME(sil-serialize-all)
+  internal let _sequence2: Sequence2
+//  @usableFromInline // FIXME(sil-serialize-all)
+  internal let _sequence3: Sequence3
+
+  /// Creates an instance that makes pairs of elements from `sequence1` and
+  /// `sequence2`.
+//  @inlinable // FIXME(sil-serialize-all)
+  public // @testable
+  init(_sequence1 sequence1: Sequence1, _sequence2 sequence2: Sequence2, _sequence3 sequence3: Sequence3) {
+    (_sequence1, _sequence2, _sequence3) = (sequence1, sequence2, sequence3)
+  }
+}
+
+extension Zip3Sequence {
+  /// An iterator for `Zip3Sequence`.
+  @_fixed_layout // FIXME(sil-serialize-all)
+  public struct Iterator {
+//    @usableFromInline // FIXME(sil-serialize-all)
+    internal var _baseStream1: Sequence1.Iterator
+//    @usableFromInline // FIXME(sil-serialize-all)
+    internal var _baseStream2: Sequence2.Iterator
+    internal var _baseStream3: Sequence3.Iterator
+//    @usableFromInline // FIXME(sil-serialize-all)
+    internal var _reachedEnd: Bool = false
+
+    /// Creates an instance around a pair of underlying iterators.
+//    @inlinable // FIXME(sil-serialize-all)
+    internal init(
+      _ iterator1: Sequence1.Iterator,
+      _ iterator2: Sequence2.Iterator,
+      _ iterator3: Sequence3.Iterator
+      ) {
+      (_baseStream1, _baseStream2, _baseStream3) = (iterator1, iterator2, iterator3)
+    }
+  }
+}
+
+extension Zip3Sequence.Iterator: IteratorProtocol {
+  /// The type of element returned by `next()`.
+  public typealias Element = (Sequence1.Element, Sequence2.Element, Sequence3.Element)
+
+  /// Advances to the next element and returns it, or `nil` if no next element
+  /// exists.
+  ///
+  /// Once `nil` has been returned, all subsequent calls return `nil`.
+//  @inlinable // FIXME(sil-serialize-all)
+  public mutating func next() -> Element? {
+    // The next() function needs to track if it has reached the end.  If we
+    // didn't, and the first sequence is longer than the second, then when we
+    // have already exhausted the second sequence, on every subsequent call to
+    // next() we would consume and discard one additional element from the
+    // first sequence, even though next() had already returned nil.
+    if _reachedEnd {
+      return nil
+    }
+
+    guard let element1 = _baseStream1.next(),
+      let element2 = _baseStream2.next(),
+      let element3 = _baseStream3.next() else {
+        _reachedEnd = true
+        return nil
+    }
+
+    return (element1, element2, element3)
+  }
+}
+
+extension Zip3Sequence: Sequence {
+  public typealias Element = (Sequence1.Element, Sequence2.Element, Sequence3.Element)
+
+  /// Returns an iterator over the elements of this sequence.
+//  @inlinable // FIXME(sil-serialize-all)
+  public func makeIterator() -> Iterator {
+    return Iterator(
+      _sequence1.makeIterator(),
+      _sequence2.makeIterator(),
+    _sequence3.makeIterator())
+  }
+}
+
+//@inlinable // FIXME(sil-serialize-all)
+public func zip<Sequence1, Sequence2, Sequence3>(
+  _ sequence1: Sequence1, _ sequence2: Sequence2, _ sequence3: Sequence3
+  ) -> Zip3Sequence<Sequence1, Sequence2, Sequence3> {
+  return Zip3Sequence(_sequence1: sequence1, _sequence2: sequence2, _sequence3: sequence3)
+}
+
+Array(zip(1..., 2..., [1, 2, 3]))
+
+Array(zip(1..., 2...).lazy
+  .map { $0 }
+  .prefix(10)
+)
+
+
+func zip<K, V, W>(_ lhs: [K: V], _ rhs: [K: W]) -> [K: (V, W)] {
+  var result: [K: (V, W)] = [:]
+  for (key, v) in lhs {
+    if let w = rhs[key] {
+      result[key] = (v, w)
+    }
+  }
+  return result
+}
+
+zip(
+  [1: "one", 2: "two"],
+  [1: "uno", 2: "dos", 3: "tres"]
+)
+
+
+2
+
+
+
+
+
+
+
+
 
 
