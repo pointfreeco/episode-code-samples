@@ -10,3 +10,6 @@
 [submodule "0025-zip-pt3/Vendor/swift-nonempty"]
 	path = 0025-zip-pt3/Vendor/swift-nonempty
 	url = https://github.com/pointfreeco/swift-nonempty.git
+[submodule "xyzw-templating-languages/Vendor/Stencil"]
+	path = xyzw-templating-languages/Vendor/Stencil
+	url = https://github.com/stencilproject/Stencil.git
