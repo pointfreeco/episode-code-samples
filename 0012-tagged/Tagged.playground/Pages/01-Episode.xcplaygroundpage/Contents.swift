@@ -29,8 +29,7 @@ struct Tagged<Tag, RawValue> {
 
 extension Tagged: Decodable where RawValue: Decodable {
   init(from decoder: Decoder) throws {
-    let container = try decoder.singleValueContainer()
-    self.init(rawValue: try container.decode(RawValue.self))
+    self.init(rawValue: try .init(from: decoder))
   }
 }
 
