@@ -27,4 +27,7 @@ This repository is the home of code written on episodes of
 1. [A Tour of Point-Free](0022-a-tour-of-point-free)
 1. [The Many Faces of Zip: Part 1](0023-zip-pt1)
 1. [The Many Faces of Zip: Part 2](0024-zip-pt2)
-1. [The Many Faces of Zip: Part 3](0024-zip-pt3)
+1. [The Many Faces of Zip: Part 3](0025-zip-pt3)
+1. [Domain Specific Languages: Part 1](0026-edsls-pt1)
+1. [Domain Specific Languages: Part 2](0027-edsls-pt2)
+1. [An HTML DSL](0028-html-dsl)
