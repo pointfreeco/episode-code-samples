@@ -123,10 +123,10 @@ func render(_ node: Node) -> String {
   switch node {
   case let .el(tag, attrs, children):
     let formattedAttrs = attrs
-      .map { key, value in "\\(key)=\"\\(value)\"" }
+      .map { key, value in "\(key)=\"\(value)\"" }
       .joined(separator: " ")
     let formattedChildren = children.map(render).joined(separator: "")
-    return "<\\(tag) \\(formattedAttrs)>\\(formattedChildren)</\\(tag)>"
+    return "<\(tag) \(formattedAttrs)>\(formattedChildren)</\(tag)>"
   case let .text(string):
     return string
   }
