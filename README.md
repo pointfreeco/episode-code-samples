@@ -31,3 +31,4 @@ This repository is the home of code written on episodes of
 1. [Domain Specific Languages: Part 1](0026-edsls-pt1)
 1. [Domain Specific Languages: Part 2](0027-edsls-pt2)
 1. [An HTML DSL](0028-html-dsl)
+1. [DSLs vs. Templating Languages](0029-dsls-vs-templating-languages)

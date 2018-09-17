@@ -1,5 +1,5 @@
 /*:
- # An HTML DSK
+ # An HTML DSL
 
  ## Exercises
 
