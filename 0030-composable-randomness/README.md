@@ -1,8 +1,9 @@
 ## [Point-Free](https://www.pointfree.co)
 
-> #### This directory contains code from Point-Free Episode: [DSLs vs. Templating Languages](https://www.pointfree.co/episodes/ep29-dsls-vs-templating-languages)
+> #### This directory contains code from Point-Free Episode: [Composable Randomness](https://www.pointfree.co/episodes/ep30-composable-randomness)
 >
-> Templating languages are the most common way to render HTML in web frameworks, but we don’t think they are the best way. We compare templating languages to the DSL we previously built, and show that the DSL fixes many problems that templates have, while also revealing amazing compositions that were previously hidden.
+> Randomness is a topic that may not seem so functional, but it gives us a wonderful opportunity to explore composition. After a survey of what randomness looks like in Swift today, we’ll build a complex set of random APIs from just a single unit.
+
 
 ### Getting Started
 
