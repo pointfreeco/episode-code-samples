@@ -1,3 +1,6 @@
 [submodule "xyzw-templating-languages/Vendor/Stencil"]
 	path = xyzw-templating-languages/Vendor/Stencil
 	url = https://github.com/stencilproject/Stencil.git
+[submodule "0031-arbitrary/Vendor/Tagged"]
+	path = 0031-arbitrary/Vendor/Tagged
+	url = https://github.com/pointfreeco/swift-tagged.git
