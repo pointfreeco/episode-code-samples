@@ -2,20 +2,23 @@
 	path = xyzw-templating-languages/Vendor/Stencil
 	url = https://github.com/stencilproject/Stencil.git
 [submodule "0017-styling-pt2/Vendor/swift-overture"]
-  path = 0017-styling-pt2/Vendor/swift-overture
-  url = https://github.com/pointfreeco/swift-overture.git
+	 path = 0017-styling-pt2/Vendor/swift-overture
+	 url = https://github.com/pointfreeco/swift-overture.git
 [submodule "0018-environment-pt2/Vendor/swift-overture"]
-  path = 0018-environment-pt2/Vendor/swift-overture
-  url = https://github.com/pointfreeco/swift-overture.git
+	 path = 0018-environment-pt2/Vendor/swift-overture
+	 url = https://github.com/pointfreeco/swift-overture.git
 [submodule "0021-playground-driven-development/Vendor/swift-overture"]
-  path = 0021-playground-driven-development/Vendor/swift-overture
-  url = https://github.com/pointfreeco/swift-overture.git
+	 path = 0021-playground-driven-development/Vendor/swift-overture
+	 url = https://github.com/pointfreeco/swift-overture.git
 [submodule "0024-zip-pt2/Vendor/swift-nonempty"]
-  path = 0024-zip-pt2/Vendor/swift-nonempty
-  url = https://github.com/pointfreeco/swift-nonempty.git
+	 path = 0024-zip-pt2/Vendor/swift-nonempty
+	 url = https://github.com/pointfreeco/swift-nonempty.git
 [submodule "0025-zip-pt3/Vendor/swift-nonempty"]
-  path = 0025-zip-pt3/Vendor/swift-nonempty
-  url = https://github.com/pointfreeco/swift-nonempty.git
-[submodule "0031-arbitrary/Vendor/Tagged"]
+	 path = 0025-zip-pt3/Vendor/swift-nonempty
+	 url = https://github.com/pointfreeco/swift-nonempty.git
+[submodule "0031-arbitrary-pt1/Vendor/Tagged"]
 	path = 0031-arbitrary-pt1/Vendor/Tagged
+	url = https://github.com/pointfreeco/swift-tagged.git
+[submodule "0032-arbitrary-pt2/Vendor/Tagged"]
+	path = 0032-arbitrary-pt2/Vendor/Tagged
 	url = https://github.com/pointfreeco/swift-tagged.git

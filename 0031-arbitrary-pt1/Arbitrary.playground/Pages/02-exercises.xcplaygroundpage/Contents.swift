@@ -1,5 +1,5 @@
 /*:
- # Decodable Randomness
+ # Decodable Randomness: Part 1
 
  ## Exercises
 
