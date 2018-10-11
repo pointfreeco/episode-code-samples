@@ -15,6 +15,9 @@ struct Snapshot<A> {
   }
 }
 
+
+
+
 //
 //let htmlSnapshot = Snapshot<String>(
 //  diff: { _, _ in fatalError() },
@@ -191,11 +194,6 @@ ChildWitness<Int>(
 2
 
 
-func apply<A, B>(_ f: @escaping (A) -> B) -> (A) -> B {
-  return { a in f(a) }
-}
-
-
 struct User {
   var bio: String
   var id: Int
@@ -253,13 +251,13 @@ func over<S, A>(_ kp: WritableKeyPath<S, A>, _ f: @escaping (A) -> A) -> (S) -> 
 }
 
 let safePrettyDescription = prettyDescription
-  .contramap(apply(set(\.password, "********")))
+  .contramap(set(\.password, "********"))
 let safeCompactDescription = compactDescription
-  .contramap(apply(set(\.password, "********")))
+  .contramap(set(\.password, "********"))
 
 let safePrettyTruncatedDescription = prettyDescription
-  .contramap(apply(set(\.password, "********")))
-  .contramap(apply(over(\.bio, { String($0.prefix(30)) + "..." })))
+  .contramap(set(\.password, "********"))
+  .contramap(over(\.bio, { String($0.prefix(30)) + "..." }))
 
 
 let user = User(
@@ -268,6 +266,8 @@ let user = User(
   name: "Blob",
   password: "blobisawesome"
 )
+
+user.playgroundDescription
 
 //extension User: CustomStringConvertible {
 //  var description: String {
@@ -281,6 +281,10 @@ print(String.init(reflecting: user))
 
 print(safePrettyTruncatedDescription.description(user))
 
+// (a -> Either b c) -> ([a] -> ([b], [c])
+
+// ((a, b) -> c) -> ([a], [b]) -> [c]
+// (Either a b <- c) -> (Either [a] [b]) <- [c]
 
 //divide :: (a -> (b, c)) -> f b -> f c -> f a
 
@@ -407,15 +411,8 @@ let urlLiveView: (CGSize) -> PlaygroundLiveViewing<URL> = { size in
 
 let urlHtmlLiveView: (CGSize) -> PlaygroundLiveViewing<URL> = { size in
   return .init { url in
-    let sema = DispatchSemaphore(value: 0)
-    var html: String?
-    URLSession.shared.dataTask(with: url) { data, response, error in
-      html = String(decoding: data!, as: UTF8.self)
-      sema.signal()
-      }
-      .resume()
-    sema.wait()
-
+    var html = (try? Data(contentsOf: url))
+      .map { String(decoding: $0, as: UTF8.self) }
     let textView = UITextView(frame: .init(origin: .zero, size: size))
     textView.text = html ?? "Bad data"
     return .view(textView)
@@ -434,8 +431,83 @@ extension PlaygroundLiveViewRepresentation: PlaygroundLiveViewable {
 
 // vs
 
-PlaygroundPage.current.liveView = urlHtmlLiveView(.init(width: 300, height: 400))
+PlaygroundPage.current.liveView = urlLiveView(.init(width: 300, height: 400))
   .playgroundLiveViewRepresentation(
     URL(string: "https://www.google.com")!
 )
+
+
+
+protocol MyProtocol {
+  associatedtype Friend
+
+  var name: String { get }
+  func print(pretty: Bool) -> String
+  static func create(name: String) -> Self
+  var bestFriend: Friend? { get }
+}
+
+//struct Student: MyProtocol {
+//  var name: String
+//
+//  func print(pretty: Bool) -> String {
+//    return pretty
+//      ? """
+//        Student(
+//          name: \"\(self.name)\"
+//        )
+//        """
+//      : "Student(name: \"\(self.name)\")"
+//  }
+//
+//  static func create(name: String) -> Student {
+//    return Student(name: name, bestFriend: nil)
+//  }
+//
+//  var bestFriend: Student?
+//
+//  typealias Friend = Student
+//
+//}
+//
+//
+
+
+struct PostgresConnInfo {
+  let database: String
+  let hostname: String
+  let password: String
+  let port: Int
+  let user: String
+}
+
+let localhost = PostgresConnInfo(
+  database: "pointfreeco_development",
+  hostname: "localhost",
+  password: "",
+  port: 5432,
+  user: "pointfreeco"
+)
+
+extension PostgresConnInfo: CustomStringConvertible {
+//  var description: String {
+//    return """
+//PostgresConnInfo(\
+//database: \"\(self.database)\", \
+//hostname: \"\(self.hostname)\", \
+//password: \"\(self.password)\", \
+//port: \"\(self.port)\", \
+//user: \"\(self.user)\"\
+//)
+//"""
+//  }
+
+  var description: String {
+    return "postgres://\(self.user):\(self.password)@\(self.hostname):\(self.port)/\(self.database)"
+  }
+}
+
+print(localhost.description)
+
+
 
