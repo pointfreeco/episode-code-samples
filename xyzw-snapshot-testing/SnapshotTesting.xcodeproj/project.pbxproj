@@ -7,110 +7,127 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		806DF451217AA002006B00C2 /* SnapshotTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 806DF447217AA002006B00C2 /* SnapshotTesting.framework */; };
-		806DF456217AA002006B00C2 /* SnapshotTestingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF455217AA002006B00C2 /* SnapshotTestingTests.swift */; };
-		806DF458217AA002006B00C2 /* SnapshotTesting.h in Headers */ = {isa = PBXBuildFile; fileRef = 806DF44A217AA002006B00C2 /* SnapshotTesting.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		806DF462217AA063006B00C2 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF461217AA063006B00C2 /* Helpers.swift */; };
+		806DF477217ABC02006B00C2 /* SnapshotTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 806DF46D217ABC02006B00C2 /* SnapshotTesting.framework */; };
+		806DF47C217ABC02006B00C2 /* SnapshotTestingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF47B217ABC02006B00C2 /* SnapshotTestingTests.swift */; };
+		806DF47E217ABC02006B00C2 /* SnapshotTesting.h in Headers */ = {isa = PBXBuildFile; fileRef = 806DF470217ABC02006B00C2 /* SnapshotTesting.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		806DF488217AC12F006B00C2 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF487217AC12F006B00C2 /* UIImage.swift */; };
+		806DF48B217AC208006B00C2 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48A217AC208006B00C2 /* String.swift */; };
+		806DF48D217AC6A4006B00C2 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48C217AC6A4006B00C2 /* UIView.swift */; };
+		806DF48F217ACD66006B00C2 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48E217ACD66006B00C2 /* Helpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		806DF452217AA002006B00C2 /* PBXContainerItemProxy */ = {
+		806DF478217ABC02006B00C2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 806DF43E217AA002006B00C2 /* Project object */;
+			containerPortal = 806DF464217ABC02006B00C2 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 806DF446217AA002006B00C2;
+			remoteGlobalIDString = 806DF46C217ABC02006B00C2;
 			remoteInfo = SnapshotTesting;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		806DF447217AA002006B00C2 /* SnapshotTesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapshotTesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		806DF44A217AA002006B00C2 /* SnapshotTesting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SnapshotTesting.h; sourceTree = "<group>"; };
-		806DF44B217AA002006B00C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		806DF450217AA002006B00C2 /* SnapshotTestingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnapshotTestingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		806DF455217AA002006B00C2 /* SnapshotTestingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingTests.swift; sourceTree = "<group>"; };
-		806DF457217AA002006B00C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		806DF461217AA063006B00C2 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		806DF46D217ABC02006B00C2 /* SnapshotTesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapshotTesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		806DF470217ABC02006B00C2 /* SnapshotTesting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SnapshotTesting.h; sourceTree = "<group>"; };
+		806DF471217ABC02006B00C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		806DF476217ABC02006B00C2 /* SnapshotTestingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnapshotTestingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		806DF47B217ABC02006B00C2 /* SnapshotTestingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingTests.swift; sourceTree = "<group>"; };
+		806DF47D217ABC02006B00C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		806DF487217AC12F006B00C2 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
+		806DF48A217AC208006B00C2 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		806DF48C217AC6A4006B00C2 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		806DF48E217ACD66006B00C2 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		806DF444217AA002006B00C2 /* Frameworks */ = {
+		806DF46A217ABC02006B00C2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		806DF44D217AA002006B00C2 /* Frameworks */ = {
+		806DF473217ABC02006B00C2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				806DF451217AA002006B00C2 /* SnapshotTesting.framework in Frameworks */,
+				806DF477217ABC02006B00C2 /* SnapshotTesting.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		806DF43D217AA002006B00C2 = {
+		806DF463217ABC02006B00C2 = {
 			isa = PBXGroup;
 			children = (
-				806DF449217AA002006B00C2 /* SnapshotTesting */,
-				806DF454217AA002006B00C2 /* SnapshotTestingTests */,
-				806DF448217AA002006B00C2 /* Products */,
+				806DF46F217ABC02006B00C2 /* SnapshotTesting */,
+				806DF47A217ABC02006B00C2 /* SnapshotTestingTests */,
+				806DF46E217ABC02006B00C2 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		806DF448217AA002006B00C2 /* Products */ = {
+		806DF46E217ABC02006B00C2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				806DF447217AA002006B00C2 /* SnapshotTesting.framework */,
-				806DF450217AA002006B00C2 /* SnapshotTestingTests.xctest */,
+				806DF46D217ABC02006B00C2 /* SnapshotTesting.framework */,
+				806DF476217ABC02006B00C2 /* SnapshotTestingTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		806DF449217AA002006B00C2 /* SnapshotTesting */ = {
+		806DF46F217ABC02006B00C2 /* SnapshotTesting */ = {
 			isa = PBXGroup;
 			children = (
-				806DF44A217AA002006B00C2 /* SnapshotTesting.h */,
-				806DF44B217AA002006B00C2 /* Info.plist */,
+				806DF470217ABC02006B00C2 /* SnapshotTesting.h */,
+				806DF471217ABC02006B00C2 /* Info.plist */,
 			);
 			path = SnapshotTesting;
 			sourceTree = "<group>";
 		};
-		806DF454217AA002006B00C2 /* SnapshotTestingTests */ = {
+		806DF47A217ABC02006B00C2 /* SnapshotTestingTests */ = {
 			isa = PBXGroup;
 			children = (
-				806DF455217AA002006B00C2 /* SnapshotTestingTests.swift */,
-				806DF461217AA063006B00C2 /* Helpers.swift */,
-				806DF457217AA002006B00C2 /* Info.plist */,
+				806DF47B217ABC02006B00C2 /* SnapshotTestingTests.swift */,
+				806DF489217AC1F5006B00C2 /* Helpers */,
+				806DF47D217ABC02006B00C2 /* Info.plist */,
 			);
 			path = SnapshotTestingTests;
+			sourceTree = "<group>";
+		};
+		806DF489217AC1F5006B00C2 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				806DF48A217AC208006B00C2 /* String.swift */,
+				806DF487217AC12F006B00C2 /* UIImage.swift */,
+				806DF48C217AC6A4006B00C2 /* UIView.swift */,
+				806DF48E217ACD66006B00C2 /* Helpers.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		806DF442217AA002006B00C2 /* Headers */ = {
+		806DF468217ABC02006B00C2 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				806DF458217AA002006B00C2 /* SnapshotTesting.h in Headers */,
+				806DF47E217ABC02006B00C2 /* SnapshotTesting.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		806DF446217AA002006B00C2 /* SnapshotTesting */ = {
+		806DF46C217ABC02006B00C2 /* SnapshotTesting */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 806DF45B217AA002006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTesting" */;
+			buildConfigurationList = 806DF481217ABC02006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTesting" */;
 			buildPhases = (
-				806DF442217AA002006B00C2 /* Headers */,
-				806DF443217AA002006B00C2 /* Sources */,
-				806DF444217AA002006B00C2 /* Frameworks */,
-				806DF445217AA002006B00C2 /* Resources */,
+				806DF468217ABC02006B00C2 /* Headers */,
+				806DF469217ABC02006B00C2 /* Sources */,
+				806DF46A217ABC02006B00C2 /* Frameworks */,
+				806DF46B217ABC02006B00C2 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -118,72 +135,72 @@
 			);
 			name = SnapshotTesting;
 			productName = SnapshotTesting;
-			productReference = 806DF447217AA002006B00C2 /* SnapshotTesting.framework */;
+			productReference = 806DF46D217ABC02006B00C2 /* SnapshotTesting.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		806DF44F217AA002006B00C2 /* SnapshotTestingTests */ = {
+		806DF475217ABC02006B00C2 /* SnapshotTestingTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 806DF45E217AA002006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTestingTests" */;
+			buildConfigurationList = 806DF484217ABC02006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTestingTests" */;
 			buildPhases = (
-				806DF44C217AA002006B00C2 /* Sources */,
-				806DF44D217AA002006B00C2 /* Frameworks */,
-				806DF44E217AA002006B00C2 /* Resources */,
+				806DF472217ABC02006B00C2 /* Sources */,
+				806DF473217ABC02006B00C2 /* Frameworks */,
+				806DF474217ABC02006B00C2 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				806DF453217AA002006B00C2 /* PBXTargetDependency */,
+				806DF479217ABC02006B00C2 /* PBXTargetDependency */,
 			);
 			name = SnapshotTestingTests;
 			productName = SnapshotTestingTests;
-			productReference = 806DF450217AA002006B00C2 /* SnapshotTestingTests.xctest */;
+			productReference = 806DF476217ABC02006B00C2 /* SnapshotTestingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		806DF43E217AA002006B00C2 /* Project object */ = {
+		806DF464217ABC02006B00C2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Point-Free Inc.";
 				TargetAttributes = {
-					806DF446217AA002006B00C2 = {
+					806DF46C217ABC02006B00C2 = {
 						CreatedOnToolsVersion = 10.1;
 					};
-					806DF44F217AA002006B00C2 = {
+					806DF475217ABC02006B00C2 = {
 						CreatedOnToolsVersion = 10.1;
 					};
 				};
 			};
-			buildConfigurationList = 806DF441217AA002006B00C2 /* Build configuration list for PBXProject "SnapshotTesting" */;
+			buildConfigurationList = 806DF467217ABC02006B00C2 /* Build configuration list for PBXProject "SnapshotTesting" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 806DF43D217AA002006B00C2;
-			productRefGroup = 806DF448217AA002006B00C2 /* Products */;
+			mainGroup = 806DF463217ABC02006B00C2;
+			productRefGroup = 806DF46E217ABC02006B00C2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				806DF446217AA002006B00C2 /* SnapshotTesting */,
-				806DF44F217AA002006B00C2 /* SnapshotTestingTests */,
+				806DF46C217ABC02006B00C2 /* SnapshotTesting */,
+				806DF475217ABC02006B00C2 /* SnapshotTestingTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		806DF445217AA002006B00C2 /* Resources */ = {
+		806DF46B217ABC02006B00C2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		806DF44E217AA002006B00C2 /* Resources */ = {
+		806DF474217ABC02006B00C2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -193,34 +210,37 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		806DF443217AA002006B00C2 /* Sources */ = {
+		806DF469217ABC02006B00C2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		806DF44C217AA002006B00C2 /* Sources */ = {
+		806DF472217ABC02006B00C2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				806DF456217AA002006B00C2 /* SnapshotTestingTests.swift in Sources */,
-				806DF462217AA063006B00C2 /* Helpers.swift in Sources */,
+				806DF48D217AC6A4006B00C2 /* UIView.swift in Sources */,
+				806DF48B217AC208006B00C2 /* String.swift in Sources */,
+				806DF47C217ABC02006B00C2 /* SnapshotTestingTests.swift in Sources */,
+				806DF48F217ACD66006B00C2 /* Helpers.swift in Sources */,
+				806DF488217AC12F006B00C2 /* UIImage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		806DF453217AA002006B00C2 /* PBXTargetDependency */ = {
+		806DF479217ABC02006B00C2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 806DF446217AA002006B00C2 /* SnapshotTesting */;
-			targetProxy = 806DF452217AA002006B00C2 /* PBXContainerItemProxy */;
+			target = 806DF46C217ABC02006B00C2 /* SnapshotTesting */;
+			targetProxy = 806DF478217ABC02006B00C2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		806DF459217AA002006B00C2 /* Debug */ = {
+		806DF47F217ABC02006B00C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -284,7 +304,7 @@
 			};
 			name = Debug;
 		};
-		806DF45A217AA002006B00C2 /* Release */ = {
+		806DF480217ABC02006B00C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -342,7 +362,7 @@
 			};
 			name = Release;
 		};
-		806DF45C217AA002006B00C2 /* Debug */ = {
+		806DF482217ABC02006B00C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
@@ -366,7 +386,7 @@
 			};
 			name = Debug;
 		};
-		806DF45D217AA002006B00C2 /* Release */ = {
+		806DF483217ABC02006B00C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
@@ -390,7 +410,7 @@
 			};
 			name = Release;
 		};
-		806DF45F217AA002006B00C2 /* Debug */ = {
+		806DF485217ABC02006B00C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -407,7 +427,7 @@
 			};
 			name = Debug;
 		};
-		806DF460217AA002006B00C2 /* Release */ = {
+		806DF486217ABC02006B00C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -427,34 +447,34 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		806DF441217AA002006B00C2 /* Build configuration list for PBXProject "SnapshotTesting" */ = {
+		806DF467217ABC02006B00C2 /* Build configuration list for PBXProject "SnapshotTesting" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				806DF459217AA002006B00C2 /* Debug */,
-				806DF45A217AA002006B00C2 /* Release */,
+				806DF47F217ABC02006B00C2 /* Debug */,
+				806DF480217ABC02006B00C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		806DF45B217AA002006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTesting" */ = {
+		806DF481217ABC02006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTesting" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				806DF45C217AA002006B00C2 /* Debug */,
-				806DF45D217AA002006B00C2 /* Release */,
+				806DF482217ABC02006B00C2 /* Debug */,
+				806DF483217ABC02006B00C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		806DF45E217AA002006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTestingTests" */ = {
+		806DF484217ABC02006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTestingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				806DF45F217AA002006B00C2 /* Debug */,
-				806DF460217AA002006B00C2 /* Release */,
+				806DF485217ABC02006B00C2 /* Debug */,
+				806DF486217ABC02006B00C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 806DF43E217AA002006B00C2 /* Project object */;
+	rootObject = 806DF464217ABC02006B00C2 /* Project object */;
 }
