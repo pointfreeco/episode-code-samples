@@ -10,8 +10,6 @@
 		806DF477217ABC02006B00C2 /* SnapshotTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 806DF46D217ABC02006B00C2 /* SnapshotTesting.framework */; };
 		806DF47C217ABC02006B00C2 /* SnapshotTestingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF47B217ABC02006B00C2 /* SnapshotTestingTests.swift */; };
 		806DF47E217ABC02006B00C2 /* SnapshotTesting.h in Headers */ = {isa = PBXBuildFile; fileRef = 806DF470217ABC02006B00C2 /* SnapshotTesting.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		806DF488217AC12F006B00C2 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF487217AC12F006B00C2 /* UIImage.swift */; };
-		806DF48B217AC208006B00C2 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48A217AC208006B00C2 /* String.swift */; };
 		806DF48D217AC6A4006B00C2 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48C217AC6A4006B00C2 /* UIView.swift */; };
 		806DF48F217ACD66006B00C2 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48E217ACD66006B00C2 /* Helpers.swift */; };
 /* End PBXBuildFile section */
@@ -33,8 +31,6 @@
 		806DF476217ABC02006B00C2 /* SnapshotTestingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnapshotTestingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		806DF47B217ABC02006B00C2 /* SnapshotTestingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingTests.swift; sourceTree = "<group>"; };
 		806DF47D217ABC02006B00C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		806DF487217AC12F006B00C2 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
-		806DF48A217AC208006B00C2 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		806DF48C217AC6A4006B00C2 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		806DF48E217ACD66006B00C2 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -98,8 +94,6 @@
 		806DF489217AC1F5006B00C2 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				806DF48A217AC208006B00C2 /* String.swift */,
-				806DF487217AC12F006B00C2 /* UIImage.swift */,
 				806DF48C217AC6A4006B00C2 /* UIView.swift */,
 				806DF48E217ACD66006B00C2 /* Helpers.swift */,
 			);
@@ -222,10 +216,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				806DF48D217AC6A4006B00C2 /* UIView.swift in Sources */,
-				806DF48B217AC208006B00C2 /* String.swift in Sources */,
 				806DF47C217ABC02006B00C2 /* SnapshotTestingTests.swift in Sources */,
 				806DF48F217ACD66006B00C2 /* Helpers.swift in Sources */,
-				806DF488217AC12F006B00C2 /* UIImage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

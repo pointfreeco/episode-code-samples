@@ -24,29 +24,27 @@ class SnapshotTestCase: XCTestCase {
     line: UInt = #line
     ) {
 
-    let snapshot = view.image
+    let snapshot = UIGraphicsImageRenderer(size: view.bounds.size)
+      .image { ctx in view.layer.render(in: ctx.cgContext) }
 
     let referenceUrl = snapshotUrl(file: file, function: function)
       .appendingPathExtension("png")
-
     guard
       !self.record,
-      let referenceData = try? Data(contentsOf: referenceUrl),
-      let reference = UIImage(data: referenceData)
+      let referenceData = try? Data(contentsOf: referenceUrl)
       else {
-        try? snapshot.pngData()?.write(to: referenceUrl)
+        try! snapshot.pngData()!.write(to: referenceUrl)
         XCTFail("Recorded: …\n\"\(referenceUrl.path)\"", file: file, line: line)
         return
     }
 
-    guard !compare(reference, snapshot) else { return }
-
-    let difference = diff(reference, snapshot)
-    XCTFail("Snapshot mismatch", file: file, line: line)
-    XCTContext.runActivity(named: "Attached failure diff") { activity  in
-      activity.add(XCTAttachment(image: reference))
-      activity.add(XCTAttachment(image: snapshot))
-      activity.add(XCTAttachment(image: difference))
+    let reference = UIImage(data: referenceData)!
+    if let difference = Diff.images(reference, snapshot) {
+      XCTFail("Snapshot mismatch", file: file, line: line)
+      XCTContext.runActivity(named: "Attached failure diff") { activity in
+        [reference, snapshot, difference]
+          .forEach { image in activity.add(XCTAttachment(image: image)) }
+      }
     }
   }
 }

@@ -9,10 +9,4 @@ extension UIView {
     return description
       .replacingOccurrences(of: ":?\\s*0x[\\da-f]+(\\s*)", with: "$1", options: .regularExpression)
   }
-
-  var image: UIImage {
-    return UIGraphicsImageRenderer(size: self.layer.bounds.size).image { context in
-      layer.render(in: context.cgContext)
-    }
-  }
 }
