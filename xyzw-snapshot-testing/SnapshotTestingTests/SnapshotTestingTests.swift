@@ -14,23 +14,33 @@ class ViewTests: SnapshotTestCase {
   }
 
   func testString() {
-    assertSnapshot(matching: "Welcome to Point-Free.")
+    assertSnapshot(matching: "Welcome to Point-Free!")
   }
 }
 
 protocol Diffable {
   static var pathExtension: String { get }
-  static func diff(_ old: Self, _ new: Self) -> [XCTAttachment]
+  static func diff(_ old: Self, _ new: Self) -> (String, [XCTAttachment])?
   static func from(data: Data) -> Self
   var to: Data { get }
+}
+
+struct Diffing<A> {
+  let pathExtension: String
+  let diff: (A, A) -> (String, [XCTAttachment])?
+  let from: (Data) -> A
+  let to: (A) -> Data
 }
 
 extension String: Diffable {
   static let pathExtension = "txt"
 
-  static func diff(_ old: String, _ new: String) -> [XCTAttachment] {
-    guard let difference = Diff.strings(old, new) else { return [] }
-    return [XCTAttachment(string: difference)]
+  static func diff(_ old: String, _ new: String) -> (String, [XCTAttachment])? {
+    guard let difference = Diff.strings(old, new) else { return nil }
+    return (
+      "Diff:\n\(difference)",
+      [XCTAttachment(string: difference)]
+    )
   }
 
   static func from(data: Data) -> String {
@@ -42,12 +52,30 @@ extension String: Diffable {
   }
 }
 
+extension Diffing where A == String {
+  static let string = Diffing(
+    pathExtension: "txt",
+    diff: { old, new in
+      guard let difference = Diff.strings(old, new) else { return nil }
+      return (
+        "Diff:\n\(difference)",
+        [XCTAttachment(string: difference)]
+      )
+  },
+    from: { data in String(decoding: data, as: UTF8.self) },
+    to: { string in Data(string.utf8) }
+  )
+}
+
 extension UIImage: Diffable {
   static let pathExtension = "png"
 
-  static func diff(_ old: UIImage, _ new: UIImage) -> [XCTAttachment] {
-    guard let difference = Diff.images(old, new) else { return [] }
-    return [old, new, difference].map(XCTAttachment.init)
+  static func diff(_ old: UIImage, _ new: UIImage) -> (String, [XCTAttachment])? {
+    guard let difference = Diff.images(old, new) else { return nil }
+    return (
+      "Expected old@\(old.size) to match new@\(new.size)",
+      [old, new, difference].map(XCTAttachment.init)
+    )
   }
 
   static func from(data: Data) -> Self {
@@ -59,9 +87,29 @@ extension UIImage: Diffable {
   }
 }
 
+extension Diffing where A == UIImage {
+  static let image = Diffing(
+    pathExtension: "txt",
+    diff: { old, new in
+      guard let difference = Diff.images(old, new) else { return nil }
+      return (
+        "Expected old@\(old.size) to match new@\(new.size)",
+        [old, new, difference].map(XCTAttachment.init)
+      )
+  },
+    from: { data in UIImage(data: data)! },
+    to: { image in image.pngData()! }
+  )
+}
+
 protocol Snapshottable {
   associatedtype Snapshot: Diffable
   var snapshot: Snapshot { get }
+}
+
+struct Snapshotting<A, B> {
+  let diffing: Diffing<B>
+  let to: (A) -> B
 }
 
 extension String: Snapshottable {
@@ -70,10 +118,24 @@ extension String: Snapshottable {
   }
 }
 
+extension Snapshotting where A == String, B == String {
+  static let string = Snapshotting(
+    diffing: .string,
+    to: { $0 }
+  )
+}
+
 extension UIImage: Snapshottable {
   var snapshot: UIImage {
     return self
   }
+}
+
+extension Snapshotting where A == UIImage, B == UIImage {
+  static let image = Snapshotting(
+    diffing: .image,
+    to: { $0 }
+  )
 }
 
 extension CALayer: Snapshottable {
@@ -110,9 +172,8 @@ class SnapshotTestCase: XCTestCase {
 
     if !self.record, let referenceData = try? Data(contentsOf: referenceUrl) {
       let reference = S.Snapshot.from(data: referenceData)
-      let attachments = S.Snapshot.diff(reference, snapshot)
-      guard !attachments.isEmpty else { return }
-      XCTFail("Snapshot didn't match reference", file: file, line: line)
+      guard let (message, attachments) = S.Snapshot.diff(reference, snapshot) else { return }
+      XCTFail(message, file: file, line: line)
       XCTContext.runActivity(named: "Attached failure diff") { activity in
         attachments.forEach { activity.add($0) }
       }
