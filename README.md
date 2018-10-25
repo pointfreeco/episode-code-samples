@@ -36,3 +36,4 @@ This repository is the home of code written on episodes of
 1. [Decodable Randomness: Part 1](0031-arbitrary-pt1)
 1. [Decodable Randomness: Part 2](0032-arbitrary-pt2)
 1. [Protocol Witnesses: Part 1](0033-protocol-witnesses-pt1)
+1. [Protocol Witnesses: Part 2](0034-protocol-witnesses-pt2)
