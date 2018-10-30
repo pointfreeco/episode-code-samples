@@ -1,3 +1,4 @@
+import Overture
 import XCTest
 import UIKit
 
@@ -5,7 +6,11 @@ class ViewTests: SnapshotTestCase {
   func testView() {
 //    record = true
     let episodesVC = EpisodeListViewController()
-    assertSnapshot(matching: episodesVC)
+//    assertSnapshot(matching: episodesVC)
+    episodesVC.view.frame = CGRect(x: 0, y: 0, width: 300, height: 800)
+    episodesVC.beginAppearanceTransition(true, animated: false)
+    episodesVC.endAppearanceTransition()
+    assertSnapshot(of: .recursiveDescription, matching: episodesVC)
   }
 
   func testString() {
@@ -48,7 +53,7 @@ extension String: Diffable {
 }
 
 extension Diffing where A == String {
-  static let string = Diffing(
+  static let lines = Diffing(
     pathExtension: "txt",
     diff: { old, new in
       guard let difference = Diff.strings(old, new) else { return nil }
@@ -121,8 +126,8 @@ extension String: Snapshottable {
 }
 
 extension Snapshotting where A == String, B == String {
-  static let string = Snapshotting(
-    diffing: .string,
+  static let lines = Snapshotting(
+    diffing: .lines,
     to: { $0 }
   )
 }
@@ -140,10 +145,26 @@ extension Snapshotting where A == UIImage, B == UIImage {
   )
 }
 
+extension Snapshotting {
+  func pullback<C>(_ f: @escaping (C) -> A) -> Snapshotting<C, B> {
+    return Snapshotting<C, B>(
+      diffing: self.diffing,
+      to: { self.to(f($0)) }
+    )
+  }
+}
+
 extension CALayer: Snapshottable {
   var snapshot: UIImage {
     return UIGraphicsImageRenderer(size: self.bounds.size)
       .image { ctx in self.render(in: ctx.cgContext) }
+  }
+}
+
+extension Snapshotting where A == CALayer, B == UIImage {
+  static let layer = Snapshotting<UIImage, UIImage>.image.pullback { (layer: CALayer) in
+    return UIGraphicsImageRenderer(size: layer.bounds.size)
+      .image { ctx in layer.render(in: ctx.cgContext) }
   }
 }
 
@@ -155,7 +176,19 @@ extension CALayer: Snapshottable {
 
 extension UIView: Snapshottable {
   var snapshot: String {
-    return self.perform(Selector(("recursiveDescription"))).takeUnretainedValue() as! String
+    return (self.perform(Selector(("recursiveDescription"))).takeUnretainedValue() as! String)
+      .replacingOccurrences(of: ":?\\s*0x[\\da-f]+(\\s*)", with: "$1", options: .regularExpression)
+  }
+}
+
+extension Snapshotting where A == UIView, B == UIImage {
+  static let view = Snapshotting<CALayer, UIImage>.layer.pullback(get(\UIView.layer))
+}
+
+extension Snapshotting where A == UIView, B == String {
+  static let recursiveDescription = Snapshotting<String, String>.lines.pullback { (view: UIView) in
+    (view.perform(Selector(("recursiveDescription"))).takeUnretainedValue() as! String)
+      .replacingOccurrences(of: ":?\\s*0x[\\da-f]+(\\s*)", with: "$1", options: .regularExpression)
   }
 }
 
@@ -164,6 +197,14 @@ extension UIViewController: Snapshottable {
   var snapshot: String {
     return self.view.snapshot
   }
+}
+
+extension Snapshotting where A == UIViewController, B == UIImage {
+  static let viewController = Snapshotting<UIView, UIImage>.view.pullback(get(\UIViewController.view))
+}
+
+extension Snapshotting where A == UIViewController, B == String {
+  static let recursiveDescription = Snapshotting<UIView, String>.recursiveDescription.pullback(get(\UIViewController.view))
 }
 
 class SnapshotTestCase: XCTestCase {
@@ -188,6 +229,30 @@ class SnapshotTestCase: XCTestCase {
       }
     } else {
       try! snapshot.to.write(to: referenceUrl)
+      XCTFail("Recorded: …\n\"\(referenceUrl.path)\"", file: file, line: line)
+    }
+  }
+
+  func assertSnapshot<A, B>(
+    of snapshotting: Snapshotting<A, B>,
+    matching value: A,
+    file: StaticString = #file,
+    function: String = #function,
+    line: UInt = #line) {
+
+    let snapshot = snapshotting.to(value)
+    let referenceUrl = snapshotUrl(file: file, function: function)
+      .appendingPathExtension(snapshotting.diffing.pathExtension)
+
+    if !self.record, let referenceData = try? Data(contentsOf: referenceUrl) {
+      let reference = snapshotting.diffing.from(referenceData)
+      guard let (message, attachments) = snapshotting.diffing.diff(reference, snapshot) else { return }
+      XCTFail(message, file: file, line: line)
+      XCTContext.runActivity(named: "Attached failure diff") { activity in
+        attachments.forEach { activity.add($0) }
+      }
+    } else {
+      try! snapshotting.diffing.to(snapshot).write(to: referenceUrl)
       XCTFail("Recorded: …\n\"\(referenceUrl.path)\"", file: file, line: line)
     }
   }
