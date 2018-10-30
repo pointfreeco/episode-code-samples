@@ -3,6 +3,7 @@ import UIKit
 
 class ViewTests: SnapshotTestCase {
   func testView() {
+//    record = true
     let episodesVC = EpisodeListViewController()
     assertSnapshot(matching: episodesVC)
   }
@@ -146,14 +147,21 @@ extension CALayer: Snapshottable {
   }
 }
 
+//extension UIView: Snapshottable {
+//  var snapshot: UIImage {
+//    return self.layer.snapshot
+//  }
+//}
+
 extension UIView: Snapshottable {
-  var snapshot: UIImage {
-    return self.layer.snapshot
+  var snapshot: String {
+    return self.perform(Selector(("recursiveDescription"))).takeUnretainedValue() as! String
   }
 }
 
 extension UIViewController: Snapshottable {
-  var snapshot: UIImage {
+//  var snapshot: UIImage {
+  var snapshot: String {
     return self.view.snapshot
   }
 }
