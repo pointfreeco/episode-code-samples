@@ -3,14 +3,8 @@ import UIKit
 
 class ViewTests: SnapshotTestCase {
   func testView() {
-    let titleLabel = UILabel()
-    titleLabel.backgroundColor = .white
-    titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
-    titleLabel.text = "Welcome to Point-Free!"
-    titleLabel.sizeToFit()
-
-//    record = true
-    assertSnapshot(matching: titleLabel)
+    let episodesVC = EpisodeListViewController()
+    assertSnapshot(matching: episodesVC)
   }
 
   func testString() {
@@ -79,7 +73,7 @@ extension UIImage: Diffable {
   }
 
   static func from(data: Data) -> Self {
-    return self.init(data: data)!
+    return self.init(data: data, scale: UIScreen.main.scale)!
   }
 
   var to: Data {
@@ -104,7 +98,14 @@ extension Diffing where A == UIImage {
 
 protocol Snapshottable {
   associatedtype Snapshot: Diffable
+  static var pathExtension: String { get }
   var snapshot: Snapshot { get }
+}
+
+extension Snapshottable {
+  static var pathExtension: String {
+    return Snapshot.pathExtension
+  }
 }
 
 struct Snapshotting<A, B> {

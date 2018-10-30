@@ -12,6 +12,11 @@
 		806DF47E217ABC02006B00C2 /* SnapshotTesting.h in Headers */ = {isa = PBXBuildFile; fileRef = 806DF470217ABC02006B00C2 /* SnapshotTesting.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		806DF48D217AC6A4006B00C2 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48C217AC6A4006B00C2 /* UIView.swift */; };
 		806DF48F217ACD66006B00C2 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48E217ACD66006B00C2 /* Helpers.swift */; };
+		80A4A0F921889D600077CCCF /* Overture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80A4A0F521889D4A0077CCCF /* Overture.framework */; };
+		80A4A0FB21889DB40077CCCF /* EpisodesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A4A0FA21889DB40077CCCF /* EpisodesViewController.swift */; };
+		80A4A0FE2188A9F00077CCCF /* StyleGuide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A4A0FD2188A9F00077CCCF /* StyleGuide.swift */; };
+		80A4A1002188A9F90077CCCF /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A4A0FF2188A9F90077CCCF /* Utils.swift */; };
+		80A4A1022188AA040077CCCF /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A4A1012188AA040077CCCF /* Model.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -21,6 +26,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 806DF46C217ABC02006B00C2;
 			remoteInfo = SnapshotTesting;
+		};
+		80A4A0F421889D4A0077CCCF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "Overture::Overture::Product";
+			remoteInfo = Overture;
+		};
+		80A4A0F621889D4A0077CCCF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "Overture::OvertureTests::Product";
+			remoteInfo = OvertureTests;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -33,6 +52,11 @@
 		806DF47D217ABC02006B00C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		806DF48C217AC6A4006B00C2 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		806DF48E217ACD66006B00C2 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Overture.xcodeproj; path = "../0017-styling-pt2/Vendor/swift-overture/Overture.xcodeproj"; sourceTree = "<group>"; };
+		80A4A0FA21889DB40077CCCF /* EpisodesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesViewController.swift; sourceTree = "<group>"; };
+		80A4A0FD2188A9F00077CCCF /* StyleGuide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleGuide.swift; sourceTree = "<group>"; };
+		80A4A0FF2188A9F90077CCCF /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		80A4A1012188AA040077CCCF /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80A4A0F921889D600077CCCF /* Overture.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,6 +85,8 @@
 				806DF46F217ABC02006B00C2 /* SnapshotTesting */,
 				806DF47A217ABC02006B00C2 /* SnapshotTestingTests */,
 				806DF46E217ABC02006B00C2 /* Products */,
+				80A4A0F821889D600077CCCF /* Frameworks */,
+				80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -96,8 +123,36 @@
 			children = (
 				806DF48C217AC6A4006B00C2 /* UIView.swift */,
 				806DF48E217ACD66006B00C2 /* Helpers.swift */,
+				80A4A0FC2188A9CF0077CCCF /* AppFramework */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		80A4A0EE21889D4A0077CCCF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				80A4A0F521889D4A0077CCCF /* Overture.framework */,
+				80A4A0F721889D4A0077CCCF /* OvertureTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		80A4A0F821889D600077CCCF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		80A4A0FC2188A9CF0077CCCF /* AppFramework */ = {
+			isa = PBXGroup;
+			children = (
+				80A4A0FA21889DB40077CCCF /* EpisodesViewController.swift */,
+				80A4A1012188AA040077CCCF /* Model.swift */,
+				80A4A0FD2188A9F00077CCCF /* StyleGuide.swift */,
+				80A4A0FF2188A9F90077CCCF /* Utils.swift */,
+			);
+			path = AppFramework;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -178,6 +233,12 @@
 			mainGroup = 806DF463217ABC02006B00C2;
 			productRefGroup = 806DF46E217ABC02006B00C2 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 80A4A0EE21889D4A0077CCCF /* Products */;
+					ProjectRef = 80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				806DF46C217ABC02006B00C2 /* SnapshotTesting */,
@@ -185,6 +246,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		80A4A0F521889D4A0077CCCF /* Overture.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Overture.framework;
+			remoteRef = 80A4A0F421889D4A0077CCCF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		80A4A0F721889D4A0077CCCF /* OvertureTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = file;
+			path = OvertureTests.xctest;
+			remoteRef = 80A4A0F621889D4A0077CCCF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		806DF46B217ABC02006B00C2 /* Resources */ = {
@@ -215,9 +293,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80A4A1022188AA040077CCCF /* Model.swift in Sources */,
+				80A4A0FB21889DB40077CCCF /* EpisodesViewController.swift in Sources */,
 				806DF48D217AC6A4006B00C2 /* UIView.swift in Sources */,
 				806DF47C217ABC02006B00C2 /* SnapshotTestingTests.swift in Sources */,
+				80A4A0FE2188A9F00077CCCF /* StyleGuide.swift in Sources */,
 				806DF48F217ACD66006B00C2 /* Helpers.swift in Sources */,
+				80A4A1002188A9F90077CCCF /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
