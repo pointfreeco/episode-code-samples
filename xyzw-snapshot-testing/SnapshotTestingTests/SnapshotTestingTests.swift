@@ -6,10 +6,7 @@ class ViewTests: SnapshotTestCase {
   func testView() {
 //    record = true
     let episodesVC = EpisodeListViewController()
-//    assertSnapshot(matching: episodesVC)
-    episodesVC.view.frame = CGRect(x: 0, y: 0, width: 300, height: 800)
-    episodesVC.beginAppearanceTransition(true, animated: false)
-    episodesVC.endAppearanceTransition()
+    assertSnapshot(of: .viewController, matching: episodesVC)
     assertSnapshot(of: .recursiveDescription, matching: episodesVC)
   }
 
@@ -36,7 +33,7 @@ extension String: Diffable {
   static let pathExtension = "txt"
 
   static func diff(_ old: String, _ new: String) -> (String, [XCTAttachment])? {
-    guard let difference = Diff.strings(old, new) else { return nil }
+    guard let difference = Diff.lines(old, new) else { return nil }
     return (
       "Diff:\n\(difference)",
       [XCTAttachment(string: difference)]
@@ -56,7 +53,7 @@ extension Diffing where A == String {
   static let lines = Diffing(
     pathExtension: "txt",
     diff: { old, new in
-      guard let difference = Diff.strings(old, new) else { return nil }
+      guard let difference = Diff.lines(old, new) else { return nil }
       return (
         "Diff:\n\(difference)",
         [XCTAttachment(string: difference)]
@@ -89,7 +86,7 @@ extension UIImage: Diffable {
 
 extension Diffing where A == UIImage {
   static let image = Diffing(
-    pathExtension: "txt",
+    pathExtension: "png",
     diff: { old, new in
       guard let difference = Diff.images(old, new) else { return nil }
       return (
@@ -187,7 +184,9 @@ extension Snapshotting where A == UIView, B == UIImage {
 
 extension Snapshotting where A == UIView, B == String {
   static let recursiveDescription = Snapshotting<String, String>.lines.pullback { (view: UIView) in
-    (view.perform(Selector(("recursiveDescription"))).takeUnretainedValue() as! String)
+    view.setNeedsLayout()
+    view.layoutIfNeeded()
+    return (view.perform(Selector(("recursiveDescription"))).takeUnretainedValue() as! String)
       .replacingOccurrences(of: ":?\\s*0x[\\da-f]+(\\s*)", with: "$1", options: .regularExpression)
   }
 }

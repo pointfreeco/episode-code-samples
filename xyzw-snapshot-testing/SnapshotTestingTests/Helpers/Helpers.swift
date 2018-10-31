@@ -16,16 +16,13 @@ func snapshotDirectoryUrl(file: StaticString) -> URL {
 }
 
 enum Diff {
-  static func strings(_ old: String, _ new: String) -> String? {
+  static func lines(_ old: String, _ new: String) -> String? {
     if old == new { return nil }
     let hunks = chunk(diff: diff(
       old.split(separator: "\n", omittingEmptySubsequences: false).map(String.init),
       new.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
     ))
-    return hunks.flatMap { [$0.patchMark] + $0.lines }
-      .prefix(5)
-      .map { $0.prefix(80) }
-      .joined(separator: "\n")
+    return hunks.flatMap { [$0.patchMark] + $0.lines }.joined(separator: "\n")
   }
 
   static func images(_ old: UIImage, _ new: UIImage) -> UIImage? {
