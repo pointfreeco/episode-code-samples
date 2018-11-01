@@ -7,36 +7,35 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		806DF477217ABC02006B00C2 /* SnapshotTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 806DF46D217ABC02006B00C2 /* SnapshotTesting.framework */; };
-		806DF47C217ABC02006B00C2 /* SnapshotTestingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF47B217ABC02006B00C2 /* SnapshotTestingTests.swift */; };
-		806DF47E217ABC02006B00C2 /* SnapshotTesting.h in Headers */ = {isa = PBXBuildFile; fileRef = 806DF470217ABC02006B00C2 /* SnapshotTesting.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		806DF48D217AC6A4006B00C2 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48C217AC6A4006B00C2 /* UIView.swift */; };
-		806DF48F217ACD66006B00C2 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806DF48E217ACD66006B00C2 /* Helpers.swift */; };
-		80A4A0F921889D600077CCCF /* Overture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80A4A0F521889D4A0077CCCF /* Overture.framework */; };
-		80A4A0FB21889DB40077CCCF /* EpisodesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A4A0FA21889DB40077CCCF /* EpisodesViewController.swift */; };
-		80A4A0FE2188A9F00077CCCF /* StyleGuide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A4A0FD2188A9F00077CCCF /* StyleGuide.swift */; };
-		80A4A1002188A9F90077CCCF /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A4A0FF2188A9F90077CCCF /* Utils.swift */; };
-		80A4A1022188AA040077CCCF /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A4A1012188AA040077CCCF /* Model.swift */; };
+		80B19C0A218AA36400910016 /* PointFreeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80B19C00218AA36400910016 /* PointFreeFramework.framework */; };
+		80B19C0F218AA36400910016 /* PointFreeFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C0E218AA36400910016 /* PointFreeFrameworkTests.swift */; };
+		80B19C11218AA36400910016 /* PointFreeFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 80B19C03218AA36400910016 /* PointFreeFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		80B19C1B218AA40200910016 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C1A218AA40200910016 /* Helpers.swift */; };
+		80B19C1D218AA43500910016 /* EpisodesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C1C218AA43500910016 /* EpisodesViewController.swift */; };
+		80B19C1F218AA43D00910016 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C1E218AA43D00910016 /* Model.swift */; };
+		80B19C21218AA44200910016 /* StyleGuide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C20218AA44200910016 /* StyleGuide.swift */; };
+		80B19C23218AA44700910016 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C22218AA44700910016 /* Utils.swift */; };
+		80B19C35218AA47400910016 /* Overture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80B19C2C218AA45800910016 /* Overture.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		806DF478217ABC02006B00C2 /* PBXContainerItemProxy */ = {
+		80B19C0B218AA36400910016 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 806DF464217ABC02006B00C2 /* Project object */;
+			containerPortal = 80B19BF7218AA36400910016 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 806DF46C217ABC02006B00C2;
-			remoteInfo = SnapshotTesting;
+			remoteGlobalIDString = 80B19BFF218AA36400910016;
+			remoteInfo = PointFreeFramework;
 		};
-		80A4A0F421889D4A0077CCCF /* PBXContainerItemProxy */ = {
+		80B19C2B218AA45800910016 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */;
+			containerPortal = 80B19C24218AA45800910016 /* Overture.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = "Overture::Overture::Product";
 			remoteInfo = Overture;
 		};
-		80A4A0F621889D4A0077CCCF /* PBXContainerItemProxy */ = {
+		80B19C2D218AA45800910016 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */;
+			containerPortal = 80B19C24218AA45800910016 /* Overture.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = "Overture::OvertureTests::Product";
 			remoteInfo = OvertureTests;
@@ -44,235 +43,218 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		806DF46D217ABC02006B00C2 /* SnapshotTesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapshotTesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		806DF470217ABC02006B00C2 /* SnapshotTesting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SnapshotTesting.h; sourceTree = "<group>"; };
-		806DF471217ABC02006B00C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		806DF476217ABC02006B00C2 /* SnapshotTestingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnapshotTestingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		806DF47B217ABC02006B00C2 /* SnapshotTestingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingTests.swift; sourceTree = "<group>"; };
-		806DF47D217ABC02006B00C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		806DF48C217AC6A4006B00C2 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
-		806DF48E217ACD66006B00C2 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
-		80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Overture.xcodeproj; path = "../0017-styling-pt2/Vendor/swift-overture/Overture.xcodeproj"; sourceTree = "<group>"; };
-		80A4A0FA21889DB40077CCCF /* EpisodesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesViewController.swift; sourceTree = "<group>"; };
-		80A4A0FD2188A9F00077CCCF /* StyleGuide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleGuide.swift; sourceTree = "<group>"; };
-		80A4A0FF2188A9F90077CCCF /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		80A4A1012188AA040077CCCF /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		80B19C00218AA36400910016 /* PointFreeFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PointFreeFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		80B19C03218AA36400910016 /* PointFreeFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PointFreeFramework.h; sourceTree = "<group>"; };
+		80B19C04218AA36400910016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		80B19C09218AA36400910016 /* PointFreeFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PointFreeFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		80B19C0E218AA36400910016 /* PointFreeFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointFreeFrameworkTests.swift; sourceTree = "<group>"; };
+		80B19C10218AA36400910016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		80B19C1A218AA40200910016 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		80B19C1C218AA43500910016 /* EpisodesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EpisodesViewController.swift; path = "../../xyzw-snapshot-testing/SnapshotTesting/EpisodesViewController.swift"; sourceTree = "<group>"; };
+		80B19C1E218AA43D00910016 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Model.swift; path = "../../xyzw-snapshot-testing/SnapshotTesting/Model.swift"; sourceTree = "<group>"; };
+		80B19C20218AA44200910016 /* StyleGuide.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StyleGuide.swift; path = "../../xyzw-snapshot-testing/SnapshotTesting/StyleGuide.swift"; sourceTree = "<group>"; };
+		80B19C22218AA44700910016 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = "../../xyzw-snapshot-testing/SnapshotTesting/Utils.swift"; sourceTree = "<group>"; };
+		80B19C24218AA45800910016 /* Overture.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Overture.xcodeproj; path = "../0017-styling-pt2/Vendor/swift-overture/Overture.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		806DF46A217ABC02006B00C2 /* Frameworks */ = {
+		80B19BFD218AA36400910016 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80A4A0F921889D600077CCCF /* Overture.framework in Frameworks */,
+				80B19C35218AA47400910016 /* Overture.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		806DF473217ABC02006B00C2 /* Frameworks */ = {
+		80B19C06218AA36400910016 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				806DF477217ABC02006B00C2 /* SnapshotTesting.framework in Frameworks */,
+				80B19C0A218AA36400910016 /* PointFreeFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		806DF463217ABC02006B00C2 = {
+		80B19BF6218AA36400910016 = {
 			isa = PBXGroup;
 			children = (
-				806DF46F217ABC02006B00C2 /* SnapshotTesting */,
-				806DF47A217ABC02006B00C2 /* SnapshotTestingTests */,
-				806DF46E217ABC02006B00C2 /* Products */,
-				80A4A0F821889D600077CCCF /* Frameworks */,
-				80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */,
+				80B19C02218AA36400910016 /* PointFreeFramework */,
+				80B19C0D218AA36400910016 /* PointFreeFrameworkTests */,
+				80B19C01218AA36400910016 /* Products */,
+				80B19C24218AA45800910016 /* Overture.xcodeproj */,
+				80B19C30218AA47400910016 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		806DF46E217ABC02006B00C2 /* Products */ = {
+		80B19C01218AA36400910016 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				806DF46D217ABC02006B00C2 /* SnapshotTesting.framework */,
-				806DF476217ABC02006B00C2 /* SnapshotTestingTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		806DF46F217ABC02006B00C2 /* SnapshotTesting */ = {
-			isa = PBXGroup;
-			children = (
-				806DF470217ABC02006B00C2 /* SnapshotTesting.h */,
-				806DF471217ABC02006B00C2 /* Info.plist */,
-			);
-			path = SnapshotTesting;
-			sourceTree = "<group>";
-		};
-		806DF47A217ABC02006B00C2 /* SnapshotTestingTests */ = {
-			isa = PBXGroup;
-			children = (
-				806DF47B217ABC02006B00C2 /* SnapshotTestingTests.swift */,
-				806DF489217AC1F5006B00C2 /* Helpers */,
-				806DF47D217ABC02006B00C2 /* Info.plist */,
-			);
-			path = SnapshotTestingTests;
-			sourceTree = "<group>";
-		};
-		806DF489217AC1F5006B00C2 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				806DF48C217AC6A4006B00C2 /* UIView.swift */,
-				806DF48E217ACD66006B00C2 /* Helpers.swift */,
-				80A4A0FC2188A9CF0077CCCF /* AppFramework */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
-		80A4A0EE21889D4A0077CCCF /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				80A4A0F521889D4A0077CCCF /* Overture.framework */,
-				80A4A0F721889D4A0077CCCF /* OvertureTests.xctest */,
+				80B19C00218AA36400910016 /* PointFreeFramework.framework */,
+				80B19C09218AA36400910016 /* PointFreeFrameworkTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		80A4A0F821889D600077CCCF /* Frameworks */ = {
+		80B19C02218AA36400910016 /* PointFreeFramework */ = {
+			isa = PBXGroup;
+			children = (
+				80B19C03218AA36400910016 /* PointFreeFramework.h */,
+				80B19C04218AA36400910016 /* Info.plist */,
+				80B19C1C218AA43500910016 /* EpisodesViewController.swift */,
+				80B19C1E218AA43D00910016 /* Model.swift */,
+				80B19C20218AA44200910016 /* StyleGuide.swift */,
+				80B19C22218AA44700910016 /* Utils.swift */,
+			);
+			path = PointFreeFramework;
+			sourceTree = "<group>";
+		};
+		80B19C0D218AA36400910016 /* PointFreeFrameworkTests */ = {
+			isa = PBXGroup;
+			children = (
+				80B19C1A218AA40200910016 /* Helpers.swift */,
+				80B19C0E218AA36400910016 /* PointFreeFrameworkTests.swift */,
+				80B19C10218AA36400910016 /* Info.plist */,
+			);
+			path = PointFreeFrameworkTests;
+			sourceTree = "<group>";
+		};
+		80B19C25218AA45800910016 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				80B19C2C218AA45800910016 /* Overture.framework */,
+				80B19C2E218AA45800910016 /* OvertureTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		80B19C30218AA47400910016 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		80A4A0FC2188A9CF0077CCCF /* AppFramework */ = {
-			isa = PBXGroup;
-			children = (
-				80A4A0FA21889DB40077CCCF /* EpisodesViewController.swift */,
-				80A4A1012188AA040077CCCF /* Model.swift */,
-				80A4A0FD2188A9F00077CCCF /* StyleGuide.swift */,
-				80A4A0FF2188A9F90077CCCF /* Utils.swift */,
-			);
-			path = AppFramework;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		806DF468217ABC02006B00C2 /* Headers */ = {
+		80B19BFB218AA36400910016 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				806DF47E217ABC02006B00C2 /* SnapshotTesting.h in Headers */,
+				80B19C11218AA36400910016 /* PointFreeFramework.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		806DF46C217ABC02006B00C2 /* SnapshotTesting */ = {
+		80B19BFF218AA36400910016 /* PointFreeFramework */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 806DF481217ABC02006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTesting" */;
+			buildConfigurationList = 80B19C14218AA36400910016 /* Build configuration list for PBXNativeTarget "PointFreeFramework" */;
 			buildPhases = (
-				806DF468217ABC02006B00C2 /* Headers */,
-				806DF469217ABC02006B00C2 /* Sources */,
-				806DF46A217ABC02006B00C2 /* Frameworks */,
-				806DF46B217ABC02006B00C2 /* Resources */,
+				80B19BFB218AA36400910016 /* Headers */,
+				80B19BFC218AA36400910016 /* Sources */,
+				80B19BFD218AA36400910016 /* Frameworks */,
+				80B19BFE218AA36400910016 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = SnapshotTesting;
-			productName = SnapshotTesting;
-			productReference = 806DF46D217ABC02006B00C2 /* SnapshotTesting.framework */;
+			name = PointFreeFramework;
+			productName = PointFreeFramework;
+			productReference = 80B19C00218AA36400910016 /* PointFreeFramework.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		806DF475217ABC02006B00C2 /* SnapshotTestingTests */ = {
+		80B19C08218AA36400910016 /* PointFreeFrameworkTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 806DF484217ABC02006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTestingTests" */;
+			buildConfigurationList = 80B19C17218AA36400910016 /* Build configuration list for PBXNativeTarget "PointFreeFrameworkTests" */;
 			buildPhases = (
-				806DF472217ABC02006B00C2 /* Sources */,
-				806DF473217ABC02006B00C2 /* Frameworks */,
-				806DF474217ABC02006B00C2 /* Resources */,
+				80B19C05218AA36400910016 /* Sources */,
+				80B19C06218AA36400910016 /* Frameworks */,
+				80B19C07218AA36400910016 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				806DF479217ABC02006B00C2 /* PBXTargetDependency */,
+				80B19C0C218AA36400910016 /* PBXTargetDependency */,
 			);
-			name = SnapshotTestingTests;
-			productName = SnapshotTestingTests;
-			productReference = 806DF476217ABC02006B00C2 /* SnapshotTestingTests.xctest */;
+			name = PointFreeFrameworkTests;
+			productName = PointFreeFrameworkTests;
+			productReference = 80B19C09218AA36400910016 /* PointFreeFrameworkTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		806DF464217ABC02006B00C2 /* Project object */ = {
+		80B19BF7218AA36400910016 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Point-Free Inc.";
 				TargetAttributes = {
-					806DF46C217ABC02006B00C2 = {
+					80B19BFF218AA36400910016 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1010;
 					};
-					806DF475217ABC02006B00C2 = {
+					80B19C08218AA36400910016 = {
 						CreatedOnToolsVersion = 10.1;
 					};
 				};
 			};
-			buildConfigurationList = 806DF467217ABC02006B00C2 /* Build configuration list for PBXProject "SnapshotTesting" */;
+			buildConfigurationList = 80B19BFA218AA36400910016 /* Build configuration list for PBXProject "PointFreeFramework" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 806DF463217ABC02006B00C2;
-			productRefGroup = 806DF46E217ABC02006B00C2 /* Products */;
+			mainGroup = 80B19BF6218AA36400910016;
+			productRefGroup = 80B19C01218AA36400910016 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 80A4A0EE21889D4A0077CCCF /* Products */;
-					ProjectRef = 80A4A0ED21889D4A0077CCCF /* Overture.xcodeproj */;
+					ProductGroup = 80B19C25218AA45800910016 /* Products */;
+					ProjectRef = 80B19C24218AA45800910016 /* Overture.xcodeproj */;
 				},
 			);
 			projectRoot = "";
 			targets = (
-				806DF46C217ABC02006B00C2 /* SnapshotTesting */,
-				806DF475217ABC02006B00C2 /* SnapshotTestingTests */,
+				80B19BFF218AA36400910016 /* PointFreeFramework */,
+				80B19C08218AA36400910016 /* PointFreeFrameworkTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		80A4A0F521889D4A0077CCCF /* Overture.framework */ = {
+		80B19C2C218AA45800910016 /* Overture.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Overture.framework;
-			remoteRef = 80A4A0F421889D4A0077CCCF /* PBXContainerItemProxy */;
+			remoteRef = 80B19C2B218AA45800910016 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		80A4A0F721889D4A0077CCCF /* OvertureTests.xctest */ = {
+		80B19C2E218AA45800910016 /* OvertureTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = file;
 			path = OvertureTests.xctest;
-			remoteRef = 80A4A0F621889D4A0077CCCF /* PBXContainerItemProxy */;
+			remoteRef = 80B19C2D218AA45800910016 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
-		806DF46B217ABC02006B00C2 /* Resources */ = {
+		80B19BFE218AA36400910016 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		806DF474217ABC02006B00C2 /* Resources */ = {
+		80B19C07218AA36400910016 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -282,39 +264,38 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		806DF469217ABC02006B00C2 /* Sources */ = {
+		80B19BFC218AA36400910016 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80B19C1D218AA43500910016 /* EpisodesViewController.swift in Sources */,
+				80B19C1F218AA43D00910016 /* Model.swift in Sources */,
+				80B19C21218AA44200910016 /* StyleGuide.swift in Sources */,
+				80B19C23218AA44700910016 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		806DF472217ABC02006B00C2 /* Sources */ = {
+		80B19C05218AA36400910016 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80A4A1022188AA040077CCCF /* Model.swift in Sources */,
-				80A4A0FB21889DB40077CCCF /* EpisodesViewController.swift in Sources */,
-				806DF48D217AC6A4006B00C2 /* UIView.swift in Sources */,
-				806DF47C217ABC02006B00C2 /* SnapshotTestingTests.swift in Sources */,
-				80A4A0FE2188A9F00077CCCF /* StyleGuide.swift in Sources */,
-				806DF48F217ACD66006B00C2 /* Helpers.swift in Sources */,
-				80A4A1002188A9F90077CCCF /* Utils.swift in Sources */,
+				80B19C0F218AA36400910016 /* PointFreeFrameworkTests.swift in Sources */,
+				80B19C1B218AA40200910016 /* Helpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		806DF479217ABC02006B00C2 /* PBXTargetDependency */ = {
+		80B19C0C218AA36400910016 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 806DF46C217ABC02006B00C2 /* SnapshotTesting */;
-			targetProxy = 806DF478217ABC02006B00C2 /* PBXContainerItemProxy */;
+			target = 80B19BFF218AA36400910016 /* PointFreeFramework */;
+			targetProxy = 80B19C0B218AA36400910016 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		806DF47F217ABC02006B00C2 /* Debug */ = {
+		80B19C12218AA36400910016 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -378,7 +359,7 @@
 			};
 			name = Debug;
 		};
-		806DF480217ABC02006B00C2 /* Release */ = {
+		80B19C13218AA36400910016 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -436,47 +417,50 @@
 			};
 			name = Release;
 		};
-		806DF482217ABC02006B00C2 /* Debug */ = {
+		80B19C15218AA36400910016 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = SnapshotTesting/Info.plist;
+				INFOPLIST_FILE = PointFreeFramework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.SnapshotTesting;
+				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.PointFreeFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		806DF483217ABC02006B00C2 /* Release */ = {
+		80B19C16218AA36400910016 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = SnapshotTesting/Info.plist;
+				INFOPLIST_FILE = PointFreeFramework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.SnapshotTesting;
+				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.PointFreeFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -484,34 +468,36 @@
 			};
 			name = Release;
 		};
-		806DF485217ABC02006B00C2 /* Debug */ = {
+		80B19C18218AA36400910016 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = SnapshotTestingTests/Info.plist;
+				INFOPLIST_FILE = PointFreeFrameworkTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.SnapshotTestingTests;
+				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.PointFreeFrameworkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		806DF486217ABC02006B00C2 /* Release */ = {
+		80B19C19218AA36400910016 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = SnapshotTestingTests/Info.plist;
+				INFOPLIST_FILE = PointFreeFrameworkTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.SnapshotTestingTests;
+				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.PointFreeFrameworkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -521,34 +507,34 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		806DF467217ABC02006B00C2 /* Build configuration list for PBXProject "SnapshotTesting" */ = {
+		80B19BFA218AA36400910016 /* Build configuration list for PBXProject "PointFreeFramework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				806DF47F217ABC02006B00C2 /* Debug */,
-				806DF480217ABC02006B00C2 /* Release */,
+				80B19C12218AA36400910016 /* Debug */,
+				80B19C13218AA36400910016 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		806DF481217ABC02006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTesting" */ = {
+		80B19C14218AA36400910016 /* Build configuration list for PBXNativeTarget "PointFreeFramework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				806DF482217ABC02006B00C2 /* Debug */,
-				806DF483217ABC02006B00C2 /* Release */,
+				80B19C15218AA36400910016 /* Debug */,
+				80B19C16218AA36400910016 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		806DF484217ABC02006B00C2 /* Build configuration list for PBXNativeTarget "SnapshotTestingTests" */ = {
+		80B19C17218AA36400910016 /* Build configuration list for PBXNativeTarget "PointFreeFrameworkTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				806DF485217ABC02006B00C2 /* Debug */,
-				806DF486217ABC02006B00C2 /* Release */,
+				80B19C18218AA36400910016 /* Debug */,
+				80B19C19218AA36400910016 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 806DF464217ABC02006B00C2 /* Project object */;
+	rootObject = 80B19BF7218AA36400910016 /* Project object */;
 }

@@ -25,8 +25,8 @@ enum Diff {
     return hunks.flatMap { [$0.patchMark] + $0.lines }.joined(separator: "\n")
   }
 
-  static func images(_ old: UIImage, _ new: UIImage) -> UIImage? {
-    if compare(old, new) { return nil }
+  static func images(_ old: UIImage, _ new: UIImage, precision: Float = 1) -> UIImage? {
+    if compare(old, new, precision: precision) { return nil }
     return diff(old, new)
   }
 }
@@ -153,7 +153,7 @@ private func chunk(diff diffs: [Difference<String>], context ctx: Int = 4) -> [H
   return changed(hunk) ? hunks + [hunk] : hunks
 }
 
-private func compare(_ old: UIImage, _ new: UIImage) -> Bool {
+private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
   guard let oldCgImage = old.cgImage else { return false }
   guard let newCgImage = new.cgImage else { return false }
   guard oldCgImage.width != 0 else { return false }
@@ -174,7 +174,17 @@ private func compare(_ old: UIImage, _ new: UIImage) -> Bool {
   var newerBytes = [UInt8](repeating: 0, count: byteCount)
   guard let newerContext = context(for: newerCgImage, data: &newerBytes) else { return false }
   guard let newerData = newerContext.data else { return false }
-  return memcmp(oldData, newerData, byteCount) == 0
+  if memcmp(oldData, newerData, byteCount) == 0 { return true }
+  if precision >= 1 { return false }
+  var differentPixelCount = 0
+  let threshold = 1 - precision
+  for x in 0..<oldCgImage.width {
+    for y in 0..<oldCgImage.height * 4 {
+      if oldBytes[x + x * y] != newerBytes[x + x * y] { differentPixelCount += 1 }
+      if Float(differentPixelCount) / Float(byteCount) > threshold { return false}
+    }
+  }
+  return true
 }
 
 private func context(for cgImage: CGImage, data: UnsafeMutableRawPointer? = nil) -> CGContext? {
