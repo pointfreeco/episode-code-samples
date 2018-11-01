@@ -11,11 +11,11 @@
 		80B19C0F218AA36400910016 /* PointFreeFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C0E218AA36400910016 /* PointFreeFrameworkTests.swift */; };
 		80B19C11218AA36400910016 /* PointFreeFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 80B19C03218AA36400910016 /* PointFreeFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		80B19C1B218AA40200910016 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C1A218AA40200910016 /* Helpers.swift */; };
-		80B19C1D218AA43500910016 /* EpisodesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C1C218AA43500910016 /* EpisodesViewController.swift */; };
-		80B19C1F218AA43D00910016 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C1E218AA43D00910016 /* Model.swift */; };
-		80B19C21218AA44200910016 /* StyleGuide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C20218AA44200910016 /* StyleGuide.swift */; };
-		80B19C23218AA44700910016 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C22218AA44700910016 /* Utils.swift */; };
 		80B19C35218AA47400910016 /* Overture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80B19C2C218AA45800910016 /* Overture.framework */; };
+		80B19C41218B3B6900910016 /* EpisodesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C3C218B3B6900910016 /* EpisodesViewController.swift */; };
+		80B19C45218B3B7800910016 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C42218B3B7800910016 /* Utils.swift */; };
+		80B19C46218B3B7800910016 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C43218B3B7800910016 /* Model.swift */; };
+		80B19C47218B3B7800910016 /* StyleGuide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B19C44218B3B7800910016 /* StyleGuide.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,11 +50,11 @@
 		80B19C0E218AA36400910016 /* PointFreeFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointFreeFrameworkTests.swift; sourceTree = "<group>"; };
 		80B19C10218AA36400910016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		80B19C1A218AA40200910016 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
-		80B19C1C218AA43500910016 /* EpisodesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EpisodesViewController.swift; path = "../../xyzw-snapshot-testing/SnapshotTesting/EpisodesViewController.swift"; sourceTree = "<group>"; };
-		80B19C1E218AA43D00910016 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Model.swift; path = "../../xyzw-snapshot-testing/SnapshotTesting/Model.swift"; sourceTree = "<group>"; };
-		80B19C20218AA44200910016 /* StyleGuide.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StyleGuide.swift; path = "../../xyzw-snapshot-testing/SnapshotTesting/StyleGuide.swift"; sourceTree = "<group>"; };
-		80B19C22218AA44700910016 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = "../../xyzw-snapshot-testing/SnapshotTesting/Utils.swift"; sourceTree = "<group>"; };
 		80B19C24218AA45800910016 /* Overture.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Overture.xcodeproj; path = "../0017-styling-pt2/Vendor/swift-overture/Overture.xcodeproj"; sourceTree = "<group>"; };
+		80B19C3C218B3B6900910016 /* EpisodesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodesViewController.swift; sourceTree = "<group>"; };
+		80B19C42218B3B7800910016 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		80B19C43218B3B7800910016 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		80B19C44218B3B7800910016 /* StyleGuide.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleGuide.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,10 +102,10 @@
 			children = (
 				80B19C03218AA36400910016 /* PointFreeFramework.h */,
 				80B19C04218AA36400910016 /* Info.plist */,
-				80B19C1C218AA43500910016 /* EpisodesViewController.swift */,
-				80B19C1E218AA43D00910016 /* Model.swift */,
-				80B19C20218AA44200910016 /* StyleGuide.swift */,
-				80B19C22218AA44700910016 /* Utils.swift */,
+				80B19C3C218B3B6900910016 /* EpisodesViewController.swift */,
+				80B19C43218B3B7800910016 /* Model.swift */,
+				80B19C44218B3B7800910016 /* StyleGuide.swift */,
+				80B19C42218B3B7800910016 /* Utils.swift */,
 			);
 			path = PointFreeFramework;
 			sourceTree = "<group>";
@@ -268,10 +268,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80B19C1D218AA43500910016 /* EpisodesViewController.swift in Sources */,
-				80B19C1F218AA43D00910016 /* Model.swift in Sources */,
-				80B19C21218AA44200910016 /* StyleGuide.swift in Sources */,
-				80B19C23218AA44700910016 /* Utils.swift in Sources */,
+				80B19C47218B3B7800910016 /* StyleGuide.swift in Sources */,
+				80B19C45218B3B7800910016 /* Utils.swift in Sources */,
+				80B19C41218B3B6900910016 /* EpisodesViewController.swift in Sources */,
+				80B19C46218B3B7800910016 /* Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
