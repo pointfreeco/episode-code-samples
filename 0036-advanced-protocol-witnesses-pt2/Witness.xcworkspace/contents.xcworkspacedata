@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:Witnesses.playground">
+   </FileRef>
+   <FileRef
+      location = "group:../0017-styling-pt2/Vendor/swift-overture/Overture.xcodeproj">
+   </FileRef>
+</Workspace>
