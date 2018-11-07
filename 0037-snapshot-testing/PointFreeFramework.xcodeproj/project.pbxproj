@@ -83,8 +83,8 @@
 				80B19C02218AA36400910016 /* PointFreeFramework */,
 				80B19C0D218AA36400910016 /* PointFreeFrameworkTests */,
 				80B19C01218AA36400910016 /* Products */,
-				80B19C24218AA45800910016 /* Overture.xcodeproj */,
 				80B19C30218AA47400910016 /* Frameworks */,
+				80B19C24218AA45800910016 /* Overture.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
