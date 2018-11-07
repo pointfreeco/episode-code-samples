@@ -133,7 +133,7 @@ final class EpisodeCell: UITableViewCell {
     ))
 
     self.contentView.addSubview(self.rootStackView)
-    self.contentView.addSubview(self.subscriberOnlyLabelWrapper)
+//    self.contentView.addSubview(self.subscriberOnlyLabelWrapper)
 
     NSLayoutConstraint.activate([
       self.rootStackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
@@ -143,8 +143,8 @@ final class EpisodeCell: UITableViewCell {
 
       self.posterImageView.widthAnchor.constraint(equalTo: self.posterImageView.heightAnchor, multiplier: 16/9),
 
-      self.subscriberOnlyLabelWrapper.topAnchor.constraint(equalTo: self.posterImageView.topAnchor, constant: .pf_grid(3)),
-      self.subscriberOnlyLabelWrapper.trailingAnchor.constraint(equalTo: self.posterImageView.trailingAnchor, constant: -.pf_grid(6)),
+//      self.subscriberOnlyLabelWrapper.topAnchor.constraint(equalTo: self.posterImageView.topAnchor, constant: .pf_grid(3)),
+//      self.subscriberOnlyLabelWrapper.trailingAnchor.constraint(equalTo: self.posterImageView.trailingAnchor, constant: -.pf_grid(6)),
       ])
   }
 
