@@ -38,3 +38,4 @@ This repository is the home of code written on episodes of
 1. [Protocol Witnesses: Part 1](0033-protocol-witnesses-pt1)
 1. [Protocol Witnesses: Part 2](0034-protocol-witnesses-pt2)
 1. [Advanced Protocol Witnesses: Part 1](0035-advanced-protocol-witnesses-pt1)
+1. [Advanced Protocol Witnesses: Part 2](0036-advanced-protocol-witnesses-pt2)
