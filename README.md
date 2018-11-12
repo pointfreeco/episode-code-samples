@@ -39,3 +39,4 @@ This repository is the home of code written on episodes of
 1. [Protocol Witnesses: Part 2](0034-protocol-witnesses-pt2)
 1. [Advanced Protocol Witnesses: Part 1](0035-advanced-protocol-witnesses-pt1)
 1. [Advanced Protocol Witnesses: Part 2](0036-advanced-protocol-witnesses-pt2)
+1. [Protocol-Oriented Library Design: Part 1](0037-protocol-oriented-library-design-pt1)
