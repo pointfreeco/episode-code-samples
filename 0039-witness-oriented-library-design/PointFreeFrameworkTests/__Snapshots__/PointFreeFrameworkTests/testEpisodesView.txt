@@ -1,0 +1,42 @@
+<UITableView; frame = (0 0; 414 896); clipsToBounds = YES; autoresize = W+H; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {414, 2025.5}; adjustedContentInset: {0, 0, 0, 0}>
+   | <PointFreeFramework.EpisodeCell; baseClass = UITableViewCell; frame = (0 731; 414 494.5); autoresize = W; layer = <CALayer>>
+   |    | <UITableViewCellContentView; frame = (0 0; 414 494); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    | <UIStackView; frame = (0 0; 414 494); layer = <CATransformLayer>>
+   |    |    |    | <UIImageView; frame = (0 0; 414 233); userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <UIStackView; frame = (0 233; 414 261); layer = <CATransformLayer>>
+   |    |    |    |    | <UILabel; frame = (24 24; 134.5 14.5); text = '#2 • Monday Feb 5, 2018'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    | <UILabel; frame = (24 50.5; 114 26.5); text = 'Side Effects'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    | <UILabel; frame = (24 89; 361 98); text = 'Side effects: can’t live ...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    | <UIButton; frame = (24 199; 123 30); opaque = NO; layer = <CALayer>>
+   |    |    |    |    |    | <UIButtonLabel; frame = (0.5 6; 122.5 18); text = 'Watch episode →'; opaque = NO; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    | <UIView; frame = (277.5 12; 112.5 22.5); clipsToBounds = YES; hidden = YES; layer = <CALayer>>
+   |    |    |    | <UILabel; frame = (8 4; 96.5 14.5); text = 'Subscriber Only'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    | <_UITableViewCellSeparatorView; frame = (15 494; 399 0.5); layer = <CALayer>>
+   | <PointFreeFramework.EpisodeCell; baseClass = UITableViewCell; frame = (0 236.5; 414 494.5); autoresize = W; layer = <CALayer>>
+   |    | <UITableViewCellContentView; frame = (0 0; 414 494); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    | <UIStackView; frame = (0 0; 414 494); layer = <CATransformLayer>>
+   |    |    |    | <UIImageView; frame = (0 0; 414 233); userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <UIStackView; frame = (0 233; 414 261); layer = <CATransformLayer>>
+   |    |    |    |    | <UILabel; frame = (24 24; 140 14.5); text = '#3 • Monday Feb 19, 2018'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    | <UILabel; frame = (24 50.5; 260.5 26.5); text = 'UIKit Styling with Functi...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    | <UILabel; frame = (24 89; 366 98); text = 'We bring tools from previ...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    | <UIButton; frame = (24 199; 123 30); opaque = NO; layer = <CALayer>>
+   |    |    |    |    |    | <UIButtonLabel; frame = (0.5 6; 122.5 18); text = 'Watch episode →'; opaque = NO; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    | <UIView; frame = (277.5 12; 112.5 22.5); clipsToBounds = YES; hidden = YES; layer = <CALayer>>
+   |    |    |    | <UILabel; frame = (8 4; 96.5 14.5); text = 'Subscriber Only'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    | <_UITableViewCellSeparatorView; frame = (15 494; 399 0.5); layer = <CALayer>>
+   | <PointFreeFramework.SubscribeCalloutCell; baseClass = UITableViewCell; frame = (0 0; 414 236.5); autoresize = W; layer = <CALayer>>
+   |    | <UITableViewCellContentView; frame = (0 0; 414 236); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    | <UIView; frame = (24 24; 366 188); layer = <CALayer>>
+   |    |    | <UIStackView; frame = (24 24; 366 188); layer = <CATransformLayer>>
+   |    |    |    | <UILabel; frame = (24 24; 205 24); text = 'Subscribe to Point-Free'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <UILabel; frame = (24 60; 318 58); text = '👋 Hey there! See anythin...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    | <_UILabelContentLayer> (layer)
+   |    |    |    | <UIStackView; frame = (24 130; 280.5 34); layer = <CATransformLayer>>
+   |    |    |    |    | <UIButton; frame = (0 0; 210 34); clipsToBounds = YES; opaque = NO; layer = <CALayer>>
+   |    |    |    |    |    | <UIImageView; frame = (0 0; 210 34); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    |    | <UIButtonLabel; frame = (16.5 8; 177.5 18); text = 'See subscription options'; opaque = NO; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    | <UILabel; frame = (218 8; 14.5 18); text = 'or'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    | <UIButton; frame = (240.5 2; 40 30); opaque = NO; layer = <CALayer>>
+   |    |    |    |    |    | <UIButtonLabel; frame = (0.5 6; 39.5 18); text = 'Login'; opaque = NO; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    | <_UITableViewCellSeparatorView; frame = (15 236; 399 0.5); layer = <CALayer>>
