@@ -7,10 +7,14 @@ struct Diffing<A> {
   let data: (A) -> Data
 }
 
+struct Parallel<A> {
+  let run: (@escaping (A) -> Void) -> Void
+}
+
 struct Snapshotting<A, Snapshot> {
   let diffing: Diffing<Snapshot>
   let pathExtension: String
-  let snapshot: (A) -> Snapshot
+  let snapshot: (A) -> Parallel<Snapshot>
 
   func pullback<A0>(_ f: @escaping (A0) -> A) -> Snapshotting<A0, Snapshot> {
     return Snapshotting<A0, Snapshot>.init(
@@ -18,6 +22,36 @@ struct Snapshotting<A, Snapshot> {
       pathExtension: self.pathExtension,
       snapshot: { a0 in self.snapshot(f(a0)) }
     )
+  }
+
+  func asyncPullback<A0>(_ f: @escaping (A0) -> Parallel<A>) -> Snapshotting<A0, Snapshot> {
+    return Snapshotting<A0, Snapshot>(
+      diffing: self.diffing,
+      pathExtension: self.pathExtension,
+      snapshot: { (a0) -> Parallel<Snapshot> in
+        return Parallel<Snapshot> { callback in
+//          callback // (Snapshot) -> Void
+//          a0 // A0
+//          f // (A0) -> Parallel<A>
+//          self.snapshot // (A) -> Parallel<Snapshot>
+          let parallelA = f(a0)
+          parallelA.run { a in
+            let parallelSnapshot = self.snapshot(a)
+            parallelSnapshot.run { snapshot in
+              callback(snapshot)
+            }
+          }
+        }
+    }
+    )
+  }
+}
+
+extension Snapshotting {
+  init(diffing: Diffing<Snapshot>, pathExtension: String, snapshot: @escaping (A) -> Snapshot) {
+    self.diffing = diffing
+    self.pathExtension = pathExtension
+    self.snapshot = { a in Parallel { callback in callback(snapshot(a)) } }
   }
 }
 
@@ -106,7 +140,15 @@ class SnapshotTestCase: XCTestCase {
     function: String = #function,
     line: UInt = #line) {
 
-    let snapshot = witness.snapshot(value)
+    let parallel = witness.snapshot(value)
+    var snapshot: Snapshot!
+    let loaded = expectation(description: "Loaded")
+    parallel.run {
+      snapshot = $0
+      loaded.fulfill()
+    }
+    wait(for: [loaded], timeout: 5)
+
     let referenceUrl = snapshotUrl(file: file, function: function)
       .appendingPathExtension(witness.pathExtension)
 
