@@ -54,17 +54,43 @@ func noise(_ x: CGFloat) -> Gen<CGFloat> {
   }
 }
 
+//func path(from min: CGFloat, to max: CGFloat, by step: CGFloat) -> (CGFloat) -> Gen<CGPath> {
+//
+//  return { y -> Gen<CGPath> in
+//    zip(mu, sigma).flatMap { mu, sigma -> Gen<CGPath> in
+//      Gen<CGPath> { rng in
+//        var w = y
+//        return stride(from: min, to: max, by: step)
+//          .map { x -> CGPoint in
+//            let yy = zip(noise(x), Gen.cgFloat(in: 0...1), Gen.cgFloat(in: 0...1))
+//              .map { 0.3 * w + 0.7 * (y - 600 * $0 + $0 * $1 * 200 * $2) }
+//              .run(using: &rng)
+//            defer { w = yy }
+//            return CGPoint(x: x, y: yy)
+//          }
+//          .reduce(into: CGMutablePath()) { path, point in
+//            point.x == xMin
+//              ? path.move(to: point)
+//              : path.addLine(to: point)
+//        }
+//      }
+//    }
+//  }
+//}
+
 func path(from min: CGFloat, to max: CGFloat, by step: CGFloat) -> (CGFloat) -> Gen<CGPath> {
 
   return { y -> Gen<CGPath> in
-    zip(mu, sigma).flatMap { mu, sigma -> Gen<CGPath> in
+    let nModes = (1...Gen.int(in: 1...4).run())
+      .map { _ in (Gen.double(in: (Double(mx) - 50)...(Double(mx) + 50)).map { CGFloat($0) }.run(), normal(mu: 24, sigma: 30).run()) }
+    return zip(mu, sigma).flatMap { mu, sigma -> Gen<CGPath> in
       Gen<CGPath> { rng in
         var w = y
         return stride(from: min, to: max, by: step)
           .map { x -> CGPoint in
-            let yy = zip(noise(x), Gen.cgFloat(in: 0...1), Gen.cgFloat(in: 0...1))
-              .map { 0.3 * w + 0.7 * (y - 600 * $0 + $0 * $1 * 200 * $2) }
-              .run(using: &rng)
+            var noise: CGFloat = 0
+            nModes.forEach { mu, sigma in noise += normalPdf(x, mu: mu, sigma: sigma) }
+            var yy = 0.3 * w + 0.7 * (y - 600 * noise + noise * CGFloat.random(in: 0...1) * 200 * CGFloat.random(in: 0...1)) + CGFloat.random(in: -0.5...0.5)
             defer { w = yy }
             return CGPoint(x: x, y: yy)
           }
