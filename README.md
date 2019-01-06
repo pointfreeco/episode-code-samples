@@ -43,3 +43,5 @@ This repository is the home of code written on episodes of
 1. [Protocol-Oriented Library Design: Part 2](0038-protocol-oriented-library-design-pt2)
 1. [Witness-Oriented Library Design](0039-witness-oriented-library-design)
 1. [Async Functional Refactoring](0040-async-functional-refactoring)
+1. A Tour of Snapshot Testing
+1. [The Many Faces of Flat-Map: Part 1](0042-the-many-faces-of-flatmap-pt1)
