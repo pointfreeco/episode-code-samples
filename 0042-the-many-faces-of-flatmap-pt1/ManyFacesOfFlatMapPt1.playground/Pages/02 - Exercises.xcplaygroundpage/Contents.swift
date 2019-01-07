@@ -38,7 +38,7 @@
  6.) Define a `flatMap` method on the `Func<A, B>` type. Its signature looks like:
 
  ```
- (Func<A, B>, (B) -> C) -> Func<A, C>
+ (Func<A, B>, (B) -> Func<A, C>) -> Func<A, C>
  ```
 
  It only changes the `B` generic while leaving the `A` fixed.
@@ -52,7 +52,7 @@
  8.) Define a `flatMap` method on the `Parallel<A>` type. Its signature looks like:
 
  ```
- (Parallel<A>, (A) -> B) -> Parallel<B>
+ (Parallel<A>, (A) -> Parallel<B>) -> Parallel<B>
  ```
  */
 // TODO
