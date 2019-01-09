@@ -192,6 +192,12 @@ import Foundation
 //     + Error
 //     + 1
 
+// NB: It was brought to our attention by one of our viewers, [Ole Begemann](https://twitter.com/olebegemann),
+//     that it is in fact possible for `URLResponse` and `Error` to be non-`nil` at the same time.
+//     He wrote a great [blog post](https://oleb.net/blog/2018/03/making-illegal-states-unrepresentable/) about this,
+//     and we discuss this correction at the beginning of our follow up episode,
+//     [Algebraic Data Types: Exponents](https://www.pointfree.co/episodes/ep9-algebraic-data-types-exponents).
+
 // Data * URLResponse + Error
 
 //Either<Pair<Data, URLResponse>, Error>
