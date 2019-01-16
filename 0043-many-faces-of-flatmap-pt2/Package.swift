@@ -4,12 +4,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "ManyFacesOfFlatMapPt1",
+    name: "ManyFacesOfFlatMapPt2",
     products: [
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
-            name: "ManyFacesOfFlatMapPt1",
-            targets: ["ManyFacesOfFlatMapPt1"]),
+            name: "ManyFacesOfFlatMapPt2",
+            targets: ["ManyFacesOfFlatMapPt2"]),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-nonempty.git", from: "0.1.2")
@@ -18,7 +18,7 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
-            name: "ManyFacesOfFlatMapPt1",
+            name: "ManyFacesOfFlatMapPt2",
             dependencies: ["NonEmpty"])
     ]
 )

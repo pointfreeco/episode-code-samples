@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:ManyFacesOfFlatMapPt1.xcodeproj">
+      location = "container:/Users/brandon/projects/episode-code-samples/0043-many-faces-of-flatmap-pt2/ManyFacesOfFlatMapPt2.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:ManyFacesOfFlatMapPt1.playground">
+      location = "group:/Users/brandon/projects/episode-code-samples/0043-many-faces-of-flatmap-pt2/ManyFacesOfFlatMapPt2.playground">
    </FileRef>
 </Workspace>
