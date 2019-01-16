@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "container:/Users/brandon/projects/episode-code-samples/0043-many-faces-of-flatmap-pt2/ManyFacesOfFlatMapPt2.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/brandon/projects/episode-code-samples/0043-many-faces-of-flatmap-pt2/ManyFacesOfFlatMapPt2.playground">
+   </FileRef>
+</Workspace>
