@@ -45,3 +45,4 @@ This repository is the home of code written on episodes of
 1. [Async Functional Refactoring](0040-async-functional-refactoring)
 1. A Tour of Snapshot Testing
 1. [The Many Faces of Flat-Map: Part 1](0042-the-many-faces-of-flatmap-pt1)
+1. [The Many Faces of Flat-Map: Part 2](0042-the-many-faces-of-flatmap-pt2)
