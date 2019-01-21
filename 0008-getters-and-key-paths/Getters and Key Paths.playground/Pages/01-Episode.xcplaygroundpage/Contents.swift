@@ -181,4 +181,12 @@ users.sorted(by: their(^\.email, >))
 
 users.max(by: their(^\.email.count))?.email
 users.min(by: their(^\.email.count))?.email
+
+/*:
+[Greg Titus](https://twitter.com/gregtitus) and Point-Free’s own [Stephen Celis](https://twitter.com/stephencelis)
+have since [pitched a Swift Evolution proposal](https://forums.swift.org/t/key-path-expressions-as-functions/19587)
+and [an implementation](https://github.com/apple/swift/pull/19448) to allow `\Root.value` key path expressions
+to be used wherever `(Root) -> Value` functions are applicable.
+*/
+
 //: [See the next page](@next) for exercises!
