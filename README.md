@@ -46,3 +46,4 @@ This repository is the home of code written on episodes of
 1. A Tour of Snapshot Testing
 1. [The Many Faces of Flat-Map: Part 1](0042-the-many-faces-of-flatmap-pt1)
 1. [The Many Faces of Flat-Map: Part 2](0043-the-many-faces-of-flatmap-pt2)
+1. [The Many Faces of Flat-Map: Part 3](0044-the-many-faces-of-flatmap-pt3)

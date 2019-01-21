@@ -119,15 +119,15 @@ struct User: Codable {
   let name: String
 }
 
-//let user: User?
-//if let path = Bundle.main.path(forResource: "user", ofType:  "json"),
-//  case let url = URL.init(fileURLWithPath: path),
-//  let data = try? Data.init(contentsOf: url) {
-//
-//  user = try? JSONDecoder().decode(User.self, from: data)
-//} else {
-//  user = nil
-//}
+let user: User?
+if let path = Bundle.main.path(forResource: "user", ofType:  "json"),
+  case let url = URL.init(fileURLWithPath: path),
+  let data = try? Data.init(contentsOf: url) {
+
+  user = try? JSONDecoder().decode(User.self, from: data)
+} else {
+  user = nil
+}
 
 let newUser = Bundle.main.path(forResource: "user", ofType: "json")
   .map(URL.init(fileURLWithPath:))
@@ -148,7 +148,7 @@ let invoices = Bundle.main.path(forResource: "invoices", ofType: "json")
   .flatMap { try? JSONDecoder().decode([Invoice].self, from: $0) }
 
 if let newUser = newUser, let invoices = invoices {
-  //
+
 }
 
 func zip<A, B>(_ a: A?, _ b: B?) -> (A, B)? {
@@ -183,7 +183,6 @@ do {
 
 }
 
-
 extension Result where E == Swift.Error {
   init(catching f: () throws -> A) {
     do {
@@ -204,8 +203,6 @@ extension Validated where E == Swift.Error {
   }
 }
 
-
-
 func zip<A, B, E>(_ a: Result<A, E>, _ b: Result<B, E>) -> Result<(A, B), E> {
   switch (a, b) {
   case let (.success(a), .success(b)):
@@ -217,11 +214,9 @@ func zip<A, B, E>(_ a: Result<A, E>, _ b: Result<B, E>) -> Result<(A, B), E> {
   }
 }
 
-
 func zip<A, B, C, E>(with f: @escaping (A, B) -> C) -> (Result<A, E>, Result<B, E>) -> Result<C, E> {
   return { zip($0, $1).map(f) }
 }
-
 
 func zip<A, B, E>(_ a: Validated<A, E>, _ b: Validated<B, E>) -> Validated<(A, B), E> {
   switch (a, b) {
@@ -354,329 +349,23 @@ zip(with: UserEnvelope.init)(
     .flatMap { url in Parallel(try! Data.init(contentsOf: url)) }
     .flatMap { data in Parallel(try! JSONDecoder().decode([Invoice].self, from: data)) }
   ).run { env in
-//    print(env)
+    print(env)
 }
 
-//
-//do {
-//  let user = try JSONDecoder().decode(
-//    User.self,
-//    from: Data.init(
-//      contentsOf: URL.init(
-//        fileURLWithPath: requireSome(
-//          Bundle.main.path(
-//            forResource: "user",
-//            ofType:  "json"
-//          )
-//        )
-//      )
-//    )
-//  )
-//} catch {
-//
-//}
-
-
-//extension Sequence {
-//  public func flatMap<ElementOfResult>(_ transform: (Element) throws -> ElementOfResult?) rethrows -> [ElementOfResult]
-//}
-
-// flatMap: ((A) -> B?) -> ((F<A>) -> F<B>)
-
-
-//func fromThrowing<A, B>(_ f: @escaping (A) throws -> B) -> (A) -> Result<B, Swift.Error> {
-//  return { a in
-//    do {
-//      return .success(try f(a))
-//    } catch let error {
-//      return .failure(error)
-//    }
-//  }
-//}
-//
-//func toThrowing<A, B>(_ f: @escaping (A) -> Result<B, Swift.Error>) -> ((A) throws -> B) {
-//  return { a in
-//    switch f(a) {
-//    case let .success(value):
-//      return value
-//    case let .failure(error):
-//      throw error
-//    }
-//  }
-//}
-//
-//extension Result {
-//  func map<B>(_ f: @escaping (A) -> Result<B, Swift.Error>) -> Result<B, Swift.Error> {
-//    fatalError()
-//  }
-//
-//  func flatMap<B>(_ f: @escaping (A) -> Result<Result<B, E>, Swift.Error>) -> Result<B, Swift.Error> {
-//    fatalError()
-//  }
-//}
-
-//extension Func /* <A, B> */ {
-//  func flatMap<C>(_ f: @escaping (A) -> Func<C, B>) -> Func<C, B> {
-//
-//  }
-//}
-
-import XCTest
-struct Diffing<Value> {
-  let toData: (Value) -> Data
-  let fromData: (Data) -> Value
-  let diff: (Value, Value) -> (String, [XCTAttachment])?
-
-  func flatMap<NewValue>(_ f: @escaping (Value) -> Diffing<NewValue>) -> Diffing<NewValue> {
-    fatalError("Not possible to implement.")
-  }
-}
-
-struct Snapshotting<Value, Format> {
-  var pathExtension: String?
-  let diffing: Diffing<Format>
-  let snapshot: (Value) -> Format
-
-  func flatMap<NewValue>(_ f: @escaping (Value) -> Snapshotting<NewValue, Format>) -> Snapshotting<NewValue, Format> {
-    fatalError("Not possible to implement.")
-  }
-
-  func flatMap<NewFormat>(_ f: @escaping (Format) -> Snapshotting<Value, NewFormat>) -> Snapshotting<Value, NewFormat> {
-    fatalError("Not possible to implement.")
-  }
-}
-
-
-extension Parallel {
-  func then<B>(_ f: @escaping (A) -> Parallel<B>) -> Parallel<B> {
-    return self.flatMap(f)
-  }
-}
-
-extension Parallel {
-  func then<B>(_ f: @escaping (A) -> B) -> Parallel<B> {
-    return self.map(f)
-  }
-}
-
-Parallel(Bundle.main.path(forResource: "user", ofType:  "json")!)
-  .then(URL.init(fileURLWithPath:))
-  .then { url in Parallel(try! Data.init(contentsOf: url)) }
-  .then { data in Parallel(try! JSONDecoder().decode(User.self, from: data)) }
-
-Parallel(Bundle.main.path(forResource: "user", ofType:  "json")!)
-  .map(URL.init(fileURLWithPath:))
-  .flatMap { url in Parallel(try! Data.init(contentsOf: url)) }
-  .flatMap { data in Parallel(try! JSONDecoder().decode(User.self, from: data)) }
-
-
-
-
-func pipe<A, B, C>(
-  _ lhs: @escaping (A) -> B,
-  _ rhs: @escaping (B) -> C
-  ) -> (A) -> C {
-  return lhs >>> rhs
-}
-
-pipe({ $0 + 1 }, { $0 * $0 })
-pipe({ $0 + 1 }, String.init)
-
-let f = { $0 + 1 }
-  >>> { $0 * $0 }
-  >>> { $0 + 1 }
-
-
-//_ = { try? Data.init(contentsOf: $0) }
-//  >>> { try? JSONDecoder().decode(User.self, from: $0) }
-
-func chain<A, B, C>(
-  _ lhs: @escaping (A) -> B?,
-  _ rhs: @escaping (B) -> C?
-  ) -> (A) -> C? {
-  return { a in
-    lhs(a).flatMap(rhs)
-  }
-}
-
-func >=> <A, B, C>(
-  _ lhs: @escaping (A) -> B?,
-  _ rhs: @escaping (B) -> C?
-  ) -> (A) -> C? {
-  return { a in
-    lhs(a).flatMap(rhs)
-  }
-}
-
-
-pipe(
-  URL.init(fileURLWithPath:),
-  chain(
-    { try? Data.init(contentsOf: $0) },
-    { try? JSONDecoder().decode(User.self, from: $0) }
+do {
+  let user = try JSONDecoder().decode(
+    User.self,
+    from: Data.init(
+      contentsOf: URL.init(
+        fileURLWithPath: requireSome(
+          Bundle.main.path(
+            forResource: "user",
+            ofType:  "json"
+          )
+        )
+      )
+    )
   )
-)
+} catch {
 
-let loadUser = URL.init(fileURLWithPath:)
-  >>> { try? Data.init(contentsOf: $0) }
-  >=> { try? JSONDecoder().decode(User.self, from: $0) }
-
-Bundle.main.path(forResource: "user", ofType: "json")
-  .map(URL.init(fileURLWithPath:))
-  .flatMap { try? Data.init(contentsOf: $0) }
-  .flatMap { try? JSONDecoder().decode(User.self, from: $0) }
-
-Bundle.main.path(forResource: "user", ofType: "json")
-  .flatMap(loadUser)
-
-
-// Parallel<Result<A, E>>
-
-func map<A, B, E>(
-  _ f: @escaping (A) -> B
-  ) -> (Parallel<Result<A, E>>) -> Parallel<Result<B, E>> {
-
-  return { parallelResultA in
-    parallelResultA.map { resultA in
-      resultA.map { a in
-        f(a)
-      }
-    }
-  }
 }
-
-func zip<A, B, E>(
-  _ lhs: Parallel<Result<A, E>>,
-  _ rhs: Parallel<Result<B, E>>
-  ) -> Parallel<Result<(A, B), E>> {
-
-  return zip(with: zip)(lhs, rhs)
-
-//  return zip(lhs, rhs).map { resultA, resultB in
-//    zip(resultA, resultB)
-//  }
-}
-
-func flatMap<A, B, E>(
-  _ f: @escaping (A) -> Parallel<Result<B, E>>
-  ) -> (Parallel<Result<A, E>>) -> Parallel<Result<B, E>> {
-
-  return { parallelResultA in
-    parallelResultA.flatMap { resultA in
-      Parallel<Result<B, E>> { callback in
-        switch resultA {
-        case let .success(a):
-          f(a).run { resultB in callback(resultB) }
-        case let .failure(error):
-          callback(.failure(error))
-        }
-      }
-    }
-  }
-}
-
-
-extension Optional {
-  func newMap<NewWrapped>(_ f: (Wrapped) -> NewWrapped) -> NewWrapped? {
-    return self.flatMap { Optional<NewWrapped>.some(f($0)) }
-  }
-}
-
-extension Array {
-  func newMap<NewElement>(_ f: (Element) -> NewElement) -> [NewElement] {
-    return self.flatMap { [f($0)] }
-  }
-}
-
-extension Result {
-  func newMap<B>(_ f: (A) -> B) -> Result<B, E> {
-    return self.flatMap { .success(f($0)) }
-  }
-}
-
-extension Validated {
-  func newMap<B>(_ f: (A) -> B) -> Validated<B, E> {
-    return self.flatMap { .valid(f($0)) }
-  }
-}
-
-extension Func {
-  func newMap<C>(_ f: @escaping (B) -> C) -> Func<A, C> {
-    return self.flatMap { b in Func<A, C> { _ in f(b) } }
-  }
-}
-
-extension Parallel {
-  func newMap<B>(_ f: @escaping (A) -> B) -> Parallel<B> {
-    return self.flatMap { a in Parallel<B> { callback in callback(f(a)) } }
-  }
-}
-
-func newZip<A, B>(_ a: A?, _ b: B?) -> (A, B)? {
-  return a.flatMap { a in
-    b.flatMap { b in
-      Optional.some((a, b))
-    }
-  }
-}
-
-func newZip<A, B>(_ a: [A], _ b: [B]) -> [(A, B)] {
-  return a.flatMap { a in
-    b.flatMap { b in
-      [(a, b)]
-    }
-  }
-}
-
-newZip(["a", "b"], [1, 2])
-
-func newZip<A, B, E>(_ a: Result<A, E>, _ b: Result<B, E>) -> Result<(A, B), E> {
-  return a.flatMap { a in
-    b.flatMap { b in
-      Result.success((a, b))
-    }
-  }
-}
-
-func newZip<A, B, E>(_ a: Validated<A, E>, _ b: Validated<B, E>) -> Validated<(A, B), E> {
-  return a.flatMap { a in
-    b.flatMap { b in
-      Validated.valid((a, b))
-    }
-  }
-}
-
-newZip(Validated<Int, String>.valid(1), .valid("Two"))
-
-
-newZip(Validated<Int, String>.invalid(NonEmptyArray("Something went wrong.")), .valid(2))
-
-newZip(
-  Validated<Int, String>.invalid(NonEmptyArray("Something went wrong.")),
-  Validated<Int, String>.invalid(NonEmptyArray("Something else went wrong."))
-)
-
-func newZip<A, B, C>(_ a: Func<A, B>, _ b: Func<A, C>) -> Func<A, (B, C)> {
-  return a.flatMap { a in
-    b.flatMap { b in
-      Func { _ in (a, b) }
-    }
-  }
-}
-
-func newZip<A, B>(_ a: Parallel<A>, _ b: Parallel<B>) -> Parallel<(A, B)> {
-  return a.flatMap { a in
-    b.flatMap { b in
-      Parallel { callback in callback((a, b)) }
-    }
-  }
-}
-
-newZip(delay(by: 2).map { 2 }, delay(by: 3).map { 3 }).run {
-  print($0)
-}
-
-
-
-
-
