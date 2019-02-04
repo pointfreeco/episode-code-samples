@@ -1,0 +1,14 @@
+[
+  {
+    "amountPaid": 1000,
+    "amountDue": 0,
+    "closed": true,
+    "id": 1
+  },
+  {
+    "amountPaid": 500,
+    "amountDue": 500,
+    "closed": false,
+    "id": 2
+  }
+]
