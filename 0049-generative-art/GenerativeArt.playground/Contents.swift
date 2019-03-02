@@ -131,10 +131,10 @@ func bump(
     let curveSize = curveSize / 2
     let size = plateauSize + curveSize
     let x = x - center
-    return amplitude * (1 - g((abs(x) - plateauSize * plateauSize) / (size * size - plateauSize * plateauSize)))
+    return amplitude * (1 - g((x * x - plateauSize * plateauSize) / (size * size - plateauSize * plateauSize)))
   }
 }
-
+ 
 let curve = zip4(with: bump(amplitude:center:plateauSize:curveSize:))(
   Gen<CGFloat>.float(in: -20...(-1)),
   Gen<CGFloat>.float(in: -60...60)
