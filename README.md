@@ -51,3 +51,4 @@ This repository is the home of code written on episodes of
 1. [The Many Faces of Flat-Map: Part 5](0046-the-many-faces-of-flatmap-pt5)
 1. [Predictable Randomness: Part 1](0047-predictable-randomness-pt1)
 1. [Predictable Randomness: Part 2](0048-predictable-randomness-pt2)
+1. [Generative Art: Part 1](0049-generative-art-pt1)
