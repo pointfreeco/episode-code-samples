@@ -1,6 +1,6 @@
 import UIKit
 
-var lcrng = LCRNG(seed: 1)
+var rng = SystemRandomNumberGenerator()
 
 class ViewController: UIViewController {
 
@@ -97,17 +97,13 @@ class ViewController: UIViewController {
   }
 
   func setImage() {
-    DispatchQueue.global(qos: .userInteractive).async {
-      let newImage = image(
-        amplitude: CGFloat(self.amplitude),
-        center: CGFloat(self.center),
-        plateauSize: CGFloat(self.plateauSize),
-        curveSize: CGFloat(self.curveSize)
-        ).run(using: &lcrng)
-      DispatchQueue.main.async {
-        self.imageView.image = newImage
-      }
-    }
+    let newImage = image(
+      amplitude: CGFloat(self.amplitude),
+      center: CGFloat(self.center),
+      plateauSize: CGFloat(self.plateauSize),
+      curveSize: CGFloat(self.curveSize)
+      ).run(using: &rng)
+    self.imageView.image = newImage
   }
 }
 
