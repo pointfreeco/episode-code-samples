@@ -120,6 +120,22 @@ func h(_ x: CGFloat) -> CGFloat {
   return g(x * x)
 }
 
+func noisyBump(
+  amplitude: CGFloat,
+  center: CGFloat,
+  plateauSize: CGFloat,
+  curveSize: CGFloat
+  ) -> (CGFloat) -> Gen<CGFloat> {
+
+  let curve = bump(amplitude: amplitude, center: center, plateauSize: plateauSize, curveSize: curveSize)
+
+  return { x in
+    let y = curve(x)
+    return Gen<CGFloat>.float(in: 0...3)
+      .map { -$0 * (y / amplitude + 0.5) + y }
+  }
+}
+
 func bump(
   amplitude: CGFloat,
   center: CGFloat,
@@ -135,8 +151,8 @@ func bump(
   }
 }
  
-let curve = zip4(with: bump(amplitude:center:plateauSize:curveSize:))(
-  Gen<CGFloat>.float(in: -20...(-1)),
+let curve = zip4(with: noisyBump(amplitude:center:plateauSize:curveSize:))(
+  Gen<CGFloat>.float(in: -30...(-1)),
   Gen<CGFloat>.float(in: -60...60)
     .map { $0 + canvas.width / 2 },
   Gen<CGFloat>.float(in: 0...60),
@@ -147,14 +163,18 @@ func path(from min: CGFloat, to max: CGFloat, baseline: CGFloat) -> Gen<CGPath> 
   let dx = mainArea.width / CGFloat(numSegments)
   return Gen<CGPath> { rng in
 
-    let bump = curve.run(using: &rng)
+//    let bump = curve.run(using: &rng)
+    let bumps = curve.array(of: .int(in: 1...4))
+      .run(using: &rng)
 
     let path = CGMutablePath()
     path.move(to: CGPoint(x: min, y: baseline))
     stride(from: min, to: max, by: dx)
       .forEach { x in
-        let y = bump(x)
-        path.addLine(to: CGPoint(x: x, y: baseline + y))
+//        let y = bump(x).run(using: &rng)
+        let ys = bumps.map { $0(x).run(using: &rng) }
+        let average = ys.reduce(0, +) / CGFloat(ys.count)
+        path.addLine(to: CGPoint(x: x, y: baseline + average))
     }
     return path
   }

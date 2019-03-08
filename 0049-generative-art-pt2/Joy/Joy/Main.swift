@@ -138,21 +138,18 @@ func bump(
   }
 }
 
-func noiseyBump(
+func noisyBump(
   amplitude: CGFloat,
   center: CGFloat,
   plateauSize: CGFloat,
   curveSize: CGFloat
   ) -> (CGFloat) -> Gen<CGFloat> {
 
-  let noise = Gen<CGFloat>.float(in: 1...3)
   let curve = bump(amplitude: amplitude, center: center, plateauSize: plateauSize, curveSize: curveSize)
 
   return { x in
-    return Gen { rng in
-      let y = curve(x)
-      return noise.run(using: &rng) * (y / amplitude + 0.5) + curve(x)
-    }
+    let y = curve(x)
+    return Gen<CGFloat>.float(in: 0...1.5).map { $0 * (y / amplitude + 0.5) + y }
   }
 }
 
@@ -170,20 +167,24 @@ func path(
     let offset = (center - 0.5) * 100
 
     let curve = zip4(
-      with: noiseyBump(amplitude:center:plateauSize:curveSize:)
+      with: noisyBump(amplitude:center:plateauSize:curveSize:)
     )(
-      Gen<CGFloat>.float(in: 1...(1 + 20 * amplitude)).map { -$0 },
+      Gen<CGFloat>.float(in: 1...(1 + 30 * amplitude)).map { -$0 },
       Gen<CGFloat>.float(in: (-30 + offset)...(30 + offset)).map { $0 + canvas.width / 2 },
       Gen<CGFloat>.float(in: 0...(60 * plateauSize)),
       Gen<CGFloat>.float(in: (10 * curveSize)...(60 * curveSize))
       )
+//      .run(using: &rng)
+
+    let bumps = curve.array(of: .int(in: 1...4))
       .run(using: &rng)
 
     let path = CGMutablePath()
     path.move(to: CGPoint(x: min, y: baseline))
     stride(from: min, to: max, by: dx).forEach { x in
-      let y = curve(x).run(using: &rng)
-      path.addLine(to: CGPoint(x: x, y: baseline + y))
+      let ys = bumps.map { $0(x).run(using: &rng) }
+      let average = ys.reduce(0, +) / CGFloat(ys.count)
+      path.addLine(to: CGPoint(x: x, y: baseline + average))
     }
     path.addLine(to: CGPoint.init(x: max, y: baseline))
     return path
@@ -214,7 +215,8 @@ func image(
   amplitude: CGFloat,
   center: CGFloat,
   plateauSize: CGFloat,
-  curveSize: CGFloat
+  curveSize: CGFloat,
+  isPointFreeAnniversary: Bool
   ) -> Gen<UIImage> {
   return paths(
     amplitude: amplitude,
@@ -231,10 +233,22 @@ func image(
         ctx.setLineWidth(1.2)
         ctx.setStrokeColor(UIColor.white.cgColor)
 
-        paths.forEach {
-          ctx.addPath($0)
+        paths.enumerated().forEach { idx, path in
+          if isPointFreeAnniversary {
+            ctx.setStrokeColor(
+              pointFreeColors[pointFreeColors.count * idx / paths.count].cgColor
+            )
+          }
+          ctx.addPath(path)
           ctx.drawPath(using: .fillStroke)
         }
       }
   }
 }
+
+let pointFreeColors = [
+  UIColor(red: 0.47, green: 0.95, blue: 0.69, alpha: 1),
+  UIColor(red: 1, green: 0.94, blue: 0.5, alpha: 1),
+  UIColor(red: 0.3, green: 0.80, blue: 1, alpha: 1),
+  UIColor(red: 0.59, green: 0.30, blue: 1, alpha: 1)
+]

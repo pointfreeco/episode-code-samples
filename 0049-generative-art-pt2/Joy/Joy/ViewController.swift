@@ -1,7 +1,5 @@
 import UIKit
 
-var rng = SystemRandomNumberGenerator()
-
 class ViewController: UIViewController {
 
   let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 600, height: 600))
@@ -97,13 +95,29 @@ class ViewController: UIViewController {
   }
 
   func setImage() {
+//    Current.date = { Date.init(timeIntervalSince1970: 1517202000) }
+//    var rng = SystemRandomNumberGenerator()
     let newImage = image(
       amplitude: CGFloat(self.amplitude),
       center: CGFloat(self.center),
       plateauSize: CGFloat(self.plateauSize),
-      curveSize: CGFloat(self.curveSize)
-      ).run(using: &rng)
+      curveSize: CGFloat(self.curveSize),
+      isPointFreeAnniversary: Current.date().isPointFreeAnniversary
+      ).run(using: &Current.rng)
     self.imageView.image = newImage
   }
 }
 
+struct Environment {
+  var calendar = Calendar.current
+  var date = { Date() }
+  var rng = AnyRandomNumberGenerator(rng: SystemRandomNumberGenerator())
+}
+var Current = Environment()
+
+extension Date {
+  var isPointFreeAnniversary: Bool {
+    let components = Current.calendar.dateComponents([.day, .month], from: self)
+    return components.day == 29 && components.month == 1
+  }
+}
