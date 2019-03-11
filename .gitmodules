@@ -23,5 +23,5 @@
 	path = 0032-arbitrary-pt2/Vendor/Tagged
 	url = https://github.com/pointfreeco/swift-tagged.git
 [submodule "0049-generative-art-pt2/Joy/Vendor/swift-snapshot-testing"]
-	path = 0049-generative-art-pt2/Joy/Vendor/swift-snapshot-testing
+	path = 0050-generative-art-pt2/Joy/Vendor/swift-snapshot-testing
 	url = https://github.com/pointfreeco/swift-snapshot-testing.git
