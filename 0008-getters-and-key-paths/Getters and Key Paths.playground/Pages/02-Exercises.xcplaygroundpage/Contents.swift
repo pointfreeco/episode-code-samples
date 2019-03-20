@@ -46,6 +46,6 @@
  */
 // TODO
 /*:
- 8. Given a value in `EnumKeyPath<A, C>` and a value in `EnumKeyPath<B, C>`, can you construct a value in `EnumKeyPath<A, Either<B, C>>`?
+ 8. Given a value in `EnumKeyPath<A, B>` and a value in `EnumKeyPath<A, C>`, can you construct a value in `EnumKeyPath<A, Either<B, C>>`?
  */
 // TODO
