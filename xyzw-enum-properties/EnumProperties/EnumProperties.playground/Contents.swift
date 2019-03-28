@@ -1,7 +1,9 @@
 import SwiftSyntax
 import Foundation
 
-let tree = try SyntaxTreeParser.parse(Bundle.main.url(forResource: "Validated", withExtension: "swift")!)
+let tree = try SyntaxTreeParser.parse(
+  Bundle.main.url(forResource: "Enums", withExtension: "swift")!
+)
 
 // extension Validated {
 //   var valid: Valid? {
@@ -16,19 +18,141 @@ let tree = try SyntaxTreeParser.parse(Bundle.main.url(forResource: "Validated", 
 
 class Visitor: SyntaxVisitor {
   override func visit(_ node: EnumDeclSyntax) {
-    print("extension \(node.identifier) {")
+    print("extension \(node.identifier.withoutTrivia()) {")
     super.visit(node)
     print("}")
   }
 
   override func visit(_ node: EnumCaseDeclSyntax) {
     node.elements.forEach {
-      print("  var \($0.identifier): \($0.associatedValue!.parameterList[0])? {")
-      print("    guard case let .\($0.identifier)(value) = self else { return nil }")
-      print("    return value")
+
+      let propertyType: String
+      let pattern: String
+      let returnValue: String
+      if let associatedValue = $0.associatedValue {
+        propertyType = associatedValue.parameterList.count == 1
+          ? "\(associatedValue.parameterList[0].type!)"
+          : "\(associatedValue)"
+        pattern = "let .\($0.identifier)(value)"
+        returnValue = "value"
+      } else {
+        propertyType = "Void"
+        pattern = ".\($0.identifier)"
+        returnValue = "()"
+      }
+      print("  var \($0.identifier): \(propertyType)? {")
+      print("    guard case \(pattern) = self else { return nil }")
+      print("    return \(returnValue)")
+      print("  }")
+      let identifier = "\($0.identifier)"
+      let capitalizedIdentifier = "\(identifier.first!.uppercased())\(identifier.dropFirst())"
+      print("  var is\(capitalizedIdentifier): Bool {")
+      print("    return self.\($0.identifier) != nil")
       print("  }")
     }
   }
 }
 
-Visitor().visit(tree)
+let visitor = Visitor()
+visitor.visit(tree)
+
+enum Validated<Valid, Invalid> {
+  case valid(Valid)
+  case invalid([Invalid])
+}
+
+enum Node {
+  case element(tag: String, attributes: [String: String], children: [Node])
+  case text(content: String)
+}
+
+enum Loading<A> {
+  case loading
+  case loaded(A)
+  case cancelled
+}
+
+extension Validated {
+  var valid: Valid? {
+    guard case let .valid(value) = self else { return nil }
+    return value
+  }
+  var isValid: Bool {
+    return self.valid != nil
+  }
+  var invalid: [Invalid]? {
+    guard case let .invalid(value) = self else { return nil }
+    return value
+  }
+  var isInvalid: Bool {
+    return self.invalid != nil
+  }
+}
+extension Node {
+  var element: (tag: String, attributes: [String: String], children: [Node])? {
+    guard case let .element(value) = self else { return nil }
+    return value
+  }
+  var isElement: Bool {
+    return self.element != nil
+  }
+  var text: String? {
+    guard case let .text(value) = self else { return nil }
+    return value
+  }
+  var isText: Bool {
+    return self.text != nil
+  }
+}
+extension Loading {
+  var loading: Void? {
+    guard case .loading = self else { return nil }
+    return ()
+  }
+  var isLoading: Bool {
+    return self.loading != nil
+  }
+  var loaded: A? {
+    guard case let .loaded(value) = self else { return nil }
+    return value
+  }
+  var isLoaded: Bool {
+    return self.loaded != nil
+  }
+  var cancelled: Void? {
+    guard case .cancelled = self else { return nil }
+    return ()
+  }
+  var isCancelled: Bool {
+    return self.cancelled != nil
+  }
+}
+
+let link = Node.element(tag: "a", attributes: ["href": "/"], children: [.text(content: "There's no place like home")])
+
+link.element?.tag
+
+link.element?.children
+  .compactMap { $0.text }
+
+link.text
+
+let status = Loading<String>.loading
+//status == .loading
+status.loading != nil
+status.isLoading
+
+let requests: [Loading<String>] = [
+  .cancelled,
+  .loaded("Blob's Travel Blog"),
+  .loading,
+  .loading,
+  .loaded("Blob's Food Blog"),
+  .loading,
+]
+
+requests.compactMap { $0.loaded }
+
+requests.filter { $0.isLoading }.count
+
+requests.filter { $0.isCancelled }.count
