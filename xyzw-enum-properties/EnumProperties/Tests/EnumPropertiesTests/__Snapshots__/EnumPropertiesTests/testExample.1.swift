@@ -13,6 +13,7 @@ extension Validated {
   var isInvalid: Bool {
     return self.invalid != nil
   }
+}
 extension Node {
   var element: (tag: String, attributes: [String: String], children: [Node])? {
     guard case let .element(value) = self else { return nil }
@@ -28,6 +29,7 @@ extension Node {
   var isText: Bool {
     return self.text != nil
   }
+}
 extension Loading {
   var loading: Void? {
     guard case .loading = self else { return nil }
@@ -50,3 +52,4 @@ extension Loading {
   var isCancelled: Bool {
     return self.cancelled != nil
   }
+}

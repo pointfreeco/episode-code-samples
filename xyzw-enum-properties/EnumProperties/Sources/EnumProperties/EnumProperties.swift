@@ -5,7 +5,7 @@ public class Visitor: SyntaxVisitor {
 
   override public func visitPost(_ node: Syntax) {
     if node is EnumDeclSyntax {
-//      print("}", to: &self.output)
+      print("}", to: &self.output)
     }
   }
 
