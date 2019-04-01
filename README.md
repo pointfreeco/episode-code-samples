@@ -54,3 +54,4 @@ This repository is the home of code written on episodes of
 1. [Generative Art: Part 1](0049-generative-art-pt1)
 1. [Generative Art: Part 2](0050-generative-art-pt2)
 1. [Structs 🤝 Enums](0051-structs-🤝-enums)
+1. [Enum Properties](0052-enum-properties)
