@@ -55,3 +55,5 @@ This repository is the home of code written on episodes of
 1. [Generative Art: Part 2](0050-generative-art-pt2)
 1. [Structs 🤝 Enums](0051-structs-🤝-enums)
 1. [Enum Properties](0052-enum-properties)
+1. [Swift Syntax Enum Properties](0053-swift-syntax-enum-properties)
+1. [Advanced Swift Syntax Enum Properties](0054-advanced-swift-syntax-enum-properties)
