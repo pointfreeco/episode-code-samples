@@ -2,6 +2,25 @@ import Foundation
 import PlaygroundSupport
 
 
+struct _Parser<A> {
+  let run: (String) -> (match: A?, rest: String)
+}
+
+
+let _intPrefix = _Parser<Int> { str in
+  let prefix = str.prefix(while: { $0.isNumber })
+  guard !prefix.isEmpty else { return (nil, str) }
+  let match = Int(prefix)
+  let rest = String(str[prefix.endIndex...])
+  return (match, rest)
+}
+
+
+_intPrefix.run("123")
+_intPrefix.run("")
+_intPrefix.run("123 Hello World")
+_intPrefix.run("Hello World 123")
+
 
 struct Parser<A> {
   let run: (inout String) -> A?
@@ -22,24 +41,24 @@ struct Parser<A> {
 }
 
 
-let intPrefix = Parser<Int> { str in
-  let index = str.firstIndex(where: { !$0.isNumber }) ?? str.endIndex
-  let result = Int(str[..<index])
-  str.removeSubrange(str.startIndex ..< index)
-  return result
+let int = Parser<Int> { str in
+  let prefix = str.prefix(while: { !$0.isNumber })
+  let match = Int(prefix)
+  str.removeFirst(prefix.count)
+  return match
 }
 
-let doublePrefix = Parser<Double> { str in
-  let index = str.firstIndex(where: { !$0.isNumber && $0 != "." }) ?? str.endIndex
-  let result = Double(str[..<index])
-  str.removeSubrange(str.startIndex ..< index)
-  return result
+let double = Parser<Double> { str in
+  let prefix = str.prefix(while: { !$0.isNumber && $0 != "." })
+  let match = Double(prefix)
+  str.removeFirst(prefix.count)
+  return match
 }
 
-func prefix(_ p: String) -> Parser<()> {
+func literal(_ p: String) -> Parser<()> {
   return Parser<()> { str in
     guard str.hasPrefix(p) else { return nil }
-    str.removeSubrange(str.startIndex ..< str.index(str.startIndex, offsetBy: p.count))
+    str.removeFirst(p.count)
     return ()
   }
 }
@@ -106,7 +125,7 @@ extension Parser {
 
 let char = Parser<Character> { str in
   guard let char = str.first else { return nil }
-  str.remove(at: str.startIndex)
+  str.removeFirst()
   return char
 }
 
@@ -120,18 +139,18 @@ extension Parser {
   }
 }
 
-intPrefix.run("123")
-intPrefix.run("")
-intPrefix.run("123 Hello World")
-intPrefix.run("Hello World 123")
+int.run("123")
+int.run("")
+int.run("123 Hello World")
+int.run("Hello World 123")
 
-doublePrefix.run("123.2")
-doublePrefix.run("")
-doublePrefix.run("123.3333 Hello World")
-doublePrefix.run("Hello World 123")
+double.run("123.2")
+double.run("")
+double.run("123.3333 Hello World")
+double.run("Hello World 123")
 
-prefix("cat").run("cat-dog")
-prefix("cat").run("ca-dog")
+literal("cat").run("cat-dog")
+literal("cat").run("ca-dog")
 
 let multiplier = char.flatMap { char -> Parser<Double> in
   switch char {
@@ -149,7 +168,7 @@ struct Coordinate {
 }
 
 let coordParser = zip7(
-  doublePrefix, prefix("° "), multiplier, prefix(" "), doublePrefix, prefix("° "), multiplier
+  double, literal("° "), multiplier, literal(" "), double, literal("° "), multiplier
   )
   .map { lat, _, latMult, _, long, _, longMult in
     return Coordinate(latitude: lat * latMult, longitude: long * longMult)
@@ -184,12 +203,12 @@ extension Parser {
 let mult: (Double) -> (Double) -> Double = { x in { y in x * y } }
 
 let coord = Parser(mult)
-  .keep(and: doublePrefix)
-  .keep(discarding: prefix("° "))
+  .keep(and: double)
+  .keep(discarding: literal("° "))
   .keep(and: multiplier)
 
 coord.parse("40.446° S")
 
-doublePrefix
-  .keep(discarding: prefix("° "))
+double
+  .keep(discarding: literal("° "))
 //  .keep(and: multiplier)
