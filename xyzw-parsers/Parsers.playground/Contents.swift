@@ -42,14 +42,14 @@ struct Parser<A> {
 
 
 let int = Parser<Int> { str in
-  let prefix = str.prefix(while: { !$0.isNumber })
+  let prefix = str.prefix(while: { $0.isNumber })
   let match = Int(prefix)
   str.removeFirst(prefix.count)
   return match
 }
 
 let double = Parser<Double> { str in
-  let prefix = str.prefix(while: { !$0.isNumber && $0 != "." })
+  let prefix = str.prefix(while: { $0.isNumber || $0 == "." })
   let match = Double(prefix)
   str.removeFirst(prefix.count)
   return match
@@ -134,8 +134,8 @@ extension Parser {
     return Parser { _ in nil }
   }
 
-  init(_ a: A) {
-    self = Parser { _ in a }
+  static func always(_ a: A) -> Parser {
+    return Parser { _ in a }
   }
 }
 
@@ -154,8 +154,8 @@ literal("cat").run("ca-dog")
 
 let multiplier = char.flatMap { char -> Parser<Double> in
   switch char {
-  case "N", "E":  return Parser(1)
-  case "S", "W":  return Parser(-1)
+  case "N", "E":  return .always(1)
+  case "S", "W":  return .always(-1)
   default:        return .never
   }
 }
@@ -202,7 +202,7 @@ extension Parser {
 
 let mult: (Double) -> (Double) -> Double = { x in { y in x * y } }
 
-let coord = Parser(mult)
+let coord = Parser.always(mult)
   .keep(and: double)
   .keep(discarding: literal("° "))
   .keep(and: multiplier)
@@ -212,3 +212,16 @@ coord.parse("40.446° S")
 double
   .keep(discarding: literal("° "))
 //  .keep(and: multiplier)
+
+extension Parser {
+  init<B, C, D>(_ a: @escaping (B, C) -> D) where A == (B) -> (C) -> D {
+    self = Parser { _ in { b in { c in a(b, c) } } }
+  }
+}
+
+let _coord = Parser(*)
+  .keep(and: double)
+  .keep(discarding: literal("° "))
+  .keep(and: multiplier)
+
+_coord.parse("40.446° S")
