@@ -57,3 +57,4 @@ This repository is the home of code written on episodes of
 1. [Enum Properties](0052-enum-properties)
 1. [Swift Syntax Enum Properties](0053-swift-syntax-enum-properties)
 1. [Advanced Swift Syntax Enum Properties](0054-advanced-swift-syntax-enum-properties)
+1. [Swift Syntax Command Line Tool](0055-swift-syntax-command-line-tool)
