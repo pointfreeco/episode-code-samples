@@ -63,6 +63,30 @@ func zip<A, B>(_ a: Parser<A>, _ b: Parser<B>) -> Parser<(A, B)> {
 }
 
 
+func zip7<A, B, C, D, E, F, G>(
+  _ a: Parser<A>,
+  _ b: Parser<B>,
+  _ c: Parser<C>,
+  _ d: Parser<D>,
+  _ e: Parser<E>,
+  _ f: Parser<F>,
+  _ g: Parser<G>
+  ) -> Parser<(A, B, C, D, E, F, G)> {
+
+  return Parser { str in
+    guard
+      let matchA = a.run(&str),
+      let matchB = b.run(&str),
+      let matchC = c.run(&str),
+      let matchD = d.run(&str),
+      let matchE = e.run(&str),
+      let matchF = f.run(&str),
+      let matchG = g.run(&str)
+    else { return nil }
+    return (matchA, matchB, matchC, matchD, matchE, matchF, matchG)
+  }
+}
+
 extension Parser {
   func map<B>(_ f: @escaping (A) -> B) -> Parser<B> {
     return Parser<B> { str in
@@ -77,24 +101,6 @@ extension Parser {
       let parserB = f(matchA)
       return parserB.run(&str)
     }
-  }
-}
-
-extension Parser {
-  func apply<B, C>(_ b: Parser<B>) -> Parser<C> where A == (B) -> C {
-    return zip(self, b).map { f, b in f(b) }
-  }
-
-  func keep<B, C>(and b: Parser<B>) -> Parser<C> where A == (B) -> C {
-    return self.apply(b)
-  }
-
-  func keep<B>(discarding b: Parser<B>) -> Parser<A> {
-    return zip(self, b).map { a, _ in a }
-  }
-
-  func discard<B>(keeping b: Parser<B>) -> Parser<B> {
-    return zip(self, b).map { _, b in b }
   }
 }
 
@@ -127,7 +133,7 @@ doublePrefix.run("Hello World 123")
 prefix("cat").run("cat-dog")
 prefix("cat").run("ca-dog")
 
-let multiplier = char.flatMap { char -> Parser<Int> in
+let multiplier = char.flatMap { char -> Parser<Double> in
   switch char {
   case "N", "E":  return Parser(1)
   case "S", "W":  return Parser(-1)
@@ -137,14 +143,50 @@ let multiplier = char.flatMap { char -> Parser<Int> in
 
 "40.446° N 79.982° W"
 
+struct Coordinate {
+  let latitude: Double
+  let longitude: Double
+}
 
+let coordParser = zip7(
+  doublePrefix, prefix("° "), multiplier, prefix(" "), doublePrefix, prefix("° "), multiplier
+  )
+  .map { lat, _, latMult, _, long, _, longMult in
+    return Coordinate(latitude: lat * latMult, longitude: long * longMult)
+}
+
+coordParser.parse("40.446° N 79.982° W")
+
+
+// ===========================================
+// applicative stuff happens in episode 2+
+// ===========================================
+
+
+extension Parser {
+  func apply<B, C>(_ b: Parser<B>) -> Parser<C> where A == (B) -> C {
+    return zip(self, b).map { f, b in f(b) }
+  }
+
+  func keep<B, C>(and b: Parser<B>) -> Parser<C> where A == (B) -> C {
+    return self.apply(b)
+  }
+
+  func keep<B>(discarding b: Parser<B>) -> Parser<A> {
+    return zip(self, b).map { a, _ in a }
+  }
+
+  func discard<B>(keeping b: Parser<B>) -> Parser<B> {
+    return zip(self, b).map { _, b in b }
+  }
+}
 
 let mult: (Double) -> (Double) -> Double = { x in { y in x * y } }
 
 let coord = Parser(mult)
   .keep(and: doublePrefix)
   .keep(discarding: prefix("° "))
-  .keep(and: multiplier.map(Double.init))
+  .keep(and: multiplier)
 
 coord.parse("40.446° S")
 
