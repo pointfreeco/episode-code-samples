@@ -2,6 +2,52 @@ import Foundation
 import PlaygroundSupport
 
 
+struct Coordinate {
+  let latitude: Double
+  let longitude: Double
+}
+
+
+func parseLatLong(_ string: String) -> Coordinate? {
+  let parts = string.split(separator: " ")
+  guard parts.count == 4 else { return nil }
+
+  guard
+    let lat = Double(parts[0].dropLast()),
+    let long = Double(parts[2].dropLast())
+    else { return nil }
+
+  let latSign = parts[1] == "N" ? 1.0 : -1
+  let longSign = parts[3] == "E" ? 1.0 : -1
+
+  return Coordinate(latitude: lat * latSign, longitude: long * longSign)
+}
+
+
+// (String) -> (String, A)?
+// (String) -> String * A + 1
+// (inout String) -> A + 1
+
+// (String) -> (String, A?)
+// (String) -> String * (A + 1)
+
+
+//print(parseLatLong("40.6782° N, 73.9442° W"))
+print(parseLatLong(" 40.6782°  N,  73.9442°  W "))
+
+func test(_ n: Int) -> Int {
+  let x: Int
+  switch n {
+  case 1:
+    x = 42
+  default:
+    return 0
+  }
+  return x
+}
+
+
+
 struct _Parser<A> {
   let run: (String) -> (match: A?, rest: String)
 }
@@ -162,10 +208,33 @@ let multiplier = char.flatMap { char -> Parser<Double> in
 
 "40.446° N 79.982° W"
 
-struct Coordinate {
-  let latitude: Double
-  let longitude: Double
+
+let northSouth = Parser<Double> { str in
+  guard
+    let cardinal = str.first,
+    cardinal == "N" || cardinal == "S"
+    else { return nil }
+  str.removeFirst(1)
+  return cardinal == "N" ? 1 : -1
 }
+let eastWest = Parser<Double> { str in
+  guard
+    let cardinal = str.first,
+    cardinal == "E" || cardinal == "W"
+    else { return nil }
+  str.removeFirst(1)
+  return cardinal == "E" ? 1 : -1
+}
+
+var coordString = "40.446° N, 79.982° W"
+double.run(&coordString)
+literal("° ").run(&coordString)
+northSouth.run(&coordString)
+literal(", ").run(&coordString)
+double.run(&coordString)
+literal("° ").run(&coordString)
+eastWest.run(&coordString)
+
 
 let coordParser = zip7(
   double, literal("° "), multiplier, literal(" "), double, literal("° "), multiplier
