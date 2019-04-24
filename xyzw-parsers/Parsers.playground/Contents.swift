@@ -69,12 +69,12 @@ _intPrefix.run("Hello World 123")
 
 
 struct Parser<A> {
-  let run: (inout String) -> A?
+  let run: (inout Substring) -> A?
 
-  func run(_ str: String) -> (rest: String, match: A?) {
-    var str = str
-    let a = self.run(&str)
-    return (str, a)
+  func run(_ str: String) -> (rest: Substring, match: A?) {
+    var sub = str[...]
+    let a = self.run(&sub)
+    return (sub, a)
   }
 
   func parse(_ string: String) -> A? {
