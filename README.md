@@ -60,3 +60,4 @@ This repository is the home of code written on episodes of
 1. [Swift Syntax Command Line Tool](0055-swift-syntax-command-line-tool)
 1. [What Is a Parser?: Part 1](0056-what-is-a-parser-pt1)
 1. [What Is a Parser?: Part 2](0057-what-is-a-parser-pt2)
+1. [What Is a Parser?: Part 3](0058-what-is-a-parser-pt3)
