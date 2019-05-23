@@ -245,9 +245,6 @@ let coordParser = zip7(
 
 coordParser.parse("40.446° N 79.982° W")
 
-func zip<A, B>(_ a: A, _ b: B) -> Parser<(A, B)> {
-  fatalError()
-}
 
 // ===========================================
 // applicative stuff happens in episode 2+
