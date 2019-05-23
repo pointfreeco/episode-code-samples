@@ -226,7 +226,7 @@ let eastWest = Parser<Double> { str in
   return cardinal == "E" ? 1 : -1
 }
 
-var coordString = "40.446° N, 79.982° W"
+var coordString = "40.446° N, 79.982° W" as Substring
 double.run(&coordString)
 literal("° ").run(&coordString)
 northSouth.run(&coordString)
@@ -245,11 +245,57 @@ let coordParser = zip7(
 
 coordParser.parse("40.446° N 79.982° W")
 
+func zip<A, B>(_ a: A, _ b: B) -> Parser<(A, B)> {
+  fatalError()
+}
 
 // ===========================================
 // applicative stuff happens in episode 2+
 // ===========================================
 
+
+func zip<A, B>(keep a: Parser<A>, skip b: Parser<B>) -> Parser<A> {
+  return zip(a, b).map { a, _ in a }
+}
+func zip<A, B>(skip a: Parser<A>, keep b: Parser<B>) -> Parser<B> {
+  return zip(a, b).map { _, b in b }
+}
+func zip<A, B>(skip a: Parser<A>, skip b: Parser<B>) -> Parser<()> {
+  return zip(a, b).map { _, _ in () }
+}
+
+//func zip<A, B, C>(keep: Parser<A>, keep: Parser<B>, keep: Parser<C>) -> Parser<(A, B, C)>
+//func zip<A, B, C>(keep: Parser<A>, keep: Parser<B>, skip: Parser<C>) -> Parser<(A, B)>
+//func zip<A, B, C>(keep: Parser<A>, skip: Parser<B>, keep: Parser<C>) -> Parser<(A, C)>
+//func zip<A, B, C>(keep: Parser<A>, skip: Parser<B>, skip: Parser<C>) -> Parser<A>
+//func zip<A, B, C>(skip: Parser<A>, keep: Parser<B>, keep: Parser<C>) -> Parser<(B, C)>
+//func zip<A, B, C>(skip: Parser<A>, keep: Parser<B>, skip: Parser<C>) -> Parser<B>
+//func zip<A, B, C>(skip: Parser<A>, skip: Parser<B>, keep: Parser<C>) -> Parser<C>
+//func zip<A, B, C>(skip: Parser<A>, skip: Parser<B>, skip: Parser<C>) -> Parser<()>
+
+//2^3 = 8
+
+//func zip<A, B, C>(keep: Parser<A>, keep: Parser<B> keep: Parser<C>, keep: Parser<D>) -> Parser<(A, B, C, D)>
+//func zip<A, B, C>(keep: Parser<A>, keep: Parser<B> keep: Parser<C>, skip: Parser<D>) -> Parser<(A, B, C)>
+//func zip<A, B, C>(keep: Parser<A>, keep: Parser<B> skip: Parser<C>, keep: Parser<D>) -> Parser<(A, B, D)>
+//func zip<A, B, C>(keep: Parser<A>, keep: Parser<B> skip: Parser<C>, skip: Parser<D>) -> Parser<(A, B)>
+//func zip<A, B, C>(keep: Parser<A>, skip: Parser<B> keep: Parser<C>, keep: Parser<D>) -> Parser<(A, C, D)>
+//func zip<A, B, C>(keep: Parser<A>, skip: Parser<B> keep: Parser<C>, skip: Parser<D>) -> Parser<(A, C)>
+//func zip<A, B, C>(keep: Parser<A>, skip: Parser<B> skip: Parser<C>, keep: Parser<D>) -> Parser<(A, D)>
+//func zip<A, B, C>(keep: Parser<A>, skip: Parser<B> skip: Parser<C>, skip: Parser<D>) -> Parser<A>
+//func zip<A, B, C>(skip: Parser<A>, keep: Parser<B> keep: Parser<C>, keep: Parser<D>) -> Parser<(B, C, D)>
+//func zip<A, B, C>(skip: Parser<A>, keep: Parser<B> keep: Parser<C>, skip: Parser<D>) -> Parser<(B, C)>
+//func zip<A, B, C>(skip: Parser<A>, keep: Parser<B> skip: Parser<C>, keep: Parser<D>) -> Parser<(B, D)>
+//func zip<A, B, C>(skip: Parser<A>, keep: Parser<B> skip: Parser<C>, skip: Parser<D>) -> Parser<B>
+//func zip<A, B, C>(skip: Parser<A>, skip: Parser<B> keep: Parser<C>, keep: Parser<D>) -> Parser<(C, D)>
+//func zip<A, B, C>(skip: Parser<A>, skip: Parser<B> keep: Parser<C>, skip: Parser<D>) -> Parser<C>
+//func zip<A, B, C>(skip: Parser<A>, skip: Parser<B> skip: Parser<C>, keep: Parser<D>) -> Parser<D>
+//func zip<A, B, C>(skip: Parser<A>, skip: Parser<B> skip: Parser<C>, skip: Parser<D>) -> Parser<()>
+
+//2^4 = 16
+//2^5 = 32
+//2^6 = 64
+//2^7 = 128
 
 extension Parser {
   func apply<B, C>(_ b: Parser<B>) -> Parser<C> where A == (B) -> C {
