@@ -247,6 +247,8 @@ func parseLatLongWithScanner(_ string: String) -> Coordinate? {
   return Coordinate(latitude: lat * latSign, longitude: long * longSign)
 }
 
+var x: FixedWidthInteger
+
 extension Parser {
   func map<B>(_ f: @escaping (A) -> B) -> Parser<B> {
     return Parser<B> { str in
@@ -256,9 +258,14 @@ extension Parser {
 
   func flatMap<B>(_ f: @escaping (A) -> Parser<B>) -> Parser<B> {
     return Parser<B> { str in
+      let original = str
       let matchA = self.run(&str)
       let parserB = matchA.map(f)
-      return parserB?.run(&str)
+      guard let matchB = parserB?.run(&str) else {
+        str = original
+        return nil
+      }
+      return matchB
     }
   }
 }
@@ -295,11 +302,13 @@ let char = Parser<Character> { str in
 char
   .map { $0 == "N" ? 1.0 : -1.0 }
 
-char.flatMap {
+let tmp1 = char.flatMap {
   $0 == "N" ? always(1.0)
     : $0 == "S" ? always(-1)
     : .never
 }
+
+tmp1.run("E, 42")
 
 let latCoord: Parser<Double> = zip3(double, literal("° "), northSouth)
   .map { lat, _, sign in lat * sign }
