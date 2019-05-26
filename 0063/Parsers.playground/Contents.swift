@@ -299,31 +299,35 @@ extension Parser {
     return zip(self, b).map { f, b in f(b) }
   }
 
-  func keep<B, C>(and b: Parser<B>) -> Parser<C> where A == (B) -> C {
+  func keep<B, C>(andKeep b: Parser<B>) -> Parser<C> where A == (B) -> C {
     return self.apply(b)
   }
 
-  func keep<B>(discarding b: Parser<B>) -> Parser<A> {
+  func keep<B>(andSkip b: Parser<B>) -> Parser<A> {
     return zip(self, b).map { a, _ in a }
   }
 
-  func discard<B>(keeping b: Parser<B>) -> Parser<B> {
+  func skip<B>(andKeep b: Parser<B>) -> Parser<B> {
     return zip(self, b).map { _, b in b }
+  }
+
+  func skip<B>(andSkip b: Parser<B>) -> Parser<Void> {
+    return zip(self, b).map { _, _ in () }
   }
 }
 
 let mult: (Double) -> (Double) -> Double = { x in { y in x * y } }
 
 let coord = Parser.always(mult)
-  .keep(and: double)
-  .keep(discarding: literal("° "))
-  .keep(and: multiplier)
+  .keep(andKeep: double)
+  .keep(andSkip: literal("° "))
+  .keep(andKeep: multiplier)
 
 coord.parse("40.446° S")
 
 double
-  .keep(discarding: literal("° "))
-//  .keep(and: multiplier)
+  .keep(andSkip: literal("° "))
+//  .keep(andKeep: multiplier)
 
 extension Parser {
   init<B, C, D>(_ a: @escaping (B, C) -> D) where A == (B) -> (C) -> D {
@@ -332,8 +336,40 @@ extension Parser {
 }
 
 let _coord = Parser(*)
-  .keep(and: double)
-  .keep(discarding: literal("° "))
-  .keep(and: multiplier)
+  .keep(andKeep: double)
+  .keep(andSkip: literal("° "))
+  .keep(andKeep: multiplier)
 
 _coord.parse("40.446° S")
+
+
+precedencegroup Apply {
+  associativity: left
+  higherThan: AssignmentPrecedence
+}
+
+infix operator <*>: Apply
+infix operator <*: Apply
+infix operator *>: Apply
+
+extension Parser {
+  static func <*> <B>(_ pf: Parser<(A) -> B>, _ pa: Parser<A>) -> Parser<B> {
+    return pf.keep(andKeep: pa)
+  }
+
+  static func *> <B>(_ pa: Parser<A>, _ pb: Parser<B>) -> Parser<B> {
+    return pa.skip(andKeep: pb)
+  }
+
+  static func <* <B>(_ pa: Parser<A>, _ pb: Parser<B>) -> Parser<A> {
+    return pa.keep(andSkip: pb)
+  }
+}
+
+literal("(").skip(andKeep: int).keep(andSkip: literal(")"))
+
+literal("(") *> int <* literal(")")
+
+// 1. Doesn't exist in Swift
+// 2. Has prior art and a nice shape (arrows point at what we wanna keep)
+// 3. Solves ubiquitous problem (works with anything that has a zip)
