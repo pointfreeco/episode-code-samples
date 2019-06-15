@@ -27,6 +27,10 @@ struct Location {
  */
 // TODO
 /*:
- 6. What is the difference between a function of the form `((A) -> B) -> (C) -> (D)` and one of the form `(A) -> (B) -> (C) -> D`?
+ 6. Write a setter for a dictionary that traverses into a key to set a value if and only if that value already exists.
+ */
+// TODO
+/*:
+ 7. What is the difference between a function of the form `((A) -> B) -> (C) -> (D)` and one of the form `(A) -> (B) -> (C) -> D`?
  */
 // TODO
