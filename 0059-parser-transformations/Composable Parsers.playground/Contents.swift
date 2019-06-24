@@ -140,6 +140,19 @@ extension Parser {
 //  return cardinal == "E" ? 1 : -1
 //}
 
+let northSouth = char
+  .flatMap {
+    $0 == "N" ? always(1.0)
+      : $0 == "S" ? always(-1)
+      : .never
+}
+let eastWest = char
+  .flatMap {
+    $0 == "E" ? always(1.0)
+      : $0 == "W" ? always(-1)
+      : .never
+}
+
 func parseLatLong(_ str: String) -> Coordinate? {
   var str = str[...]
 
@@ -240,7 +253,7 @@ money.run("฿10")
 
 "40.6782° N, 73.9442° W"
 
-zip(zip(double, literal("° ")), northSouth)
+//zip(zip(double, literal("° ")), northSouth)
 
 func zip<A, B, C>(
   _ a: Parser<A>,
@@ -251,9 +264,9 @@ func zip<A, B, C>(
     .map { a, bc in (a, bc.0, bc.1) }
 }
 
-zip(double, literal("° "), northSouth)
-
-zip(zip(double, literal("° "), northSouth), literal(", "))
+//zip(double, literal("° "), northSouth)
+//
+//zip(zip(double, literal("° "), northSouth), literal(", "))
 
 func zip<A, B, C, D>(
   _ a: Parser<A>,
@@ -265,7 +278,7 @@ func zip<A, B, C, D>(
     .map { a, bcd in (a, bcd.0, bcd.1, bcd.2) }
 }
 
-zip(double, literal("° "), northSouth, literal(", "))
+//zip(double, literal("° "), northSouth, literal(", "))
 
 
 func zip<A, B, C, D, E>(
@@ -355,18 +368,6 @@ func parseLatLongWithScanner(_ string: String) -> Coordinate? {
 
 parseLatLongWithScanner("40.446° N, 79.982° W")
 
-let northSouth = char
-  .flatMap {
-    $0 == "N" ? always(1.0)
-      : $0 == "S" ? always(-1)
-      : .never
-}
-let eastWest = char
-  .flatMap {
-    $0 == "E" ? always(1.0)
-      : $0 == "W" ? always(-1)
-      : .never
-}
 let latitude = zip(double, literal("° "), northSouth)
   .map { lat, _, latSign in lat * latSign }
 let longitude = zip(double, literal("° "), eastWest)

@@ -261,14 +261,14 @@ func zip<A, B>(skip a: Parser<A>, skip b: Parser<B>) -> Parser<()> {
   return zip(a, b).map { _, _ in () }
 }
 
-//func zip<A, B, C>(keep: Parser<A>, keep: Parser<B>, keep: Parser<C>) -> Parser<(A, B, C)>
-//func zip<A, B, C>(keep: Parser<A>, keep: Parser<B>, skip: Parser<C>) -> Parser<(A, B)>
-//func zip<A, B, C>(keep: Parser<A>, skip: Parser<B>, keep: Parser<C>) -> Parser<(A, C)>
-//func zip<A, B, C>(keep: Parser<A>, skip: Parser<B>, skip: Parser<C>) -> Parser<A>
-//func zip<A, B, C>(skip: Parser<A>, keep: Parser<B>, keep: Parser<C>) -> Parser<(B, C)>
-//func zip<A, B, C>(skip: Parser<A>, keep: Parser<B>, skip: Parser<C>) -> Parser<B>
-//func zip<A, B, C>(skip: Parser<A>, skip: Parser<B>, keep: Parser<C>) -> Parser<C>
-//func zip<A, B, C>(skip: Parser<A>, skip: Parser<B>, skip: Parser<C>) -> Parser<()>
+//func zip<A, B, C>(keep: Parser<A>,    keep: Parser<B>,    keep: Parser<C>)    -> Parser<(A, B, C)>
+//func zip<A, B, C>(keep: Parser<A>,    keep: Parser<B>,    discard: Parser<C>) -> Parser<(A, B)>
+//func zip<A, B, C>(keep: Parser<A>,    discard: Parser<B>, keep: Parser<C>)    -> Parser<(A, C)>
+//func zip<A, B, C>(keep: Parser<A>,    discard: Parser<B>, discard: Parser<C>) -> Parser<A>
+//func zip<A, B, C>(discard: Parser<A>, keep: Parser<B>,    keep: Parser<C>)    -> Parser<(B, C)>
+//func zip<A, B, C>(discard: Parser<A>, keep: Parser<B>,    discard: Parser<C>) -> Parser<B>
+//func zip<A, B, C>(discard: Parser<A>, discard: Parser<B>, keep: Parser<C>)    -> Parser<C>
+//func zip<A, B, C>(discard: Parser<A>, discard: Parser<B>, discard: Parser<C>) -> Parser<()>
 
 //2^3 = 8
 
