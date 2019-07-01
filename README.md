@@ -64,3 +64,5 @@ This repository is the home of code written on episodes of
 1. [Composable Parsing: Map](0059-composable-parsing-map)
 1. [Composable Parsing: Flat-Map](0060-composable-parsing-flat-map)
 1. [Composable Parsing: Zip](0061-composable-parsing-zip)
+1. [Parser Combinators: Part 1](0062-parser-combinators-pt1)
+1. [Parser Combinators: Part 2](0063-parser-combinators-pt2)
