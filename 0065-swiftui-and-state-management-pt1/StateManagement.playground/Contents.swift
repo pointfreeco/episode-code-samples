@@ -31,12 +31,12 @@ import Combine
 
 class AppState: BindableObject {
   var count = 0 {
-    didSet {
-      self.didChange.send()
+    willSet {
+      self.willChange.send()
     }
   }
 
-  var didChange = PassthroughSubject<Void, Never>()
+  var willChange = PassthroughSubject<Void, Never>()
 }
 
 struct CounterView: View {
