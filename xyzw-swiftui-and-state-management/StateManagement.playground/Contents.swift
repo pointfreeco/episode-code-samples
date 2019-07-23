@@ -91,22 +91,22 @@ import Combine
 
 class AppState: BindableObject {
   var count = 0 {
-    didSet { self.didChange.send() }
+    willSet { self.willChange.send() }
   }
 
   var favoritePrimes: [Int] = [] {
-    didSet { self.didChange.send() }
+    willSet { self.willChange.send() }
   }
 
   var loggedInUser: User? {
-    didSet { self.didChange.send() }
+    willSet { self.willChange.send() }
   }
 
   var activityFeed: [Activity] = [] {
-    didSet { self.didChange.send() }
+    willSet { self.willChange.send() }
   }
 
-  var didChange = PassthroughSubject<Void, Never>()
+  var willChange = PassthroughSubject<Void, Never>()
 
   struct Activity {
     let timestamp: Date
@@ -151,20 +151,15 @@ struct CounterView: View {
       .disabled(self.isNthPrimeButtonDisabled)
     }
     .font(.title)
-    .navigationBarTitle("Counter demo")
-    .presentation(
-      self.isPrimeModalShown
-        ? Modal(
-          IsPrimeModalView(state: self.state),
-          onDismiss: { self.isPrimeModalShown = false }
-          )
-        : nil
-    )
-      .presentation(self.$alertNthPrime) { n in
-        Alert(
-          title: Text("The \(ordinal(self.state.count)) prime is \(n)"),
-          dismissButton: .default(Text("Ok"))
-        )
+      .navigationBarTitle("Counter demo")
+      .sheet(isPresented: self.$isPrimeModalShown) {
+        IsPrimeModalView(state: self.state)
+    }
+    .alert(item: self.$alertNthPrime) { n in
+      Alert(
+        title: Text("The \(ordinal(self.state.count)) prime is \(n)"),
+        dismissButton: .default(Text("Ok"))
+      )
     }
   }
 
@@ -218,7 +213,7 @@ struct IsPrimeModalView: View {
 }
 
 class FavoritePrimesState: BindableObject {
-  var didChange: PassthroughSubject<Void, Never> { self.state.didChange }
+  var willChange: PassthroughSubject<Void, Never> { self.state.willChange }
 
   private var state: AppState
   init (state: AppState) {
