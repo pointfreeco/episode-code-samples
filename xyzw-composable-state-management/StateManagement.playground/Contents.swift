@@ -1,11 +1,5 @@
 import SwiftUI
 
-
-enum Either<A, B> {
-  case left(A)
-  case right(B)
-}
-
 struct WolframAlphaResult: Decodable {
   let queryresult: QueryResult
 
@@ -119,44 +113,11 @@ enum AppAction {
   case counter(CounterAction)
   case primeModal(PrimeModalAction)
   case favoritePrimes(FavoritePrimesAction)
-
-  var counterAndFavoritePrimes: Either<CounterAction, FavoritePrimesAction>? {
-    get { fatalError() }
-    set { fatalError() }
-  }
-
-  var counter: CounterAction? {
-    get {
-      guard case let .counter(value) = self else { return nil }
-      return value
-    }
-    set {
-      guard case .counter = self, let newValue = newValue else { return }
-      self = .counter(newValue)
-    }
-  }
 }
 
 enum CounterAction {
   case decrTapped
   case incrTapped
-  case subAction(SubAction)
-
-  var subAction: SubAction? {
-    get {
-      guard case let .subAction(value) = self else { return nil }
-      return value
-    }
-    set {
-      guard case .subAction = self, let newValue = newValue else { return }
-      self = .subAction(newValue)
-    }
-  }
-
-  enum SubAction {
-    case foo
-    case bar
-  }
 }
 
 enum PrimeModalAction {
@@ -257,6 +218,28 @@ struct AppState {
     enum ActivityType {
       case addedFavoritePrime(Int)
       case removedFavoritePrime(Int)
+
+      var addedFavoritePrime: Int? {
+        get {
+          guard case let .addedFavoritePrime(value) = self else { return nil }
+          return value
+        }
+        set {
+          guard case .addedFavoritePrime = self, let newValue = newValue else { return }
+          self = .addedFavoritePrime(newValue)
+        }
+      }
+
+      var removedFavoritePrime: Int? {
+        get {
+          guard case let .removedFavoritePrime(value) = self else { return nil }
+          return value
+        }
+        set {
+          guard case .removedFavoritePrime = self, let newValue = newValue else { return }
+          self = .removedFavoritePrime(newValue)
+        }
+      }
     }
   }
 
@@ -315,18 +298,7 @@ func counterReducer(value: inout Int, action: CounterAction) -> Void {
 
   case .incrTapped:
     value += 1
-
-  case .subAction:
-    break
   }
-}
-
-func eitherReducer(value: inout AppState, action: Either<CounterAction, FavoritePrimesAction>) -> Void {
-  fatalError()
-}
-
-func subActionReducer(value: inout AppState, action: CounterAction.SubAction) -> Void {
-
 }
 
 func primeModalReducer(value: inout AppState, action: AppAction) -> Void {
@@ -399,17 +371,15 @@ extension AppState {
 }
 
 let appReducer = concat(
-  pullback(pullback(counterReducer, value: \.count), action: \.counter),
+//  pullback(pullback(counterReducer, value: \.count), action: \.counter),
   pullback(primeModalReducer, action: \.self),
-  pullback(favoritePrimesReducer, value: \.favoritePrimesState),
-  pullback(subActionReducer, action: \.counter, \.subAction),
-  pullback(eitherReducer, action: \.counterAndFavoritePrimes)
+  pullback(favoritePrimesReducer, value: \.favoritePrimesState)
 )
 
-let tmp1 = \AppAction.counter?.subAction
-let tmp2 = pullback(subActionReducer, action: \CounterAction.subAction)
-let tmp3 = pullback(tmp2, action: \AppAction.counter)
-let tmp4 = pullback(subActionReducer, action: \AppAction.counter, \.subAction)
+//let tmp1 = \AppAction.counter?.subAction
+//let tmp2 = pullback(subActionReducer, action: \CounterAction.subAction)
+//let tmp3 = pullback(tmp2, action: \AppAction.counter)
+//let tmp4 = pullback(subActionReducer, action: \AppAction.counter, \.subAction)
 //let tmp = pullback(subActionReducer, action: \AppAction.counter.subaction)
 
 
