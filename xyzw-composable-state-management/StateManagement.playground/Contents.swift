@@ -113,6 +113,35 @@ enum AppAction {
   case counter(CounterAction)
   case primeModal(PrimeModalAction)
   case favoritePrimes(FavoritePrimesAction)
+
+  var counter: CounterAction? {
+    get {
+      guard case let .counter(value) = self else { return nil }
+      return value
+    }
+  }
+
+  var primeModal: PrimeModalAction? {
+    get {
+      guard case let .primeModal(value) = self else { return nil }
+      return value
+    }
+    set {
+      guard case .primeModal = self, let newValue = newValue else { return }
+      self = .primeModal(newValue)
+    }
+  }
+
+  var favoritePrimes: FavoritePrimesAction? {
+    get {
+      guard case let .favoritePrimes(value) = self else { return nil }
+      return value
+    }
+    set {
+      guard case .favoritePrimes = self, let newValue = newValue else { return }
+      self = .favoritePrimes(newValue)
+    }
+  }
 }
 
 enum CounterAction {
@@ -127,6 +156,17 @@ enum PrimeModalAction {
 
 enum FavoritePrimesAction {
   case removeFavoritePrimes(at: IndexSet)
+
+  var removeFavoritePrimes: IndexSet? {
+    get {
+      guard case let .removeFavoritePrimes(value) = self else { return nil }
+      return value
+    }
+    set {
+      guard case .removeFavoritePrimes = self, let newValue = newValue else { return }
+      self = .removeFavoritePrimes(at: newValue)
+    }
+  }
 }
 
 func compose<A, B, C>(
@@ -196,14 +236,14 @@ func concat<Value, Action>(
   }
 }
 
-func pullback<GlobalValue, LocalValue, Action>(
-  _ reducer: @escaping (inout LocalValue, Action) -> Void,
-  value: WritableKeyPath<GlobalValue, LocalValue>
-) -> (inout GlobalValue, Action) -> Void {
-  return { globalValue, action in
-    reducer(&globalValue[keyPath: value], action)
-  }
-}
+//func pullback<GlobalValue, LocalValue, Action>(
+//  _ reducer: @escaping (inout LocalValue, Action) -> Void,
+//  value: WritableKeyPath<GlobalValue, LocalValue>
+//) -> (inout GlobalValue, Action) -> Void {
+//  return { globalValue, action in
+//    reducer(&globalValue[keyPath: value], action)
+//  }
+//}
 
 struct AppState {
   var count = 0
@@ -250,38 +290,32 @@ struct AppState {
   }
 }
 
-func pullback<GlobalValue, LocalValue, Action>(
-  _ reducer: @escaping (inout LocalValue, Action) -> Void,
-  _ get: @escaping (GlobalValue) -> LocalValue,
-  _ set: @escaping (inout GlobalValue, LocalValue) -> Void
-) -> (inout GlobalValue, Action) -> Void {
-
-  return  { globalValue, action in
-    var localValue = get(globalValue)
-    reducer(&localValue, action)
-    set(&globalValue, localValue)
-  }
-}
-
-func pullback<Value, GlobalAction, LocalAction>(
-  _ reducer: @escaping (inout Value, LocalAction) -> Void,
+func pullback<GlobalValue, LocalValue, GlobalAction, LocalAction>(
+  _ reducer: @escaping (inout LocalValue, LocalAction) -> Void,
+  value: WritableKeyPath<GlobalValue, LocalValue>,
   action: WritableKeyPath<GlobalAction, LocalAction?>
-) -> (inout Value, GlobalAction) -> Void {
+) -> (inout GlobalValue, GlobalAction) -> Void {
 
-  return { value, globalAction in
+  return { globalValue, globalAction in
     guard let localAction = globalAction[keyPath: action] else { return }
-    /* let effect = */ reducer(&value, localAction)
-    // Effect<LocalAction>
-    // effect.map { localAction in globalAction[keyPath: action] = localAction }
+    reducer(&globalValue[keyPath: value], localAction)
   }
 }
 
-func pullback<Value, A, B, C>(
-  _ reducer: @escaping (inout Value, C) -> Void,
-  action a: WritableKeyPath<A, B?>,
-  _ b: WritableKeyPath<B, C?>
-) -> (inout Value, A) -> Void {
-  return pullback(pullback(reducer, action: b), action: a)
+func pullback<GlobalValue, LocalValue, GlobalAction, Action1, LocalAction>(
+  _ reducer: @escaping (inout LocalValue, LocalAction) -> Void,
+  value: WritableKeyPath<GlobalValue, LocalValue>,
+  action action1: WritableKeyPath<GlobalAction, Action1?>,
+  _ localAction: WritableKeyPath<Action1, LocalAction?>
+) -> (inout GlobalValue, GlobalAction) -> Void {
+
+  return { globalValue, globalAction in
+    guard
+      let action1 = globalAction[keyPath: action1],
+      let localAction = action1[keyPath: localAction]
+      else { return }
+    reducer(&globalValue[keyPath: value], localAction)
+  }
 }
 
 // KeyPath<AnyStruct, Void>
@@ -371,9 +405,9 @@ extension AppState {
 }
 
 let appReducer = concat(
-//  pullback(pullback(counterReducer, value: \.count), action: \.counter),
-  pullback(primeModalReducer, action: \.self),
-  pullback(favoritePrimesReducer, value: \.favoritePrimesState)
+  pullback(counterReducer, value: \.count, action: \.counter),
+  pullback(primeModalReducer, value: \.self, action: \.self),
+  pullback(favoritePrimesReducer, value: \.favoritePrimesState, action: \.self)
 )
 
 //let tmp1 = \AppAction.counter?.subAction
