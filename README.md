@@ -68,4 +68,4 @@ This repository is the home of code written on episodes of
 1. [Parser Combinators: Part 2](0063-parser-combinators-pt2)
 1. [Parser Combinators: Part 3](0064-parser-combinators-pt3)
 1. [SwiftUI and State Management: Part 1](0065-swiftui-and-state-management-pt1)
-1. [SwiftUI and State Management: Part 1](0066-swiftui-and-state-management-pt2)
+1. [SwiftUI and State Management: Part 2](0066-swiftui-and-state-management-pt2)
