@@ -109,6 +109,31 @@ class Store<Value, Action>: BindableObject {
   }
 }
 
+enum CounterAction {
+  case decrTapped
+  case incrTapped
+}
+
+enum PrimeModalAction {
+  case addFavoritePrime
+  case removeFavoritePrime
+}
+
+enum FavoritePrimesAction {
+  case removeFavoritePrimes(at: IndexSet)
+
+  var removeFavoritePrimes: IndexSet? {
+    get {
+      guard case let .removeFavoritePrimes(value) = self else { return nil }
+      return value
+    }
+    set {
+      guard case .removeFavoritePrimes = self, let newValue = newValue else { return }
+      self = .removeFavoritePrimes(at: newValue)
+    }
+  }
+}
+
 enum AppAction {
   case counter(CounterAction)
   case primeModal(PrimeModalAction)
@@ -118,6 +143,10 @@ enum AppAction {
     get {
       guard case let .counter(value) = self else { return nil }
       return value
+    }
+    set {
+      guard case .counter = self, let newValue = newValue else { return }
+      self = .counter(newValue)
     }
   }
 
@@ -144,30 +173,7 @@ enum AppAction {
   }
 }
 
-enum CounterAction {
-  case decrTapped
-  case incrTapped
-}
-
-enum PrimeModalAction {
-  case addFavoritePrime
-  case removeFavoritePrime
-}
-
-enum FavoritePrimesAction {
-  case removeFavoritePrimes(at: IndexSet)
-
-  var removeFavoritePrimes: IndexSet? {
-    get {
-      guard case let .removeFavoritePrimes(value) = self else { return nil }
-      return value
-    }
-    set {
-      guard case .removeFavoritePrimes = self, let newValue = newValue else { return }
-      self = .removeFavoritePrimes(at: newValue)
-    }
-  }
-}
+let tmp = \AppAction.counter
 
 func compose<A, B, C>(
   _ f: @escaping (B) -> C,
@@ -335,18 +341,15 @@ func counterReducer(value: inout Int, action: CounterAction) -> Void {
   }
 }
 
-func primeModalReducer(value: inout AppState, action: AppAction) -> Void {
+func primeModalReducer(value: inout AppState, action: PrimeModalAction) -> Void {
   switch action {
-  case .primeModal(.addFavoritePrime):
+  case .addFavoritePrime:
     value.favoritePrimes.append(value.count)
     value.activityFeed.append(.init(timestamp: Date(), type: .addedFavoritePrime(value.count)))
 
-  case .primeModal(.removeFavoritePrime):
+  case .removeFavoritePrime:
     value.favoritePrimes.removeAll(where: { $0 == value.count })
     value.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(value.count)))
-
-  default:
-    break
   }
 }
 
@@ -355,16 +358,13 @@ struct FavoritePrimesState {
   var activityFeed: [AppState.Activity]
   var favoritePrimes: [Int]
 }
-func favoritePrimesReducer(value: inout FavoritePrimesState, action: AppAction) -> Void {
+func favoritePrimesReducer(value: inout FavoritePrimesState, action: FavoritePrimesAction) -> Void {
   switch action {
-  case let .favoritePrimes(.removeFavoritePrimes(indexSet)):
+  case let .removeFavoritePrimes(indexSet):
     for index in indexSet {
       value.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(value.favoritePrimes[index])))
       value.favoritePrimes.remove(at: index)
     }
-
-  default:
-    break
   }
 }
 
@@ -404,21 +404,11 @@ extension AppState {
   }
 }
 
-let appReducer = concat(
+let appReducer: (inout AppState, AppAction) -> Void = concat(
   pullback(counterReducer, value: \.count, action: \.counter),
-  pullback(primeModalReducer, value: \.self, action: \.self),
-  pullback(favoritePrimesReducer, value: \.favoritePrimesState, action: \.self)
+  pullback(primeModalReducer, value: \.self, action: \.primeModal),
+  pullback(favoritePrimesReducer, value: \.favoritePrimesState, action: \.favoritePrimes)
 )
-
-//let tmp1 = \AppAction.counter?.subAction
-//let tmp2 = pullback(subActionReducer, action: \CounterAction.subAction)
-//let tmp3 = pullback(tmp2, action: \AppAction.counter)
-//let tmp4 = pullback(subActionReducer, action: \AppAction.counter, \.subAction)
-//let tmp = pullback(subActionReducer, action: \AppAction.counter.subaction)
-
-
-1
-
 
 struct CounterView: View {
   @ObjectBinding var store: Store<AppState, AppAction>
@@ -533,3 +523,4 @@ PlaygroundPage.current.liveView = UIHostingController(
   )
   //  rootView: CounterView()
 )
+
