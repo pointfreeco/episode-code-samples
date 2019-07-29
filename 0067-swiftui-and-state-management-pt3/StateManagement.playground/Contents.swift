@@ -62,7 +62,7 @@ func nthPrime(_ n: Int, callback: @escaping (Int?) -> Void) -> Void {
 
 
 struct ContentView: View {
-  @ObjectBinding var state: AppState
+  @ObservedObject var state: AppState
 
   var body: some View {
     NavigationView {
@@ -70,7 +70,7 @@ struct ContentView: View {
         NavigationLink(destination: CounterView(state: self.state)) {
           Text("Counter demo")
         }
-        NavigationLink(destination: FavoritePrimesView(state: FavoritePrimesState(state: self.state))) {
+        NavigationLink(destination: FavoritePrimesView(state: self.$state.favoritePrimesState)) {
           Text("Favorite primes")
         }
       }
@@ -89,24 +89,11 @@ private func ordinal(_ n: Int) -> String {
 
 import Combine
 
-class AppState: BindableObject {
-  var count = 0 {
-    willSet { self.willChange.send() }
-  }
-
-  var favoritePrimes: [Int] = [] {
-    willSet { self.willChange.send() }
-  }
-
-  var loggedInUser: User? {
-    willSet { self.willChange.send() }
-  }
-
-  var activityFeed: [Activity] = [] {
-    willSet { self.willChange.send() }
-  }
-
-  var willChange = PassthroughSubject<Void, Never>()
+class AppState: ObservableObject {
+  @Published var count = 0
+  @Published var favoritePrimes: [Int] = []
+  @Published var loggedInUser: User? = nil
+  @Published var activityFeed: [Activity] = []
 
   struct Activity {
     let timestamp: Date
@@ -125,10 +112,16 @@ class AppState: BindableObject {
   }
 }
 
+struct PrimeAlert: Identifiable {
+  let prime: Int
+
+  var id: Int { self.prime }
+}
+
 struct CounterView: View {
-  @ObjectBinding var state: AppState
+  @ObservedObject var state: AppState
   @State var isPrimeModalShown: Bool = false
-  @State var alertNthPrime: Int?
+  @State var alertNthPrime: PrimeAlert?
   @State var isNthPrimeButtonDisabled = false
 
   var body: some View {
@@ -155,9 +148,9 @@ struct CounterView: View {
     .sheet(isPresented: self.$isPrimeModalShown) {
       IsPrimeModalView(state: self.state)
     }
-    .alert(item: self.$alertNthPrime) { n in
+    .alert(item: self.$alertNthPrime) { alert in
       Alert(
-        title: Text("The \(ordinal(self.state.count)) prime is \(n)"),
+        title: Text("The \(ordinal(self.state.count)) prime is \(alert.prime)"),
         dismissButton: .default(Text("Ok"))
       )
     }
@@ -166,7 +159,7 @@ struct CounterView: View {
   func nthPrimeButtonAction() {
     self.isNthPrimeButtonDisabled = true
     nthPrime(self.state.count) { prime in
-      self.alertNthPrime = prime
+      self.alertNthPrime = prime.map(PrimeAlert.init(prime:))
       self.isNthPrimeButtonDisabled = false
     }
   }
@@ -182,7 +175,7 @@ private func isPrime (_ p: Int) -> Bool {
 }
 
 struct IsPrimeModalView: View {
-  @ObjectBinding var state: AppState
+  @ObservedObject var state: AppState
 
   var body: some View {
     VStack {
@@ -213,30 +206,31 @@ struct IsPrimeModalView: View {
   }
 }
 
-class FavoritePrimesState: BindableObject {
-  var willChange: PassthroughSubject<Void, Never> { self.state.willChange }
-
-  private var state: AppState
-  init (state: AppState) {
-    self.state = state
-  }
-
-  var favoritePrimes: [Int] {
-    get { self.state.favoritePrimes }
-    set { self.state.favoritePrimes = newValue }
-  }
-  var activityFeed: [AppState.Activity] {
-    get { self.state.activityFeed }
-    set { self.state.activityFeed = newValue }
+struct FavoritePrimesState {
+  var favoritePrimes: [Int]
+  var activityFeed: [AppState.Activity]
+}
+extension AppState {
+  var favoritePrimesState: FavoritePrimesState {
+    get {
+      FavoritePrimesState(
+        favoritePrimes: self.favoritePrimes,
+        activityFeed: self.activityFeed
+      )
+    }
+    set {
+      self.favoritePrimes = newValue.favoritePrimes
+      self.activityFeed = newValue.activityFeed
+    }
   }
 }
 
 struct FavoritePrimesView: View {
-  @ObjectBinding var state: FavoritePrimesState
+  @Binding var state: FavoritePrimesState
 
   var body: some View {
     List {
-      ForEach(self.state.favoritePrimes) { prime in
+      ForEach(self.state.favoritePrimes, id: \.self) { prime in
         Text("\(prime)")
       }
       .onDelete { indexSet in
