@@ -62,7 +62,7 @@ func nthPrime(_ n: Int, callback: @escaping (Int?) -> Void) -> Void {
 
 
 struct ContentView: View {
-  @ObjectBinding var state: AppState
+  @ObservedObject var state: AppState
 
   var body: some View {
     NavigationView {
@@ -89,22 +89,21 @@ private func ordinal(_ n: Int) -> String {
 
 import Combine
 
-class AppState: BindableObject {
-  var count = 0 {
-    willSet { self.willChange.send() }
-  }
+class AppState: ObservableObject {
+  @Published var count = 0
+  @Published var favoritePrimes: [Int] = []
+}
 
-  var favoritePrimes: [Int] = [] {
-    willSet { self.willChange.send() }
-  }
+struct PrimeAlert: Identifiable {
+  let prime: Int
 
-  var willChange = PassthroughSubject<Void, Never>()
+  var id: Int { self.prime }
 }
 
 struct CounterView: View {
-  @ObjectBinding var state: AppState
+  @ObservedObject var state: AppState
   @State var isPrimeModalShown: Bool = false
-  @State var alertNthPrime: Int?
+  @State var alertNthPrime: PrimeAlert?
   @State var isNthPrimeButtonDisabled = false
 
   var body: some View {
@@ -131,9 +130,9 @@ struct CounterView: View {
     .sheet(isPresented: self.$isPrimeModalShown) {
       IsPrimeModalView(state: self.state)
     }
-    .alert(item: self.$alertNthPrime) { n in
+    .alert(item: self.$alertNthPrime) { alert in
       Alert(
-        title: Text("The \(ordinal(self.state.count)) prime is \(n)"),
+        title: Text("The \(ordinal(self.state.count)) prime is \(alert.prime)"),
         dismissButton: .default(Text("Ok"))
       )
     }
@@ -142,7 +141,7 @@ struct CounterView: View {
   func nthPrimeButtonAction() {
     self.isNthPrimeButtonDisabled = true
     nthPrime(self.state.count) { prime in
-      self.alertNthPrime = prime
+      self.alertNthPrime = prime.map(PrimeAlert.init(prime:))
       self.isNthPrimeButtonDisabled = false
     }
   }
@@ -158,7 +157,7 @@ private func isPrime (_ p: Int) -> Bool {
 }
 
 struct IsPrimeModalView: View {
-  @ObjectBinding var state: AppState
+  @ObservedObject var state: AppState
 
   var body: some View {
     VStack {
@@ -187,16 +186,15 @@ struct IsPrimeModalView: View {
 }
 
 struct FavoritePrimesView: View {
-  @ObjectBinding var state: AppState
+  @ObservedObject var state: AppState
 
   var body: some View {
     List {
-      ForEach(self.state.favoritePrimes) { prime in
+      ForEach(self.state.favoritePrimes, id: \.self) { prime in
         Text("\(prime)")
       }
       .onDelete { indexSet in
         for index in indexSet {
-          let prime = self.state.favoritePrimes[index]
           self.state.favoritePrimes.remove(at: index)
         }
       }

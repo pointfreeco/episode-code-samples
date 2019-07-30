@@ -29,18 +29,12 @@ private func ordinal(_ n: Int) -> String {
 
 import Combine
 
-class AppState: BindableObject {
-  var count = 0 {
-    willSet {
-      self.willChange.send()
-    }
-  }
-
-  var willChange = PassthroughSubject<Void, Never>()
+class AppState: ObservableObject {
+  @Published var count = 0
 }
 
 struct CounterView: View {
-  @ObjectBinding var state: AppState
+  @ObservedObject var state: AppState
 
   var body: some View {
     VStack {
