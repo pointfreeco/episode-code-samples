@@ -4,7 +4,7 @@ import SwiftUI
 class AppState: ObservableObject {
   @Published var count = 0
   @Published var favoritePrimes: [Int] = []
-  @Published var loggedInUser: User? = nil
+  @Published var loggedInUser: User?
   @Published var activityFeed: [Activity] = []
 
   struct Activity {
@@ -133,7 +133,7 @@ struct FavoritePrimesView: View {
         }
       }
     }
-    .navigationBarTitle(Text("Favorite Primes"))
+    .navigationBarTitle("Favorite Primes")
   }
 }
 
