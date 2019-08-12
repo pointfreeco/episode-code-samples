@@ -71,3 +71,4 @@ This repository is the home of code written on episodes of
 1. [SwiftUI and State Management: Part 2](0066-swiftui-and-state-management-pt2)
 1. [SwiftUI and State Management: Part 3](0067-swiftui-and-state-management-pt3)
 1. [Composable State Management: Reducers](0068-composable-state-management-reducers)
+1. [Composable State Management: State Pullbacks](0069-composable-state-management-state-pullbacks)
