@@ -4,6 +4,8 @@ import SwiftUI
 public final class Store<Value, Action>: ObservableObject {
   private let reducer: (inout Value, Action) -> Void
   @Published public private(set) var value: Value
+  private let objectDidChange = PassthroughSubject<Void, Never>()
+  private var cancellable: Cancellable?
 
   public init(initialValue: Value, reducer: @escaping (inout Value, Action) -> Void) {
     self.reducer = reducer
@@ -12,6 +14,23 @@ public final class Store<Value, Action>: ObservableObject {
 
   public func send(_ action: Action) {
     self.reducer(&self.value, action)
+    self.objectDidChange.send()
+  }
+
+  public func view<LocalValue, LocalAction>(
+    value: @escaping (Value) -> LocalValue,
+    action: @escaping (LocalAction) -> Action
+  ) -> Store<LocalValue, LocalAction> {
+    let store = Store<LocalValue, LocalAction>(
+      initialValue: value(self.value)
+    ) { localValue, localAction in
+      self.send(action(localAction))
+      localValue = value(self.value)
+    }
+    store.cancellable = self.objectDidChange.sink { [weak store] in
+      store?.value = value(self.value)
+    }
+    return store
   }
 }
 

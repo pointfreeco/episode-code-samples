@@ -29,29 +29,17 @@ struct AppState {
 }
 
 enum AppAction {
-  case counter(CounterAction)
-  case primeModal(PrimeModalAction)
+  case counterView(CounterViewAction)
   case favoritePrimes(FavoritePrimesAction)
 
-  var counter: CounterAction? {
+  var counterView: CounterViewAction? {
     get {
-      guard case let .counter(value) = self else { return nil }
+      guard case let .counterView(value) = self else { return nil }
       return value
     }
     set {
-      guard case .counter = self, let newValue = newValue else { return }
-      self = .counter(newValue)
-    }
-  }
-
-  var primeModal: PrimeModalAction? {
-    get {
-      guard case let .primeModal(value) = self else { return nil }
-      return value
-    }
-    set {
-      guard case .primeModal = self, let newValue = newValue else { return }
-      self = .primeModal(newValue)
+      guard case .counterView = self, let newValue = newValue else { return }
+      self = .counterView(newValue)
     }
   }
 
@@ -68,6 +56,19 @@ enum AppAction {
 }
 
 extension AppState {
+  var counterView: CounterViewState {
+    get {
+      CounterViewState(
+        count: self.count,
+        primeModal: self.primeModal
+      )
+    }
+    set {
+      self.count = newValue.count
+      self.primeModal = newValue.primeModal
+    }
+  }
+
   var primeModal: PrimeModalState {
     get {
       PrimeModalState(
@@ -82,9 +83,8 @@ extension AppState {
   }
 }
 
-let appReducer: (inout AppState, AppAction) -> Void = combine(
-  pullback(counterReducer, value: \.count, action: \.counter),
-  pullback(primeModalReducer, value: \.primeModal, action: \.primeModal),
+let appReducer = combine(
+  pullback(counterViewReducer, value: \AppState.counterView, action: \AppAction.counterView),
   pullback(favoritePrimesReducer, value: \.favoritePrimes, action: \.favoritePrimes)
 )
 
@@ -94,12 +94,12 @@ func activityFeed(
 
   return { state, action in
     switch action {
-    case .counter:
+    case .counterView(.counter):
       break
-    case .primeModal(.removeFavoritePrimeTapped):
+    case .counterView(.primeModal(.removeFavoritePrimeTapped)):
       state.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(state.count)))
 
-    case .primeModal(.saveFavoritePrimeTapped):
+    case .counterView(.primeModal(.saveFavoritePrimeTapped)):
       state.activityFeed.append(.init(timestamp: Date(), type: .addedFavoritePrime(state.count)))
 
     case let .favoritePrimes(.deleteFavoritePrimes(indexSet)):
@@ -126,9 +126,9 @@ struct CounterView: View {
   var body: some View {
     VStack {
       HStack {
-        Button("-") { self.store.send(.counter(.decrTapped)) }
+        Button("-") { self.store.send(.counterView(.counter(.decrTapped))) }
         Text("\(self.store.value.count)")
-        Button("+") { self.store.send(.counter(.incrTapped)) }
+        Button("+") { self.store.send(.counterView(.counter(.incrTapped))) }
       }
       Button("Is this prime?") { self.isPrimeModalShown = true }
       Button(
@@ -191,11 +191,11 @@ struct IsPrimeModalView: View {
         Text("\(self.store.value.count) is prime 🎉")
         if self.store.value.favoritePrimes.contains(self.store.value.count) {
           Button("Remove from favorite primes") {
-            self.store.send(.primeModal(.removeFavoritePrimeTapped))
+            self.store.send(.counterView(.primeModal(.removeFavoritePrimeTapped)))
           }
         } else {
           Button("Save to favorite primes") {
-            self.store.send(.primeModal(.saveFavoritePrimeTapped))
+            self.store.send(.counterView(.primeModal(.saveFavoritePrimeTapped)))
           }
         }
       } else {
@@ -215,11 +215,11 @@ func isPrime(_ p: Int) -> Bool {
 }
 
 struct FavoritePrimesView: View {
-  @ObservedObject var store: Store<AppState, AppAction>
+  @ObservedObject var store: Store<[Int], AppAction>
 
   var body: some View {
     List {
-      ForEach(self.store.value.favoritePrimes, id: \.self) { prime in
+      ForEach(self.store.value, id: \.self) { prime in
         Text("\(prime)")
       }
       .onDelete { indexSet in
@@ -242,7 +242,7 @@ struct ContentView: View {
         )
         NavigationLink(
           "Favorite primes",
-          destination: FavoritePrimesView(store: self.store)
+          destination: FavoritePrimesView(store: self.store.view(value: { $0.favoritePrimes }, action: {$0}))
         )
       }
       .navigationBarTitle("State management")
