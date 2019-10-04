@@ -748,14 +748,14 @@
 			targets = (
 				DC90716B22FA102900B38B42 /* PrimeTime */,
 				DC90718122FA102B00B38B42 /* PrimeTimeTests */,
-				DCF0C59A2326032B008B45A0 /* ComposableArchitecture */,
-				DCF0C5A22326032B008B45A0 /* ComposableArchitectureTests */,
 				DCF0C5BD23260348008B45A0 /* Counter */,
 				DCF0C5C523260348008B45A0 /* CounterTests */,
 				DCF0C5DF2326035C008B45A0 /* PrimeModal */,
 				DCF0C5E72326035C008B45A0 /* PrimeModalTests */,
 				DCF0C6012326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6092326036F008B45A0 /* FavoritePrimesTests */,
+				DCF0C59A2326032B008B45A0 /* ComposableArchitecture */,
+				DCF0C5A22326032B008B45A0 /* ComposableArchitectureTests */,
 			);
 		};
 /* End PBXProject section */
