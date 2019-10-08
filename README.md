@@ -77,3 +77,4 @@ This repository is the home of code written on episodes of
 1. [Modular State Management: Reducers](0072-modular-state-management-reducers)
 1. [Modular State Management: View State](0073-modular-state-management-view-state)
 1. [Modular State Management: View Actions](0074-modular-state-management-view-actions)
+1. [Modular State Management: The Point](0075-modular-state-management-wtp)
