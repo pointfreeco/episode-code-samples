@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29217322FB231F006090DF /* WolframAlpha.swift */; };
+		DC30512B234F565300C35653 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
+		DC30512C234F565800C35653 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
+		DC30512D234F565F00C35653 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
+		DC30512E234F565F00C35653 /* PrimeModal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C5E02326035C008B45A0 /* PrimeModal.framework */; };
 		DC90717022FA102900B38B42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90716F22FA102900B38B42 /* AppDelegate.swift */; };
 		DC90717222FA102900B38B42 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90717122FA102900B38B42 /* SceneDelegate.swift */; };
 		DC90717422FA102900B38B42 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90717322FA102900B38B42 /* ContentView.swift */; };
@@ -231,9 +235,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCF0C6172326036F008B45A0 /* FavoritePrimes.framework in Frameworks */,
 				DCF0C5B02326032B008B45A0 /* ComposableArchitecture.framework in Frameworks */,
 				DCF0C5D323260348008B45A0 /* Counter.framework in Frameworks */,
+				DCF0C6172326036F008B45A0 /* FavoritePrimes.framework in Frameworks */,
 				DCF0C5F52326035C008B45A0 /* PrimeModal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -264,6 +268,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC30512D234F565F00C35653 /* ComposableArchitecture.framework in Frameworks */,
+				DC30512E234F565F00C35653 /* PrimeModal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +285,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC30512C234F565800C35653 /* ComposableArchitecture.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +301,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC30512B234F565300C35653 /* ComposableArchitecture.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +316,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DC30512A234F565300C35653 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DC90716322FA102900B38B42 = {
 			isa = PBXGroup;
 			children = (
@@ -323,6 +338,7 @@
 				DCF0C6032326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6102326036F008B45A0 /* FavoritePrimesTests */,
 				DC90716D22FA102900B38B42 /* Products */,
+				DC30512A234F565300C35653 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -504,8 +520,8 @@
 			dependencies = (
 				DCF0C5AF2326032B008B45A0 /* PBXTargetDependency */,
 				DCF0C5D223260348008B45A0 /* PBXTargetDependency */,
-				DCF0C5F42326035C008B45A0 /* PBXTargetDependency */,
 				DCF0C6162326036F008B45A0 /* PBXTargetDependency */,
+				DCF0C5F42326035C008B45A0 /* PBXTargetDependency */,
 			);
 			name = PrimeTime;
 			productName = PrimeTime;
@@ -579,8 +595,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				CAD67E1D2332982E000C7787 /* PBXTargetDependency */,
 				DCF0C6242326038A008B45A0 /* PBXTargetDependency */,
+				CAD67E1D2332982E000C7787 /* PBXTargetDependency */,
 			);
 			name = Counter;
 			productName = Counter;

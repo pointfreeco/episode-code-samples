@@ -35,3 +35,15 @@ public struct FavoritePrimesView: View {
   }
 }
 
+#if DEBUG
+struct FavoritePrimesView_Previews: PreviewProvider {
+  static var previews: some View {
+    FavoritePrimesView(
+      store: Store(
+        initialValue: [2, 3, 5, 7, 11],
+        reducer: favoritePrimesReducer
+      )
+    )
+  }
+}
+#endif
