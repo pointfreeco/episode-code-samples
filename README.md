@@ -78,3 +78,5 @@ This repository is the home of code written on episodes of
 1. [Modular State Management: View State](0073-modular-state-management-view-state)
 1. [Modular State Management: View Actions](0074-modular-state-management-view-actions)
 1. [Modular State Management: The Point](0075-modular-state-management-wtp)
+1. [Effectful State Management: Synchronous Effects](0076-effectful-state-management-synchronous-effects)
+1. [Effectful State Management: Unidirectional Effects](0077-effectful-state-management-unidirectional-effects)
