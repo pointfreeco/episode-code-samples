@@ -2,7 +2,7 @@
 import SwiftUI
 
 struct ContentView: View {
-  @ObjectBinding var state: AppState
+  @ObservedObject var state: AppState
 
   var body: some View {
     NavigationView {
