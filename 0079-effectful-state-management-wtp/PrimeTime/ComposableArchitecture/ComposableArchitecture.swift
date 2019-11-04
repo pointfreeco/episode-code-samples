@@ -1,43 +1,38 @@
 import Combine
 import SwiftUI
 
+
 struct Parallel<A> {
   let run: (@escaping (A) -> Void) -> Void
 }
 
-//DispatchQueue.main.async(execute: () -> Void) -> Void
-//UIView.animate(withDuration: TimeInterval, animations: () -> Void) -> Void
-//URLSession.shared.dataTask(with: URL, completionHandler: (Data?, URLResponse?, Error?) -> Void) -> Void
+//DispatchQueue.main.async(execute: <#T##() -> Void#>) -> Void
+//UIView.animate(withDuration: <#T##TimeInterval#>, animations: <#T##() -> Void#>) -> Void
+//URLSession.shared.dataTask(with: <#T##URL#>, completionHandler: <#T##(Data?, URLResponse?, Error?) -> Void#>) -> Void
 
 //public typealias Effect<Action> = (@escaping (Action) -> Void) -> Void
 
-public struct Effect<Output>: Publisher {
-  public typealias Failure = Never
 
-  let publisher: AnyPublisher<Output, Failure>
+public struct Effect<A> {
+  public let run: (@escaping (A) -> Void) -> Void
 
-  public func receive<S>(
-    subscriber: S
-  ) where S: Subscriber, Failure == S.Failure, Output == S.Input {
-    self.publisher.receive(subscriber: subscriber)
+  public init(run: @escaping (@escaping (A) -> Void) -> Void) {
+    self.run = run
   }
-}
 
-extension Publisher where Failure == Never {
-  public func eraseToEffect() -> Effect<Output> {
-    return Effect(publisher: self.eraseToAnyPublisher())
+  public func map<B>(_ f: @escaping (A) -> B) -> Effect<B> {
+    return Effect<B> { callback in self.run { a in callback(f(a)) } }
   }
 }
 
 public typealias Reducer<Value, Action> = (inout Value, Action) -> [Effect<Action>]
 
-//Button.init("Save", action: <#() -> Void#>)
+//Button.init("Save", action: <#T##() -> Void#>)
 
 public final class Store<Value, Action>: ObservableObject {
   private let reducer: Reducer<Value, Action>
   @Published public private(set) var value: Value
-  private var viewCancellable: Cancellable?
-  private var effectCancellables: [AnyCancellable] = []
+  private var cancellable: Cancellable?
 
   public init(initialValue: Value, reducer: @escaping Reducer<Value, Action>) {
     self.reducer = reducer
@@ -47,15 +42,7 @@ public final class Store<Value, Action>: ObservableObject {
   public func send(_ action: Action) {
     let effects = self.reducer(&self.value, action)
     effects.forEach { effect in
-      var effectCancellable: AnyCancellable!
-      effectCancellable = effect
-        .sink(
-          receiveCompletion: { [weak self] _ in
-            self?.effectCancellables.removeAll(where: { $0 == effectCancellable })
-        },
-          receiveValue: self.send
-      )
-      self.effectCancellables.append(effectCancellable)
+      effect.run(self.send)
     }
 //    DispatchQueue.global().async {
 //      effects.forEach { effect in
@@ -80,7 +67,7 @@ public final class Store<Value, Action>: ObservableObject {
         return []
     }
     )
-    localStore.viewCancellable = self.$value.sink { [weak localStore] newValue in
+    localStore.cancellable = self.$value.sink { [weak localStore] newValue in
       localStore?.value = toLocalValue(newValue)
     }
     return localStore
@@ -93,6 +80,16 @@ public func combine<Value, Action>(
   return { value, action in
     let effects = reducers.flatMap { $0(&value, action) }
     return effects
+//    return { () -> Action? in
+//      var finalAction: Action?
+//      for effect in effects {
+//        let action = effect()
+//        if let action = action {
+//          finalAction = action
+//        }
+//      }
+//      return finalAction
+//    }
   }
 }
 
@@ -104,15 +101,19 @@ public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction>(
   return { globalValue, globalAction in
     guard let localAction = globalAction[keyPath: action] else { return [] }
     let localEffects = reducer(&globalValue[keyPath: value], localAction)
+
     return localEffects.map { localEffect in
-      localEffect
-        .map { localAction -> GlobalAction in
+      Effect { callback in
+//        guard let localAction = localEffect() else { return nil }
+        localEffect.run { localAction in
           var globalAction = globalAction
           globalAction[keyPath: action] = localAction
-          return globalAction
+          callback(globalAction)
+        }
       }
-      .eraseToEffect()
     }
+
+//    return effect
   }
 }
 
@@ -122,32 +123,11 @@ public func logging<Value, Action>(
   return { value, action in
     let effects = reducer(&value, action)
     let newValue = value
-    return [
-      Deferred {
-        Future { _ in
-          print("Action: \(action)")
-          print("Value:")
-          dump(newValue)
-          print("---")
-        }
-      }.eraseToEffect()
-      ] + effects
-  }
-}
-
-extension Effect {
-  public static func fireAndForget(work: @escaping () -> Void) -> Effect {
-    return Deferred { () -> Empty<Output, Never> in
-      work()
-      return Empty<Output, Never>(completeImmediately: true)
-    }
-    .eraseToEffect()
-  }
-
-  public static func sync(work: @escaping () -> Output) -> Effect {
-    return Deferred {
-      Just(work())
-    }
-    .eraseToEffect()
+    return [Effect { _ in
+      print("Action: \(action)")
+      print("Value:")
+      dump(newValue)
+      print("---")
+    }] + effects
   }
 }
