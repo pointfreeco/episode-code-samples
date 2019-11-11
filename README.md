@@ -82,3 +82,4 @@ This repository is the home of code written on episodes of
 1. [Effectful State Management: Unidirectional Effects](0077-effectful-state-management-unidirectional-effects)
 1. [Effectful State Management: Asynchronous Effects](0078-effectful-state-management-async-effects)
 1. [Effectful State Management: The Point](0079-effectful-state-management-wtp)
+1. [The Combine Framework and Effects: Part 1](0080-combine-and-effects-pt1)
