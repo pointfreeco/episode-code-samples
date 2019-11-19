@@ -30,7 +30,7 @@ public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesActi
 }
 
 private func saveEffect(favoritePrimes: [Int]) -> Effect<FavoritePrimesAction> {
-  return .fireAndForget {
+  return {
     let data = try! JSONEncoder().encode(favoritePrimes)
     let documentsPath = NSSearchPathForDirectoriesInDomains(
       .documentDirectory, .userDomainMask, true
@@ -39,10 +39,11 @@ private func saveEffect(favoritePrimes: [Int]) -> Effect<FavoritePrimesAction> {
     let favoritePrimesUrl = documentsUrl
       .appendingPathComponent("favorite-primes.json")
     try! data.write(to: favoritePrimesUrl)
+    return nil
   }
 }
 
-private let loadEffect = Effect<FavoritePrimesAction?>.sync {
+private let loadEffect: Effect<FavoritePrimesAction> = {
   let documentsPath = NSSearchPathForDirectoriesInDomains(
     .documentDirectory, .userDomainMask, true
     )[0]
@@ -55,8 +56,6 @@ private let loadEffect = Effect<FavoritePrimesAction?>.sync {
     else { return nil }
   return .loadedFavoritePrimes(favoritePrimes)
 }
-.compactMap { $0 }
-.eraseToEffect()
 
 public struct FavoritePrimesView: View {
   @ObservedObject var store: Store<[Int], FavoritePrimesAction>
