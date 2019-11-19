@@ -1,4 +1,6 @@
 import Foundation
+import RxSwift
+import RxCocoa
 
 private let wolframAlphaApiKey = "6H69Q3-828TKQJ4EP"
 
@@ -32,7 +34,7 @@ func nthPrime(_ n: Int) -> Effect<Int?> {
     }
     .flatMap(Int.init)
   }
-  .eraseToEffect()
+  .asEffect()
 }
 
 import ComposableArchitecture
@@ -46,15 +48,11 @@ func wolframAlpha(query: String) -> Effect<WolframAlphaResult?> {
     URLQueryItem(name: "output", value: "JSON"),
     URLQueryItem(name: "appid", value: wolframAlphaApiKey),
   ]
-
-  return URLSession.shared
-    .dataTaskPublisher(for: components.url(relativeTo: nil)!)
-    .map { data, _ in data }
-    .decode(type: WolframAlphaResult?.self, decoder: JSONDecoder())
-    .replaceError(with: nil)
-    .eraseToEffect()
-
-
-//  return dataTask(with: components.url(relativeTo: nil)!)
-//    .decode(as: WolframAlphaResult.self)
+    return URLSession.shared.rx
+        .data(request: URLRequest.init(url: components.url(relativeTo: nil)!))
+        .map { data -> WolframAlphaResult? in
+            try? JSONDecoder().decode(WolframAlphaResult.self, from: data)
+        }
+        .catchErrorJustReturn(nil)
+        .asEffect()
 }

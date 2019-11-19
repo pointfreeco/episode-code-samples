@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SwiftUI
+import RxSwift
 
 public enum FavoritePrimesAction {
   case deleteFavoritePrimes(IndexSet)
@@ -27,7 +28,7 @@ public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesActi
     return [
       loadEffect
         .compactMap { $0 }
-        .eraseToEffect()
+        .asEffect()
     ]
   }
 }
@@ -45,10 +46,8 @@ private func saveEffect(favoritePrimes: [Int]) -> Effect<FavoritePrimesAction> {
 import Combine
 
 extension Effect {
-  static func sync(work: @escaping () -> Output) -> Effect {
-    return Deferred {
-      Just(work())
-    }.eraseToEffect()
+  static func sync(work: @escaping () -> Element) -> Effect {
+    return Observable.just(work()).asEffect()
   }
 }
 
