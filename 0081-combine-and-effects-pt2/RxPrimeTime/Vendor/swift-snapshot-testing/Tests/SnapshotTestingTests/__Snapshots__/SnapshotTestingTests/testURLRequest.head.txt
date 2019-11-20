@@ -1,2 +1,0 @@
-HEAD https://www.pointfree.co/
-Cookie: pf_session={}
