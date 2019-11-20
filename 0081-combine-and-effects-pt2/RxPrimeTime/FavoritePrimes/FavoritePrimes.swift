@@ -47,7 +47,12 @@ import Combine
 
 extension Effect {
   static func sync(work: @escaping () -> Element) -> Effect {
-    return Observable.just(work()).asEffect()
+    return Observable.create { observer in
+      observer.onNext(work())
+      observer.onCompleted()
+      return Disposables.create()
+    }
+    .asEffect()
   }
 }
 
