@@ -1,38 +1,9 @@
 import Combine
 import SwiftUI
 import RxSwift
+import RxCocoa
 
-//public struct Effect<A> {
-//  public let run: (@escaping (A) -> Void) -> Void
-//
-//  public init(run: @escaping (@escaping (A) -> Void) -> Void) {
-//    self.run = run
-//  }
-//
-//  public func map<B>(_ f: @escaping (A) -> B) -> Effect<B> {
-//    return Effect<B> { callback in self.run { a in callback(f(a)) } }
-//  }
-//}
-
-public struct Effect<Element>: ObservableType {
-  let _source: Observable<Element>
-
-  init(_ source: Observable<Element>) {
-      self._source = source
-  }
-
-  public func subscribe<Observer>(
-    _ observer: Observer
-  ) -> Disposable where Observer : ObserverType, Element == Observer.Element {
-    _source.subscribe(observer)
-  }
-}
-
-extension ObservableType {
-  public func asEffect() -> Effect<Element> {
-    return Effect(self.asObservable())
-  }
-}
+public typealias Effect<Element> = Signal<Element>
 
 public typealias Reducer<Value, Action> = (inout Value, Action) -> [Effect<Action>]
 
@@ -51,17 +22,9 @@ public final class Store<Value, Action>: ObservableObject {
   public func send(_ action: Action) {
     let effects = self.reducer(&self.value, action)
     effects.forEach { effect in
-      effect
-        .subscribe({ [weak self] (event) in
-          switch event {
-          case let .next(action):
-            self?.send(action)
-          case .error(_):
-            fatalError("Effect contract violation: received an error.")
-          case .completed:
-            break // just no-op
-          }
-        })
+      effect.emit(onNext: { [weak self] action in
+        self?.send(action)
+      })
         .disposed(by: bag)
     }
   }
@@ -109,7 +72,6 @@ public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction>(
         globalAction[keyPath: action] = localAction
         return globalAction
       }
-      .asEffect()
 //      Effect { callback in
 //        localEffect.sink { localAction in
 //          var globalAction = globalAction
@@ -137,12 +99,10 @@ public func logging<Value, Action>(
 }
 
 extension Effect {
-  public static func fireAndForget(work: @escaping () -> Void) -> Effect {
-    return Observable.create { (observer) -> Disposable in
+  public static func fireAndForget(work: @escaping () -> Void) -> Effect<Element> {
+    return Effect.deferred {
       work()
-      observer.onCompleted()
-      return Disposables.create()
+      return .empty()
     }
-    .asEffect()
   }
 }

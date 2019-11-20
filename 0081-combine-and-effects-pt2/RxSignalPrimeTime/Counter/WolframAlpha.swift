@@ -34,7 +34,6 @@ func nthPrime(_ n: Int) -> Effect<Int?> {
     }
     .flatMap(Int.init)
   }
-  .asEffect()
 }
 
 import ComposableArchitecture
@@ -53,6 +52,5 @@ func wolframAlpha(query: String) -> Effect<WolframAlphaResult?> {
         .map { data -> WolframAlphaResult? in
             try? JSONDecoder().decode(WolframAlphaResult.self, from: data)
         }
-        .catchErrorJustReturn(nil)
-        .asEffect()
+        .asSignal(onErrorJustReturn: nil)
 }

@@ -27,8 +27,9 @@ public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesActi
   case .loadButtonTapped:
     return [
       loadEffect
+        .asObservable()
         .compactMap { $0 }
-        .asEffect()
+        .asSignal(onErrorSignalWith: .empty())
     ]
   }
 }
@@ -46,8 +47,8 @@ private func saveEffect(favoritePrimes: [Int]) -> Effect<FavoritePrimesAction> {
 import Combine
 
 extension Effect {
-  static func sync(work: @escaping () -> Element) -> Effect {
-    return Observable.just(work()).asEffect()
+  static func sync(work: @escaping () -> Element) -> Effect<Element> {
+    return Effect.deferred { .just(work()) }
   }
 }
 

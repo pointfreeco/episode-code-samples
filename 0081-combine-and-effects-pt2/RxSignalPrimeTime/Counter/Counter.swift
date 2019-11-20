@@ -30,10 +30,7 @@ public func counterReducer(state: inout CounterState, action: CounterAction) -> 
   case .nthPrimeButtonTapped:
     state.isNthPrimeButtonDisabled = true
     return [
-      nthPrime(state.count)
-        .map(CounterAction.nthPrimeResponse)
-        .observeOn(MainScheduler.instance)
-        .asEffect()
+      nthPrime(state.count).map(CounterAction.nthPrimeResponse)
   ]
 
   case let .nthPrimeResponse(prime):
