@@ -27,13 +27,13 @@ public final class Store<Value, Action>: ObservableObject {
     self.reducer = reducer
     self.value = initialValue
   }
-
+  
   public func send(_ action: Action) {
     let effects = self.reducer(&self.value, action)
     effects.forEach { effect in
-        effectDisposable += effect.startWithValues({ (action) in
-            self.send(action)
-        })
+      effectDisposable += effect.startWithValues({ (action) in
+        self.send(action)
+      })
     }
   }
 
@@ -97,22 +97,21 @@ public func logging<Value, Action>(
   return { value, action in
     let effects = reducer(&value, action)
     let newValue = value
-    return [Effect<Action> { _, _ in
+    return [.fireAndForget {
       print("Action: \(action)")
       print("Value:")
       dump(newValue)
       print("---")
-    }] + effects
+      }] + effects
   }
 }
 
 extension Effect {
-
-    public static func fireAndForget(work: @escaping () -> Void) -> Effect<Value> {
-    
+  
+  public static func fireAndForget(work: @escaping () -> Void) -> Effect<Value> {
     return Effect<Value> { observer , _  -> () in
-        work()
-        observer.sendCompleted()
-        }
+      work()
+      observer.sendCompleted()
     }
+  }
 }
