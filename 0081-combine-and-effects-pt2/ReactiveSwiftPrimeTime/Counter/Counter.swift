@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import PrimeModal
 import SwiftUI
+import ReactiveSwift
 
 public enum CounterAction {
   case decrTapped
@@ -31,8 +32,7 @@ public func counterReducer(state: inout CounterState, action: CounterAction) -> 
     return [
       nthPrime(state.count)
         .map(CounterAction.nthPrimeResponse)
-        .receive(on: DispatchQueue.main)
-        .eraseToEffect()
+        .observe(on: UIScheduler())
   ]
 
   case let .nthPrimeResponse(prime):

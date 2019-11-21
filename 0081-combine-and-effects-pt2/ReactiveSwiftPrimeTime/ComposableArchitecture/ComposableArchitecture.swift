@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import ReactiveSwift
 
 //public struct Effect<A> {
 //  public let run: (@escaping (A) -> Void) -> Void
@@ -12,24 +13,7 @@ import SwiftUI
 //    return Effect<B> { callback in self.run { a in callback(f(a)) } }
 //  }
 //}
-
-public struct Effect<Output>: Publisher {
-  public typealias Failure = Never
-
-  let publisher: AnyPublisher<Output, Failure>
-
-  public func receive<S>(
-    subscriber: S
-  ) where S: Subscriber, Failure == S.Failure, Output == S.Input {
-    self.publisher.receive(subscriber: subscriber)
-  }
-}
-
-extension Publisher where Failure == Never {
-  public func eraseToEffect() -> Effect<Output> {
-    return Effect(publisher: self.eraseToAnyPublisher())
-  }
-}
+public typealias Effect<A> = SignalProducer<A, Never>
 
 public typealias Reducer<Value, Action> = (inout Value, Action) -> [Effect<Action>]
 
@@ -37,7 +21,7 @@ public final class Store<Value, Action>: ObservableObject {
   private let reducer: Reducer<Value, Action>
   @Published public private(set) var value: Value
   private var viewCancellable: Cancellable?
-  private var effectCancellables: Set<AnyCancellable> = []
+  private var effectDisposable = CompositeDisposable()
 
   public init(initialValue: Value, reducer: @escaping Reducer<Value, Action>) {
     self.reducer = reducer
@@ -47,19 +31,9 @@ public final class Store<Value, Action>: ObservableObject {
   public func send(_ action: Action) {
     let effects = self.reducer(&self.value, action)
     effects.forEach { effect in
-      var effectCancellable: AnyCancellable?
-      var didComplete = false
-      effectCancellable = effect.sink(
-        receiveCompletion: { [weak self] _ in
-          didComplete = true
-          guard let effectCancellable = effectCancellable else { return }
-          self?.effectCancellables.remove(effectCancellable)
-      },
-        receiveValue: self.send
-      )
-      if !didComplete, let effectCancellable = effectCancellable {
-        self.effectCancellables.insert(effectCancellable)
-      }
+        effectDisposable += effect.startWithValues({ (action) in
+            self.send(action)
+        })
     }
   }
 
@@ -106,7 +80,6 @@ public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction>(
         globalAction[keyPath: action] = localAction
         return globalAction
       }
-      .eraseToEffect()
 //      Effect { callback in
 //        localEffect.sink { localAction in
 //          var globalAction = globalAction
@@ -124,20 +97,22 @@ public func logging<Value, Action>(
   return { value, action in
     let effects = reducer(&value, action)
     let newValue = value
-    return [.fireAndForget {
+    return [Effect<Action> { _, _ in
       print("Action: \(action)")
       print("Value:")
       dump(newValue)
       print("---")
-      }] + effects
+    }] + effects
   }
 }
 
 extension Effect {
-  public static func fireAndForget(work: @escaping () -> Void) -> Effect {
-    return Deferred { () -> Empty<Output, Never> in
-      work()
-      return Empty(completeImmediately: true)
-    }.eraseToEffect()
-  }
+
+    public static func fireAndForget(work: @escaping () -> Void) -> Effect<Value> {
+    
+    return Effect<Value> { observer , _  -> () in
+        work()
+        observer.sendCompleted()
+        }
+    }
 }

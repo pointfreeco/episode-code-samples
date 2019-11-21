@@ -25,11 +25,10 @@ public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesActi
 
   case .loadButtonTapped:
     return [
-      loadEffect
-        .compactMap { $0 }
-        .eraseToEffect()
+        loadEffect
+            .skipNil()
     ]
-  }
+    }
 }
 
 private func saveEffect(favoritePrimes: [Int]) -> Effect<FavoritePrimesAction> {
@@ -44,23 +43,16 @@ private func saveEffect(favoritePrimes: [Int]) -> Effect<FavoritePrimesAction> {
 
 import Combine
 
-extension Effect {
-  static func sync(work: @escaping () -> Output) -> Effect {
-    return Deferred {
-      Just(work())
-    }.eraseToEffect()
-  }
-}
-
-private let loadEffect = Effect<FavoritePrimesAction?>.sync {
+private let loadEffect = Effect<FavoritePrimesAction?> { obs, _ in
   let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
   let documentsUrl = URL(fileURLWithPath: documentsPath)
   let favoritePrimesUrl = documentsUrl.appendingPathComponent("favorite-primes.json")
   guard
     let data = try? Data(contentsOf: favoritePrimesUrl),
     let favoritePrimes = try? JSONDecoder().decode([Int].self, from: data)
-    else { return nil }
-  return .loadedFavoritePrimes(favoritePrimes)
+    else { return  }
+    obs.send(value: .loadedFavoritePrimes(favoritePrimes))
+    obs.sendCompleted()
 }
 
 public struct FavoritePrimesView: View {
