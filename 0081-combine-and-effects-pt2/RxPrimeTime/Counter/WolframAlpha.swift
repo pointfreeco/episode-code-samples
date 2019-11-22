@@ -48,11 +48,11 @@ func wolframAlpha(query: String) -> Effect<WolframAlphaResult?> {
     URLQueryItem(name: "output", value: "JSON"),
     URLQueryItem(name: "appid", value: wolframAlphaApiKey),
   ]
-    return URLSession.shared.rx
-        .data(request: URLRequest.init(url: components.url(relativeTo: nil)!))
-        .map { data -> WolframAlphaResult? in
-            try? JSONDecoder().decode(WolframAlphaResult.self, from: data)
-        }
-        .catchErrorJustReturn(nil)
-        .asEffect()
+  return URLSession.shared.rx
+    .data(request: URLRequest.init(url: components.url(relativeTo: nil)!))
+    .map { data -> WolframAlphaResult? in
+      try? JSONDecoder().decode(WolframAlphaResult.self, from: data)
+  }
+  .catchErrorJustReturn(nil)
+  .asEffect()
 }

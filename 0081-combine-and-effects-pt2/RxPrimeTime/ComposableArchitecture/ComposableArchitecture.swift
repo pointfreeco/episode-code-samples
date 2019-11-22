@@ -18,7 +18,7 @@ public struct Effect<Element>: ObservableType {
   let _source: Observable<Element>
 
   init(_ source: Observable<Element>) {
-      self._source = source
+    self._source = source
   }
 
   public func subscribe<Observer>(

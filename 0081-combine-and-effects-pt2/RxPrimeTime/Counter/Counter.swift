@@ -34,7 +34,7 @@ public func counterReducer(state: inout CounterState, action: CounterAction) -> 
         .map(CounterAction.nthPrimeResponse)
         .observeOn(MainScheduler.instance)
         .asEffect()
-  ]
+    ]
 
   case let .nthPrimeResponse(prime):
     state.alertNthPrime = prime.map(PrimeAlert.init(prime:))
