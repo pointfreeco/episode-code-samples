@@ -107,10 +107,16 @@ public func logging<Value, Action>(
 }
 
 extension Effect {
-  
   public static func fireAndForget(work: @escaping () -> Void) -> Effect<Value> {
     return Effect<Value> { observer , _  -> () in
       work()
+      observer.sendCompleted()
+    }
+  }
+  
+  public static func sync(work: @escaping () -> Value) -> Effect<Value> {
+    return Effect { observer, lifetime in
+      observer.send(value:  work())
       observer.sendCompleted()
     }
   }

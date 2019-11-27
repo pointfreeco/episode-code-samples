@@ -43,16 +43,15 @@ private func saveEffect(favoritePrimes: [Int]) -> Effect<FavoritePrimesAction> {
 
 import Combine
 
-private let loadEffect = Effect<FavoritePrimesAction?> { obs, _ in
+private let loadEffect = Effect<FavoritePrimesAction?>.sync {
   let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
   let documentsUrl = URL(fileURLWithPath: documentsPath)
   let favoritePrimesUrl = documentsUrl.appendingPathComponent("favorite-primes.json")
   guard
     let data = try? Data(contentsOf: favoritePrimesUrl),
     let favoritePrimes = try? JSONDecoder().decode([Int].self, from: data)
-    else { return  }
-    obs.send(value: .loadedFavoritePrimes(favoritePrimes))
-    obs.sendCompleted()
+    else { return nil  }
+    return .loadedFavoritePrimes(favoritePrimes)
 }
 
 public struct FavoritePrimesView: View {

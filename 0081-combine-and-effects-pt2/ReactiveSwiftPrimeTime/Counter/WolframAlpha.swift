@@ -54,5 +54,4 @@ func wolframAlpha(query: String) -> Effect<WolframAlphaResult?> {
     }
     .skipNil()
     .filterMap { try? JSONDecoder.init().decode(WolframAlphaResult.self, from: $0) }
-    .map { WolframAlphaResult.init(queryresult: $0.queryresult)}
 }
