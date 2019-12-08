@@ -28,6 +28,13 @@ extension Effect {
   }
 }
 
+public extension Effect {
+  static func emptyEffect(completeImmediately: Bool = true) -> Effect {
+    return Empty<Output, Never>(completeImmediately: completeImmediately).eraseToEffect()
+  }
+}
+
+
 extension Publisher where Failure == Never {
   public func eraseToEffect() -> Effect<Output> {
     return Effect(publisher: self.eraseToAnyPublisher())
