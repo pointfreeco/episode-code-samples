@@ -9,7 +9,7 @@ class PrimeModalTests: XCTestCase {
     let (count, favoritePrimes) = state
     XCTAssertEqual(count, 2)
     XCTAssertEqual(favoritePrimes, [3, 5, 2])
-    XCTAssert(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
   }
 
   func testRemoveFavoritesPrimesTapped() {
@@ -19,6 +19,6 @@ class PrimeModalTests: XCTestCase {
     let (count, favoritePrimes) = state
     XCTAssertEqual(count, 3)
     XCTAssertEqual(favoritePrimes, [5])
-    XCTAssert(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
   }
 }

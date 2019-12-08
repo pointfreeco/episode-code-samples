@@ -41,7 +41,7 @@ extension Publisher where Failure == Never {
   }
 }
 
-public typealias Reducer<Value, Action> = (inout Value, Action) -> [Effect<Action>]
+public typealias Reducer<Value, Action> = (inout Value, Action) -> Effect<Action>
 
 public final class Store<Value, Action>: ObservableObject {
   private let reducer: Reducer<Value, Action>
@@ -55,21 +55,19 @@ public final class Store<Value, Action>: ObservableObject {
   }
 
   public func send(_ action: Action) {
-    let effects = self.reducer(&self.value, action)
-    effects.forEach { effect in
-      var effectCancellable: AnyCancellable?
-      var didComplete = false
-      effectCancellable = effect.sink(
-        receiveCompletion: { [weak self] _ in
-          didComplete = true
-          guard let effectCancellable = effectCancellable else { return }
-          self?.effectCancellables.remove(effectCancellable)
+    let effect = self.reducer(&self.value, action)
+    var effectCancellable: AnyCancellable?
+    var didComplete = false
+    effectCancellable = effect.sink(
+      receiveCompletion: { [weak self] _ in
+        didComplete = true
+        guard let effectCancellable = effectCancellable else { return }
+        self?.effectCancellables.remove(effectCancellable)
       },
-        receiveValue: self.send
-      )
-      if !didComplete, let effectCancellable = effectCancellable {
-        self.effectCancellables.insert(effectCancellable)
-      }
+      receiveValue: self.send
+    )
+    if !didComplete, let effectCancellable = effectCancellable {
+      self.effectCancellables.insert(effectCancellable)
     }
   }
 
@@ -82,7 +80,7 @@ public final class Store<Value, Action>: ObservableObject {
       reducer: { localValue, localAction in
         self.send(toGlobalAction(localAction))
         localValue = toLocalValue(self.value)
-        return []
+        return .emptyEffect()
     }
     )
     localStore.viewCancellable = self.$value.sink { [weak localStore] newValue in
@@ -97,7 +95,7 @@ public func combine<Value, Action>(
 ) -> Reducer<Value, Action> {
   return { value, action in
     let effects = reducers.flatMap { $0(&value, action) }
-    return effects
+    return Publishers.MergeMany(effects).eraseToEffect()
   }
 }
 
@@ -107,17 +105,15 @@ public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction>(
   action: WritableKeyPath<GlobalAction, LocalAction?>
 ) -> Reducer<GlobalValue, GlobalAction> {
   return { globalValue, globalAction in
-    guard let localAction = globalAction[keyPath: action] else { return [] }
-    let localEffects = reducer(&globalValue[keyPath: value], localAction)
-
-    return localEffects.map { localEffect in
-      localEffect.map { localAction -> GlobalAction in
-        var globalAction = globalAction
-        globalAction[keyPath: action] = localAction
-        return globalAction
-      }
-      .eraseToEffect()
+    guard let localAction = globalAction[keyPath: action] else { return .emptyEffect() }
+    let localEffect = reducer(&globalValue[keyPath: value], localAction)
+    
+    return localEffect.map { localAction -> GlobalAction in
+      var globalAction = globalAction
+      globalAction[keyPath: action] = localAction
+      return globalAction
     }
+    .eraseToEffect()
   }
 }
 
@@ -125,13 +121,15 @@ public func logging<Value, Action>(
   _ reducer: @escaping Reducer<Value, Action>
 ) -> Reducer<Value, Action> {
   return { value, action in
-    let effects = reducer(&value, action)
+    let effect = reducer(&value, action)
     let newValue = value
-    return [.fireAndForget {
+    return Effect<Action>.fireAndForget {
       print("Action: \(action)")
       print("Value:")
       dump(newValue)
       print("---")
-      }] + effects
+    }
+    .merge(with: effect)
+    .eraseToEffect()
   }
 }

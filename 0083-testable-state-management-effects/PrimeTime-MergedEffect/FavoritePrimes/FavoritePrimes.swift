@@ -8,39 +8,30 @@ public enum FavoritePrimesAction: Equatable {
   case saveButtonTapped
 }
 
-public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesAction) -> [Effect<FavoritePrimesAction>] {
+public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesAction) -> Effect<FavoritePrimesAction> {
   switch action {
   case let .deleteFavoritePrimes(indexSet):
     for index in indexSet {
       state.remove(at: index)
     }
-    return [
-    ]
-
+    return .emptyEffect()
+    
   case let .loadedFavoritePrimes(favoritePrimes):
     state = favoritePrimes
-    return []
-
+    return .emptyEffect()
+    
   case .saveButtonTapped:
-    return [
+    return
       Current.fileClient.save("favorite-primes.json", try! JSONEncoder().encode(state))
         .fireAndForget()
-//      saveEffect(favoritePrimes: state)
-    ]
-
+    
   case .loadButtonTapped:
-    return [
-      Current.fileClient.load("favorite-primes.json")
-        .compactMap { $0 }
-        .decode(type: [Int].self, decoder: JSONDecoder())
-        .catch { error in Empty(completeImmediately: true) }
-        .map(FavoritePrimesAction.loadedFavoritePrimes)
-//        .merge(with: Just(FavoritePrimesAction.loadedFavoritePrimes([2, 31])))
-        .eraseToEffect()
-//      loadEffect
-//        .compactMap { $0 }
-//        .eraseToEffect()
-    ]
+    return Current.fileClient.load("favorite-primes.json")
+      .compactMap { $0 }
+      .decode(type: [Int].self, decoder: JSONDecoder())
+      .catch { error in Empty(completeImmediately: true) }
+      .map(FavoritePrimesAction.loadedFavoritePrimes)
+      .eraseToEffect()
   }
 }
 

@@ -12,7 +12,7 @@ class FavoritePrimesTests: XCTestCase {
     let effects = favoritePrimesReducer(state: &state, action: .deleteFavoritePrimes([2]))
 
     XCTAssertEqual(state, [2, 3, 7])
-    XCTAssert(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
   }
 
   func testSaveButtonTapped() {
@@ -27,9 +27,9 @@ class FavoritePrimesTests: XCTestCase {
     let effects = favoritePrimesReducer(state: &state, action: .saveButtonTapped)
 
     XCTAssertEqual(state, [2, 3, 5, 7])
-    XCTAssertEqual(effects.count, 1)
+//    XCTAssertEqual(effects.count, 1)
 
-    effects[0].sink { _ in XCTFail() }
+    effects.sink { _ in XCTFail() }
 
     XCTAssert(didSave)
   }
@@ -41,11 +41,11 @@ class FavoritePrimesTests: XCTestCase {
     var effects = favoritePrimesReducer(state: &state, action: .loadButtonTapped)
 
     XCTAssertEqual(state, [2, 3, 5, 7])
-    XCTAssertEqual(effects.count, 1)
+//    XCTAssertEqual(effects.count, 1)
 
     var nextAction: FavoritePrimesAction!
     let receivedCompletion = self.expectation(description: "receivedCompletion")
-    effects[0].sink(
+    effects.sink(
       receiveCompletion: { _ in
         receivedCompletion.fulfill()
     },
@@ -58,7 +58,7 @@ class FavoritePrimesTests: XCTestCase {
     effects = favoritePrimesReducer(state: &state, action: nextAction)
 
     XCTAssertEqual(state, [2, 31])
-    XCTAssert(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
   }
 
 }

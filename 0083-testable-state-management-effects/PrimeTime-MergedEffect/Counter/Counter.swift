@@ -16,34 +16,31 @@ public typealias CounterState = (
   isNthPrimeButtonDisabled: Bool
 )
 
-public func counterReducer(state: inout CounterState, action: CounterAction) -> [Effect<CounterAction>] {
+public func counterReducer(state: inout CounterState, action: CounterAction) -> Effect<CounterAction> {
   switch action {
   case .decrTapped:
     state.count -= 1
-    return []
+    return .emptyEffect()
 
   case .incrTapped:
     state.count += 1
-    return []
+    return .emptyEffect()
 
   case .nthPrimeButtonTapped:
     state.isNthPrimeButtonDisabled = true
-    return [
-//      nthPrime(state.count)
-      Current.nthPrime(state.count)
-        .map(CounterAction.nthPrimeResponse)
-        .receive(on: DispatchQueue.main)
-        .eraseToEffect()
-  ]
+    return Current.nthPrime(state.count)
+      .map(CounterAction.nthPrimeResponse)
+      .receive(on: DispatchQueue.main)
+      .eraseToEffect()
 
   case let .nthPrimeResponse(prime):
     state.alertNthPrime = prime.map(PrimeAlert.init(prime:))
     state.isNthPrimeButtonDisabled = false
-    return []
+    return .emptyEffect()
 
   case .alertDismissButtonTapped:
     state.alertNthPrime = nil
-    return []
+    return .emptyEffect()
   }
 }
 

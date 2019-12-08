@@ -25,7 +25,7 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: false
       )
     )
-    XCTAssertTrue(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
   }
 
   func testDecrButtonTapped() {
@@ -46,7 +46,7 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: false
       )
     )
-    XCTAssertTrue(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
   }
 
   func testNthPrimeButtonHappyFlow() {
@@ -70,11 +70,11 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: true
       )
     )
-    XCTAssertEqual(effects.count, 1)
+//    XCTAssertEqual(effects.count, 1)
 
     var nextAction: CounterViewAction!
     let receivedCompletion = self.expectation(description: "receivedCompletion")
-    effects[0].sink(
+    effects.sink(
       receiveCompletion: { _ in
         receivedCompletion.fulfill()
     },
@@ -96,7 +96,7 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: false
       )
     )
-    XCTAssertTrue(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
 
     effects = counterViewReducer(&state, .counter(.alertDismissButtonTapped))
 
@@ -109,7 +109,7 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: false
       )
     )
-    XCTAssertTrue(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
   }
 
   func testNthPrimeButtonUnhappyFlow() {
@@ -133,12 +133,12 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: true
       )
     )
-    XCTAssertEqual(effects.count, 1)
+//    XCTAssertEqual(effects.count, 1)
 
 
     var nextAction: CounterViewAction!
     let receivedCompletion = self.expectation(description: "receivedCompletion")
-    effects[0].sink(
+    effects.sink(
       receiveCompletion: { _ in
         receivedCompletion.fulfill()
     },
@@ -162,7 +162,7 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: false
       )
     )
-    XCTAssertTrue(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
   }
 
   func testPrimeModal() {
@@ -184,7 +184,7 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: false
       )
     )
-    XCTAssert(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
 
     effects = counterViewReducer(&state, .primeModal(.removeFavoritePrimeTapped))
 
@@ -197,7 +197,7 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: false
       )
     )
-    XCTAssert(effects.isEmpty)
+    effects.sink { _ in XCTFail() }
   }
 
 }
