@@ -1,3 +1,4 @@
+import Combine
 import ComposableArchitecture
 import XCTest
 
@@ -37,6 +38,7 @@ func assert<Value: Equatable, Action: Equatable>(
 ) {
   var state = initialValue
   var effects: [Effect<Action>] = []
+  var cancellables: [AnyCancellable] = []
 
   steps.forEach { step in
     var expected = state
@@ -56,11 +58,13 @@ func assert<Value: Equatable, Action: Equatable>(
       let effect = effects.removeFirst()
       var action: Action!
       let receivedCompletion = XCTestExpectation(description: "receivedCompletion")
-      _ = effect.sink(
-        receiveCompletion: { _ in
-          receivedCompletion.fulfill()
-      },
-        receiveValue: { action = $0 }
+      cancellables.append(
+        effect.sink(
+          receiveCompletion: { _ in
+            receivedCompletion.fulfill()
+        },
+          receiveValue: { action = $0 }
+        )
       )
       if XCTWaiter.wait(for: [receivedCompletion], timeout: 0.01) != .completed {
         XCTFail("Timed out waiting for the effect to complete", file: step.file, line: step.line)
