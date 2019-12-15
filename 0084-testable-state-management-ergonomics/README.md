@@ -2,4 +2,4 @@
 
 > #### This directory contains code from Point-Free Episode: [Testable State Management: Ergonomics](https://www.pointfree.co/episodes/ep84-testable-state-management-ergonomics)
 >
-> We have developed a super testable architecture, but the tests we have written involve a lot of ceremony. Those tests all look alike, though, so let's see if we can abstract away the ceremony with a function that describes exactly what we care about and nothing more.
+> We not only want our architecture to be testable, but we want it to be super easy to write tests, and perhaps even a joy to write tests! Right now there is a bit of ceremony involved in writing tests, so we will show how to hide away those details behind a nice, ergonomic API.
