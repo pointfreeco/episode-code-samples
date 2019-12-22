@@ -88,3 +88,4 @@ This repository is the home of code written on episodes of
 1. [Effectful State Management: Effects](0083-testable-state-management-effects)
 1. [Effectful State Management: Ergonomics](0084-testable-state-management-ergonomics)
 1. [Effectful State Management: The Point](0085-testable-state-management-the-point)
+1. [Effectful State Management: The Point](0086-swiftui-snapshot-testing)
