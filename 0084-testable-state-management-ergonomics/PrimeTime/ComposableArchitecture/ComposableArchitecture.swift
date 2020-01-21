@@ -36,9 +36,18 @@ extension Publisher where Failure == Never {
 
 public typealias Reducer<Value, Action> = (inout Value, Action) -> [Effect<Action>]
 
-public final class Store<Value, Action>: ObservableObject {
+public final class ViewState<Value>: ObservableObject {
+    @Published public fileprivate(set) var value: Value
+    fileprivate var viewCancellable: Cancellable?
+
+    public init(initialValue: Value) {
+        self.value = initialValue 
+    }
+}
+
+public final class Store<Value, Action> {
   private let reducer: Reducer<Value, Action>
-  @Published public private(set) var value: Value
+  @Published private var value: Value
   private var viewCancellable: Cancellable?
   private var effectCancellables: Set<AnyCancellable> = []
 
@@ -46,6 +55,27 @@ public final class Store<Value, Action>: ObservableObject {
     self.reducer = reducer
     self.value = initialValue
   }
+
+    public func viewState<NewValue>(
+        _ f: @escaping (Value) -> NewValue,
+        isEqual: @escaping (NewValue, NewValue) -> Bool
+    ) -> ViewState<NewValue> {
+        let vs = ViewState(initialValue: f(self.value))
+        vs.viewCancellable = self.$value.map(f).removeDuplicates(by: isEqual).sink { [weak vs] newValue in
+          vs?.value = newValue
+        }
+        return vs
+    }
+
+    public func viewState<NewValue: Equatable>(
+        _ f: @escaping (Value) -> NewValue
+    ) -> ViewState<NewValue> {
+        let vs = ViewState(initialValue: f(self.value))
+        vs.viewCancellable = self.$value.map(f).removeDuplicates().sink { [weak vs] newValue in
+          vs?.value = newValue
+        }
+        return vs
+    }
 
   public func send(_ action: Action) {
     let effects = self.reducer(&self.value, action)

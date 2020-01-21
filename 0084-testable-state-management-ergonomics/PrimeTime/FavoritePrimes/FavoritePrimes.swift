@@ -159,15 +159,17 @@ extension FavoritePrimesEnvironment {
 //}
 
 public struct FavoritePrimesView: View {
-  @ObservedObject var store: Store<[Int], FavoritePrimesAction>
+    @ObservedObject var viewState: ViewState<[Int]>
+  let store: Store<[Int], FavoritePrimesAction>
 
   public init(store: Store<[Int], FavoritePrimesAction>) {
     self.store = store
+    self.viewState = store.viewState({ $0 })
   }
 
   public var body: some View {
     List {
-      ForEach(self.store.value, id: \.self) { prime in
+      ForEach(self.viewState.value, id: \.self) { prime in
         Text("\(prime)")
       }
       .onDelete { indexSet in

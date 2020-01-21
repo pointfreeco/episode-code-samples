@@ -108,7 +108,7 @@ func activityFeed(
 }
 
 struct ContentView: View {
-  @ObservedObject var store: Store<AppState, AppAction>
+  let store: Store<AppState, AppAction>
 
   var body: some View {
     NavigationView {
