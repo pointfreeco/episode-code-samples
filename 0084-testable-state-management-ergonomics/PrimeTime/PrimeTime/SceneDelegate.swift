@@ -18,10 +18,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 logging,
                 activityFeed
               )
-            ),
-            environment: AppEnvironment(
-              counterEnvironment: .live,
-              favoritePrimesEnvironment: .live
             )
           )
         )
