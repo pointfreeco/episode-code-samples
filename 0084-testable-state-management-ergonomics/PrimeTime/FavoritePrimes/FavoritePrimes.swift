@@ -8,7 +8,7 @@ public enum FavoritePrimesAction: Equatable {
   case saveButtonTapped
 }
 
-public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesAction) -> [Effect<FavoritePrimesAction>] {
+public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesAction, environment: FavoritePrimesEnvironment) -> [Effect<FavoritePrimesAction>] {
   switch action {
   case let .deleteFavoritePrimes(indexSet):
     for index in indexSet {
@@ -23,14 +23,14 @@ public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesActi
 
   case .saveButtonTapped:
     return [
-      Current.fileClient.save("favorite-primes.json", try! JSONEncoder().encode(state))
+      environment.fileClient.save("favorite-primes.json", try! JSONEncoder().encode(state))
         .fireAndForget()
 //      saveEffect(favoritePrimes: state)
     ]
 
   case .loadButtonTapped:
     return [
-      Current.fileClient.load("favorite-primes.json")
+      environment.fileClient.load("favorite-primes.json")
         .compactMap { $0 }
         .decode(type: [Int].self, decoder: JSONDecoder())
         .catch { error in Empty(completeImmediately: true) }
@@ -58,9 +58,9 @@ extension Publisher where Output == Never, Failure == Never {
 func absurd<A>(_ never: Never) -> A {}
 
 
-struct FileClient {
-  var load: (String) -> Effect<Data?>
-  var save: (String, Data) -> Effect<Never>
+public struct FileClient {
+  public var load: (String) -> Effect<Data?>
+  public var save: (String, Data) -> Effect<Never>
 }
 extension FileClient {
   static let live = FileClient(
@@ -83,14 +83,14 @@ extension FileClient {
   )
 }
 
-struct FavoritePrimesEnvironment {
-  var fileClient: FileClient
+public struct FavoritePrimesEnvironment {
+  public var fileClient: FileClient
 }
 extension FavoritePrimesEnvironment {
-  static let live = FavoritePrimesEnvironment(fileClient: .live)
+  public static let live = FavoritePrimesEnvironment(fileClient: .live)
 }
 
-var Current = FavoritePrimesEnvironment.live
+//var Current = FavoritePrimesEnvironment.live
 
 #if DEBUG
 extension FavoritePrimesEnvironment {
