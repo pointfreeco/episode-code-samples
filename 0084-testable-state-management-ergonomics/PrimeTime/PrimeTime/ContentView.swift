@@ -75,16 +75,32 @@ extension AppState {
   }
 }
 
-let appReducer = combine(
-  pullback(counterViewReducer, value: \AppState.counterView, action: \AppAction.counterView),
-  pullback(favoritePrimesReducer, value: \.favoritePrimes, action: \.favoritePrimes)
+
+struct AppEnvironment {
+  var counterEnvironment: CounterEnvironment
+  var favoritePrimesEnvironment: FavoritePrimesEnvironment
+}
+
+let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
+  pullback(
+    counterViewReducer,
+    value: \AppState.counterView,
+    action: \AppAction.counterView,
+    environment: { $0.counterEnvironment }
+  ),
+  pullback(
+    favoritePrimesReducer,
+    value: \.favoritePrimes,
+    action: \.favoritePrimes,
+    environment: { $0.favoritePrimesEnvironment }
+  )
 )
 
 func activityFeed(
-  _ reducer: @escaping Reducer<AppState, AppAction>
-) -> Reducer<AppState, AppAction> {
+  _ reducer: @escaping Reducer<AppState, AppAction, AppEnvironment>
+) -> Reducer<AppState, AppAction, AppEnvironment> {
 
-  return { state, action in
+  return { state, action, environment in
     switch action {
     case .counterView(.counter),
          .favoritePrimes(.loadedFavoritePrimes),
@@ -103,7 +119,7 @@ func activityFeed(
       }
     }
 
-    return reducer(&state, action)
+    return reducer(&state, action, environment)
   }
 }
 

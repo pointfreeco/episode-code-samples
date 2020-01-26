@@ -3,19 +3,20 @@ import ComposableArchitecture
 import PlaygroundSupport
 import SwiftUI
 
-Current = .mock
-Current.nthPrime = { _ in .sync { 7236893748932 }}
+var environment = CounterEnvironment.mock
+environment.nthPrime = { _ in .sync { 7236893748932 }}
 
 PlaygroundPage.current.liveView = UIHostingController(
   rootView: CounterView(
     store: Store<CounterViewState, CounterViewAction>(
       initialValue: CounterViewState(
         alertNthPrime: nil,
-        count: 0,
+        count: 100,
         favoritePrimes: [],
         isNthPrimeButtonDisabled: false
       ),
-      reducer: logging(counterViewReducer)
+      reducer: logging(counterViewReducer),
+      environment: environment
     )
   )
 )

@@ -8,7 +8,7 @@ public enum FavoritePrimesAction: Equatable {
   case saveButtonTapped
 }
 
-public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesAction) -> [Effect<FavoritePrimesAction>] {
+public let favoritePrimesReducer: Reducer<[Int], FavoritePrimesAction, FavoritePrimesEnvironment> = { state, action, environment in
   switch action {
   case let .deleteFavoritePrimes(indexSet):
     for index in indexSet {
@@ -23,14 +23,14 @@ public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesActi
 
   case .saveButtonTapped:
     return [
-      Current.fileClient.save("favorite-primes.json", try! JSONEncoder().encode(state))
+      environment.fileClient.save("favorite-primes.json", try! JSONEncoder().encode(state))
         .fireAndForget()
 //      saveEffect(favoritePrimes: state)
     ]
 
   case .loadButtonTapped:
     return [
-      Current.fileClient.load("favorite-primes.json")
+      environment.fileClient.load("favorite-primes.json")
         .compactMap { $0 }
         .decode(type: [Int].self, decoder: JSONDecoder())
         .catch { error in Empty(completeImmediately: true) }
@@ -58,12 +58,20 @@ extension Publisher where Output == Never, Failure == Never {
 func absurd<A>(_ never: Never) -> A {}
 
 
-struct FileClient {
-  var load: (String) -> Effect<Data?>
-  var save: (String, Data) -> Effect<Never>
+public struct FileClient {
+  public var load: (String) -> Effect<Data?>
+  public var save: (String, Data) -> Effect<Never>
+
+  public init(
+    load: @escaping (String) -> Effect<Data?>,
+    save: @escaping (String, Data) -> Effect<Never>
+  ) {
+    self.load = load
+    self.save = save
+  }
 }
 extension FileClient {
-  static let live = FileClient(
+  public static let live = FileClient(
     load: { fileName -> Effect<Data?> in
       .sync {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
@@ -83,14 +91,18 @@ extension FileClient {
   )
 }
 
-struct FavoritePrimesEnvironment {
-  var fileClient: FileClient
+public struct FavoritePrimesEnvironment {
+  public var fileClient: FileClient
+
+  public init(fileClient: FileClient) {
+    self.fileClient = fileClient
+  }
 }
 extension FavoritePrimesEnvironment {
-  static let live = FavoritePrimesEnvironment(fileClient: .live)
+  public static let live = FavoritePrimesEnvironment(fileClient: .live)
 }
 
-var Current = FavoritePrimesEnvironment.live
+//var Current = FavoritePrimesEnvironment.live
 
 #if DEBUG
 extension FavoritePrimesEnvironment {
@@ -185,5 +197,19 @@ public struct FavoritePrimesView: View {
         }
       }
     )
+  }
+}
+
+struct FavoritePrimesView_Preview: PreviewProvider {
+  static var previews: some View {
+    NavigationView {
+      FavoritePrimesView(
+        store: Store(
+          initialValue: [2, 3, 5, 7],
+          reducer: favoritePrimesReducer,
+          environment: .mock
+        )
+      )
+    }
   }
 }

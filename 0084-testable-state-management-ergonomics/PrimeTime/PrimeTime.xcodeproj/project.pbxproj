@@ -661,6 +661,7 @@
 				DCF0C5FE2326036F008B45A0 /* Sources */,
 				DCF0C5FF2326036F008B45A0 /* Frameworks */,
 				DCF0C6002326036F008B45A0 /* Resources */,
+				CAD1C0D923DE09E40018C06E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -841,6 +842,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CAD1C0D923DE09E40018C06E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -R \"$BUILT_PRODUCTS_DIR/ComposableArchitecture.framework\" \"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DC90716822FA102900B38B42 /* Sources */ = {
