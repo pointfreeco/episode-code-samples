@@ -2,7 +2,7 @@ import XCTest
 @testable import FavoritePrimes
 
 class FavoritePrimesTests: XCTestCase {
-  override class func setUp() {
+  override func setUp() {
     super.setUp()
     Current = .mock
   }
