@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B5A062223E9EE6800419B93 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A062123E9EE6800419B93 /* Effect.swift */; };
 		CA675A56238072DB00724A38 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */; };
 		CA79FC28239C158C0096D881 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = CA79FC27239C158C0096D881 /* SnapshotTesting */; };
 		CA79FC30239C23310096D881 /* PrimeTimeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */; };
@@ -189,6 +190,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4B5A062123E9EE6800419B93 /* Effect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Effect.swift; sourceTree = "<group>"; };
 		CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitectureTestSupport.swift; sourceTree = "<group>"; };
 		CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrimeTimeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeTimeUITests.swift; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 			children = (
 				DCF0C59D2326032B008B45A0 /* ComposableArchitecture.h */,
 				DCF0C627232603B7008B45A0 /* ComposableArchitecture.swift */,
+				4B5A062123E9EE6800419B93 /* Effect.swift */,
 				DCF0C59E2326032B008B45A0 /* Info.plist */,
 			);
 			path = ComposableArchitecture;
@@ -948,6 +951,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B5A062223E9EE6800419B93 /* Effect.swift in Sources */,
 				DCF0C628232603B7008B45A0 /* ComposableArchitecture.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
