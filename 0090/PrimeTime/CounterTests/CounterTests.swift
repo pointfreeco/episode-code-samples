@@ -28,11 +28,11 @@ extension Snapshotting where Value: UIViewController, Format == UIImage {
 class CounterTests: XCTestCase {
   override func setUp() {
     super.setUp()
-    Current = .mock
+//    Current = .mock
   }
 
   func testSnapshots() {
-    let store = Store(initialValue: CounterViewState(), reducer: counterViewReducer)
+    let store = Store(initialValue: CounterViewState(), reducer: counterViewReducer, environment: .mock)
     let view = CounterView(store: store)
 
     let vc = UIHostingController(rootView: view)
@@ -80,6 +80,7 @@ class CounterTests: XCTestCase {
     assert(
       initialValue: CounterViewState(count: 2),
       reducer: counterViewReducer,
+      environment: .mock,
       steps:
       Step(.send, .counter(.incrTapped)) { $0.count = 3 },
       Step(.send, .counter(.incrTapped)) { $0.count = 4 },
@@ -88,14 +89,13 @@ class CounterTests: XCTestCase {
   }
 
   func testNthPrimeButtonHappyFlow() {
-    Current.nthPrime = { _ in .sync { 17 } }
-
     assert(
       initialValue: CounterViewState(
         alertNthPrime: nil,
         isNthPrimeButtonDisabled: false
       ),
       reducer: counterViewReducer,
+      environment: CounterEnvironment(nthPrime: { _ in .sync { 17 } }),
       steps:
       Step(.send, .counter(.nthPrimeButtonTapped)) {
         $0.isNthPrimeButtonDisabled = true
@@ -111,14 +111,13 @@ class CounterTests: XCTestCase {
   }
 
   func testNthPrimeButtonUnhappyFlow() {
-    Current.nthPrime = { _ in .sync { nil } }
-
     assert(
       initialValue: CounterViewState(
         alertNthPrime: nil,
         isNthPrimeButtonDisabled: false
       ),
       reducer: counterViewReducer,
+      environment: CounterEnvironment(nthPrime: { _ in .sync { nil } }),
       steps:
       Step(.send, .counter(.nthPrimeButtonTapped)) {
         $0.isNthPrimeButtonDisabled = true
@@ -136,6 +135,7 @@ class CounterTests: XCTestCase {
         favoritePrimes: [3, 5]
       ),
       reducer: counterViewReducer,
+      environment: .mock,
       steps:
       Step(.send, .primeModal(.saveFavoritePrimeTapped)) {
         $0.favoritePrimes = [3, 5, 2]

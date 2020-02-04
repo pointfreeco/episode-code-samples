@@ -4,7 +4,7 @@ import XCTest
 class PrimeTimeUITests: XCTestCase {
   override func setUp() {
     continueAfterFailure = false
-    Current = .mock
+//    Current = .mock
   }
 
   func testExample() {
