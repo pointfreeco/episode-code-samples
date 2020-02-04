@@ -19,11 +19,22 @@ public typealias CounterState = (
   isPrimeModalShown: Bool
 )
 
+import Combine
+
 public func counterReducer(state: inout CounterState, action: CounterAction) -> [Effect<CounterAction>] {
   switch action {
   case .decrTapped:
     state.count -= 1
-    return []
+    let count = state.count
+    return [
+      .fireAndForget {
+        print("Decr Tapped", count)
+      },
+
+      Just(.incrTapped)
+        .delay(for: 1, scheduler: DispatchQueue.main)
+        .eraseToEffect()
+    ]
 
   case .incrTapped:
     state.count += 1
@@ -67,9 +78,11 @@ extension CounterEnvironment {
 
 var Current = CounterEnvironment.live
 
+#if DEBUG
 extension CounterEnvironment {
   static let mock = CounterEnvironment(nthPrime: { _ in .sync { 17 }})
 }
+#endif
 
 import CasePaths
 
