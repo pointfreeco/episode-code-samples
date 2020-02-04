@@ -139,6 +139,15 @@ struct ContentView: View {
           )
         )
         NavigationLink(
+          "Counter demo w/ local nthPrime",
+          destination: CounterView(
+            store: self.store.view(
+              value: { $0.counterView },
+              action: { .counterView($0) }
+            )
+          )
+        )
+        NavigationLink(
           "Favorite primes",
           destination: FavoritePrimesView(
             store: self.store.view(

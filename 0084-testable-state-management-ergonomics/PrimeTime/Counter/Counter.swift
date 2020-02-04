@@ -22,9 +22,9 @@ public let counterReducer: Reducer<CounterState, CounterAction, CounterEnvironme
   case .decrTapped:
     state.count -= 1
     return [
-      Just(.incrTapped)
-        .delay(for: 1, scheduler: DispatchQueue.main)
-        .eraseToEffect()
+//      Just(.incrTapped)
+//        .delay(for: 1, scheduler: DispatchQueue.main)
+//        .eraseToEffect()
     ]
 
   case .incrTapped:

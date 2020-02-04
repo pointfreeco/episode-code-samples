@@ -2,15 +2,11 @@ import XCTest
 @testable import Counter
 
 class CounterTests: XCTestCase {
-  override func setUp() {
-    super.setUp()
-    Current = .mock
-  }
-
   func testIncrDecrButtonTapped() {
     assert(
       initialValue: CounterViewState(count: 2),
       reducer: counterViewReducer,
+      environment: .mock,
       steps:
       Step(.send, .counter(.incrTapped)) { $0.count = 3 },
       Step(.send, .counter(.incrTapped)) { $0.count = 4 },
@@ -19,7 +15,9 @@ class CounterTests: XCTestCase {
   }
 
   func testNthPrimeButtonHappyFlow() {
-    Current.nthPrime = { _ in .sync { 17 } }
+    let environment = CounterEnvironment(
+      nthPrime: { _ in .sync { 17 } }
+    )
 
     assert(
       initialValue: CounterViewState(
@@ -27,6 +25,7 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: false
       ),
       reducer: counterViewReducer,
+      environment: environment,
       steps:
       Step(.send, .counter(.nthPrimeButtonTapped)) {
         $0.isNthPrimeButtonDisabled = true
@@ -42,7 +41,7 @@ class CounterTests: XCTestCase {
   }
 
   func testNthPrimeButtonUnhappyFlow() {
-    Current.nthPrime = { _ in .sync { nil } }
+    let environment = CounterEnvironment(nthPrime: { _ in .sync { nil } })
 
     assert(
       initialValue: CounterViewState(
@@ -50,6 +49,7 @@ class CounterTests: XCTestCase {
         isNthPrimeButtonDisabled: false
       ),
       reducer: counterViewReducer,
+      environment: environment,
       steps:
       Step(.send, .counter(.nthPrimeButtonTapped)) {
         $0.isNthPrimeButtonDisabled = true
@@ -60,23 +60,24 @@ class CounterTests: XCTestCase {
     )
   }
 
-  func testPrimeModal() {
-    assert(
-      initialValue: CounterViewState(
-        count: 1,
-        favoritePrimes: [3, 5]
-      ),
-      reducer: counterViewReducer,
-      steps:
-      Step(.send, .counter(.incrTapped)) {
-        $0.count = 2
-      },
-      Step(.send, .primeModal(.saveFavoritePrimeTapped)) {
-        $0.favoritePrimes = [3, 5, 2]
-      },
-      Step(.send, .primeModal(.removeFavoritePrimeTapped)) {
-        $0.favoritePrimes = [3, 5]
-      }
-    )
-  }
+func testPrimeModal() {
+  assert(
+    initialValue: CounterViewState(
+      count: 1,
+      favoritePrimes: [3, 5]
+    ),
+    reducer: counterViewReducer,
+    environment: .mock,
+    steps:
+    Step(.send, .counter(.incrTapped)) {
+      $0.count = 2
+    },
+    Step(.send, .primeModal(.saveFavoritePrimeTapped)) {
+      $0.favoritePrimes = [3, 5, 2]
+    },
+    Step(.send, .primeModal(.removeFavoritePrimeTapped)) {
+      $0.favoritePrimes = [3, 5]
+    }
+  )
+}
 }
