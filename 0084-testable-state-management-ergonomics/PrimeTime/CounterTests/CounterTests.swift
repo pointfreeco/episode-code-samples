@@ -2,7 +2,7 @@ import XCTest
 @testable import Counter
 
 class CounterTests: XCTestCase {
-  override class func setUp() {
+  override func setUp() {
     super.setUp()
     Current = .mock
   }

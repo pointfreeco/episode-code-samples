@@ -1,3 +1,4 @@
+import Combine
 import ComposableArchitecture
 import PrimeModal
 import SwiftUI
@@ -21,7 +22,9 @@ public let counterReducer: Reducer<CounterState, CounterAction, CounterEnvironme
   case .decrTapped:
     state.count -= 1
     return [
-//      Effect
+      Just(.incrTapped)
+        .delay(for: 1, scheduler: DispatchQueue.main)
+        .eraseToEffect()
     ]
 
   case .incrTapped:

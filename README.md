@@ -90,3 +90,5 @@ This repository is the home of code written on episodes of
 1. [Effectful State Management: The Point](0085-testable-state-management-the-point)
 1. [SwiftUI Snapshot Testing](0086-swiftui-snapshot-testing)
 1. [The Case for Case Paths: Introduction](0087-the-case-for-case-paths-pt1)
+1. [The Case for Case Paths: Properties](0088-the-case-for-case-paths-pt2)
+1. [Case Paths for Free](0089-the-case-for-case-paths-pt3)
