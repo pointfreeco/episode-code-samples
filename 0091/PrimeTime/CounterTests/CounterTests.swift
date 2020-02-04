@@ -130,13 +130,18 @@ class CounterTests: XCTestCase {
   }
 
   func testPrimeModal() {
+    Current = .mock
+    
     assert(
       initialValue: CounterViewState(
-        count: 2,
+        count: 1,
         favoritePrimes: [3, 5]
       ),
       reducer: counterViewReducer,
       steps:
+      Step(.send, .counter(.incrTapped)) {
+        $0.count = 2
+      },
       Step(.send, .primeModal(.saveFavoritePrimeTapped)) {
         $0.favoritePrimes = [3, 5, 2]
       },
