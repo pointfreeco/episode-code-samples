@@ -60,6 +60,10 @@ public func counterReducer(state: inout CounterState, action: CounterAction, env
 
 public struct CounterEnvironment {
   public var nthPrime: (Int) -> Effect<Int?>
+
+  public init(nthPrime: @escaping (Int) -> Effect<Int?>) {
+    self.nthPrime = nthPrime
+  }
 }
 
 extension CounterEnvironment {

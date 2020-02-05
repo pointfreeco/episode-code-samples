@@ -19,7 +19,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 activityFeed
               )
             ),
-            environment: AppEnvironment(counter: .live, favoritePrimes: .live)
+            environment: AppEnvironment(
+              counter: .live,
+              favoritePrimes: .live,
+              offlineNthPrime: offlineNthPrime
+            )
           )
         )
       )
@@ -27,4 +31,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.makeKeyAndVisible()
     }
   }
+}
+
+import Combine
+import PrimeModal
+
+private func offlineNthPrime(_ n: Int) -> Effect<Int?> {
+  return Future { callback in
+    var primeCount = 0
+    var index = 1
+    while primeCount < n {
+      index += 1
+      if isPrime(index) {
+        primeCount += 1
+      }
+    }
+    callback(.success(index))
+  }
+  .subscribe(on: DispatchQueue.global())
+  .receive(on: DispatchQueue.main)
+  .eraseToEffect()
 }

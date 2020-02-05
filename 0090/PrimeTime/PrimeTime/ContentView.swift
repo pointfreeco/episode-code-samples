@@ -32,6 +32,7 @@ struct AppState {
 
 enum AppAction {
   case counterView(CounterViewAction)
+  case offlineCounterView(CounterViewAction)
   case favoritePrimes(FavoritePrimesAction)
 
 //  var counterView: CounterViewAction? {
@@ -83,6 +84,7 @@ import CasePaths
 struct AppEnvironment {
   var counter: CounterEnvironment
   var favoritePrimes: FavoritePrimesEnvironment
+  var offlineNthPrime: (Int) -> Effect<Int?>
 }
 
 let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
@@ -91,6 +93,12 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
     value: \AppState.counterView,
     action: /AppAction.counterView,
     environment: { $0.counter }
+  ),
+  pullback(
+    counterViewReducer,
+    value: \AppState.counterView,
+    action: /AppAction.offlineCounterView,
+    environment: { CounterEnvironment(nthPrime: $0.offlineNthPrime) }
   ),
   pullback(
     favoritePrimesReducer,
@@ -107,14 +115,17 @@ func activityFeed(
   return { state, action, environment in
     switch action {
     case .counterView(.counter),
+         .offlineCounterView(.counter),
          .favoritePrimes(.loadedFavoritePrimes),
          .favoritePrimes(.loadButtonTapped),
          .favoritePrimes(.saveButtonTapped):
       break
-    case .counterView(.primeModal(.removeFavoritePrimeTapped)):
+    case .counterView(.primeModal(.removeFavoritePrimeTapped)),
+         .offlineCounterView(.primeModal(.removeFavoritePrimeTapped)):
       state.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(state.count)))
 
-    case .counterView(.primeModal(.saveFavoritePrimeTapped)):
+    case .counterView(.primeModal(.saveFavoritePrimeTapped)),
+         .offlineCounterView(.primeModal(.saveFavoritePrimeTapped)):
       state.activityFeed.append(.init(timestamp: Date(), type: .addedFavoritePrime(state.count)))
 
     case let .favoritePrimes(.deleteFavoritePrimes(indexSet)):
@@ -139,6 +150,15 @@ struct ContentView: View {
             store: self.store.view(
               value: { $0.counterView },
               action: { .counterView($0) }
+            )
+          )
+        )
+        NavigationLink(
+          "Offline counter demo",
+          destination: CounterView(
+            store: self.store.view(
+              value: { $0.counterView },
+              action: { .offlineCounterView($0) }
             )
           )
         )
