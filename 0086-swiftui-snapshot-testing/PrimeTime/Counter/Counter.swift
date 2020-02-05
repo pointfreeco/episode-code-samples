@@ -191,3 +191,22 @@ func ordinal(_ n: Int) -> String {
   formatter.numberStyle = .ordinal
   return formatter.string(for: n) ?? ""
 }
+
+#if DEBUG
+struct Counter_Previews: PreviewProvider {
+  static var previews: some View {
+    CounterView(
+      store: Store(
+        initialValue: CounterViewState(
+          alertNthPrime: nil,
+          count: 0,
+          favoritePrimes: [],
+          isNthPrimeButtonDisabled: false,
+          isPrimeModalShown: false
+        ),
+        reducer: counterViewReducer
+      )
+    )
+  }
+}
+#endif
