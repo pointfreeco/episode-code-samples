@@ -1,30 +1,39 @@
 import ComposableArchitecture
 import SwiftUI
+import PrimeAlert
 
 public enum FavoritePrimesAction: Equatable {
   case deleteFavoritePrimes(IndexSet)
   case loadButtonTapped
   case loadedFavoritePrimes([Int])
   case saveButtonTapped
+  case primeButtonTapped(Int)
+  case nthPrimeResponse(n: Int, prime: Int?)
+  case alertDismissButtonTapped
 }
 
-public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesAction, environment: FavoritePrimesEnvironment) -> [Effect<FavoritePrimesAction>] {
+public typealias FavoritePrimesState = (
+  alertNthPrime: PrimeAlert?,
+  favoritePrimes: [Int]
+)
+
+public func favoritePrimesReducer(state: inout FavoritePrimesState, action: FavoritePrimesAction, environment: FavoritePrimesEnvironment) -> [Effect<FavoritePrimesAction>] {
   switch action {
   case let .deleteFavoritePrimes(indexSet):
     for index in indexSet {
-      state.remove(at: index)
+      state.favoritePrimes.remove(at: index)
     }
     return [
     ]
 
   case let .loadedFavoritePrimes(favoritePrimes):
-    state = favoritePrimes
+    state.favoritePrimes = favoritePrimes
     return []
 
   case .saveButtonTapped:
     return [
       environment.fileClient
-        .save("favorite-primes.json", try! JSONEncoder().encode(state))
+        .save("favorite-primes.json", try! JSONEncoder().encode(state.favoritePrimes))
         .fireAndForget()
 //      saveEffect(favoritePrimes: state)
     ]
@@ -43,6 +52,19 @@ public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesActi
 //        .compactMap { $0 }
 //        .eraseToEffect()
     ]
+  case let .primeButtonTapped(n):
+    return [
+      environment.nthPrime(n)
+        .map { FavoritePrimesAction.nthPrimeResponse(n: n, prime: $0) }
+        .receive(on: DispatchQueue.main)
+        .eraseToEffect()
+    ]
+  case let .nthPrimeResponse(n, prime):
+    state.alertNthPrime = prime.map { PrimeAlert(n: n, prime: $0) }
+    return []
+  case .alertDismissButtonTapped:
+    state.alertNthPrime = nil
+    return []
   }
 }
 
@@ -85,11 +107,22 @@ extension FileClient {
   )
 }
 
+import WolframAlpha
+
 public struct FavoritePrimesEnvironment {
   public var fileClient: FileClient
+  public var nthPrime: (Int) -> Effect<Int?>
+
+  public init(
+fileClient: FileClient,
+nthPrime: @escaping (Int) -> Effect<Int?>
+  ) {
+    self.fileClient = fileClient
+    self.nthPrime = nthPrime
+  }
 }
 extension FavoritePrimesEnvironment {
-  public static let live = FavoritePrimesEnvironment(fileClient: .live)
+  public static let live = FavoritePrimesEnvironment(fileClient: .live, nthPrime: WolframAlpha.nthPrime)
 }
 
 //var Current = FavoritePrimesEnvironment.live
@@ -102,7 +135,8 @@ extension FavoritePrimesEnvironment {
         try! JSONEncoder().encode([2, 31])
         } },
       save: { _, _ in .fireAndForget {} }
-    )
+    ),
+    nthPrime: { _ in .sync { 17 } }
   )
 }
 #endif
@@ -161,16 +195,19 @@ extension FavoritePrimesEnvironment {
 //}
 
 public struct FavoritePrimesView: View {
-  @ObservedObject var store: Store<[Int], FavoritePrimesAction>
+  @ObservedObject var store: Store<FavoritePrimesState, FavoritePrimesAction>
 
-  public init(store: Store<[Int], FavoritePrimesAction>) {
+  public init(store: Store<FavoritePrimesState, FavoritePrimesAction>) {
     self.store = store
   }
 
   public var body: some View {
     List {
-      ForEach(self.store.value, id: \.self) { prime in
-        Text("\(prime)")
+      ForEach(self.store.value.favoritePrimes, id: \.self) { prime in
+
+        Button("\(prime)") {
+          self.store.send(.primeButtonTapped(prime))
+        }
       }
       .onDelete { indexSet in
         self.store.send(.deleteFavoritePrimes(indexSet))
@@ -187,5 +224,22 @@ public struct FavoritePrimesView: View {
         }
       }
     )
+    .alert(
+      item: .constant(self.store.value.alertNthPrime)
+    ) { alert in
+      Alert(
+        title: Text("The \(ordinal(alert.n)) prime is \(alert.prime)"),
+        dismissButton: .default(Text("Ok")) {
+          self.store.send(.alertDismissButtonTapped)
+        }
+      )
+    }
   }
+}
+
+
+func ordinal(_ n: Int) -> String {
+  let formatter = NumberFormatter()
+  formatter.numberStyle = .ordinal
+  return formatter.string(for: n) ?? ""
 }

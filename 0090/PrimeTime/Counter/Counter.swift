@@ -1,12 +1,14 @@
 import ComposableArchitecture
 import PrimeModal
 import SwiftUI
+import WolframAlpha
+import PrimeAlert
 
 public enum CounterAction: Equatable {
   case decrTapped
   case incrTapped
   case nthPrimeButtonTapped
-  case nthPrimeResponse(Int?)
+  case nthPrimeResponse(n: Int, prime: Int?)
   case alertDismissButtonTapped
   case isPrimeButtonTapped
   case primeModalDismissed
@@ -31,16 +33,17 @@ public func counterReducer(state: inout CounterState, action: CounterAction, env
 
   case .nthPrimeButtonTapped:
     state.isNthPrimeButtonDisabled = true
+    let count = state.count
     return [
       environment
         .nthPrime(state.count)
-        .map(CounterAction.nthPrimeResponse)
+        .map { CounterAction.nthPrimeResponse(n: count, prime: $0) }
         .receive(on: DispatchQueue.main)
         .eraseToEffect()
     ]
 
-  case let .nthPrimeResponse(prime):
-    state.alertNthPrime = prime.map(PrimeAlert.init(prime:))
+  case let .nthPrimeResponse(n, prime):
+    state.alertNthPrime = prime.map { PrimeAlert(n: n, prime: $0) }
     state.isNthPrimeButtonDisabled = false
     return []
 
@@ -67,7 +70,7 @@ public struct CounterEnvironment {
 }
 
 extension CounterEnvironment {
-  public static let live = CounterEnvironment(nthPrime: Counter.nthPrime)
+  public static let live = CounterEnvironment(nthPrime: WolframAlpha.nthPrime)
 }
 
 //var Current = CounterEnvironment.live
@@ -92,11 +95,6 @@ public let counterViewReducer = combine(
     environment: { _ in () }
   )
 )
-
-public struct PrimeAlert: Equatable, Identifiable {
-  let prime: Int
-  public var id: Int { self.prime }
-}
 
 public struct CounterViewState: Equatable {
   public var alertNthPrime: PrimeAlert?
@@ -194,7 +192,7 @@ public struct CounterView: View {
       item: .constant(self.store.value.alertNthPrime)
     ) { alert in
       Alert(
-        title: Text("The \(ordinal(self.store.value.count)) prime is \(alert.prime)"),
+        title: Text("The \(ordinal(alert.n)) prime is \(alert.prime)"),
         dismissButton: .default(Text("Ok")) {
           self.store.send(.counter(.alertDismissButtonTapped))
         }

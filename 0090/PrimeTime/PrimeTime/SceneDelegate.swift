@@ -1,6 +1,10 @@
 import ComposableArchitecture
 import SwiftUI
 import UIKit
+import WolframAlpha
+import Counter
+import PrimeModal
+import FavoritePrimes
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
@@ -8,10 +12,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     if let windowScene = scene as? UIWindowScene {
       let window = UIWindow(windowScene: windowScene)
+
+      let nthPrime = WolframAlpha.nthPrime
+      let counterEnv = CounterEnvironment(nthPrime: nthPrime)
+      let primeModalEnv = FavoritePrimesEnvironment(fileClient: .live, nthPrime: nthPrime)
+
       window.rootViewController = UIHostingController(
         rootView: ContentView(
           store: Store(
-            initialValue: AppState(),
+            initialValue: AppState(count: 20_000, favoritePrimes: [2, 3, 5, 7, 11]),
             reducer: with(
               appReducer,
               compose(
@@ -20,8 +29,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
               )
             ),
             environment: AppEnvironment(
-              counter: .live,
-              favoritePrimes: .live,
+              counter: counterEnv,
+              favoritePrimes: primeModalEnv,
               offlineNthPrime: offlineNthPrime
             )
           )
@@ -31,24 +40,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.makeKeyAndVisible()
     }
   }
-}
-
-import Combine
-import PrimeModal
-
-private func offlineNthPrime(_ n: Int) -> Effect<Int?> {
-  return Future { callback in
-    var primeCount = 0
-    var index = 1
-    while primeCount < n {
-      index += 1
-      if isPrime(index) {
-        primeCount += 1
-      }
-    }
-    callback(.success(index))
-  }
-  .subscribe(on: DispatchQueue.global())
-  .receive(on: DispatchQueue.main)
-  .eraseToEffect()
 }

@@ -88,6 +88,36 @@
                ReferencedContainer = "container:PrimeTime.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CACEA77123EB738B0053E95F"
+               BuildableName = "WolframAlphaTests.xctest"
+               BlueprintName = "WolframAlphaTests"
+               ReferencedContainer = "container:PrimeTime.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CACEA79D23EB75490053E95F"
+               BuildableName = "PrimeAlertTests.xctest"
+               BlueprintName = "PrimeAlertTests"
+               ReferencedContainer = "container:PrimeTime.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CA4E3FA723EB7FA700D3453E"
+               BuildableName = "ComposableArchitectureTestSupportTests.xctest"
+               BlueprintName = "ComposableArchitectureTestSupportTests"
+               ReferencedContainer = "container:PrimeTime.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

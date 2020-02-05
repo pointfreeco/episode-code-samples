@@ -7,10 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CA675A56238072DB00724A38 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */; };
+		CA4E3FA923EB7FA700D3453E /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA4E3FA023EB7FA700D3453E /* ComposableArchitectureTestSupport.framework */; };
+		CA4E3FB023EB7FA700D3453E /* ComposableArchitectureTestSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4E3FAF23EB7FA700D3453E /* ComposableArchitectureTestSupportTests.swift */; };
+		CA4E3FB223EB7FA700D3453E /* ComposableArchitectureTestSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = CA4E3FA223EB7FA700D3453E /* ComposableArchitectureTestSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CA4E3FB523EB7FA700D3453E /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA4E3FA023EB7FA700D3453E /* ComposableArchitectureTestSupport.framework */; };
+		CA4E3FB623EB7FA700D3453E /* ComposableArchitectureTestSupport.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA4E3FA023EB7FA700D3453E /* ComposableArchitectureTestSupport.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CA4E3FBF23EB7FB600D3453E /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
+		CA4E3FC123EB7FBD00D3453E /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4E3FC023EB7FBD00D3453E /* Assert.swift */; };
+		CA4E3FC423EB828000D3453E /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA4E3FA023EB7FA700D3453E /* ComposableArchitectureTestSupport.framework */; };
 		CA79FC28239C158C0096D881 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = CA79FC27239C158C0096D881 /* SnapshotTesting */; };
 		CA79FC30239C23310096D881 /* PrimeTimeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */; };
-		CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29217322FB231F006090DF /* WolframAlpha.swift */; };
+		CACEA77323EB738B0053E95F /* WolframAlpha.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA76A23EB738B0053E95F /* WolframAlpha.framework */; };
+		CACEA77A23EB738B0053E95F /* WolframAlphaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACEA77923EB738B0053E95F /* WolframAlphaTests.swift */; };
+		CACEA77C23EB738B0053E95F /* WolframAlpha.h in Headers */ = {isa = PBXBuildFile; fileRef = CACEA76C23EB738B0053E95F /* WolframAlpha.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CACEA77F23EB738B0053E95F /* WolframAlpha.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA76A23EB738B0053E95F /* WolframAlpha.framework */; };
+		CACEA78023EB738B0053E95F /* WolframAlpha.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA76A23EB738B0053E95F /* WolframAlpha.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CACEA78923EB73940053E95F /* WolframAlpha.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA76A23EB738B0053E95F /* WolframAlpha.framework */; };
+		CACEA78C23EB73A10053E95F /* WolframAlpha.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA76A23EB738B0053E95F /* WolframAlpha.framework */; };
+		CACEA78F23EB73A90053E95F /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
+		CACEA79023EB73AF0053E95F /* WolframAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29217322FB231F006090DF /* WolframAlpha.swift */; };
+		CACEA79F23EB75490053E95F /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA79623EB75490053E95F /* PrimeAlert.framework */; };
+		CACEA7A623EB75490053E95F /* PrimeAlertTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACEA7A523EB75490053E95F /* PrimeAlertTests.swift */; };
+		CACEA7A823EB75490053E95F /* PrimeAlert.h in Headers */ = {isa = PBXBuildFile; fileRef = CACEA79823EB75490053E95F /* PrimeAlert.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CACEA7AB23EB75490053E95F /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA79623EB75490053E95F /* PrimeAlert.framework */; };
+		CACEA7AC23EB75490053E95F /* PrimeAlert.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA79623EB75490053E95F /* PrimeAlert.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CACEA7B523EB75590053E95F /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA79623EB75490053E95F /* PrimeAlert.framework */; };
+		CACEA7B823EB757E0053E95F /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CACEA79623EB75490053E95F /* PrimeAlert.framework */; };
+		CACEA7BA23EB75AB0053E95F /* PrimeAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACEA7B923EB75AB0053E95F /* PrimeAlert.swift */; };
 		CADB167323DCC4A30052C18C /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = CADB167223DCC4A30052C18C /* CasePaths */; };
 		DC36ED17234CD8040027F7A1 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
 		DC90717022FA102900B38B42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90716F22FA102900B38B42 /* AppDelegate.swift */; };
@@ -50,12 +73,124 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CA4E3FAA23EB7FA700D3453E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA4E3F9F23EB7FA700D3453E;
+			remoteInfo = ComposableArchitectureTestSupport;
+		};
+		CA4E3FAC23EB7FA700D3453E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DC90716B22FA102900B38B42;
+			remoteInfo = PrimeTime;
+		};
+		CA4E3FB323EB7FA700D3453E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA4E3F9F23EB7FA700D3453E;
+			remoteInfo = ComposableArchitectureTestSupport;
+		};
+		CA4E3FBD23EB7FAE00D3453E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DCF0C59A2326032B008B45A0;
+			remoteInfo = ComposableArchitecture;
+		};
+		CA4E3FC223EB827B00D3453E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA4E3F9F23EB7FA700D3453E;
+			remoteInfo = ComposableArchitectureTestSupport;
+		};
 		CA79FC32239C23310096D881 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DC90716422FA102900B38B42 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = DC90716B22FA102900B38B42;
 			remoteInfo = PrimeTime;
+		};
+		CACEA77423EB738B0053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CACEA76923EB738B0053E95F;
+			remoteInfo = WolframAlpha;
+		};
+		CACEA77623EB738B0053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DC90716B22FA102900B38B42;
+			remoteInfo = PrimeTime;
+		};
+		CACEA77D23EB738B0053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CACEA76923EB738B0053E95F;
+			remoteInfo = WolframAlpha;
+		};
+		CACEA78723EB73910053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CACEA76923EB738B0053E95F;
+			remoteInfo = WolframAlpha;
+		};
+		CACEA78A23EB739C0053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CACEA76923EB738B0053E95F;
+			remoteInfo = WolframAlpha;
+		};
+		CACEA78D23EB73A60053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DCF0C59A2326032B008B45A0;
+			remoteInfo = ComposableArchitecture;
+		};
+		CACEA7A023EB75490053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CACEA79523EB75490053E95F;
+			remoteInfo = PrimeAlert;
+		};
+		CACEA7A223EB75490053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DC90716B22FA102900B38B42;
+			remoteInfo = PrimeTime;
+		};
+		CACEA7A923EB75490053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CACEA79523EB75490053E95F;
+			remoteInfo = PrimeAlert;
+		};
+		CACEA7B323EB75550053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CACEA79523EB75490053E95F;
+			remoteInfo = PrimeAlert;
+		};
+		CACEA7B623EB75790053E95F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CACEA79523EB75490053E95F;
+			remoteInfo = PrimeAlert;
 		};
 		CAD67E1C2332982E000C7787 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -180,8 +315,11 @@
 			files = (
 				DCF0C6182326036F008B45A0 /* FavoritePrimes.framework in Embed Frameworks */,
 				DCF0C5B22326032B008B45A0 /* ComposableArchitecture.framework in Embed Frameworks */,
+				CACEA78023EB738B0053E95F /* WolframAlpha.framework in Embed Frameworks */,
 				DCF0C5D423260348008B45A0 /* Counter.framework in Embed Frameworks */,
+				CA4E3FB623EB7FA700D3453E /* ComposableArchitectureTestSupport.framework in Embed Frameworks */,
 				DCF0C5F62326035C008B45A0 /* PrimeModal.framework in Embed Frameworks */,
+				CACEA7AC23EB75490053E95F /* PrimeAlert.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -189,10 +327,29 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitectureTestSupport.swift; sourceTree = "<group>"; };
+		CA4E3FA023EB7FA700D3453E /* ComposableArchitectureTestSupport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitectureTestSupport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA4E3FA223EB7FA700D3453E /* ComposableArchitectureTestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitectureTestSupport.h; sourceTree = "<group>"; };
+		CA4E3FA323EB7FA700D3453E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CA4E3FA823EB7FA700D3453E /* ComposableArchitectureTestSupportTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ComposableArchitectureTestSupportTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA4E3FAF23EB7FA700D3453E /* ComposableArchitectureTestSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitectureTestSupportTests.swift; sourceTree = "<group>"; };
+		CA4E3FB123EB7FA700D3453E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CA4E3FC023EB7FBD00D3453E /* Assert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
 		CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrimeTimeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeTimeUITests.swift; sourceTree = "<group>"; };
 		CA79FC31239C23310096D881 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CACEA76A23EB738B0053E95F /* WolframAlpha.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WolframAlpha.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CACEA76C23EB738B0053E95F /* WolframAlpha.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WolframAlpha.h; sourceTree = "<group>"; };
+		CACEA76D23EB738B0053E95F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CACEA77223EB738B0053E95F /* WolframAlphaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WolframAlphaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CACEA77923EB738B0053E95F /* WolframAlphaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WolframAlphaTests.swift; sourceTree = "<group>"; };
+		CACEA77B23EB738B0053E95F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CACEA79623EB75490053E95F /* PrimeAlert.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PrimeAlert.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CACEA79823EB75490053E95F /* PrimeAlert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrimeAlert.h; sourceTree = "<group>"; };
+		CACEA79923EB75490053E95F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CACEA79E23EB75490053E95F /* PrimeAlertTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrimeAlertTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CACEA7A523EB75490053E95F /* PrimeAlertTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeAlertTests.swift; sourceTree = "<group>"; };
+		CACEA7A723EB75490053E95F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CACEA7B923EB75AB0053E95F /* PrimeAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeAlert.swift; sourceTree = "<group>"; };
 		DC29217322FB231F006090DF /* WolframAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WolframAlpha.swift; sourceTree = "<group>"; };
 		DC39325F230241AF005A0B0A /* PrimeTime.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = PrimeTime.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DC90716C22FA102900B38B42 /* PrimeTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrimeTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -238,6 +395,22 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		CA4E3F9D23EB7FA700D3453E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA4E3FBF23EB7FB600D3453E /* ComposableArchitecture.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA4E3FA523EB7FA700D3453E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA4E3FA923EB7FA700D3453E /* ComposableArchitectureTestSupport.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA79FC2A239C23310096D881 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,11 +418,45 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CACEA76723EB738B0053E95F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CACEA78F23EB73A90053E95F /* ComposableArchitecture.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA76F23EB738B0053E95F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CACEA77323EB738B0053E95F /* WolframAlpha.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA79323EB75490053E95F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA79B23EB75490053E95F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CACEA79F23EB75490053E95F /* PrimeAlert.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DC90716922FA102900B38B42 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA4E3FB523EB7FA700D3453E /* ComposableArchitectureTestSupport.framework in Frameworks */,
+				CACEA77F23EB738B0053E95F /* WolframAlpha.framework in Frameworks */,
 				DCF88F02234D4A3B001BA79A /* ComposableArchitecture.framework in Frameworks */,
+				CACEA7AB23EB75490053E95F /* PrimeAlert.framework in Frameworks */,
 				DCF0C5D323260348008B45A0 /* Counter.framework in Frameworks */,
 				DCF0C6172326036F008B45A0 /* FavoritePrimes.framework in Frameworks */,
 			);
@@ -282,6 +489,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CACEA7B823EB757E0053E95F /* PrimeAlert.framework in Frameworks */,
+				CACEA78C23EB73A10053E95F /* WolframAlpha.framework in Frameworks */,
 				DCF88F01234D4A28001BA79A /* PrimeModal.framework in Frameworks */,
 				DCF88F00234D4A28001BA79A /* ComposableArchitecture.framework in Frameworks */,
 			);
@@ -291,6 +500,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA4E3FC423EB828000D3453E /* ComposableArchitectureTestSupport.framework in Frameworks */,
 				DCF0C5C723260348008B45A0 /* Counter.framework in Frameworks */,
 				CA79FC28239C158C0096D881 /* SnapshotTesting in Frameworks */,
 			);
@@ -316,6 +526,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CACEA7B523EB75590053E95F /* PrimeAlert.framework in Frameworks */,
+				CACEA78923EB73940053E95F /* WolframAlpha.framework in Frameworks */,
 				DC36ED17234CD8040027F7A1 /* ComposableArchitecture.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,6 +543,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CA4E3FA123EB7FA700D3453E /* ComposableArchitectureTestSupport */ = {
+			isa = PBXGroup;
+			children = (
+				CA4E3FA223EB7FA700D3453E /* ComposableArchitectureTestSupport.h */,
+				CA4E3FA323EB7FA700D3453E /* Info.plist */,
+				CA4E3FC023EB7FBD00D3453E /* Assert.swift */,
+			);
+			path = ComposableArchitectureTestSupport;
+			sourceTree = "<group>";
+		};
+		CA4E3FAE23EB7FA700D3453E /* ComposableArchitectureTestSupportTests */ = {
+			isa = PBXGroup;
+			children = (
+				CA4E3FAF23EB7FA700D3453E /* ComposableArchitectureTestSupportTests.swift */,
+				CA4E3FB123EB7FA700D3453E /* Info.plist */,
+			);
+			path = ComposableArchitectureTestSupportTests;
+			sourceTree = "<group>";
+		};
 		CA79FC2E239C23310096D881 /* PrimeTimeUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -338,6 +569,44 @@
 				CA79FC31239C23310096D881 /* Info.plist */,
 			);
 			path = PrimeTimeUITests;
+			sourceTree = "<group>";
+		};
+		CACEA76B23EB738B0053E95F /* WolframAlpha */ = {
+			isa = PBXGroup;
+			children = (
+				DC29217322FB231F006090DF /* WolframAlpha.swift */,
+				CACEA76C23EB738B0053E95F /* WolframAlpha.h */,
+				CACEA76D23EB738B0053E95F /* Info.plist */,
+			);
+			path = WolframAlpha;
+			sourceTree = "<group>";
+		};
+		CACEA77823EB738B0053E95F /* WolframAlphaTests */ = {
+			isa = PBXGroup;
+			children = (
+				CACEA77923EB738B0053E95F /* WolframAlphaTests.swift */,
+				CACEA77B23EB738B0053E95F /* Info.plist */,
+			);
+			path = WolframAlphaTests;
+			sourceTree = "<group>";
+		};
+		CACEA79723EB75490053E95F /* PrimeAlert */ = {
+			isa = PBXGroup;
+			children = (
+				CACEA79823EB75490053E95F /* PrimeAlert.h */,
+				CACEA79923EB75490053E95F /* Info.plist */,
+				CACEA7B923EB75AB0053E95F /* PrimeAlert.swift */,
+			);
+			path = PrimeAlert;
+			sourceTree = "<group>";
+		};
+		CACEA7A423EB75490053E95F /* PrimeAlertTests */ = {
+			isa = PBXGroup;
+			children = (
+				CACEA7A523EB75490053E95F /* PrimeAlertTests.swift */,
+				CACEA7A723EB75490053E95F /* Info.plist */,
+			);
+			path = PrimeAlertTests;
 			sourceTree = "<group>";
 		};
 		DC36ED16234CD8040027F7A1 /* Frameworks */ = {
@@ -362,6 +631,12 @@
 				DCF0C6032326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6102326036F008B45A0 /* FavoritePrimesTests */,
 				CA79FC2E239C23310096D881 /* PrimeTimeUITests */,
+				CACEA76B23EB738B0053E95F /* WolframAlpha */,
+				CACEA77823EB738B0053E95F /* WolframAlphaTests */,
+				CACEA79723EB75490053E95F /* PrimeAlert */,
+				CACEA7A423EB75490053E95F /* PrimeAlertTests */,
+				CA4E3FA123EB7FA700D3453E /* ComposableArchitectureTestSupport */,
+				CA4E3FAE23EB7FA700D3453E /* ComposableArchitectureTestSupportTests */,
 				DC90716D22FA102900B38B42 /* Products */,
 				DC36ED16234CD8040027F7A1 /* Frameworks */,
 			);
@@ -381,6 +656,12 @@
 				DCF0C6022326036F008B45A0 /* FavoritePrimes.framework */,
 				DCF0C60A2326036F008B45A0 /* FavoritePrimesTests.xctest */,
 				CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */,
+				CACEA76A23EB738B0053E95F /* WolframAlpha.framework */,
+				CACEA77223EB738B0053E95F /* WolframAlphaTests.xctest */,
+				CACEA79623EB75490053E95F /* PrimeAlert.framework */,
+				CACEA79E23EB75490053E95F /* PrimeAlertTests.xctest */,
+				CA4E3FA023EB7FA700D3453E /* ComposableArchitectureTestSupport.framework */,
+				CA4E3FA823EB7FA700D3453E /* ComposableArchitectureTestSupportTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -441,7 +722,6 @@
 			children = (
 				DCF0C5C023260348008B45A0 /* Counter.h */,
 				DCF0C62D23260414008B45A0 /* Counter.swift */,
-				DC29217322FB231F006090DF /* WolframAlpha.swift */,
 				DCF0C5C123260348008B45A0 /* Info.plist */,
 			);
 			path = Counter;
@@ -452,7 +732,6 @@
 			children = (
 				DCF0C5CD23260348008B45A0 /* CounterTests.swift */,
 				DCF0C5CF23260348008B45A0 /* Info.plist */,
-				CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */,
 			);
 			path = CounterTests;
 			sourceTree = "<group>";
@@ -498,6 +777,30 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		CA4E3F9B23EB7FA700D3453E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA4E3FB223EB7FA700D3453E /* ComposableArchitectureTestSupport.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA76523EB738B0053E95F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CACEA77C23EB738B0053E95F /* WolframAlpha.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA79123EB75490053E95F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CACEA7A823EB75490053E95F /* PrimeAlert.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DCF0C5962326032B008B45A0 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -533,6 +836,44 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		CA4E3F9F23EB7FA700D3453E /* ComposableArchitectureTestSupport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA4E3FBB23EB7FA700D3453E /* Build configuration list for PBXNativeTarget "ComposableArchitectureTestSupport" */;
+			buildPhases = (
+				CA4E3F9B23EB7FA700D3453E /* Headers */,
+				CA4E3F9C23EB7FA700D3453E /* Sources */,
+				CA4E3F9D23EB7FA700D3453E /* Frameworks */,
+				CA4E3F9E23EB7FA700D3453E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA4E3FBE23EB7FAE00D3453E /* PBXTargetDependency */,
+			);
+			name = ComposableArchitectureTestSupport;
+			productName = ComposableArchitectureTestSupport;
+			productReference = CA4E3FA023EB7FA700D3453E /* ComposableArchitectureTestSupport.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CA4E3FA723EB7FA700D3453E /* ComposableArchitectureTestSupportTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA4E3FBC23EB7FA700D3453E /* Build configuration list for PBXNativeTarget "ComposableArchitectureTestSupportTests" */;
+			buildPhases = (
+				CA4E3FA423EB7FA700D3453E /* Sources */,
+				CA4E3FA523EB7FA700D3453E /* Frameworks */,
+				CA4E3FA623EB7FA700D3453E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA4E3FAB23EB7FA700D3453E /* PBXTargetDependency */,
+				CA4E3FAD23EB7FA700D3453E /* PBXTargetDependency */,
+			);
+			name = ComposableArchitectureTestSupportTests;
+			productName = ComposableArchitectureTestSupportTests;
+			productReference = CA4E3FA823EB7FA700D3453E /* ComposableArchitectureTestSupportTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		CA79FC2C239C23310096D881 /* PrimeTimeUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA79FC34239C23310096D881 /* Build configuration list for PBXNativeTarget "PrimeTimeUITests" */;
@@ -551,6 +892,81 @@
 			productReference = CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		CACEA76923EB738B0053E95F /* WolframAlpha */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CACEA78523EB738B0053E95F /* Build configuration list for PBXNativeTarget "WolframAlpha" */;
+			buildPhases = (
+				CACEA76523EB738B0053E95F /* Headers */,
+				CACEA76623EB738B0053E95F /* Sources */,
+				CACEA76723EB738B0053E95F /* Frameworks */,
+				CACEA76823EB738B0053E95F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CACEA78E23EB73A60053E95F /* PBXTargetDependency */,
+			);
+			name = WolframAlpha;
+			productName = WolframAlpha;
+			productReference = CACEA76A23EB738B0053E95F /* WolframAlpha.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CACEA77123EB738B0053E95F /* WolframAlphaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CACEA78623EB738B0053E95F /* Build configuration list for PBXNativeTarget "WolframAlphaTests" */;
+			buildPhases = (
+				CACEA76E23EB738B0053E95F /* Sources */,
+				CACEA76F23EB738B0053E95F /* Frameworks */,
+				CACEA77023EB738B0053E95F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CACEA77523EB738B0053E95F /* PBXTargetDependency */,
+				CACEA77723EB738B0053E95F /* PBXTargetDependency */,
+			);
+			name = WolframAlphaTests;
+			productName = WolframAlphaTests;
+			productReference = CACEA77223EB738B0053E95F /* WolframAlphaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CACEA79523EB75490053E95F /* PrimeAlert */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CACEA7AD23EB75490053E95F /* Build configuration list for PBXNativeTarget "PrimeAlert" */;
+			buildPhases = (
+				CACEA79123EB75490053E95F /* Headers */,
+				CACEA79223EB75490053E95F /* Sources */,
+				CACEA79323EB75490053E95F /* Frameworks */,
+				CACEA79423EB75490053E95F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PrimeAlert;
+			productName = PrimeAlert;
+			productReference = CACEA79623EB75490053E95F /* PrimeAlert.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CACEA79D23EB75490053E95F /* PrimeAlertTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CACEA7B023EB75490053E95F /* Build configuration list for PBXNativeTarget "PrimeAlertTests" */;
+			buildPhases = (
+				CACEA79A23EB75490053E95F /* Sources */,
+				CACEA79B23EB75490053E95F /* Frameworks */,
+				CACEA79C23EB75490053E95F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CACEA7A123EB75490053E95F /* PBXTargetDependency */,
+				CACEA7A323EB75490053E95F /* PBXTargetDependency */,
+			);
+			name = PrimeAlertTests;
+			productName = PrimeAlertTests;
+			productReference = CACEA79E23EB75490053E95F /* PrimeAlertTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		DC90716B22FA102900B38B42 /* PrimeTime */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DC90718B22FA102B00B38B42 /* Build configuration list for PBXNativeTarget "PrimeTime" */;
@@ -563,9 +979,12 @@
 			buildRules = (
 			);
 			dependencies = (
+				CA4E3FB423EB7FA700D3453E /* PBXTargetDependency */,
 				DCF0C5AF2326032B008B45A0 /* PBXTargetDependency */,
 				DCF0C5D223260348008B45A0 /* PBXTargetDependency */,
 				DCF0C6162326036F008B45A0 /* PBXTargetDependency */,
+				CACEA77E23EB738B0053E95F /* PBXTargetDependency */,
+				CACEA7AA23EB75490053E95F /* PBXTargetDependency */,
 			);
 			name = PrimeTime;
 			productName = PrimeTime;
@@ -642,6 +1061,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				CACEA7B723EB75790053E95F /* PBXTargetDependency */,
+				CACEA78B23EB739C0053E95F /* PBXTargetDependency */,
 				CAD67E1D2332982E000C7787 /* PBXTargetDependency */,
 				DCF0C6242326038A008B45A0 /* PBXTargetDependency */,
 			);
@@ -661,6 +1082,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CA4E3FC323EB827B00D3453E /* PBXTargetDependency */,
 				DCF0C5C923260348008B45A0 /* PBXTargetDependency */,
 				DCF0C5CB23260348008B45A0 /* PBXTargetDependency */,
 			);
@@ -722,6 +1144,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				CACEA7B423EB75550053E95F /* PBXTargetDependency */,
+				CACEA78823EB73910053E95F /* PBXTargetDependency */,
 				DCF0C62023260383008B45A0 /* PBXTargetDependency */,
 			);
 			name = FavoritePrimes;
@@ -754,12 +1178,35 @@
 		DC90716422FA102900B38B42 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1120;
+				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = "Point-Free";
 				TargetAttributes = {
+					CA4E3F9F23EB7FA700D3453E = {
+						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
+					};
+					CA4E3FA723EB7FA700D3453E = {
+						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = DC90716B22FA102900B38B42;
+					};
 					CA79FC2C239C23310096D881 = {
 						CreatedOnToolsVersion = 11.2.1;
+						TestTargetID = DC90716B22FA102900B38B42;
+					};
+					CACEA76923EB738B0053E95F = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+					CACEA77123EB738B0053E95F = {
+						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = DC90716B22FA102900B38B42;
+					};
+					CACEA79523EB75490053E95F = {
+						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
+					};
+					CACEA79D23EB75490053E95F = {
+						CreatedOnToolsVersion = 11.3.1;
 						TestTargetID = DC90716B22FA102900B38B42;
 					};
 					DC90716B22FA102900B38B42 = {
@@ -829,12 +1276,60 @@
 				DCF0C6012326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6092326036F008B45A0 /* FavoritePrimesTests */,
 				CA79FC2C239C23310096D881 /* PrimeTimeUITests */,
+				CACEA76923EB738B0053E95F /* WolframAlpha */,
+				CACEA77123EB738B0053E95F /* WolframAlphaTests */,
+				CACEA79523EB75490053E95F /* PrimeAlert */,
+				CACEA79D23EB75490053E95F /* PrimeAlertTests */,
+				CA4E3F9F23EB7FA700D3453E /* ComposableArchitectureTestSupport */,
+				CA4E3FA723EB7FA700D3453E /* ComposableArchitectureTestSupportTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		CA4E3F9E23EB7FA700D3453E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA4E3FA623EB7FA700D3453E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA79FC2B239C23310096D881 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA76823EB738B0053E95F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA77023EB738B0053E95F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA79423EB75490053E95F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA79C23EB75490053E95F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -917,11 +1412,59 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		CA4E3F9C23EB7FA700D3453E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA4E3FC123EB7FBD00D3453E /* Assert.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA4E3FA423EB7FA700D3453E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA4E3FB023EB7FA700D3453E /* ComposableArchitectureTestSupportTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA79FC29239C23310096D881 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CA79FC30239C23310096D881 /* PrimeTimeUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA76623EB738B0053E95F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CACEA79023EB73AF0053E95F /* WolframAlpha.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA76E23EB738B0053E95F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CACEA77A23EB738B0053E95F /* WolframAlphaTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA79223EB75490053E95F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CACEA7BA23EB75AB0053E95F /* PrimeAlert.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CACEA79A23EB75490053E95F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CACEA7A623EB75490053E95F /* PrimeAlertTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -965,7 +1508,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCF0C62E23260414008B45A0 /* Counter.swift in Sources */,
-				CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -974,7 +1516,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCF0C5CE23260348008B45A0 /* CounterTests.swift in Sources */,
-				CA675A56238072DB00724A38 /* ComposableArchitectureTestSupport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1013,10 +1554,90 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CA4E3FAB23EB7FA700D3453E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA4E3F9F23EB7FA700D3453E /* ComposableArchitectureTestSupport */;
+			targetProxy = CA4E3FAA23EB7FA700D3453E /* PBXContainerItemProxy */;
+		};
+		CA4E3FAD23EB7FA700D3453E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DC90716B22FA102900B38B42 /* PrimeTime */;
+			targetProxy = CA4E3FAC23EB7FA700D3453E /* PBXContainerItemProxy */;
+		};
+		CA4E3FB423EB7FA700D3453E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA4E3F9F23EB7FA700D3453E /* ComposableArchitectureTestSupport */;
+			targetProxy = CA4E3FB323EB7FA700D3453E /* PBXContainerItemProxy */;
+		};
+		CA4E3FBE23EB7FAE00D3453E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DCF0C59A2326032B008B45A0 /* ComposableArchitecture */;
+			targetProxy = CA4E3FBD23EB7FAE00D3453E /* PBXContainerItemProxy */;
+		};
+		CA4E3FC323EB827B00D3453E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA4E3F9F23EB7FA700D3453E /* ComposableArchitectureTestSupport */;
+			targetProxy = CA4E3FC223EB827B00D3453E /* PBXContainerItemProxy */;
+		};
 		CA79FC33239C23310096D881 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DC90716B22FA102900B38B42 /* PrimeTime */;
 			targetProxy = CA79FC32239C23310096D881 /* PBXContainerItemProxy */;
+		};
+		CACEA77523EB738B0053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CACEA76923EB738B0053E95F /* WolframAlpha */;
+			targetProxy = CACEA77423EB738B0053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA77723EB738B0053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DC90716B22FA102900B38B42 /* PrimeTime */;
+			targetProxy = CACEA77623EB738B0053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA77E23EB738B0053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CACEA76923EB738B0053E95F /* WolframAlpha */;
+			targetProxy = CACEA77D23EB738B0053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA78823EB73910053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CACEA76923EB738B0053E95F /* WolframAlpha */;
+			targetProxy = CACEA78723EB73910053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA78B23EB739C0053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CACEA76923EB738B0053E95F /* WolframAlpha */;
+			targetProxy = CACEA78A23EB739C0053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA78E23EB73A60053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DCF0C59A2326032B008B45A0 /* ComposableArchitecture */;
+			targetProxy = CACEA78D23EB73A60053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA7A123EB75490053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CACEA79523EB75490053E95F /* PrimeAlert */;
+			targetProxy = CACEA7A023EB75490053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA7A323EB75490053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DC90716B22FA102900B38B42 /* PrimeTime */;
+			targetProxy = CACEA7A223EB75490053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA7AA23EB75490053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CACEA79523EB75490053E95F /* PrimeAlert */;
+			targetProxy = CACEA7A923EB75490053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA7B423EB75550053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CACEA79523EB75490053E95F /* PrimeAlert */;
+			targetProxy = CACEA7B323EB75550053E95F /* PBXContainerItemProxy */;
+		};
+		CACEA7B723EB75790053E95F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CACEA79523EB75490053E95F /* PrimeAlert */;
+			targetProxy = CACEA7B623EB75790053E95F /* PBXContainerItemProxy */;
 		};
 		CAD67E1D2332982E000C7787 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1112,6 +1733,125 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		CA4E3FB723EB7FA700D3453E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(DEVELOPER_FRAMEWORKS_DIR)\n$(DEVELOPER_FRAMEWORKS_DIR)\n$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				INFOPLIST_FILE = ComposableArchitectureTestSupport/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.ComposableArchitectureTestSupport;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CA4E3FB823EB7FA700D3453E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(DEVELOPER_FRAMEWORKS_DIR)\n$(DEVELOPER_FRAMEWORKS_DIR)\n$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				INFOPLIST_FILE = ComposableArchitectureTestSupport/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.ComposableArchitectureTestSupport;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CA4E3FB923EB7FA700D3453E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ComposableArchitectureTestSupportTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.ComposableArchitectureTestSupportTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
+			};
+			name = Debug;
+		};
+		CA4E3FBA23EB7FA700D3453E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ComposableArchitectureTestSupportTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.ComposableArchitectureTestSupportTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
+			};
+			name = Release;
+		};
 		CA79FC35239C23310096D881 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1147,6 +1887,193 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = PrimeTime;
+			};
+			name = Release;
+		};
+		CACEA78123EB738B0053E95F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = WolframAlpha/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.WolframAlpha;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CACEA78223EB738B0053E95F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = WolframAlpha/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.WolframAlpha;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CACEA78323EB738B0053E95F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = WolframAlphaTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.WolframAlphaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
+			};
+			name = Debug;
+		};
+		CACEA78423EB738B0053E95F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = WolframAlphaTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.WolframAlphaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
+			};
+			name = Release;
+		};
+		CACEA7AE23EB75490053E95F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PrimeAlert/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlert;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CACEA7AF23EB75490053E95F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PrimeAlert/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlert;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CACEA7B123EB75490053E95F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = PrimeAlertTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlertTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
+			};
+			name = Debug;
+		};
+		CACEA7B223EB75490053E95F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = PrimeAlertTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlertTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
 			};
 			name = Release;
 		};
@@ -1715,11 +2642,65 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		CA4E3FBB23EB7FA700D3453E /* Build configuration list for PBXNativeTarget "ComposableArchitectureTestSupport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA4E3FB723EB7FA700D3453E /* Debug */,
+				CA4E3FB823EB7FA700D3453E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA4E3FBC23EB7FA700D3453E /* Build configuration list for PBXNativeTarget "ComposableArchitectureTestSupportTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA4E3FB923EB7FA700D3453E /* Debug */,
+				CA4E3FBA23EB7FA700D3453E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CA79FC34239C23310096D881 /* Build configuration list for PBXNativeTarget "PrimeTimeUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA79FC35239C23310096D881 /* Debug */,
 				CA79FC36239C23310096D881 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CACEA78523EB738B0053E95F /* Build configuration list for PBXNativeTarget "WolframAlpha" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CACEA78123EB738B0053E95F /* Debug */,
+				CACEA78223EB738B0053E95F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CACEA78623EB738B0053E95F /* Build configuration list for PBXNativeTarget "WolframAlphaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CACEA78323EB738B0053E95F /* Debug */,
+				CACEA78423EB738B0053E95F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CACEA7AD23EB75490053E95F /* Build configuration list for PBXNativeTarget "PrimeAlert" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CACEA7AE23EB75490053E95F /* Debug */,
+				CACEA7AF23EB75490053E95F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CACEA7B023EB75490053E95F /* Build configuration list for PBXNativeTarget "PrimeAlertTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CACEA7B123EB75490053E95F /* Debug */,
+				CACEA7B223EB75490053E95F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

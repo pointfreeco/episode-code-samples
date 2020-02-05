@@ -2,6 +2,23 @@ import Combine
 import ComposableArchitecture
 import Foundation
 
+public struct PrimeAlert: Equatable, Identifiable {
+  public let n: Int
+  public let prime: Int
+
+  public var id: Int {
+    self.n
+  }
+
+  public init(
+    n: Int,
+    prime: Int
+  ) {
+    self.n = n
+    self.prime = prime
+  }
+}
+
 private let wolframAlphaApiKey = "6H69Q3-828TKQJ4EP"
 
 struct WolframAlphaResult: Decodable {
@@ -21,7 +38,7 @@ struct WolframAlphaResult: Decodable {
   }
 }
 
-func nthPrime(_ n: Int) -> Effect<Int?> {
+public func nthPrime(_ n: Int) -> Effect<Int?> {
   return wolframAlpha(query: "prime \(n)").map { result in
     result
       .flatMap {
@@ -66,4 +83,31 @@ extension Publisher {
   public var hush: Publishers.ReplaceError<Publishers.Map<Self, Optional<Self.Output>>> {
     return self.map(Optional.some).replaceError(with: nil)
   }
+}
+
+public func offlineNthPrime(_ n: Int) -> Effect<Int?> {
+  return Future { callback in
+//    sleep(2)
+    var primeCount = 0
+    var index = 1
+    while primeCount < n {
+      index += 1
+      if isPrime(index) {
+        primeCount += 1
+      }
+    }
+    callback(.success(index))
+  }
+//  .subscribe(on: DispatchQueue.global())
+//  .receive(on: DispatchQueue.main)
+  .eraseToEffect()
+}
+
+public func isPrime(_ p: Int) -> Bool {
+  if p <= 1 { return false }
+  if p <= 3 { return true }
+  for i in 2...Int(sqrtf(Float(p))) {
+    if p % i == 0 { return false }
+  }
+  return true
 }

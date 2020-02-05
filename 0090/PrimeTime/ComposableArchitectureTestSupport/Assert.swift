@@ -18,7 +18,7 @@ struct Step<Value, Action> {
     _ action: Action,
     file: StaticString = #file,
     line: UInt = #line,
-    _ update: @escaping (inout Value) -> Void
+    _ update: @escaping (inout Value) -> Void = { _ in }
   ) {
     self.type = type
     self.action = action

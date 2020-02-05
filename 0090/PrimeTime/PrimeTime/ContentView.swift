@@ -3,6 +3,8 @@ import ComposableArchitecture
 import Counter
 import FavoritePrimes
 import SwiftUI
+import PrimeAlert
+import WolframAlpha
 
 struct AppState {
   var count = 0
@@ -28,7 +30,24 @@ struct AppState {
     let name: String
     let bio: String
   }
+
+  var favoritePrimesState: FavoritePrimesState {
+    get {
+      (self.alertNthPrime, self.favoritePrimes)
+    }
+    set {
+       (self.alertNthPrime, self.favoritePrimes) = newValue
+    }
+  }
 }
+
+//struct Identified<A>: Identifiable {
+//  var value: A
+//  var id: AnyHashablea
+//  init<B>(_ value: A, by hashable: KeyPath<A, B>) {
+//
+//  }
+//}
 
 enum AppAction {
   case counterView(CounterViewAction)
@@ -102,7 +121,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
   ),
   pullback(
     favoritePrimesReducer,
-    value: \.favoritePrimes,
+    value: \.favoritePrimesState,
     action: /AppAction.favoritePrimes,
     environment: { $0.favoritePrimes }
   )
@@ -118,7 +137,10 @@ func activityFeed(
          .offlineCounterView(.counter),
          .favoritePrimes(.loadedFavoritePrimes),
          .favoritePrimes(.loadButtonTapped),
-         .favoritePrimes(.saveButtonTapped):
+         .favoritePrimes(.saveButtonTapped),
+         .favoritePrimes(.primeButtonTapped),
+         .favoritePrimes(.nthPrimeResponse),
+         .favoritePrimes(.alertDismissButtonTapped):
       break
     case .counterView(.primeModal(.removeFavoritePrimeTapped)),
          .offlineCounterView(.primeModal(.removeFavoritePrimeTapped)):
@@ -132,6 +154,7 @@ func activityFeed(
       for index in indexSet {
         state.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(state.favoritePrimes[index])))
       }
+
     }
 
     return reducer(&state, action, environment)
@@ -166,7 +189,7 @@ struct ContentView: View {
           "Favorite primes",
           destination: FavoritePrimesView(
             store: self.store.view(
-              value: { $0.favoritePrimes },
+              value: { $0.favoritePrimesState },
               action: { .favoritePrimes($0) }
             )
           )
