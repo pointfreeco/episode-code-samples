@@ -18,7 +18,6 @@ class CounterTests: XCTestCase {
     let vc = UIHostingController(rootView: view)
     vc.view.frame = UIScreen.main.bounds
 
-    diffTool = "ksdiff"
     assertSnapshot(matching: vc, as: .windowedImage)
 
     store.send(.counter(.incrTapped))
@@ -72,6 +71,7 @@ class CounterTests: XCTestCase {
     assert(
       initialValue: CounterViewState(
         alertNthPrime: nil,
+        count: 7,
         isNthPrimeButtonDisabled: false
       ),
       reducer: counterViewReducer,
@@ -79,8 +79,8 @@ class CounterTests: XCTestCase {
       Step(.send, .counter(.nthPrimeButtonTapped)) {
         $0.isNthPrimeButtonDisabled = true
       },
-      Step(.receive, .counter(.nthPrimeResponse(17))) {
-        $0.alertNthPrime = PrimeAlert(prime: 17)
+      Step(.receive, .counter(.nthPrimeResponse(n: 7, prime: 17))) {
+        $0.alertNthPrime = PrimeAlert(n: $0.count, prime: 17)
         $0.isNthPrimeButtonDisabled = false
       },
       Step(.send, .counter(.alertDismissButtonTapped)) {
@@ -95,6 +95,7 @@ class CounterTests: XCTestCase {
     assert(
       initialValue: CounterViewState(
         alertNthPrime: nil,
+        count: 7,
         isNthPrimeButtonDisabled: false
       ),
       reducer: counterViewReducer,
@@ -102,7 +103,7 @@ class CounterTests: XCTestCase {
       Step(.send, .counter(.nthPrimeButtonTapped)) {
         $0.isNthPrimeButtonDisabled = true
       },
-      Step(.receive, .counter(.nthPrimeResponse(nil))) {
+      Step(.receive, .counter(.nthPrimeResponse(n: 7, prime: nil))) {
         $0.isNthPrimeButtonDisabled = false
       }
     )
