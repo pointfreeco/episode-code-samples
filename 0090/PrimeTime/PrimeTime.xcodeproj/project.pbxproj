@@ -49,6 +49,7 @@
 		DCF6C52A23ECD13D00A54EE0 /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF6C51A23ECD08A00A54EE0 /* ComposableArchitectureTestSupport.framework */; };
 		DCF6C52D23ECD14400A54EE0 /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF6C51A23ECD08A00A54EE0 /* ComposableArchitectureTestSupport.framework */; };
 		DCF6C53123ECD33000A54EE0 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF6C53023ECD33000A54EE0 /* Effect.swift */; };
+		DCF6C54523ECD8E800A54EE0 /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF6C51A23ECD08A00A54EE0 /* ComposableArchitectureTestSupport.framework */; };
 		DCF88EFF234D4A20001BA79A /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
 		DCF88F00234D4A28001BA79A /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
 		DCF88F01234D4A28001BA79A /* PrimeModal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C5E02326035C008B45A0 /* PrimeModal.framework */; };
@@ -203,6 +204,13 @@
 			remoteGlobalIDString = DCF0C59A2326032B008B45A0;
 			remoteInfo = ComposableArchitecture;
 		};
+		DCF6C54323ECD8DB00A54EE0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DCF6C51923ECD08A00A54EE0;
+			remoteInfo = ComposableArchitectureTestSupport;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -298,6 +306,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCF6C54523ECD8E800A54EE0 /* ComposableArchitectureTestSupport.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -653,6 +662,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				DCF6C54423ECD8DB00A54EE0 /* PBXTargetDependency */,
 				DC90718422FA102B00B38B42 /* PBXTargetDependency */,
 			);
 			name = PrimeTimeTests;
@@ -1229,6 +1239,11 @@
 			isa = PBXTargetDependency;
 			target = DCF0C59A2326032B008B45A0 /* ComposableArchitecture */;
 			targetProxy = DCF6C52E23ECD16A00A54EE0 /* PBXContainerItemProxy */;
+		};
+		DCF6C54423ECD8DB00A54EE0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DCF6C51923ECD08A00A54EE0 /* ComposableArchitectureTestSupport */;
+			targetProxy = DCF6C54323ECD8DB00A54EE0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
