@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import PrimeAlert
 import SwiftUI
 
 public enum FavoritePrimesAction: Equatable {
@@ -6,31 +7,40 @@ public enum FavoritePrimesAction: Equatable {
   case loadButtonTapped
   case loadedFavoritePrimes([Int])
   case saveButtonTapped
+  case primeButtonTapped(Int)
+  case nthPrimeResponse(n: Int, prime: Int?)
+  case alertDismissButtonTapped
 }
 
-public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesAction) -> [Effect<FavoritePrimesAction>] {
+public typealias FavoritePrimesState = (
+  alertNthPrime: PrimeAlert?,
+  favoritePrimes: [Int]
+)
+
+public func favoritePrimesReducer(state: inout FavoritePrimesState, action: FavoritePrimesAction, environment: FavoritePrimesEnvironment
+) -> [Effect<FavoritePrimesAction>] {
   switch action {
   case let .deleteFavoritePrimes(indexSet):
     for index in indexSet {
-      state.remove(at: index)
+      state.favoritePrimes.remove(at: index)
     }
     return [
     ]
 
   case let .loadedFavoritePrimes(favoritePrimes):
-    state = favoritePrimes
+    state.favoritePrimes = favoritePrimes
     return []
 
   case .saveButtonTapped:
     return [
-      Current.fileClient.save("favorite-primes.json", try! JSONEncoder().encode(state))
+      environment.fileClient.save("favorite-primes.json", try! JSONEncoder().encode(state.favoritePrimes))
         .fireAndForget()
 //      saveEffect(favoritePrimes: state)
     ]
 
   case .loadButtonTapped:
     return [
-      Current.fileClient.load("favorite-primes.json")
+      environment.fileClient.load("favorite-primes.json")
         .compactMap { $0 }
         .decode(type: [Int].self, decoder: JSONDecoder())
         .catch { error in Empty(completeImmediately: true) }
@@ -41,6 +51,22 @@ public func favoritePrimesReducer(state: inout [Int], action: FavoritePrimesActi
 //        .compactMap { $0 }
 //        .eraseToEffect()
     ]
+
+  case let .primeButtonTapped(prime):
+    return [
+      environment.nthPrime(prime)
+        .receive(on: DispatchQueue.main)
+        .map { FavoritePrimesAction.nthPrimeResponse(n: prime, prime: $0) }
+        .eraseToEffect()
+    ]
+
+  case let .nthPrimeResponse(n, prime):
+    state.alertNthPrime = prime.map { PrimeAlert(n: n, prime: $0) }
+    return []
+
+  case .alertDismissButtonTapped:
+    state.alertNthPrime = nil
+    return []
   }
 }
 
@@ -58,12 +84,12 @@ extension Publisher where Output == Never, Failure == Never {
 func absurd<A>(_ never: Never) -> A {}
 
 
-struct FileClient {
+public struct FileClient {
   var load: (String) -> Effect<Data?>
   var save: (String, Data) -> Effect<Never>
 }
 extension FileClient {
-  static let live = FileClient(
+  public static let live = FileClient(
     load: { fileName -> Effect<Data?> in
       .sync {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
@@ -83,92 +109,36 @@ extension FileClient {
   )
 }
 
-struct FavoritePrimesEnvironment {
-  var fileClient: FileClient
-}
-extension FavoritePrimesEnvironment {
-  static let live = FavoritePrimesEnvironment(fileClient: .live)
-}
-
-var Current = FavoritePrimesEnvironment.live
+public typealias FavoritePrimesEnvironment = (
+  fileClient: FileClient,
+  nthPrime: (Int) -> Effect<Int?>
+)
 
 #if DEBUG
-extension FavoritePrimesEnvironment {
-  static let mock = FavoritePrimesEnvironment(
-    fileClient: FileClient(
-      load: { _ in Effect<Data?>.sync {
-        try! JSONEncoder().encode([2, 31])
-        } },
-      save: { _, _ in .fireAndForget {} }
-    )
+extension FileClient {
+  static let mock = FileClient(
+    load: { _ in Effect<Data?>.sync {
+      try! JSONEncoder().encode([2, 31])
+      } },
+    save: { _, _ in .fireAndForget {} }
   )
 }
 #endif
 
-//struct Environment {
-//  var date: () -> Date
-//}
-//extension Environment {
-//  static let live = Environment(date: Date.init)
-//}
-//
-//extension Environment {
-//  static let mock = Environment(date: { Date.init(timeIntervalSince1970: 1234567890) })
-//}
-//
-////Current = .mock
-//
-//struct GitHubClient {
-//  var fetchRepos: (@escaping (Result<[Repo], Error>) -> Void) -> Void
-//
-//  struct Repo: Decodable {
-//    var archived: Bool
-//    var description: String?
-//    var htmlUrl: URL
-//    var name: String
-//    var pushedAt: Date?
-//  }
-//}
-//
-//#if DEBUG
-//var Current = Environment.live
-//#else
-//let Current = Environment.live
-//#endif
-
-//private func saveEffect(favoritePrimes: [Int]) -> Effect<FavoritePrimesAction> {
-//  return .fireAndForget {
-////    Current.date()
-//    let data = try! JSONEncoder().encode(favoritePrimes)
-//    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-//    let documentsUrl = URL(fileURLWithPath: documentsPath)
-//    let favoritePrimesUrl = documentsUrl.appendingPathComponent("favorite-primes.json")
-//    try! data.write(to: favoritePrimesUrl)
-//  }
-//}
-
-//private let loadEffect = Effect<FavoritePrimesAction?>.sync {
-//  let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-//  let documentsUrl = URL(fileURLWithPath: documentsPath)
-//  let favoritePrimesUrl = documentsUrl.appendingPathComponent("favorite-primes.json")
-//  guard
-//    let data = try? Data(contentsOf: favoritePrimesUrl),
-//    let favoritePrimes = try? JSONDecoder().decode([Int].self, from: data)
-//    else { return nil }
-//  return .loadedFavoritePrimes(favoritePrimes)
-//}
 
 public struct FavoritePrimesView: View {
-  @ObservedObject var store: Store<[Int], FavoritePrimesAction>
+  @ObservedObject var store: Store<FavoritePrimesState, FavoritePrimesAction>
 
-  public init(store: Store<[Int], FavoritePrimesAction>) {
+  public init(store: Store<FavoritePrimesState, FavoritePrimesAction>) {
     self.store = store
   }
 
   public var body: some View {
     List {
-      ForEach(self.store.value, id: \.self) { prime in
-        Text("\(prime)")
+      ForEach(self.store.value.favoritePrimes, id: \.self) { prime in
+        Button("\(prime)") {
+          self.store.send(.primeButtonTapped(prime))
+        }
       }
       .onDelete { indexSet in
         self.store.send(.deleteFavoritePrimes(indexSet))
@@ -185,5 +155,15 @@ public struct FavoritePrimesView: View {
         }
       }
     )
+      .alert(
+        item: .constant(self.store.value.alertNthPrime)
+      ) { alert in
+        Alert(
+          title: Text(alert.title),
+          dismissButton: .default(Text("Ok")) {
+            self.store.send(.alertDismissButtonTapped)
+          }
+        )
+    }
   }
 }

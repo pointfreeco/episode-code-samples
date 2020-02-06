@@ -2,21 +2,35 @@ import XCTest
 @testable import PrimeTime
 import ComposableArchitecture
 @testable import Counter
+import ComposableArchitectureTestSupport
+@testable import FavoritePrimes
 
 class PrimeTimeTests: XCTestCase {
 
-  func testExample() {
-    let c = CounterView(store: Store(initialValue: CounterViewState(alertNthPrime: nil, count: 2, favoritePrimes: [2, 3, 5], isNthPrimeButtonDisabled: false), reducer: counterViewReducer))
-
-    let cc = ContentView(store: Store(initialValue: AppState(), reducer: appReducer))
-
-    print(c.body)
-    let tmp = c.body
-    print(type(of: tmp))
-
-    print(cc.body)
-    let tmp1 = cc.body
-    print(type(of: tmp1))
+  func testIntegration() {
+    assert(
+      initialValue: AppState(count: 2, favoritePrimes: []),
+      reducer: appReducer,
+      environment: (
+        fileClient: .mock,
+        nthPrime: { _ in .sync { 17 } }
+      ),
+      steps:
+      Step(.send, .counterView(.counter(.nthPrimeButtonTapped))) {
+        $0.isNthPrimeButtonDisabled = true
+      },
+      Step(.receive, .counterView(.counter(.nthPrimeResponse(17)))) {
+        $0.isNthPrimeButtonDisabled = false
+        $0.alertNthPrime = PrimeAlert(prime: 17)
+      },
+      Step(.send, .counterView(.counter(.alertDismissButtonTapped))) {
+        $0.alertNthPrime = nil
+      },
+      Step(.send, .favoritePrimes(.loadButtonTapped)),
+      Step(.receive, .favoritePrimes(.loadedFavoritePrimes([2, 31]))) {
+        $0.favoritePrimes = [2, 31]
+      }
+    )
   }
 
 }

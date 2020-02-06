@@ -12,6 +12,22 @@
 		CA79FC30239C23310096D881 /* PrimeTimeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */; };
 		CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29217322FB231F006090DF /* WolframAlpha.swift */; };
 		CADB167323DCC4A30052C18C /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = CADB167223DCC4A30052C18C /* CasePaths */; };
+		CAFB3E8A23EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3E8123EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework */; };
+		CAFB3E9123EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFB3E9023EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests.swift */; };
+		CAFB3E9323EBBFF4000CDD47 /* ComposableArchitectureTestSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = CAFB3E8323EBBFF4000CDD47 /* ComposableArchitectureTestSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CAFB3E9623EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3E8123EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework */; };
+		CAFB3E9723EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3E8123EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CAFB3E9F23EBC001000CDD47 /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFB3E9E23EBC001000CDD47 /* Assert.swift */; };
+		CAFB3EA523EBC02A000CDD47 /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3E8123EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework */; };
+		CAFB3EA823EBC036000CDD47 /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3E8123EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework */; };
+		CAFB3EB723EC69CD000CDD47 /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3EAE23EC69CD000CDD47 /* PrimeAlert.framework */; };
+		CAFB3EBE23EC69CD000CDD47 /* PrimeAlertTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFB3EBD23EC69CD000CDD47 /* PrimeAlertTests.swift */; };
+		CAFB3EC023EC69CD000CDD47 /* PrimeAlert.h in Headers */ = {isa = PBXBuildFile; fileRef = CAFB3EB023EC69CD000CDD47 /* PrimeAlert.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CAFB3EC323EC69CD000CDD47 /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3EAE23EC69CD000CDD47 /* PrimeAlert.framework */; };
+		CAFB3EC423EC69CD000CDD47 /* PrimeAlert.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3EAE23EC69CD000CDD47 /* PrimeAlert.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CAFB3ECC23EC69DC000CDD47 /* PrimeAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFB3ECB23EC69DC000CDD47 /* PrimeAlert.swift */; };
+		CAFB3ECF23EC69FC000CDD47 /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3EAE23EC69CD000CDD47 /* PrimeAlert.framework */; };
+		CAFB3ED223EC6A06000CDD47 /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFB3EAE23EC69CD000CDD47 /* PrimeAlert.framework */; };
 		DC36ED17234CD8040027F7A1 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
 		DC90717022FA102900B38B42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90716F22FA102900B38B42 /* AppDelegate.swift */; };
 		DC90717222FA102900B38B42 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90717122FA102900B38B42 /* SceneDelegate.swift */; };
@@ -63,6 +79,76 @@
 			proxyType = 1;
 			remoteGlobalIDString = DCF0C5DF2326035C008B45A0;
 			remoteInfo = PrimeModal;
+		};
+		CAFB3E8B23EBBFF4000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFB3E8023EBBFF4000CDD47;
+			remoteInfo = ComposableArchitectureTestSupport;
+		};
+		CAFB3E8D23EBBFF4000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DC90716B22FA102900B38B42;
+			remoteInfo = PrimeTime;
+		};
+		CAFB3E9423EBBFF4000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFB3E8023EBBFF4000CDD47;
+			remoteInfo = ComposableArchitectureTestSupport;
+		};
+		CAFB3EA323EBC027000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFB3E8023EBBFF4000CDD47;
+			remoteInfo = ComposableArchitectureTestSupport;
+		};
+		CAFB3EA623EBC033000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFB3E8023EBBFF4000CDD47;
+			remoteInfo = ComposableArchitectureTestSupport;
+		};
+		CAFB3EB823EC69CD000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFB3EAD23EC69CD000CDD47;
+			remoteInfo = PrimeAlert;
+		};
+		CAFB3EBA23EC69CD000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DC90716B22FA102900B38B42;
+			remoteInfo = PrimeTime;
+		};
+		CAFB3EC123EC69CD000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFB3EAD23EC69CD000CDD47;
+			remoteInfo = PrimeAlert;
+		};
+		CAFB3ECD23EC69F7000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFB3EAD23EC69CD000CDD47;
+			remoteInfo = PrimeAlert;
+		};
+		CAFB3ED023EC6A02000CDD47 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFB3EAD23EC69CD000CDD47;
+			remoteInfo = PrimeAlert;
 		};
 		DC90718322FA102B00B38B42 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -181,7 +267,9 @@
 				DCF0C6182326036F008B45A0 /* FavoritePrimes.framework in Embed Frameworks */,
 				DCF0C5B22326032B008B45A0 /* ComposableArchitecture.framework in Embed Frameworks */,
 				DCF0C5D423260348008B45A0 /* Counter.framework in Embed Frameworks */,
+				CAFB3E9723EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework in Embed Frameworks */,
 				DCF0C5F62326035C008B45A0 /* PrimeModal.framework in Embed Frameworks */,
+				CAFB3EC423EC69CD000CDD47 /* PrimeAlert.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,6 +281,20 @@
 		CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrimeTimeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeTimeUITests.swift; sourceTree = "<group>"; };
 		CA79FC31239C23310096D881 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CAFB3E8123EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitectureTestSupport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAFB3E8323EBBFF4000CDD47 /* ComposableArchitectureTestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitectureTestSupport.h; sourceTree = "<group>"; };
+		CAFB3E8423EBBFF4000CDD47 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CAFB3E8923EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ComposableArchitectureTestSupportTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAFB3E9023EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitectureTestSupportTests.swift; sourceTree = "<group>"; };
+		CAFB3E9223EBBFF4000CDD47 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CAFB3E9E23EBC001000CDD47 /* Assert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
+		CAFB3EAE23EC69CD000CDD47 /* PrimeAlert.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PrimeAlert.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAFB3EB023EC69CD000CDD47 /* PrimeAlert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrimeAlert.h; sourceTree = "<group>"; };
+		CAFB3EB123EC69CD000CDD47 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CAFB3EB623EC69CD000CDD47 /* PrimeAlertTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrimeAlertTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAFB3EBD23EC69CD000CDD47 /* PrimeAlertTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeAlertTests.swift; sourceTree = "<group>"; };
+		CAFB3EBF23EC69CD000CDD47 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CAFB3ECB23EC69DC000CDD47 /* PrimeAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeAlert.swift; sourceTree = "<group>"; };
 		DC29217322FB231F006090DF /* WolframAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WolframAlpha.swift; sourceTree = "<group>"; };
 		DC39325F230241AF005A0B0A /* PrimeTime.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = PrimeTime.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DC90716C22FA102900B38B42 /* PrimeTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrimeTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -245,11 +347,43 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CAFB3E7E23EBBFF4000CDD47 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3E8623EBBFF4000CDD47 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFB3E8A23EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3EAB23EC69CD000CDD47 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3EB323EC69CD000CDD47 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFB3EB723EC69CD000CDD47 /* PrimeAlert.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DC90716922FA102900B38B42 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFB3E9623EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework in Frameworks */,
 				DCF88F02234D4A3B001BA79A /* ComposableArchitecture.framework in Frameworks */,
+				CAFB3EC323EC69CD000CDD47 /* PrimeAlert.framework in Frameworks */,
 				DCF0C5D323260348008B45A0 /* Counter.framework in Frameworks */,
 				DCF0C6172326036F008B45A0 /* FavoritePrimes.framework in Frameworks */,
 			);
@@ -259,6 +393,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFB3EA823EBC036000CDD47 /* ComposableArchitectureTestSupport.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,6 +417,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFB3ED223EC6A06000CDD47 /* PrimeAlert.framework in Frameworks */,
 				DCF88F01234D4A28001BA79A /* PrimeModal.framework in Frameworks */,
 				DCF88F00234D4A28001BA79A /* ComposableArchitecture.framework in Frameworks */,
 			);
@@ -291,6 +427,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFB3EA523EBC02A000CDD47 /* ComposableArchitectureTestSupport.framework in Frameworks */,
 				DCF0C5C723260348008B45A0 /* Counter.framework in Frameworks */,
 				CA79FC28239C158C0096D881 /* SnapshotTesting in Frameworks */,
 			);
@@ -316,6 +453,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFB3ECF23EC69FC000CDD47 /* PrimeAlert.framework in Frameworks */,
 				DC36ED17234CD8040027F7A1 /* ComposableArchitecture.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -340,6 +478,44 @@
 			path = PrimeTimeUITests;
 			sourceTree = "<group>";
 		};
+		CAFB3E8223EBBFF4000CDD47 /* ComposableArchitectureTestSupport */ = {
+			isa = PBXGroup;
+			children = (
+				CAFB3E8323EBBFF4000CDD47 /* ComposableArchitectureTestSupport.h */,
+				CAFB3E8423EBBFF4000CDD47 /* Info.plist */,
+				CAFB3E9E23EBC001000CDD47 /* Assert.swift */,
+			);
+			path = ComposableArchitectureTestSupport;
+			sourceTree = "<group>";
+		};
+		CAFB3E8F23EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests */ = {
+			isa = PBXGroup;
+			children = (
+				CAFB3E9023EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests.swift */,
+				CAFB3E9223EBBFF4000CDD47 /* Info.plist */,
+			);
+			path = ComposableArchitectureTestSupportTests;
+			sourceTree = "<group>";
+		};
+		CAFB3EAF23EC69CD000CDD47 /* PrimeAlert */ = {
+			isa = PBXGroup;
+			children = (
+				CAFB3EB023EC69CD000CDD47 /* PrimeAlert.h */,
+				CAFB3EB123EC69CD000CDD47 /* Info.plist */,
+				CAFB3ECB23EC69DC000CDD47 /* PrimeAlert.swift */,
+			);
+			path = PrimeAlert;
+			sourceTree = "<group>";
+		};
+		CAFB3EBC23EC69CD000CDD47 /* PrimeAlertTests */ = {
+			isa = PBXGroup;
+			children = (
+				CAFB3EBD23EC69CD000CDD47 /* PrimeAlertTests.swift */,
+				CAFB3EBF23EC69CD000CDD47 /* Info.plist */,
+			);
+			path = PrimeAlertTests;
+			sourceTree = "<group>";
+		};
 		DC36ED16234CD8040027F7A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -362,6 +538,10 @@
 				DCF0C6032326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6102326036F008B45A0 /* FavoritePrimesTests */,
 				CA79FC2E239C23310096D881 /* PrimeTimeUITests */,
+				CAFB3E8223EBBFF4000CDD47 /* ComposableArchitectureTestSupport */,
+				CAFB3E8F23EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests */,
+				CAFB3EAF23EC69CD000CDD47 /* PrimeAlert */,
+				CAFB3EBC23EC69CD000CDD47 /* PrimeAlertTests */,
 				DC90716D22FA102900B38B42 /* Products */,
 				DC36ED16234CD8040027F7A1 /* Frameworks */,
 			);
@@ -381,6 +561,10 @@
 				DCF0C6022326036F008B45A0 /* FavoritePrimes.framework */,
 				DCF0C60A2326036F008B45A0 /* FavoritePrimesTests.xctest */,
 				CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */,
+				CAFB3E8123EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework */,
+				CAFB3E8923EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests.xctest */,
+				CAFB3EAE23EC69CD000CDD47 /* PrimeAlert.framework */,
+				CAFB3EB623EC69CD000CDD47 /* PrimeAlertTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -498,6 +682,22 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		CAFB3E7C23EBBFF4000CDD47 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFB3E9323EBBFF4000CDD47 /* ComposableArchitectureTestSupport.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3EA923EC69CD000CDD47 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFB3EC023EC69CD000CDD47 /* PrimeAlert.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DCF0C5962326032B008B45A0 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -551,6 +751,80 @@
 			productReference = CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		CAFB3E8023EBBFF4000CDD47 /* ComposableArchitectureTestSupport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAFB3E9C23EBBFF4000CDD47 /* Build configuration list for PBXNativeTarget "ComposableArchitectureTestSupport" */;
+			buildPhases = (
+				CAFB3E7C23EBBFF4000CDD47 /* Headers */,
+				CAFB3E7D23EBBFF4000CDD47 /* Sources */,
+				CAFB3E7E23EBBFF4000CDD47 /* Frameworks */,
+				CAFB3E7F23EBBFF4000CDD47 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ComposableArchitectureTestSupport;
+			productName = ComposableArchitectureTestSupport;
+			productReference = CAFB3E8123EBBFF4000CDD47 /* ComposableArchitectureTestSupport.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CAFB3E8823EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAFB3E9D23EBBFF4000CDD47 /* Build configuration list for PBXNativeTarget "ComposableArchitectureTestSupportTests" */;
+			buildPhases = (
+				CAFB3E8523EBBFF4000CDD47 /* Sources */,
+				CAFB3E8623EBBFF4000CDD47 /* Frameworks */,
+				CAFB3E8723EBBFF4000CDD47 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CAFB3E8C23EBBFF4000CDD47 /* PBXTargetDependency */,
+				CAFB3E8E23EBBFF4000CDD47 /* PBXTargetDependency */,
+			);
+			name = ComposableArchitectureTestSupportTests;
+			productName = ComposableArchitectureTestSupportTests;
+			productReference = CAFB3E8923EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CAFB3EAD23EC69CD000CDD47 /* PrimeAlert */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAFB3EC523EC69CD000CDD47 /* Build configuration list for PBXNativeTarget "PrimeAlert" */;
+			buildPhases = (
+				CAFB3EA923EC69CD000CDD47 /* Headers */,
+				CAFB3EAA23EC69CD000CDD47 /* Sources */,
+				CAFB3EAB23EC69CD000CDD47 /* Frameworks */,
+				CAFB3EAC23EC69CD000CDD47 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PrimeAlert;
+			productName = PrimeAlert;
+			productReference = CAFB3EAE23EC69CD000CDD47 /* PrimeAlert.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CAFB3EB523EC69CD000CDD47 /* PrimeAlertTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAFB3EC823EC69CD000CDD47 /* Build configuration list for PBXNativeTarget "PrimeAlertTests" */;
+			buildPhases = (
+				CAFB3EB223EC69CD000CDD47 /* Sources */,
+				CAFB3EB323EC69CD000CDD47 /* Frameworks */,
+				CAFB3EB423EC69CD000CDD47 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CAFB3EB923EC69CD000CDD47 /* PBXTargetDependency */,
+				CAFB3EBB23EC69CD000CDD47 /* PBXTargetDependency */,
+			);
+			name = PrimeAlertTests;
+			productName = PrimeAlertTests;
+			productReference = CAFB3EB623EC69CD000CDD47 /* PrimeAlertTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		DC90716B22FA102900B38B42 /* PrimeTime */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DC90718B22FA102B00B38B42 /* Build configuration list for PBXNativeTarget "PrimeTime" */;
@@ -566,6 +840,8 @@
 				DCF0C5AF2326032B008B45A0 /* PBXTargetDependency */,
 				DCF0C5D223260348008B45A0 /* PBXTargetDependency */,
 				DCF0C6162326036F008B45A0 /* PBXTargetDependency */,
+				CAFB3E9523EBBFF4000CDD47 /* PBXTargetDependency */,
+				CAFB3EC223EC69CD000CDD47 /* PBXTargetDependency */,
 			);
 			name = PrimeTime;
 			productName = PrimeTime;
@@ -583,6 +859,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CAFB3EA723EBC033000CDD47 /* PBXTargetDependency */,
 				DC90718422FA102B00B38B42 /* PBXTargetDependency */,
 			);
 			name = PrimeTimeTests;
@@ -642,6 +919,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CAFB3ED123EC6A02000CDD47 /* PBXTargetDependency */,
 				CAD67E1D2332982E000C7787 /* PBXTargetDependency */,
 				DCF0C6242326038A008B45A0 /* PBXTargetDependency */,
 			);
@@ -661,6 +939,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				CAFB3EA423EBC027000CDD47 /* PBXTargetDependency */,
+				CAFB3E7B23EBA067000CDD47 /* PBXTargetDependency */,
 				DCF0C5C923260348008B45A0 /* PBXTargetDependency */,
 				DCF0C5CB23260348008B45A0 /* PBXTargetDependency */,
 			);
@@ -722,6 +1002,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CAFB3ECE23EC69F7000CDD47 /* PBXTargetDependency */,
 				DCF0C62023260383008B45A0 /* PBXTargetDependency */,
 			);
 			name = FavoritePrimes;
@@ -754,12 +1035,28 @@
 		DC90716422FA102900B38B42 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1120;
+				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = "Point-Free";
 				TargetAttributes = {
 					CA79FC2C239C23310096D881 = {
 						CreatedOnToolsVersion = 11.2.1;
+						TestTargetID = DC90716B22FA102900B38B42;
+					};
+					CAFB3E8023EBBFF4000CDD47 = {
+						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
+					};
+					CAFB3E8823EBBFF4000CDD47 = {
+						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = DC90716B22FA102900B38B42;
+					};
+					CAFB3EAD23EC69CD000CDD47 = {
+						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
+					};
+					CAFB3EB523EC69CD000CDD47 = {
+						CreatedOnToolsVersion = 11.3.1;
 						TestTargetID = DC90716B22FA102900B38B42;
 					};
 					DC90716B22FA102900B38B42 = {
@@ -829,12 +1126,44 @@
 				DCF0C6012326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6092326036F008B45A0 /* FavoritePrimesTests */,
 				CA79FC2C239C23310096D881 /* PrimeTimeUITests */,
+				CAFB3E8023EBBFF4000CDD47 /* ComposableArchitectureTestSupport */,
+				CAFB3E8823EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests */,
+				CAFB3EAD23EC69CD000CDD47 /* PrimeAlert */,
+				CAFB3EB523EC69CD000CDD47 /* PrimeAlertTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		CA79FC2B239C23310096D881 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3E7F23EBBFF4000CDD47 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3E8723EBBFF4000CDD47 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3EAC23EC69CD000CDD47 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3EB423EC69CD000CDD47 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -922,6 +1251,38 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA79FC30239C23310096D881 /* PrimeTimeUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3E7D23EBBFF4000CDD47 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFB3E9F23EBC001000CDD47 /* Assert.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3E8523EBBFF4000CDD47 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFB3E9123EBBFF4000CDD47 /* ComposableArchitectureTestSupportTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3EAA23EC69CD000CDD47 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFB3ECC23EC69DC000CDD47 /* PrimeAlert.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFB3EB223EC69CD000CDD47 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFB3EBE23EC69CD000CDD47 /* PrimeAlertTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1022,6 +1383,60 @@
 			isa = PBXTargetDependency;
 			target = DCF0C5DF2326035C008B45A0 /* PrimeModal */;
 			targetProxy = CAD67E1C2332982E000C7787 /* PBXContainerItemProxy */;
+		};
+		CAFB3E7B23EBA067000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = CAFB3E7A23EBA067000CDD47 /* SnapshotTesting */;
+		};
+		CAFB3E8C23EBBFF4000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFB3E8023EBBFF4000CDD47 /* ComposableArchitectureTestSupport */;
+			targetProxy = CAFB3E8B23EBBFF4000CDD47 /* PBXContainerItemProxy */;
+		};
+		CAFB3E8E23EBBFF4000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DC90716B22FA102900B38B42 /* PrimeTime */;
+			targetProxy = CAFB3E8D23EBBFF4000CDD47 /* PBXContainerItemProxy */;
+		};
+		CAFB3E9523EBBFF4000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFB3E8023EBBFF4000CDD47 /* ComposableArchitectureTestSupport */;
+			targetProxy = CAFB3E9423EBBFF4000CDD47 /* PBXContainerItemProxy */;
+		};
+		CAFB3EA423EBC027000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFB3E8023EBBFF4000CDD47 /* ComposableArchitectureTestSupport */;
+			targetProxy = CAFB3EA323EBC027000CDD47 /* PBXContainerItemProxy */;
+		};
+		CAFB3EA723EBC033000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFB3E8023EBBFF4000CDD47 /* ComposableArchitectureTestSupport */;
+			targetProxy = CAFB3EA623EBC033000CDD47 /* PBXContainerItemProxy */;
+		};
+		CAFB3EB923EC69CD000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFB3EAD23EC69CD000CDD47 /* PrimeAlert */;
+			targetProxy = CAFB3EB823EC69CD000CDD47 /* PBXContainerItemProxy */;
+		};
+		CAFB3EBB23EC69CD000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DC90716B22FA102900B38B42 /* PrimeTime */;
+			targetProxy = CAFB3EBA23EC69CD000CDD47 /* PBXContainerItemProxy */;
+		};
+		CAFB3EC223EC69CD000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFB3EAD23EC69CD000CDD47 /* PrimeAlert */;
+			targetProxy = CAFB3EC123EC69CD000CDD47 /* PBXContainerItemProxy */;
+		};
+		CAFB3ECE23EC69F7000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFB3EAD23EC69CD000CDD47 /* PrimeAlert */;
+			targetProxy = CAFB3ECD23EC69F7000CDD47 /* PBXContainerItemProxy */;
+		};
+		CAFB3ED123EC6A02000CDD47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFB3EAD23EC69CD000CDD47 /* PrimeAlert */;
+			targetProxy = CAFB3ED023EC6A02000CDD47 /* PBXContainerItemProxy */;
 		};
 		DC90718422FA102B00B38B42 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1147,6 +1562,232 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = PrimeTime;
+			};
+			name = Release;
+		};
+		CAFB3E9823EBBFF4000CDD47 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				INFOPLIST_FILE = ComposableArchitectureTestSupport/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.ComposableArchitectureTestSupport;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CAFB3E9923EBBFF4000CDD47 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				INFOPLIST_FILE = ComposableArchitectureTestSupport/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.ComposableArchitectureTestSupport;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CAFB3E9A23EBBFF4000CDD47 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				INFOPLIST_FILE = ComposableArchitectureTestSupportTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.ComposableArchitectureTestSupportTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
+			};
+			name = Debug;
+		};
+		CAFB3E9B23EBBFF4000CDD47 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				INFOPLIST_FILE = ComposableArchitectureTestSupportTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.ComposableArchitectureTestSupportTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
+			};
+			name = Release;
+		};
+		CAFB3EC623EC69CD000CDD47 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PrimeAlert/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlert;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CAFB3EC723EC69CD000CDD47 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PrimeAlert/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlert;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CAFB3EC923EC69CD000CDD47 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = PrimeAlertTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlertTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
+			};
+			name = Debug;
+		};
+		CAFB3ECA23EC69CD000CDD47 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = PrimeAlertTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlertTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrimeTime.app/PrimeTime";
 			};
 			name = Release;
 		};
@@ -1724,6 +2365,42 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		CAFB3E9C23EBBFF4000CDD47 /* Build configuration list for PBXNativeTarget "ComposableArchitectureTestSupport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAFB3E9823EBBFF4000CDD47 /* Debug */,
+				CAFB3E9923EBBFF4000CDD47 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CAFB3E9D23EBBFF4000CDD47 /* Build configuration list for PBXNativeTarget "ComposableArchitectureTestSupportTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAFB3E9A23EBBFF4000CDD47 /* Debug */,
+				CAFB3E9B23EBBFF4000CDD47 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CAFB3EC523EC69CD000CDD47 /* Build configuration list for PBXNativeTarget "PrimeAlert" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAFB3EC623EC69CD000CDD47 /* Debug */,
+				CAFB3EC723EC69CD000CDD47 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CAFB3EC823EC69CD000CDD47 /* Build configuration list for PBXNativeTarget "PrimeAlertTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAFB3EC923EC69CD000CDD47 /* Debug */,
+				CAFB3ECA23EC69CD000CDD47 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		DC90716722FA102900B38B42 /* Build configuration list for PBXProject "PrimeTime" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1854,6 +2531,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CADB167123DCC4A30052C18C /* XCRemoteSwiftPackageReference "swift-case-paths" */;
 			productName = CasePaths;
+		};
+		CAFB3E7A23EBA067000CDD47 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CA79FC26239C158C0096D881 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

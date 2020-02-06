@@ -1,6 +1,7 @@
 import Combine
 import ComposableArchitecture
 import Foundation
+import PrimeModal
 
 private let wolframAlphaApiKey = "6H69Q3-828TKQJ4EP"
 
@@ -21,7 +22,7 @@ struct WolframAlphaResult: Decodable {
   }
 }
 
-func nthPrime(_ n: Int) -> Effect<Int?> {
+public func nthPrime(_ n: Int) -> Effect<Int?> {
   return wolframAlpha(query: "prime \(n)").map { result in
     result
       .flatMap {
@@ -66,4 +67,19 @@ extension Publisher {
   public var hush: Publishers.ReplaceError<Publishers.Map<Self, Optional<Self.Output>>> {
     return self.map(Optional.some).replaceError(with: nil)
   }
+}
+
+public func offlineNthPrime(_ n: Int) -> Effect<Int?> {
+  Future { callback in
+    var nthPrime = 1
+    var count = 0
+    while count < n {
+      nthPrime += 1
+      if isPrime(nthPrime) {
+        count += 1
+      }
+    }
+    callback(.success(nthPrime))
+  }
+  .eraseToEffect()
 }
