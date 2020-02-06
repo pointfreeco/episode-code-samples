@@ -1,6 +1,5 @@
 import XCTest
 @testable import PrimeModal
-import ComposableArchitectureTestSupport
 
 class PrimeModalTests: XCTestCase {
   func testSaveFavoritesPrimesTapped() {
