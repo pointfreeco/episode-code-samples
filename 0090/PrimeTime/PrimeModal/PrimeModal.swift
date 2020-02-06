@@ -1,7 +1,18 @@
 import ComposableArchitecture
 import SwiftUI
 
-public typealias PrimeModalState = (count: Int, favoritePrimes: [Int])
+public struct PrimeModalState: Equatable {
+  public var count: Int
+  public var favoritePrimes: [Int]
+
+  public init(
+    count: Int,
+    favoritePrimes: [Int]
+  ) {
+    self.count = count
+    self.favoritePrimes = favoritePrimes
+  }
+}
 
 public enum PrimeModalAction: Equatable {
   case saveFavoritePrimeTapped
