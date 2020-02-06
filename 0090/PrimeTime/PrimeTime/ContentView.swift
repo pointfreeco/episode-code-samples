@@ -6,7 +6,7 @@ import SwiftUI
 import PrimeAlert
 import WolframAlpha
 
-struct AppState {
+struct AppState: Equatable {
   var count = 0
   var favoritePrimes: [Int] = []
   var loggedInUser: User? = nil
@@ -15,17 +15,17 @@ struct AppState {
   var isNthPrimeButtonDisabled: Bool = false
   var isPrimeModalShown: Bool = false
 
-  struct Activity {
+  struct Activity: Equatable {
     let timestamp: Date
     let type: ActivityType
 
-    enum ActivityType {
+    enum ActivityType: Equatable {
       case addedFavoritePrime(Int)
       case removedFavoritePrime(Int)
     }
   }
 
-  struct User {
+  struct User: Equatable {
     let id: Int
     let name: String
     let bio: String
@@ -49,7 +49,7 @@ struct AppState {
 //  }
 //}
 
-enum AppAction {
+enum AppAction: Equatable {
   case counterView(CounterViewAction)
   case offlineCounterView(CounterViewAction)
   case favoritePrimes(FavoritePrimesAction)
