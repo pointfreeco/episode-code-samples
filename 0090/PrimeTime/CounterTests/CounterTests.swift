@@ -1,29 +1,9 @@
 import XCTest
 @testable import Counter
-import SnapshotTesting
 import ComposableArchitecture
+import ComposableArchitectureTestSupport
+import SnapshotTesting
 import SwiftUI
-
-
-extension Snapshotting where Value: UIViewController, Format == UIImage {
-  static var windowedImage: Snapshotting {
-    return Snapshotting<UIImage, UIImage>.image.asyncPullback { vc in
-      Async<UIImage> { callback in
-        UIView.setAnimationsEnabled(false)
-        let window = UIApplication.shared.windows.first!
-        window.rootViewController = vc
-        DispatchQueue.main.async {
-          let image = UIGraphicsImageRenderer(bounds: window.bounds).image { ctx in
-            window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
-          }
-          callback(image)
-          UIView.setAnimationsEnabled(true)
-        }
-      }
-    }
-  }
-}
-
 
 class CounterTests: XCTestCase {
   override func setUp() {
@@ -39,7 +19,6 @@ class CounterTests: XCTestCase {
     vc.view.frame = UIScreen.main.bounds
 
     diffTool = "ksdiff"
-//    record=true
     assertSnapshot(matching: vc, as: .windowedImage)
 
     store.send(.counter(.incrTapped))
