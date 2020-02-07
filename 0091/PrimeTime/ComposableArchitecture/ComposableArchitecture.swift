@@ -47,18 +47,26 @@ public func logging<Value, Action, Environment>(
 }
 
 public final class Store<Value, Action>: ObservableObject {
-  private let reducer: Reducer<Value, Action>
+  private let reducer: Reducer<Value, Action, Any>
+  private let environment: Any
   @Published public private(set) var value: Value
   private var viewCancellable: Cancellable?
   private var effectCancellables: Set<AnyCancellable> = []
 
-  public init(initialValue: Value, reducer: @escaping Reducer<Value, Action>) {
-    self.reducer = reducer
+  public init<Environment>(
+    initialValue: Value,
+    reducer: @escaping Reducer<Value, Action, Environment>,
+    environment: Environment
+  ) {
+    self.reducer = { value, action, environment in
+      reducer(&value, action, environment as! Environment)
+    }
     self.value = initialValue
+    self.environment = environment
   }
 
   public func send(_ action: Action) {
-    let effects = self.reducer(&self.value, action)
+    let effects = self.reducer(&self.value, action, self.environment)
     effects.forEach { effect in
       var effectCancellable: AnyCancellable?
       var didComplete = false
@@ -82,11 +90,12 @@ public final class Store<Value, Action>: ObservableObject {
   ) -> Store<LocalValue, LocalAction> {
     let localStore = Store<LocalValue, LocalAction>(
       initialValue: toLocalValue(self.value),
-      reducer: { localValue, localAction in
+      reducer: { localValue, localAction, _ in
         self.send(toGlobalAction(localAction))
         localValue = toLocalValue(self.value)
         return []
-    }
+    },
+      environment: self.environment
     )
     localStore.viewCancellable = self.$value.sink { [weak localStore] newValue in
       localStore?.value = toLocalValue(newValue)
