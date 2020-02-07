@@ -1,4 +1,5 @@
 import CasePaths
+import Combine
 import ComposableArchitecture
 import PrimeModal
 import SwiftUI
@@ -24,7 +25,16 @@ public func counterReducer(state: inout CounterState, action: CounterAction) -> 
   switch action {
   case .decrTapped:
     state.count -= 1
-    return []
+    let count = state.count
+    return [
+      .fireAndForget {
+        print(count)
+      },
+
+      Just(CounterAction.incrTapped)
+        .delay(for: 1, scheduler: DispatchQueue.main)
+        .eraseToEffect()
+    ]
 
   case .incrTapped:
     state.count += 1
