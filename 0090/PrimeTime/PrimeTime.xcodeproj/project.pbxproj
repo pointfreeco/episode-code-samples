@@ -237,6 +237,9 @@
 		CA79FC31239C23310096D881 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC29217322FB231F006090DF /* WolframAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WolframAlpha.swift; sourceTree = "<group>"; };
 		DC39325F230241AF005A0B0A /* PrimeTime.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = PrimeTime.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DC764BEA23F1D1C80024663D /* Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Framework.xcconfig; sourceTree = "<group>"; };
+		DC764BEB23F1D1D30024663D /* Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
+		DC764BEC23F1D1F80024663D /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		DC90716C22FA102900B38B42 /* PrimeTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrimeTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC90716F22FA102900B38B42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC90717122FA102900B38B42 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -405,6 +408,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		DC764BE923F1D1A20024663D /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				DC764BEC23F1D1F80024663D /* Base.xcconfig */,
+				DC764BEA23F1D1C80024663D /* Framework.xcconfig */,
+				DC764BEB23F1D1D30024663D /* Test.xcconfig */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		DC90716322FA102900B38B42 = {
 			isa = PBXGroup;
 			children = (
@@ -421,6 +434,7 @@
 				DCF0C5EE2326035C008B45A0 /* PrimeModalTests */,
 				DCF0C6032326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6102326036F008B45A0 /* FavoritePrimesTests */,
+				DC764BE923F1D1A20024663D /* Shared */,
 				DC90716D22FA102900B38B42 /* Products */,
 				DC36ED16234CD8040027F7A1 /* Frameworks */,
 			);
@@ -1493,6 +1507,7 @@
 		};
 		DCF0C5B32326032B008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1521,6 +1536,7 @@
 		};
 		DCF0C5B42326032B008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1548,6 +1564,7 @@
 		};
 		DCF0C5B52326032B008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEB23F1D1D30024663D /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1567,6 +1584,7 @@
 		};
 		DCF0C5B62326032B008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEB23F1D1D30024663D /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1586,6 +1604,7 @@
 		};
 		DCF0C5D623260348008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1614,6 +1633,7 @@
 		};
 		DCF0C5D723260348008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1641,6 +1661,7 @@
 		};
 		DCF0C5D923260348008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEB23F1D1D30024663D /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1660,6 +1681,7 @@
 		};
 		DCF0C5DA23260348008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEB23F1D1D30024663D /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1679,6 +1701,7 @@
 		};
 		DCF0C5F82326035C008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1707,6 +1730,7 @@
 		};
 		DCF0C5F92326035C008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1734,6 +1758,7 @@
 		};
 		DCF0C5FB2326035C008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEB23F1D1D30024663D /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1752,6 +1777,7 @@
 		};
 		DCF0C5FC2326035C008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEB23F1D1D30024663D /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1770,6 +1796,7 @@
 		};
 		DCF0C61A2326036F008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1798,6 +1825,7 @@
 		};
 		DCF0C61B2326036F008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1825,6 +1853,7 @@
 		};
 		DCF0C61D2326036F008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEB23F1D1D30024663D /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1843,6 +1872,7 @@
 		};
 		DCF0C61E2326036F008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEB23F1D1D30024663D /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1861,6 +1891,7 @@
 		};
 		DCF6C51F23ECD08A00A54EE0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1895,6 +1926,7 @@
 		};
 		DCF6C52023ECD08A00A54EE0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC764BEA23F1D1C80024663D /* Framework.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
