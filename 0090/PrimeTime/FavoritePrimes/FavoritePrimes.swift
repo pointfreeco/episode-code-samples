@@ -159,29 +159,33 @@ extension FavoritePrimesEnvironment {
 //}
 
 public struct FavoritePrimesView: View {
-  @ObservedObject var store: Store<[Int], FavoritePrimesAction>
+  @ObservedObject var viewStore: ViewStore<[Int], FavoritePrimesAction>
+  let store: Store<[Int], FavoritePrimesAction>
 
   public init(store: Store<[Int], FavoritePrimesAction>) {
+    print("FavoritePrimesView.init")
     self.store = store
+    self.viewStore = store.view(value: { $0 }, action: { $0 })
   }
 
   public var body: some View {
-    List {
-      ForEach(self.store.value, id: \.self) { prime in
+    print("FavoritePrimesView.body")
+    return List {
+      ForEach(self.viewStore.value, id: \.self) { prime in
         Text("\(prime)")
       }
       .onDelete { indexSet in
-        self.store.send(.deleteFavoritePrimes(indexSet))
+        self.viewStore.send(.deleteFavoritePrimes(indexSet))
       }
     }
     .navigationBarTitle("Favorite primes")
     .navigationBarItems(
       trailing: HStack {
         Button("Save") {
-          self.store.send(.saveButtonTapped)
+          self.viewStore.send(.saveButtonTapped)
         }
         Button("Load") {
-          self.store.send(.loadButtonTapped)
+          self.viewStore.send(.loadButtonTapped)
         }
       }
     )

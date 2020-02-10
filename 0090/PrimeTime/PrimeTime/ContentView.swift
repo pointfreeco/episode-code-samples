@@ -4,7 +4,7 @@ import Counter
 import FavoritePrimes
 import SwiftUI
 
-struct AppState {
+struct AppState: Equatable {
   var count = 0
   var favoritePrimes: [Int] = []
   var loggedInUser: User? = nil
@@ -13,17 +13,17 @@ struct AppState {
   var isNthPrimeButtonDisabled: Bool = false
   var isPrimeModalShown: Bool = false
 
-  struct Activity {
+  struct Activity: Equatable {
     let timestamp: Date
     let type: ActivityType
 
-    enum ActivityType {
+    enum ActivityType: Equatable {
       case addedFavoritePrime(Int)
       case removedFavoritePrime(Int)
     }
   }
 
-  struct User {
+  struct User: Equatable {
     let id: Int
     let name: String
     let bio: String
@@ -121,15 +121,21 @@ func activityFeed(
 }
 
 struct ContentView: View {
-  @ObservedObject var store: Store<AppState, AppAction>
+  let store: Store<AppState, AppAction>
+
+  init(store: Store<AppState, AppAction>) {
+    print("ContentView.init")
+    self.store = store
+  }
 
   var body: some View {
-    NavigationView {
+    print("ContentView.body")
+    return NavigationView {
       List {
         NavigationLink(
           "Counter demo",
           destination: CounterView(
-            store: self.store.view(
+            store: self.store.scope(
               value: { $0.counterView },
               action: { .counterView($0) }
             )
@@ -138,7 +144,7 @@ struct ContentView: View {
         NavigationLink(
           "Favorite primes",
           destination: FavoritePrimesView(
-            store: self.store.view(
+            store: self.store.scope(
               value: { $0.favoritePrimes },
               action: { .favoritePrimes($0) }
             )

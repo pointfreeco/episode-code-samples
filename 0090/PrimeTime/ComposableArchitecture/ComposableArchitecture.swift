@@ -36,9 +36,24 @@ extension Publisher where Failure == Never {
 
 public typealias Reducer<Value, Action> = (inout Value, Action) -> [Effect<Action>]
 
-public final class Store<Value, Action>: ObservableObject {
+public final class ViewStore<Value, Action>: ObservableObject {
+  @Published public fileprivate(set) var value: Value
+  fileprivate var viewCancellable: Cancellable?
+  public let send: (Action) -> Void
+
+  public init(
+    initialValue: Value,
+    send: @escaping (Action) -> Void
+    ) {
+    self.value = initialValue
+    self.send = send
+  }
+}
+
+
+public final class Store<Value, Action> {
   private let reducer: Reducer<Value, Action>
-  @Published public private(set) var value: Value
+  @Published private(set) var value: Value
   private var viewCancellable: Cancellable?
   private var effectCancellables: Set<AnyCancellable> = []
 
@@ -47,7 +62,7 @@ public final class Store<Value, Action>: ObservableObject {
     self.value = initialValue
   }
 
-  public func send(_ action: Action) {
+  private func send(_ action: Action) {
     let effects = self.reducer(&self.value, action)
     effects.forEach { effect in
       var effectCancellable: AnyCancellable?
@@ -66,7 +81,32 @@ public final class Store<Value, Action>: ObservableObject {
     }
   }
 
+  public func view<LocalValue: Equatable, LocalAction>(
+    value toLocalValue: @escaping (Value) -> LocalValue,
+    action toGlobalAction: @escaping (LocalAction) -> Action
+  ) -> ViewStore<LocalValue, LocalAction> {
+    self.view(value: toLocalValue, removeDuplicates: ==, action: toGlobalAction)
+  }
+
   public func view<LocalValue, LocalAction>(
+    value toLocalValue: @escaping (Value) -> LocalValue,
+    removeDuplicates isDuplicate: @escaping (LocalValue, LocalValue) -> Bool,
+    action toGlobalAction: @escaping (LocalAction) -> Action
+  ) -> ViewStore<LocalValue, LocalAction> {
+    let vs = ViewStore(
+      initialValue: toLocalValue(self.value),
+      send: { [weak self] localAction in
+        // TODO: memory management
+        self?.send(toGlobalAction(localAction))
+    })
+    vs.viewCancellable = self.$value
+      .map(toLocalValue)
+      .removeDuplicates(by: isDuplicate)
+      .sink { [weak vs] newValue in vs?.value = newValue }
+    return vs
+  }
+
+  public func scope<LocalValue, LocalAction>(
     value toLocalValue: @escaping (Value) -> LocalValue,
     action toGlobalAction: @escaping (LocalAction) -> Action
   ) -> Store<LocalValue, LocalAction> {

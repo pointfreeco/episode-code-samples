@@ -126,70 +126,63 @@ public struct CounterViewState: Equatable {
 public enum CounterViewAction: Equatable {
   case counter(CounterAction)
   case primeModal(PrimeModalAction)
-
-//  var counter: CounterAction? {
-//    get {
-//      guard case let .counter(value) = self else { return nil }
-//      return value
-//    }
-//    set {
-//      guard case .counter = self, let newValue = newValue else { return }
-//      self = .counter(newValue)
-//    }
-//  }
-//
-//  var primeModal: PrimeModalAction? {
-//    get {
-//      guard case let .primeModal(value) = self else { return nil }
-//      return value
-//    }
-//    set {
-//      guard case .primeModal = self, let newValue = newValue else { return }
-//      self = .primeModal(newValue)
-//    }
-//  }
 }
 
 public struct CounterView: View {
-  @ObservedObject var store: Store<CounterViewState, CounterViewAction>
+  private typealias State = (
+    alertNthPrime: PrimeAlert?,
+    count: Int,
+    isNthPrimeButtonDisabled: Bool,
+    isPrimeModalShown: Bool
+  )
+  @ObservedObject private var viewStore: ViewStore<State, CounterAction>
+  let store: Store<CounterViewState, CounterViewAction>
 
   public init(store: Store<CounterViewState, CounterViewAction>) {
+    print("CounterView.init")
     self.store = store
+    self.viewStore = self.store
+      .view(
+        value: { ($0.alertNthPrime, $0.count, $0.isNthPrimeButtonDisabled, $0.isPrimeModalShown) },
+        removeDuplicates: { $0 == $1 },
+        action: { .counter($0) }
+    )
   }
 
   public var body: some View {
-    VStack {
+    print("CounterView.body")
+    return VStack {
       HStack {
-        Button("-") { self.store.send(.counter(.decrTapped)) }
-        Text("\(self.store.value.count)")
-        Button("+") { self.store.send(.counter(.incrTapped)) }
+        Button("-") { self.viewStore.send(.decrTapped) }
+        Text("\(self.viewStore.value.count)")
+        Button("+") { self.viewStore.send(.incrTapped) }
       }
-      Button("Is this prime?") { self.store.send(.counter(.isPrimeButtonTapped)) }
-      Button("What is the \(ordinal(self.store.value.count)) prime?") {
-        self.store.send(.counter(.nthPrimeButtonTapped))
+      Button("Is this prime?") { self.viewStore.send(.isPrimeButtonTapped) }
+      Button("What is the \(ordinal(self.viewStore.value.count)) prime?") {
+        self.viewStore.send(.nthPrimeButtonTapped)
       }
-      .disabled(self.store.value.isNthPrimeButtonDisabled)
+      .disabled(self.viewStore.value.isNthPrimeButtonDisabled)
     }
     .font(.title)
     .navigationBarTitle("Counter demo")
     .sheet(
-      isPresented: .constant(self.store.value.isPrimeModalShown),
-      onDismiss: { self.store.send(.counter(.primeModalDismissed)) }
+      isPresented: .constant(self.viewStore.value.isPrimeModalShown),
+      onDismiss: { self.viewStore.send(.primeModalDismissed) }
     ) {
       IsPrimeModalView(
-        store: self.store.view(
+        store: self.store.scope(
           value: { ($0.count, $0.favoritePrimes) },
           action: { .primeModal($0) }
         )
       )
     }
     .alert(
-      item: .constant(self.store.value.alertNthPrime)
+      item: .constant(self.viewStore.value.alertNthPrime)
     ) { alert in
       Alert(
-        title: Text("The \(ordinal(self.store.value.count)) prime is \(alert.prime)"),
+        title: Text("The \(ordinal(self.viewStore.value.count)) prime is \(alert.prime)"),
         dismissButton: .default(Text("Ok")) {
-          self.store.send(.counter(.alertDismissButtonTapped))
+          self.viewStore.send(.alertDismissButtonTapped)
         }
       )
     }
