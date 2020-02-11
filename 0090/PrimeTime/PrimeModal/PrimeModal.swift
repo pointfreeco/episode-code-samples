@@ -29,8 +29,8 @@ public struct IsPrimeModalView: View {
     self.store = store
     self.viewStore = store.view(
       value: { $0 },
-      removeDuplicates: { $0 == $1 },
-      action: { $0 }
+      action: { $0 },
+      removeDuplicates: ==
     )
   }
 

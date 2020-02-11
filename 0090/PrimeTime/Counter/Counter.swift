@@ -144,8 +144,8 @@ public struct CounterView: View {
     self.viewStore = self.store
       .view(
         value: { ($0.alertNthPrime, $0.count, $0.isNthPrimeButtonDisabled, $0.isPrimeModalShown) },
-        removeDuplicates: { $0 == $1 },
-        action: { .counter($0) }
+        action: { .counter($0) },
+        removeDuplicates: ==
     )
   }
 

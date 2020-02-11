@@ -121,14 +121,21 @@ func activityFeed(
 }
 
 struct ContentView: View {
+  let viewStore: ViewStore<AppState, AppAction>
   let store: Store<AppState, AppAction>
 
   init(store: Store<AppState, AppAction>) {
     print("ContentView.init")
     self.store = store
+    self.viewStore = store.view(value: { $0 }, action: { $0 })
   }
 
   var body: some View {
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+      self.viewStore.send(.counterView(.counter(.incrTapped)))
+    }
+    
     print("ContentView.body")
     return NavigationView {
       List {
@@ -150,6 +157,10 @@ struct ContentView: View {
             )
           )
         )
+
+        ForEach(Array(1...500_000), id: \.self) { value in
+                 Text("\(value)")
+               }
       }
       .navigationBarTitle("State management")
     }

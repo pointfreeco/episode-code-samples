@@ -85,19 +85,19 @@ public final class Store<Value, Action> {
     value toLocalValue: @escaping (Value) -> LocalValue,
     action toGlobalAction: @escaping (LocalAction) -> Action
   ) -> ViewStore<LocalValue, LocalAction> {
-    self.view(value: toLocalValue, removeDuplicates: ==, action: toGlobalAction)
+    self.view(value: toLocalValue, action: toGlobalAction, removeDuplicates: ==)
   }
 
   public func view<LocalValue, LocalAction>(
     value toLocalValue: @escaping (Value) -> LocalValue,
-    removeDuplicates isDuplicate: @escaping (LocalValue, LocalValue) -> Bool,
-    action toGlobalAction: @escaping (LocalAction) -> Action
+    action toGlobalAction: @escaping (LocalAction) -> Action,
+    removeDuplicates isDuplicate: @escaping (LocalValue, LocalValue) -> Bool
   ) -> ViewStore<LocalValue, LocalAction> {
     let vs = ViewStore(
       initialValue: toLocalValue(self.value),
-      send: { [weak self] localAction in
+      send: { localAction in
         // TODO: memory management
-        self?.send(toGlobalAction(localAction))
+        self.send(toGlobalAction(localAction))
     })
     vs.viewCancellable = self.$value
       .map(toLocalValue)
@@ -118,7 +118,10 @@ public final class Store<Value, Action> {
         return []
     }
     )
-    localStore.viewCancellable = self.$value.sink { [weak localStore] newValue in
+    localStore.viewCancellable = self.$value
+//      .map(toLocalValue)
+//      .removeDuplicates(by: isDuplicate)
+      .sink { [weak localStore] newValue in
       localStore?.value = toLocalValue(newValue)
     }
     return localStore
