@@ -5,11 +5,6 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-    if ProcessInfo.processInfo.environment["UI_TESTS"] == "1" {
-      UIView.setAnimationsEnabled(false)
-      Counter.Current.nthPrime = { _ in .sync { 3 } }
-    }
-
     return true
   }
 
