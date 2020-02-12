@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA304E7A23F48C1400E79D83 /* PrimeAlert.h in Headers */ = {isa = PBXBuildFile; fileRef = CA304E7823F48C1400E79D83 /* PrimeAlert.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CA304E7D23F48C1400E79D83 /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA304E7623F48C1400E79D83 /* PrimeAlert.framework */; };
+		CA304E7E23F48C1400E79D83 /* PrimeAlert.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA304E7623F48C1400E79D83 /* PrimeAlert.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CA304E8323F48C2400E79D83 /* PrimeAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA304E8223F48C2400E79D83 /* PrimeAlert.swift */; };
+		CA304E8623F48C3900E79D83 /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA304E7623F48C1400E79D83 /* PrimeAlert.framework */; };
+		CA304E8923F48C4400E79D83 /* PrimeAlert.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA304E7623F48C1400E79D83 /* PrimeAlert.framework */; };
 		CA79FC28239C158C0096D881 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = CA79FC27239C158C0096D881 /* SnapshotTesting */; };
 		CA79FC30239C23310096D881 /* PrimeTimeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */; };
 		CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29217322FB231F006090DF /* WolframAlpha.swift */; };
@@ -57,6 +63,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CA304E7B23F48C1400E79D83 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA304E7523F48C1400E79D83;
+			remoteInfo = PrimeAlert;
+		};
+		CA304E8423F48C3400E79D83 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA304E7523F48C1400E79D83;
+			remoteInfo = PrimeAlert;
+		};
+		CA304E8723F48C4000E79D83 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC90716422FA102900B38B42 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA304E7523F48C1400E79D83;
+			remoteInfo = PrimeAlert;
+		};
 		CA79FC32239C23310096D881 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DC90716422FA102900B38B42 /* Project object */;
@@ -222,6 +249,7 @@
 			files = (
 				DCF0C6182326036F008B45A0 /* FavoritePrimes.framework in Embed Frameworks */,
 				DCF0C5B22326032B008B45A0 /* ComposableArchitecture.framework in Embed Frameworks */,
+				CA304E7E23F48C1400E79D83 /* PrimeAlert.framework in Embed Frameworks */,
 				DCF0C5D423260348008B45A0 /* Counter.framework in Embed Frameworks */,
 				DCF0C5F62326035C008B45A0 /* PrimeModal.framework in Embed Frameworks */,
 			);
@@ -231,6 +259,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CA304E7623F48C1400E79D83 /* PrimeAlert.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PrimeAlert.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA304E7823F48C1400E79D83 /* PrimeAlert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrimeAlert.h; sourceTree = "<group>"; };
+		CA304E7923F48C1400E79D83 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CA304E8223F48C2400E79D83 /* PrimeAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeAlert.swift; sourceTree = "<group>"; };
 		CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitectureTestSupport.swift; sourceTree = "<group>"; };
 		CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrimeTimeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeTimeUITests.swift; sourceTree = "<group>"; };
@@ -285,6 +317,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		CA304E7323F48C1400E79D83 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA79FC2A239C23310096D881 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -297,6 +336,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCF88F02234D4A3B001BA79A /* ComposableArchitecture.framework in Frameworks */,
+				CA304E7D23F48C1400E79D83 /* PrimeAlert.framework in Frameworks */,
 				DCF0C5D323260348008B45A0 /* Counter.framework in Frameworks */,
 				DCF0C6172326036F008B45A0 /* FavoritePrimes.framework in Frameworks */,
 			);
@@ -330,6 +370,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA304E8923F48C4400E79D83 /* PrimeAlert.framework in Frameworks */,
 				DCF88F01234D4A28001BA79A /* PrimeModal.framework in Frameworks */,
 				DCF88F00234D4A28001BA79A /* ComposableArchitecture.framework in Frameworks */,
 			);
@@ -366,6 +407,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA304E8623F48C3900E79D83 /* PrimeAlert.framework in Frameworks */,
 				DC36ED17234CD8040027F7A1 /* ComposableArchitecture.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -389,6 +431,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CA304E7723F48C1400E79D83 /* PrimeAlert */ = {
+			isa = PBXGroup;
+			children = (
+				CA304E7823F48C1400E79D83 /* PrimeAlert.h */,
+				CA304E7923F48C1400E79D83 /* Info.plist */,
+				CA304E8223F48C2400E79D83 /* PrimeAlert.swift */,
+			);
+			path = PrimeAlert;
+			sourceTree = "<group>";
+		};
 		CA79FC2E239C23310096D881 /* PrimeTimeUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -421,6 +473,7 @@
 				DCF0C5EE2326035C008B45A0 /* PrimeModalTests */,
 				DCF0C6032326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6102326036F008B45A0 /* FavoritePrimesTests */,
+				CA304E7723F48C1400E79D83 /* PrimeAlert */,
 				DC90716D22FA102900B38B42 /* Products */,
 				DC36ED16234CD8040027F7A1 /* Frameworks */,
 			);
@@ -441,6 +494,7 @@
 				DCF0C60A2326036F008B45A0 /* FavoritePrimesTests.xctest */,
 				CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */,
 				DCF6C51A23ECD08A00A54EE0 /* ComposableArchitectureTestSupport.framework */,
+				CA304E7623F48C1400E79D83 /* PrimeAlert.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -569,6 +623,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		CA304E7123F48C1400E79D83 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA304E7A23F48C1400E79D83 /* PrimeAlert.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DCF0C5962326032B008B45A0 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -612,6 +674,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		CA304E7523F48C1400E79D83 /* PrimeAlert */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA304E8123F48C1400E79D83 /* Build configuration list for PBXNativeTarget "PrimeAlert" */;
+			buildPhases = (
+				CA304E7123F48C1400E79D83 /* Headers */,
+				CA304E7223F48C1400E79D83 /* Sources */,
+				CA304E7323F48C1400E79D83 /* Frameworks */,
+				CA304E7423F48C1400E79D83 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PrimeAlert;
+			productName = PrimeAlert;
+			productReference = CA304E7623F48C1400E79D83 /* PrimeAlert.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		CA79FC2C239C23310096D881 /* PrimeTimeUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA79FC34239C23310096D881 /* Build configuration list for PBXNativeTarget "PrimeTimeUITests" */;
@@ -645,6 +725,7 @@
 				DCF0C5AF2326032B008B45A0 /* PBXTargetDependency */,
 				DCF0C5D223260348008B45A0 /* PBXTargetDependency */,
 				DCF0C6162326036F008B45A0 /* PBXTargetDependency */,
+				CA304E7C23F48C1400E79D83 /* PBXTargetDependency */,
 			);
 			name = PrimeTime;
 			productName = PrimeTime;
@@ -722,6 +803,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CA304E8823F48C4000E79D83 /* PBXTargetDependency */,
 				CAD67E1D2332982E000C7787 /* PBXTargetDependency */,
 				DCF0C6242326038A008B45A0 /* PBXTargetDependency */,
 			);
@@ -804,6 +886,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CA304E8523F48C3400E79D83 /* PBXTargetDependency */,
 				DCF0C62023260383008B45A0 /* PBXTargetDependency */,
 			);
 			name = FavoritePrimes;
@@ -860,6 +943,10 @@
 				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = "Point-Free";
 				TargetAttributes = {
+					CA304E7523F48C1400E79D83 = {
+						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
+					};
 					CA79FC2C239C23310096D881 = {
 						CreatedOnToolsVersion = 11.2.1;
 						TestTargetID = DC90716B22FA102900B38B42;
@@ -935,11 +1022,19 @@
 				DCF0C5E72326035C008B45A0 /* PrimeModalTests */,
 				DCF0C6012326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6092326036F008B45A0 /* FavoritePrimesTests */,
+				CA304E7523F48C1400E79D83 /* PrimeAlert */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		CA304E7423F48C1400E79D83 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA79FC2B239C23310096D881 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1030,6 +1125,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		CA304E7223F48C1400E79D83 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA304E8323F48C2400E79D83 /* PrimeAlert.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA79FC29239C23310096D881 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1135,6 +1238,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CA304E7C23F48C1400E79D83 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA304E7523F48C1400E79D83 /* PrimeAlert */;
+			targetProxy = CA304E7B23F48C1400E79D83 /* PBXContainerItemProxy */;
+		};
+		CA304E8523F48C3400E79D83 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA304E7523F48C1400E79D83 /* PrimeAlert */;
+			targetProxy = CA304E8423F48C3400E79D83 /* PBXContainerItemProxy */;
+		};
+		CA304E8823F48C4000E79D83 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA304E7523F48C1400E79D83 /* PrimeAlert */;
+			targetProxy = CA304E8723F48C4000E79D83 /* PBXContainerItemProxy */;
+		};
 		CA79FC33239C23310096D881 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DC90716B22FA102900B38B42 /* PrimeTime */;
@@ -1259,6 +1377,61 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		CA304E7F23F48C1400E79D83 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PrimeAlert/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlert;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CA304E8023F48C1400E79D83 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PrimeAlert/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.PrimeAlert;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		CA79FC35239C23310096D881 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1930,6 +2103,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		CA304E8123F48C1400E79D83 /* Build configuration list for PBXNativeTarget "PrimeAlert" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA304E7F23F48C1400E79D83 /* Debug */,
+				CA304E8023F48C1400E79D83 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CA79FC34239C23310096D881 /* Build configuration list for PBXNativeTarget "PrimeTimeUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

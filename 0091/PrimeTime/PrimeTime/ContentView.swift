@@ -3,6 +3,7 @@ import Combine
 import ComposableArchitecture
 import Counter
 import FavoritePrimes
+import PrimeAlert
 import SwiftUI
 
 struct AppState: Equatable {
@@ -38,6 +39,15 @@ enum AppAction: Equatable {
 }
 
 extension AppState {
+  var favoritePrimesState: FavoritePrimesState {
+    get {
+      (self.alertNthPrime, self.favoritePrimes)
+    }
+    set {
+      (self.alertNthPrime, self.favoritePrimes) = newValue
+    }
+  }
+
   var counterView: CounterViewState {
     get {
       CounterViewState(
@@ -84,9 +94,9 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
   ),
   pullback(
     favoritePrimesReducer,
-    value: \.favoritePrimes,
+    value: \.favoritePrimesState,
     action: /AppAction.favoritePrimes,
-    environment: { $0.fileClient }
+    environment: { ($0.fileClient, $0.nthPrime) }
   )
 )
 
@@ -100,7 +110,10 @@ func activityFeed(
          .offlineCounterView(.counter),
          .favoritePrimes(.loadedFavoritePrimes),
          .favoritePrimes(.loadButtonTapped),
-         .favoritePrimes(.saveButtonTapped):
+         .favoritePrimes(.saveButtonTapped),
+         .favoritePrimes(.primeButtonTapped(_)),
+         .favoritePrimes(.nthPrimeResponse),
+         .favoritePrimes(.alertDismissButtonTapped):
       break
     case .counterView(.primeModal(.removeFavoritePrimeTapped)),
          .offlineCounterView(.primeModal(.removeFavoritePrimeTapped)):
@@ -153,7 +166,7 @@ struct ContentView: View {
           "Favorite primes",
           destination: FavoritePrimesView(
             store: self.store.view(
-              value: { $0.favoritePrimes },
+              value: { $0.favoritePrimesState },
               action: { .favoritePrimes($0) }
             )
           )

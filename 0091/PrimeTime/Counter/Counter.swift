@@ -1,6 +1,7 @@
 import CasePaths
 import Combine
 import ComposableArchitecture
+import PrimeAlert
 import PrimeModal
 import SwiftUI
 
@@ -104,17 +105,6 @@ public let counterViewReducer: Reducer<CounterViewState, CounterViewAction, Coun
   )
 )
 
-public struct PrimeAlert: Equatable, Identifiable {
-  public let n: Int
-  public let prime: Int
-  public var id: Int { self.prime }
-
-  public init(n: Int, prime: Int) {
-    self.n = n
-    self.prime = prime
-  }
-}
-
 public struct CounterViewState: Equatable {
   public var alertNthPrime: PrimeAlert?
   public var count: Int
@@ -189,17 +179,11 @@ public struct CounterView: View {
       item: .constant(self.store.value.alertNthPrime)
     ) { alert in
       Alert(
-        title: Text("The \(ordinal(self.store.value.count)) prime is \(alert.prime)"),
+        title: Text(alert.title),
         dismissButton: .default(Text("Ok")) {
           self.store.send(.counter(.alertDismissButtonTapped))
         }
       )
     }
   }
-}
-
-func ordinal(_ n: Int) -> String {
-  let formatter = NumberFormatter()
-  formatter.numberStyle = .ordinal
-  return formatter.string(for: n) ?? ""
 }
