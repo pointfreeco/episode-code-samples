@@ -5,7 +5,7 @@ import Counter
 import FavoritePrimes
 import SwiftUI
 
-struct AppState {
+struct AppState: Equatable {
   var count = 0
   var favoritePrimes: [Int] = []
   var loggedInUser: User? = nil
@@ -14,24 +14,24 @@ struct AppState {
   var isNthPrimeButtonDisabled: Bool = false
   var isPrimeModalShown: Bool = false
 
-  struct Activity {
+  struct Activity: Equatable {
     let timestamp: Date
     let type: ActivityType
 
-    enum ActivityType {
+    enum ActivityType: Equatable {
       case addedFavoritePrime(Int)
       case removedFavoritePrime(Int)
     }
   }
 
-  struct User {
+  struct User: Equatable {
     let id: Int
     let name: String
     let bio: String
   }
 }
 
-enum AppAction {
+enum AppAction: Equatable {
   case counterView(CounterViewAction)
   case favoritePrimes(FavoritePrimesAction)
 }
@@ -57,23 +57,28 @@ extension AppState {
   }
 }
 
-struct AppEnvironment {
-  var counter: CounterEnvironment
-  var favoritePrimes: FavoritePrimesEnvironment
-}
+//struct AppEnvironment {
+//  var counter: CounterEnvironment
+//  var favoritePrimes: FavoritePrimesEnvironment
+//}
+
+typealias AppEnvironment = (
+  fileClient: FileClient,
+  nthPrime: (Int) -> Effect<Int?>
+)
 
 let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
   pullback(
     counterViewReducer,
     value: \AppState.counterView,
     action: /AppAction.counterView,
-    environment: { $0.counter }
+    environment: { $0.nthPrime }
   ),
   pullback(
     favoritePrimesReducer,
     value: \.favoritePrimes,
     action: /AppAction.favoritePrimes,
-    environment: { $0.favoritePrimes }
+    environment: { $0.fileClient }
   )
 )
 

@@ -31,13 +31,13 @@ public func counterReducer(
     state.count -= 1
     let count = state.count
     return [
-      .fireAndForget {
-        print(count)
-      },
-
-      Just(CounterAction.incrTapped)
-        .delay(for: 1, scheduler: DispatchQueue.main)
-        .eraseToEffect()
+//      .fireAndForget {
+//        print(count)
+//      },
+//
+//      Just(CounterAction.incrTapped)
+//        .delay(for: 1, scheduler: DispatchQueue.main)
+//        .eraseToEffect()
     ]
 
   case .incrTapped:
@@ -48,7 +48,7 @@ public func counterReducer(
     state.isNthPrimeButtonDisabled = true
     let n = state.count
     return [
-      environment.nthPrime(state.count)
+      environment(state.count)
         .map { CounterAction.nthPrimeResponse(n: n, prime: $0) }
         .receive(on: DispatchQueue.main)
         .eraseToEffect()
@@ -73,19 +73,21 @@ public func counterReducer(
   }
 }
 
-public struct CounterEnvironment {
-  var nthPrime: (Int) -> Effect<Int?>
-}
+//public struct CounterEnvironment {
+//  var nthPrime: (Int) -> Effect<Int?>
+//}
 
-extension CounterEnvironment {
-  public static let live = CounterEnvironment(nthPrime: Counter.nthPrime)
-}
+public typealias CounterEnvironment = (Int) -> Effect<Int?>
+
+//extension CounterEnvironment {
+//  public static let live = CounterEnvironment(nthPrime: Counter.nthPrime)
+//}
 
 //var Current = CounterEnvironment.live
 
-extension CounterEnvironment {
-  static let mock = CounterEnvironment(nthPrime: { _ in .sync { 17 }})
-}
+//extension CounterEnvironment {
+//  static let mock = CounterEnvironment(nthPrime: { _ in .sync { 17 }})
+//}
 
 public let counterViewReducer: Reducer<CounterViewState, CounterViewAction, CounterEnvironment> = combine(
   pullback(
