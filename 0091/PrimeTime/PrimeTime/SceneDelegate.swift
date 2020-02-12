@@ -22,7 +22,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             ),
             environment: AppEnvironment(
               fileClient: .live,
-              nthPrime: Counter.nthPrime
+              nthPrime: Counter.nthPrime,
+              offlineNthPrime: Counter.offlineNthPrime
 //              counter: .live,
 //              favoritePrimes: .live
             )
