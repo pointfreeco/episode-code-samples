@@ -35,9 +35,8 @@ class CounterTests: XCTestCase {
   func testSnapshots() {
     let store = Store(initialValue: CounterViewState(), reducer: counterViewReducer)
     let counterViewStore = CounterView.viewStore(for: store)
-    let primeModalViewStore = IsPrimeModalView
-      .viewStore(for: store.scope(value: { $0.primeModal }, action: { .primeModal($0) }))
     let view = CounterView(store: store)
+    let primeModalViewStore = IsPrimeModalView.viewStore(for: view.primeModalStore)
 
     let vc = UIHostingController(rootView: view)
     vc.view.frame = UIScreen.main.bounds

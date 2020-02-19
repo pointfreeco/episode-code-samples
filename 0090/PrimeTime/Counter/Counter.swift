@@ -155,6 +155,9 @@ public struct CounterView: View {
       removeDuplicates: ==
     )
   }
+  var primeModalStore: Store<PrimeModalState, PrimeModalAction> {
+    self.store.scope(value: { $0.primeModal }, action: { .primeModal($0) })
+  }
 
   @ObservedObject var viewStore: ViewStore<State, Action>
   let store: Store<CounterViewState, CounterViewAction>
@@ -185,12 +188,7 @@ public struct CounterView: View {
       isPresented: .constant(self.viewStore.value.isPrimeModalShown),
       onDismiss: { self.viewStore.send(.primeModalDismissed) }
     ) {
-      IsPrimeModalView(
-        store: self.store.scope(
-          value: { ($0.count, $0.favoritePrimes) },
-          action: { .primeModal($0) }
-        )
-      )
+      IsPrimeModalView(store: self.primeModalStore)
     }
     .alert(
       item: .constant(self.viewStore.value.alertNthPrime)
