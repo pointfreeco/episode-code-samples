@@ -20,23 +20,24 @@ public func primeModalReducer(state: inout PrimeModalState, action: PrimeModalAc
   }
 }
 
-public struct IsPrimeModalView: View {
-  @ObservedObject var viewStore: ViewStore<PrimeModalState, PrimeModalAction>
-  let store: Store<PrimeModalState, PrimeModalAction>
-  static func viewStore(
-    for store: Store<PrimeModalState, PrimeModalAction>
-  ) -> ViewStore<PrimeModalState, PrimeModalAction> {
-    store.view(
+extension Store where Value == PrimeModalState, Action == PrimeModalAction {
+  var primeModalViewStore: ViewStore<PrimeModalState, PrimeModalAction> {
+    self.view(
       value: { $0 },
       action: { $0 },
       removeDuplicates: ==
     )
   }
+}
+
+public struct IsPrimeModalView: View {
+  @ObservedObject var viewStore: ViewStore<PrimeModalState, PrimeModalAction>
+  let store: Store<PrimeModalState, PrimeModalAction>
 
   public init(store: Store<PrimeModalState, PrimeModalAction>) {
     print("IsPrimeModalView.init")
     self.store = store
-    self.viewStore = Self.viewStore(for: store)
+    self.viewStore = store.primeModalViewStore
   }
 
   public var body: some View {

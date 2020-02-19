@@ -130,6 +130,20 @@ public enum CounterViewAction: Equatable {
   case primeModal(PrimeModalAction)
 }
 
+extension Store where Value == CounterViewState, Action == CounterViewAction {
+  var counterViewStore: ViewStore<CounterView.State, CounterView.Action> {
+    self.view(
+      value: { ($0.alertNthPrime, $0.count, $0.isNthPrimeButtonDisabled, $0.isPrimeModalShown) },
+      action: counterViewAction,
+      removeDuplicates: ==
+    )
+  }
+
+  var primeModalStore: Store<PrimeModalState, PrimeModalAction> {
+    self.scope(value: { $0.primeModal }, action: { .primeModal($0) })
+  }
+}
+
 public struct CounterView: View {
   typealias State = (
     alertNthPrime: PrimeAlert?,
@@ -146,15 +160,6 @@ public struct CounterView: View {
     case primeModalDismissed
     case doubleTap
   }
-  static func viewStore(
-    for store: Store<CounterViewState, CounterViewAction>
-  ) -> ViewStore<State, Action> {
-    store.view(
-      value: { ($0.alertNthPrime, $0.count, $0.isNthPrimeButtonDisabled, $0.isPrimeModalShown) },
-      action: counterViewAction,
-      removeDuplicates: ==
-    )
-  }
   var primeModalStore: Store<PrimeModalState, PrimeModalAction> {
     self.store.scope(value: { $0.primeModal }, action: { .primeModal($0) })
   }
@@ -165,7 +170,7 @@ public struct CounterView: View {
   public init(store: Store<CounterViewState, CounterViewAction>) {
     print("CounterView.init")
     self.store = store
-    self.viewStore = Self.viewStore(for: store)
+    self.viewStore = store.counterViewStore
   }
 
   public var body: some View {
