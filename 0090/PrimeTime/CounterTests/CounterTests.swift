@@ -1,5 +1,6 @@
 import XCTest
 @testable import Counter
+@testable import PrimeModal
 import SnapshotTesting
 @testable import ComposableArchitecture
 import SwiftUI
@@ -33,6 +34,9 @@ class CounterTests: XCTestCase {
 
   func testSnapshots() {
     let store = Store(initialValue: CounterViewState(), reducer: counterViewReducer)
+    let counterViewStore = CounterView.viewStore(for: store)
+    let primeModalViewStore = IsPrimeModalView
+      .viewStore(for: store.scope(value: { $0.primeModal }, action: { .primeModal($0) }))
     let view = CounterView(store: store)
 
     let vc = UIHostingController(rootView: view)
@@ -42,13 +46,13 @@ class CounterTests: XCTestCase {
 //    record=true
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.incrTapped))
+    counterViewStore.send(.incrTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.incrTapped))
+    counterViewStore.send(.incrTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.requestNthPrime))
+    counterViewStore.send(.nthPrimeButtonTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
     var expectation = self.expectation(description: "wait")
@@ -58,7 +62,7 @@ class CounterTests: XCTestCase {
     self.wait(for: [expectation], timeout: 0.5)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.alertDismissButtonTapped))
+    counterViewStore.send(.alertDismissButtonTapped)
     expectation = self.expectation(description: "wait")
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
       expectation.fulfill()
@@ -66,13 +70,13 @@ class CounterTests: XCTestCase {
     self.wait(for: [expectation], timeout: 0.5)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.isPrimeButtonTapped))
+    counterViewStore.send(.isPrimeButtonTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.primeModal(.saveFavoritePrimeTapped))
+    primeModalViewStore.send(.saveFavoritePrimeTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.primeModalDismissed))
+    counterViewStore.send(.primeModalDismissed)
     assertSnapshot(matching: vc, as: .windowedImage)
   }
 
