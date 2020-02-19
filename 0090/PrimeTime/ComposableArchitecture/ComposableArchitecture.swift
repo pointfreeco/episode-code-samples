@@ -62,7 +62,7 @@ public final class Store<Value, Action> {
     self.value = initialValue
   }
 
-  private func send(_ action: Action) {
+  func send(_ action: Action) {
     let effects = self.reducer(&self.value, action)
     effects.forEach { effect in
       var effectCancellable: AnyCancellable?

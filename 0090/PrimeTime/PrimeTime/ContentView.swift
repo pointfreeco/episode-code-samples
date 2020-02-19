@@ -131,11 +131,6 @@ struct ContentView: View {
   }
 
   var body: some View {
-
-    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-      self.viewStore.send(.counterView(.counter(.incrTapped)))
-    }
-    
     print("ContentView.body")
     return NavigationView {
       List {

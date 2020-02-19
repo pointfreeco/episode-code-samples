@@ -1,7 +1,7 @@
 import XCTest
 @testable import Counter
 import SnapshotTesting
-import ComposableArchitecture
+@testable import ComposableArchitecture
 import SwiftUI
 
 
@@ -48,7 +48,7 @@ class CounterTests: XCTestCase {
     store.send(.counter(.incrTapped))
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.nthPrimeButtonTapped))
+    store.send(.counter(.requestNthPrime))
     assertSnapshot(matching: vc, as: .windowedImage)
 
     var expectation = self.expectation(description: "wait")

@@ -5,11 +5,13 @@ import SwiftUI
 public enum CounterAction: Equatable {
   case decrTapped
   case incrTapped
-  case nthPrimeButtonTapped
+  case requestNthPrime
+//  case nthPrimeButtonTapped
   case nthPrimeResponse(Int?)
   case alertDismissButtonTapped
   case isPrimeButtonTapped
   case primeModalDismissed
+//  case doubleTap
 }
 
 public typealias CounterState = (
@@ -29,7 +31,7 @@ public func counterReducer(state: inout CounterState, action: CounterAction) -> 
     state.count += 1
     return []
 
-  case .nthPrimeButtonTapped:
+  case .requestNthPrime: //.nthPrimeButtonTapped, .doubleTap:
     state.isNthPrimeButtonDisabled = true
     return [
       Current.nthPrime(state.count)
@@ -129,13 +131,22 @@ public enum CounterViewAction: Equatable {
 }
 
 public struct CounterView: View {
-  private typealias State = (
+  typealias State = (
     alertNthPrime: PrimeAlert?,
     count: Int,
     isNthPrimeButtonDisabled: Bool,
     isPrimeModalShown: Bool
   )
-  @ObservedObject private var viewStore: ViewStore<State, CounterAction>
+  enum Action {
+    case decrTapped
+    case incrTapped
+    case nthPrimeButtonTapped
+    case alertDismissButtonTapped
+    case isPrimeButtonTapped
+    case primeModalDismissed
+    case doubleTap
+  }
+  @ObservedObject var viewStore: ViewStore<State, Action>
   let store: Store<CounterViewState, CounterViewAction>
 
   public init(store: Store<CounterViewState, CounterViewAction>) {
@@ -144,7 +155,7 @@ public struct CounterView: View {
     self.viewStore = self.store
       .view(
         value: { ($0.alertNthPrime, $0.count, $0.isNthPrimeButtonDisabled, $0.isPrimeModalShown) },
-        action: { .counter($0) },
+        action: counterViewAction,
         removeDuplicates: ==
     )
   }
@@ -186,6 +197,11 @@ public struct CounterView: View {
         }
       )
     }
+    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+//    .background(Color.white)
+    .onTapGesture(count: 2) {
+      self.viewStore.send(.doubleTap)
+    }
   }
 }
 
@@ -193,4 +209,23 @@ func ordinal(_ n: Int) -> String {
   let formatter = NumberFormatter()
   formatter.numberStyle = .ordinal
   return formatter.string(for: n) ?? ""
+}
+
+private func counterViewAction(for action: CounterView.Action) -> CounterViewAction {
+  switch action {
+  case .decrTapped:
+    return .counter(.decrTapped)
+  case .incrTapped:
+    return .counter(.incrTapped)
+  case .nthPrimeButtonTapped:
+    return .counter(.requestNthPrime)
+  case .alertDismissButtonTapped:
+    return .counter(.alertDismissButtonTapped)
+  case .isPrimeButtonTapped:
+    return .counter(.isPrimeButtonTapped)
+  case .primeModalDismissed:
+    return .counter(.primeModalDismissed)
+  case .doubleTap:
+    return .counter(.requestNthPrime)
+  }
 }
