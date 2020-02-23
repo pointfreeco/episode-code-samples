@@ -10,8 +10,8 @@
 		CA675A56238072DB00724A38 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */; };
 		CA79FC28239C158C0096D881 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = CA79FC27239C158C0096D881 /* SnapshotTesting */; };
 		CA79FC30239C23310096D881 /* PrimeTimeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */; };
-		CAC3B9852402360A0039266C /* Counter_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC3B9842402360A0039266C /* Counter_iOS.swift */; };
-		CAC3B987240236240039266C /* Counter_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC3B986240236240039266C /* Counter_macOS.swift */; };
+		CAC3B9852402360A0039266C /* CounterView_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC3B9842402360A0039266C /* CounterView_iOS.swift */; };
+		CAC3B987240236240039266C /* CounterView_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC3B986240236240039266C /* CounterView_macOS.swift */; };
 		CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29217322FB231F006090DF /* WolframAlpha.swift */; };
 		CADB167323DCC4A30052C18C /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = CADB167223DCC4A30052C18C /* CasePaths */; };
 		DC36ED17234CD8040027F7A1 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
@@ -195,8 +195,8 @@
 		CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrimeTimeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeTimeUITests.swift; sourceTree = "<group>"; };
 		CA79FC31239C23310096D881 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CAC3B9842402360A0039266C /* Counter_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Counter_iOS.swift; sourceTree = "<group>"; };
-		CAC3B986240236240039266C /* Counter_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Counter_macOS.swift; sourceTree = "<group>"; };
+		CAC3B9842402360A0039266C /* CounterView_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView_iOS.swift; sourceTree = "<group>"; };
+		CAC3B986240236240039266C /* CounterView_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView_macOS.swift; sourceTree = "<group>"; };
 		CAC831DF23FF2272007EFC18 /* Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Framework.xcconfig; sourceTree = "<group>"; };
 		CAC831E023FF2272007EFC18 /* Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
 		CAC831E123FF2272007EFC18 /* Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
@@ -461,8 +461,8 @@
 			children = (
 				DCF0C5C023260348008B45A0 /* Counter.h */,
 				DCF0C62D23260414008B45A0 /* Counter.swift */,
-				CAC3B9842402360A0039266C /* Counter_iOS.swift */,
-				CAC3B986240236240039266C /* Counter_macOS.swift */,
+				CAC3B9842402360A0039266C /* CounterView_iOS.swift */,
+				CAC3B986240236240039266C /* CounterView_macOS.swift */,
 				DC29217322FB231F006090DF /* WolframAlpha.swift */,
 				DCF0C5C123260348008B45A0 /* Info.plist */,
 			);
@@ -986,10 +986,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CAC3B987240236240039266C /* Counter_macOS.swift in Sources */,
+				CAC3B987240236240039266C /* CounterView_macOS.swift in Sources */,
 				DCF0C62E23260414008B45A0 /* Counter.swift in Sources */,
 				CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */,
-				CAC3B9852402360A0039266C /* Counter_iOS.swift in Sources */,
+				CAC3B9852402360A0039266C /* CounterView_iOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

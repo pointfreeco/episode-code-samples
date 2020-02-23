@@ -8,9 +8,8 @@ public struct CounterView: View {
     let alertNthPrime: PrimeAlert?
     let count: Int
     let isNthPrimeButtonDisabled: Bool
-    let isPrimeModalShown: Bool
     let nthPrimeButtonTitle: LocalizedStringKey
-    let isPrimePopover: IsPrimeDetail?
+    let isPrimePopoverShown: Bool
   }
   enum Action {
     case decrTapped
@@ -19,7 +18,6 @@ public struct CounterView: View {
     case alertDismissButtonTapped
     case isPrimeButtonTapped
     case primePopoverDismissed
-    case doubleTap
   }
 
   @ObservedObject var viewStore: ViewStore<State, Action>
@@ -47,16 +45,16 @@ public struct CounterView: View {
       }
       .disabled(self.viewStore.value.isNthPrimeButtonDisabled)
     }
-    .font(.title)
+//    .font(.title)
     .popover(
-      item: Binding(
-        get: { self.viewStore.value.isPrimePopover },
+      isPresented: Binding(
+        get: { self.viewStore.value.isPrimePopoverShown },
         set: { _ in self.viewStore.send(.primePopoverDismissed) }
       )
-      ) { isPrimeDetail in
+      ) {
         IsPrimeModalView(
           store: self.store.scope(
-            value: { (isPrimeDetail.count, $0.favoritePrimes) },
+            value: { ($0.count, $0.favoritePrimes) },
             action: { .primeModal($0) }
           )
         )
@@ -71,12 +69,6 @@ public struct CounterView: View {
         }
       )
     }
-    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-    .background(Color.white)
-    .onTapGesture(count: 2) {
-      self.viewStore.send(.doubleTap)
-    }
-    .foregroundColor(Color.black)
   }
 }
 
@@ -85,9 +77,8 @@ extension CounterView.State {
     self.alertNthPrime = state.alertNthPrime
     self.count = state.count
     self.isNthPrimeButtonDisabled = state.isNthPrimeRequestInFlight
-    self.isPrimeModalShown = state.isPrimeModalShown
     self.nthPrimeButtonTitle = "What is the \(ordinal(state.count)) prime?"
-    self.isPrimePopover = state.isPrimeDetail
+    self.isPrimePopoverShown = state.isPrimeDetailShown
   }
 }
 
@@ -105,9 +96,7 @@ extension CounterView.Action {
     case .isPrimeButtonTapped:
       return .counter(.isPrimeButtonTapped)
     case .primePopoverDismissed:
-      return .counter(.primeModalDismissed)
-    case .doubleTap:
-      return .counter(.requestNthPrime)
+      return .counter(.primeDetailDismissed)
     }
   }
 }

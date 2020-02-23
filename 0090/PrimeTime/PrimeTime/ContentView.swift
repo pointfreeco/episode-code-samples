@@ -73,7 +73,7 @@ extension AppState {
       self.count = newValue.count
       self.favoritePrimes = newValue.favoritePrimes
       self.isNthPrimeRequestInFlight = newValue.isNthPrimeRequestInFlight
-      self.isPrimeModalShown = newValue.isPrimeModalShown
+      self.isPrimeModalShown = newValue.isPrimeDetailShown
     }
   }
 }

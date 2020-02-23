@@ -10,7 +10,7 @@ public enum CounterAction: Equatable {
   case nthPrimeResponse(Int?)
   case alertDismissButtonTapped
   case isPrimeButtonTapped
-  case primeModalDismissed
+  case primeDetailDismissed
 //  case doubleTap
 }
 
@@ -23,8 +23,7 @@ public typealias CounterState = (
   alertNthPrime: PrimeAlert?,
   count: Int,
   isNthPrimeRequestInFlight: Bool,
-  isPrimeModalShown: Bool,
-  isPrimeDetail: IsPrimeDetail?
+  isPrimeDetailShown: Bool
 )
 
 public func counterReducer(state: inout CounterState, action: CounterAction) -> [Effect<CounterAction>] {
@@ -56,12 +55,12 @@ public func counterReducer(state: inout CounterState, action: CounterAction) -> 
     return []
 
   case .isPrimeButtonTapped:
-    state.isPrimeDetail = IsPrimeDetail(count: state.count)
+    state.isPrimeDetailShown = true
 //    state.isPrimeModalShown = true
     return []
 
-  case .primeModalDismissed:
-    state.isPrimeDetail = nil
+  case .primeDetailDismissed:
+    state.isPrimeDetailShown = false
 //    state.isPrimeModalShown = false
     return []
   }
@@ -106,8 +105,7 @@ public struct CounterViewState: Equatable {
   public var count: Int
   public var favoritePrimes: [Int]
   public var isNthPrimeRequestInFlight: Bool
-  public var isPrimeModalShown: Bool
-  public var isPrimeDetail: IsPrimeDetail?
+  public var isPrimeDetailShown: Bool
 
   public init(
     alertNthPrime: PrimeAlert? = nil,
@@ -115,19 +113,18 @@ public struct CounterViewState: Equatable {
     favoritePrimes: [Int] = [],
     isNthPrimeRequestInFlight: Bool = false,
     isPrimeModalShown: Bool = false,
-    isPrimeDetail: IsPrimeDetail? = nil
+    isPrimeDetailShown: Bool = false
   ) {
     self.alertNthPrime = alertNthPrime
     self.count = count
     self.favoritePrimes = favoritePrimes
     self.isNthPrimeRequestInFlight = isNthPrimeRequestInFlight
-    self.isPrimeModalShown = isPrimeModalShown
-    self.isPrimeDetail = isPrimeDetail
+    self.isPrimeDetailShown = isPrimeDetailShown
   }
 
   var counter: CounterState {
-    get { (self.alertNthPrime, self.count, self.isNthPrimeRequestInFlight, self.isPrimeModalShown, self.isPrimeDetail) }
-    set { (self.alertNthPrime, self.count, self.isNthPrimeRequestInFlight, self.isPrimeModalShown, self.isPrimeDetail) = newValue }
+    get { (self.alertNthPrime, self.count, self.isNthPrimeRequestInFlight, self.isPrimeDetailShown) }
+    set { (self.alertNthPrime, self.count, self.isNthPrimeRequestInFlight, self.isPrimeDetailShown) = newValue }
   }
 
   var primeModal: PrimeModalState {
