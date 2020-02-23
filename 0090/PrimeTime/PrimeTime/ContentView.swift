@@ -10,7 +10,7 @@ struct AppState: Equatable {
   var loggedInUser: User? = nil
   var activityFeed: [Activity] = []
   var alertNthPrime: PrimeAlert? = nil
-  var isNthPrimeButtonDisabled: Bool = false
+  var isNthPrimeRequestInFlight: Bool = false
   var isPrimeModalShown: Bool = false
 
   struct Activity: Equatable {
@@ -64,7 +64,7 @@ extension AppState {
         alertNthPrime: self.alertNthPrime,
         count: self.count,
         favoritePrimes: self.favoritePrimes,
-        isNthPrimeButtonDisabled: self.isNthPrimeButtonDisabled,
+        isNthPrimeRequestInFlight: self.isNthPrimeRequestInFlight,
         isPrimeModalShown: self.isPrimeModalShown
       )
     }
@@ -72,7 +72,7 @@ extension AppState {
       self.alertNthPrime = newValue.alertNthPrime
       self.count = newValue.count
       self.favoritePrimes = newValue.favoritePrimes
-      self.isNthPrimeButtonDisabled = newValue.isNthPrimeButtonDisabled
+      self.isNthPrimeRequestInFlight = newValue.isNthPrimeRequestInFlight
       self.isPrimeModalShown = newValue.isPrimeModalShown
     }
   }
@@ -127,7 +127,7 @@ struct ContentView: View {
   init(store: Store<AppState, AppAction>) {
     print("ContentView.init")
     self.store = store
-    self.viewStore = store.view(value: { $0 }, action: { $0 })
+    self.viewStore = store.view
   }
 
   var body: some View {

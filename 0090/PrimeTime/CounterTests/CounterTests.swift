@@ -34,6 +34,12 @@ class CounterTests: XCTestCase {
   func testSnapshots() {
     let store = Store(initialValue: CounterViewState(), reducer: counterViewReducer)
     let view = CounterView(store: store)
+    let counterViewStore = store
+      .scope(value: counterViewState, action: counterViewAction)
+      .view(removeDuplicates: ==)
+    let primeModalViewStore = store
+      .scope(value: { ($0.primeModal) }, action: { .primeModal($0) })
+      .view(removeDuplicates: ==)
 
     let vc = UIHostingController(rootView: view)
     vc.view.frame = UIScreen.main.bounds
@@ -42,13 +48,13 @@ class CounterTests: XCTestCase {
 //    record=true
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.incrTapped))
+    counterViewStore.send(.incrTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.incrTapped))
+    counterViewStore.send(.incrTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.requestNthPrime))
+    counterViewStore.send(.nthPrimeButtonTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
     var expectation = self.expectation(description: "wait")
@@ -58,7 +64,7 @@ class CounterTests: XCTestCase {
     self.wait(for: [expectation], timeout: 0.5)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.alertDismissButtonTapped))
+    counterViewStore.send(.alertDismissButtonTapped)
     expectation = self.expectation(description: "wait")
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
       expectation.fulfill()
@@ -66,13 +72,13 @@ class CounterTests: XCTestCase {
     self.wait(for: [expectation], timeout: 0.5)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.isPrimeButtonTapped))
+    counterViewStore.send(.isPrimeButtonTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.primeModal(.saveFavoritePrimeTapped))
+    primeModalViewStore.send(.saveFavoritePrimeTapped)
     assertSnapshot(matching: vc, as: .windowedImage)
 
-    store.send(.counter(.primeModalDismissed))
+    counterViewStore.send(.primeModalDismissed)
     assertSnapshot(matching: vc, as: .windowedImage)
   }
 
@@ -93,16 +99,16 @@ class CounterTests: XCTestCase {
     assert(
       initialValue: CounterViewState(
         alertNthPrime: nil,
-        isNthPrimeButtonDisabled: false
+        isNthPrimeRequestInFlight: false
       ),
       reducer: counterViewReducer,
       steps:
-      Step(.send, .counter(.nthPrimeButtonTapped)) {
-        $0.isNthPrimeButtonDisabled = true
+      Step(.send, .counter(.requestNthPrime)) {
+        $0.isNthPrimeRequestInFlight = true
       },
       Step(.receive, .counter(.nthPrimeResponse(17))) {
         $0.alertNthPrime = PrimeAlert(prime: 17)
-        $0.isNthPrimeButtonDisabled = false
+        $0.isNthPrimeRequestInFlight = false
       },
       Step(.send, .counter(.alertDismissButtonTapped)) {
         $0.alertNthPrime = nil
@@ -116,15 +122,15 @@ class CounterTests: XCTestCase {
     assert(
       initialValue: CounterViewState(
         alertNthPrime: nil,
-        isNthPrimeButtonDisabled: false
+        isNthPrimeRequestInFlight: false
       ),
       reducer: counterViewReducer,
       steps:
-      Step(.send, .counter(.nthPrimeButtonTapped)) {
-        $0.isNthPrimeButtonDisabled = true
+      Step(.send, .counter(.requestNthPrime)) {
+        $0.isNthPrimeRequestInFlight = true
       },
       Step(.receive, .counter(.nthPrimeResponse(nil))) {
-        $0.isNthPrimeButtonDisabled = false
+        $0.isNthPrimeRequestInFlight = false
       }
     )
   }

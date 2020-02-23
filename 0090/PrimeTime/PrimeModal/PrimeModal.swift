@@ -21,17 +21,20 @@ public func primeModalReducer(state: inout PrimeModalState, action: PrimeModalAc
 }
 
 public struct IsPrimeModalView: View {
-  @ObservedObject var viewStore: ViewStore<PrimeModalState, PrimeModalAction>
+  struct State: Equatable {
+    let count: Int
+    let isFavorite: Bool
+  }
+
+  @ObservedObject var viewStore: ViewStore<State, PrimeModalAction>
   let store: Store<PrimeModalState, PrimeModalAction>
 
   public init(store: Store<PrimeModalState, PrimeModalAction>) {
     print("IsPrimeModalView.init")
     self.store = store
-    self.viewStore = store.view(
-      value: { $0 },
-      action: { $0 },
-      removeDuplicates: ==
-    )
+    self.viewStore = store
+      .scope(value: State.init(primeModalState:), action: { $0 })
+      .view
   }
 
   public var body: some View {
@@ -39,7 +42,7 @@ public struct IsPrimeModalView: View {
     return VStack {
       if isPrime(self.viewStore.value.count) {
         Text("\(self.viewStore.value.count) is prime 🎉")
-        if self.viewStore.value.favoritePrimes.contains(self.viewStore.value.count) {
+        if self.viewStore.value.isFavorite {
           Button("Remove from favorite primes") {
             self.viewStore.send(.removeFavoritePrimeTapped)
           }
@@ -62,4 +65,11 @@ func isPrime(_ p: Int) -> Bool {
     if p % i == 0 { return false }
   }
   return true
+}
+
+extension IsPrimeModalView.State {
+  init(primeModalState state: PrimeModalState) {
+    self.count = state.count
+    self.isFavorite = state.favoritePrimes.contains(state.count)
+  }
 }

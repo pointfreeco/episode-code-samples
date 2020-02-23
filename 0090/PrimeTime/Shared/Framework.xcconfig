@@ -1,0 +1,16 @@
+#include "Base.xcconfig"
+
+CODE_SIGN_IDENTITY[sdk=iphoneos*] = iPhone Developer
+COMBINE_HIDPI_IMAGES[sdk=macosx*] = YES
+ENABLE_BITCODE[sdk=macosx*] = NO
+ENABLE_BITCODE[sdk=watchsimulator*] = YES
+ENABLE_BITCODE[sdk=watch*] = YES
+ENABLE_BITCODE[sdk=iphonesimulator*] = YES
+ENABLE_BITCODE[sdk=iphone*] = YES
+ENABLE_BITCODE[sdk=appletvsimulator*] = YES
+ENABLE_BITCODE[sdk=appletv*] = YES
+FRAMEWORK_VERSION[sdk=macosx*] = A
+TARGETED_DEVICE_FAMILY[sdk=appletv*] = 3
+TARGETED_DEVICE_FAMILY[sdk=iphone*] = 1,2
+TARGETED_DEVICE_FAMILY[sdk=watch*] = 4
+ 

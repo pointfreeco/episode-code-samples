@@ -62,7 +62,11 @@ public final class Store<Value, Action> {
     self.value = initialValue
   }
 
-  func send(_ action: Action) {
+//  func removeDuplicates() -> Store<Value, Action> {
+//    
+//  }
+
+  private func send(_ action: Action) {
     let effects = self.reducer(&self.value, action)
     effects.forEach { effect in
       var effectCancellable: AnyCancellable?
@@ -81,30 +85,30 @@ public final class Store<Value, Action> {
     }
   }
 
-  public func view<LocalValue: Equatable, LocalAction>(
-    value toLocalValue: @escaping (Value) -> LocalValue,
-    action toGlobalAction: @escaping (LocalAction) -> Action
-  ) -> ViewStore<LocalValue, LocalAction> {
-    self.view(value: toLocalValue, action: toGlobalAction, removeDuplicates: ==)
-  }
-
-  public func view<LocalValue, LocalAction>(
-    value toLocalValue: @escaping (Value) -> LocalValue,
-    action toGlobalAction: @escaping (LocalAction) -> Action,
-    removeDuplicates isDuplicate: @escaping (LocalValue, LocalValue) -> Bool
-  ) -> ViewStore<LocalValue, LocalAction> {
-    let vs = ViewStore(
-      initialValue: toLocalValue(self.value),
-      send: { localAction in
-        // TODO: memory management
-        self.send(toGlobalAction(localAction))
-    })
-    vs.viewCancellable = self.$value
-      .map(toLocalValue)
-      .removeDuplicates(by: isDuplicate)
-      .sink { [weak vs] newValue in vs?.value = newValue }
-    return vs
-  }
+//  public func view<LocalValue: Equatable, LocalAction>(
+//    value toLocalValue: @escaping (Value) -> LocalValue,
+//    action toGlobalAction: @escaping (LocalAction) -> Action
+//  ) -> ViewStore<LocalValue, LocalAction> {
+//    self.view(value: toLocalValue, action: toGlobalAction, removeDuplicates: ==)
+//  }
+//
+//  public func view<LocalValue, LocalAction>(
+//    value toLocalValue: @escaping (Value) -> LocalValue,
+//    action toGlobalAction: @escaping (LocalAction) -> Action,
+//    removeDuplicates isDuplicate: @escaping (LocalValue, LocalValue) -> Bool
+//  ) -> ViewStore<LocalValue, LocalAction> {
+//    let vs = ViewStore(
+//      initialValue: toLocalValue(self.value),
+//      send: { localAction in
+//        // TODO: memory management
+//        self.send(toGlobalAction(localAction))
+//    })
+//    vs.viewCancellable = self.$value
+//      .map(toLocalValue)
+//      .removeDuplicates(by: isDuplicate)
+//      .sink { [weak vs] newValue in vs?.value = newValue }
+//    return vs
+//  }
 
   public func scope<LocalValue, LocalAction>(
     value toLocalValue: @escaping (Value) -> LocalValue,
@@ -137,6 +141,29 @@ public func combine<Value, Action>(
   }
 }
 
+
+extension Store where Value: Equatable {
+  public var view: ViewStore<Value, Action> {
+    self.view { $0.removeDuplicates() }
+  }
+}
+
+extension Store {
+  public func view<P: Publisher>(_ transform: (Published<Value>.Publisher) -> P) -> ViewStore<Value, Action> where P.Output == Value, P.Failure == Never {
+    let vs = ViewStore(
+      initialValue: self.value,
+      send: self.send
+    )
+    vs.viewCancellable = transform(self.$value)
+      .sink { [weak vs] newValue in vs?.value = newValue }
+    return vs
+  }
+
+
+  public func view(removeDuplicates predicate: @escaping (Value, Value) -> Bool) -> ViewStore<Value, Action> {
+    self.view { $0.removeDuplicates(by: predicate) }
+  }
+}
 
 //struct CasePath<Root, Value> {
 //  let extract: (Root) -> Value?

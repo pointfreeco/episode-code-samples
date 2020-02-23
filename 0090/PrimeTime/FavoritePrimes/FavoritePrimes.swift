@@ -165,7 +165,7 @@ public struct FavoritePrimesView: View {
   public init(store: Store<[Int], FavoritePrimesAction>) {
     print("FavoritePrimesView.init")
     self.store = store
-    self.viewStore = store.view(value: { $0 }, action: { $0 })
+    self.viewStore = store.view
   }
 
   public var body: some View {
