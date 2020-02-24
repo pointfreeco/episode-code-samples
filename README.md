@@ -93,3 +93,5 @@ This repository is the home of code written on episodes of
 1. [The Case for Case Paths: Properties](0088-the-case-for-case-paths-pt2)
 1. [Case Paths for Free](0089-the-case-for-case-paths-pt3)
 1. [Composing Architecture with Case Paths](0090-composing-architecture-with-case-paths)
+1. [Dependency Injection Made Composable](0091-modular-dependency-injection-pt1)
+1. [Dependency Injection Made Modular](0092-modular-dependency-injection-pt2)
