@@ -18,6 +18,9 @@
 		CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29217322FB231F006090DF /* WolframAlpha.swift */; };
 		CADB167323DCC4A30052C18C /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = CADB167223DCC4A30052C18C /* CasePaths */; };
 		DC36ED17234CD8040027F7A1 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
+		DC69E6402404865D00FCF3C2 /* Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = DC69E63D2404865D00FCF3C2 /* Base.xcconfig */; };
+		DC69E6412404865D00FCF3C2 /* Framework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = DC69E63E2404865D00FCF3C2 /* Framework.xcconfig */; };
+		DC69E6422404865D00FCF3C2 /* Test.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = DC69E63F2404865D00FCF3C2 /* Test.xcconfig */; };
 		DC90717022FA102900B38B42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90716F22FA102900B38B42 /* AppDelegate.swift */; };
 		DC90717222FA102900B38B42 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90717122FA102900B38B42 /* SceneDelegate.swift */; };
 		DC90717422FA102900B38B42 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90717322FA102900B38B42 /* ContentView.swift */; };
@@ -242,6 +245,9 @@
 		CA79FC31239C23310096D881 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC29217322FB231F006090DF /* WolframAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WolframAlpha.swift; sourceTree = "<group>"; };
 		DC39325F230241AF005A0B0A /* PrimeTime.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = PrimeTime.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DC69E63D2404865D00FCF3C2 /* Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+		DC69E63E2404865D00FCF3C2 /* Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Framework.xcconfig; sourceTree = "<group>"; };
+		DC69E63F2404865D00FCF3C2 /* Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
 		DC90716C22FA102900B38B42 /* PrimeTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrimeTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC90716F22FA102900B38B42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC90717122FA102900B38B42 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -509,6 +515,9 @@
 		DCC168BE240484EC006A68B3 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				DC69E63D2404865D00FCF3C2 /* Base.xcconfig */,
+				DC69E63E2404865D00FCF3C2 /* Framework.xcconfig */,
+				DC69E63F2404865D00FCF3C2 /* Test.xcconfig */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -1025,9 +1034,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC69E6412404865D00FCF3C2 /* Framework.xcconfig in Resources */,
 				DC90717C22FA102A00B38B42 /* LaunchScreen.storyboard in Resources */,
+				DC69E6422404865D00FCF3C2 /* Test.xcconfig in Resources */,
 				DC90717922FA102A00B38B42 /* Preview Assets.xcassets in Resources */,
 				DC90717622FA102A00B38B42 /* Assets.xcassets in Resources */,
+				DC69E6402404865D00FCF3C2 /* Base.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
