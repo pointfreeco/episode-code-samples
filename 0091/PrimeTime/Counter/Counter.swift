@@ -143,40 +143,53 @@ public enum CounterViewAction: Equatable {
 }
 
 public struct CounterView: View {
-  @ObservedObject var store: Store<CounterViewState, CounterViewAction>
+  struct State: Equatable {
+    let alertNthPrime: PrimeAlert?
+    let count: Int
+    let isNthPrimeButtonDisabled: Bool
+    let isPrimeModalShown: Bool
+  }
+
+  let store: Store<CounterViewState, CounterViewAction>
+  @ObservedObject var viewStore: ViewStore<State>
 
   public init(store: Store<CounterViewState, CounterViewAction>) {
     self.store = store
+    self.viewStore = self.store
+      .scope(value: State.init(counterViewState:), action: { $0 })
+      .view
+    print("CounterView.init")
   }
 
   public var body: some View {
-    VStack {
+    print("CounterView.body")
+    return VStack {
       HStack {
         Button("-") { self.store.send(.counter(.decrTapped)) }
-        Text("\(self.store.value.count)")
+        Text("\(self.viewStore.value.count)")
         Button("+") { self.store.send(.counter(.incrTapped)) }
       }
       Button("Is this prime?") { self.store.send(.counter(.isPrimeButtonTapped)) }
-      Button("What is the \(ordinal(self.store.value.count)) prime?") {
+      Button("What is the \(ordinal(self.viewStore.value.count)) prime?") {
         self.store.send(.counter(.nthPrimeButtonTapped))
       }
-      .disabled(self.store.value.isNthPrimeButtonDisabled)
+      .disabled(self.viewStore.value.isNthPrimeButtonDisabled)
     }
     .font(.title)
     .navigationBarTitle("Counter demo")
     .sheet(
-      isPresented: .constant(self.store.value.isPrimeModalShown),
+      isPresented: .constant(self.viewStore.value.isPrimeModalShown),
       onDismiss: { self.store.send(.counter(.primeModalDismissed)) }
     ) {
       IsPrimeModalView(
-        store: self.store.view(
+        store: self.store.scope(
           value: { ($0.count, $0.favoritePrimes) },
           action: { .primeModal($0) }
         )
       )
     }
     .alert(
-      item: .constant(self.store.value.alertNthPrime)
+      item: .constant(self.viewStore.value.alertNthPrime)
     ) { alert in
       Alert(
         title: Text(alert.title),
@@ -185,5 +198,14 @@ public struct CounterView: View {
         }
       )
     }
+  }
+}
+
+extension CounterView.State {
+  init(counterViewState state: CounterViewState) {
+    self.alertNthPrime = state.alertNthPrime
+    self.count = state.count
+    self.isNthPrimeButtonDisabled = state.isNthPrimeButtonDisabled
+    self.isPrimeModalShown = state.isPrimeModalShown
   }
 }
