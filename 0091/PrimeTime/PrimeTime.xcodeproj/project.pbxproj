@@ -448,6 +448,7 @@
 				DCF0C6032326036F008B45A0 /* FavoritePrimes */,
 				DCF0C6102326036F008B45A0 /* FavoritePrimesTests */,
 				CA304E7723F48C1400E79D83 /* PrimeAlert */,
+				DCC168BE240484EC006A68B3 /* Shared */,
 				DC90716D22FA102900B38B42 /* Products */,
 				DC36ED16234CD8040027F7A1 /* Frameworks */,
 			);
@@ -503,6 +504,13 @@
 				DC90718622FA102B00B38B42 /* PrimeTimeTests.swift */,
 			);
 			path = PrimeTimeTests;
+			sourceTree = "<group>";
+		};
+		DCC168BE240484EC006A68B3 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		DCF0C59C2326032B008B45A0 /* ComposableArchitecture */ = {
