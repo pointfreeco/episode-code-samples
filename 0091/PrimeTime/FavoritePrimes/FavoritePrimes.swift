@@ -192,15 +192,17 @@ extension FileClient {
 //}
 
 public struct FavoritePrimesView: View {
-  @ObservedObject var store: Store<FavoritePrimesState, FavoritePrimesAction>
+  let store: Store<FavoritePrimesState, FavoritePrimesAction>
+  @ObservedObject var viewStore: ViewStore<FavoritePrimesState>
 
   public init(store: Store<FavoritePrimesState, FavoritePrimesAction>) {
     self.store = store
+    self.viewStore = store.view(removeDuplicates: ==)
   }
 
   public var body: some View {
     List {
-      ForEach(self.store.value.favoritePrimes, id: \.self) { prime in
+      ForEach(self.viewStore.value.favoritePrimes, id: \.self) { prime in
         Button("\(prime)") {
           self.store.send(.primeButtonTapped(prime))
         }
@@ -220,7 +222,7 @@ public struct FavoritePrimesView: View {
         }
       }
     )
-      .alert(item: .constant(self.store.value.alertNthPrime)) { primeAlert in
+      .alert(item: .constant(self.viewStore.value.alertNthPrime)) { primeAlert in
         Alert(title: Text(primeAlert.title), dismissButton: Alert.Button.default(Text("Ok"), action: {
           self.store.send(.alertDismissButtonTapped)
         }))
