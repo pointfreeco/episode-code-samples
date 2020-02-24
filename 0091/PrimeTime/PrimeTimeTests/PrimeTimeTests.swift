@@ -1,27 +1,24 @@
-import XCTest
-@testable import PrimeTime
 import ComposableArchitecture
+import ComposableArchitectureTestSupport
 @testable import Counter
 @testable import FavoritePrimes
+import PrimeAlert
 @testable import PrimeModal
-import ComposableArchitectureTestSupport
+@testable import PrimeTime
+import XCTest
 
 class PrimeTimeTests: XCTestCase {
   func testIntegration() {
-//    Counter.Current = .mock
-//    FavoritePrimes.Current = .mock
-
     var fileClient = FileClient.mock
-    fileClient.load = { _ in Effect<Data?>.sync {
-    try! JSONEncoder().encode([2, 31, 7])
-    } }
+    fileClient.load = { _ in .sync { try! JSONEncoder().encode([2, 31, 7]) } }
 
     assert(
       initialValue: AppState(count: 4),
       reducer: appReducer,
       environment: (
         fileClient: fileClient,
-        nthPrime: { _ in .sync { 17 } }
+        nthPrime: { _ in .sync { 17 } },
+        offlineNthPrime: { _ in .sync { 17 } }
       ),
       steps:
       Step(.send, .counterView(.counter(.nthPrimeButtonTapped))) {

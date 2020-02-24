@@ -1,4 +1,3 @@
-
 public struct PrimeAlert: Equatable, Identifiable {
   public let n: Int
   public let prime: Int

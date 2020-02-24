@@ -1,58 +1,54 @@
-import XCTest
-@testable import Counter
 import ComposableArchitecture
 import ComposableArchitectureTestSupport
+@testable import Counter
+import PrimeAlert
 import SnapshotTesting
 import SwiftUI
+import XCTest
 
 class CounterTests: XCTestCase {
-//  override func setUp() {
-//    super.setUp()
-//    Current = .mock
-//  }
+  func testSnapshots() {
+    let store = Store(initialValue: CounterViewState(), reducer: counterViewReducer, environment: { _ in .sync { 17 } })
+    let view = CounterView(store: store)
 
-//  func testSnapshots() {
-//    let store = Store(initialValue: CounterViewState(), reducer: counterViewReducer, environment: { _ in .sync { 17 } })
-//    let view = CounterView(store: store)
-//
-//    let vc = UIHostingController(rootView: view)
-//    vc.view.frame = UIScreen.main.bounds
-//
-//    assertSnapshot(matching: vc, as: .windowedImage)
-//
-//    store.send(.counter(.incrTapped))
-//    assertSnapshot(matching: vc, as: .windowedImage)
-//
-//    store.send(.counter(.incrTapped))
-//    assertSnapshot(matching: vc, as: .windowedImage)
-//
-//    store.send(.counter(.nthPrimeButtonTapped))
-//    assertSnapshot(matching: vc, as: .windowedImage)
-//
-//    var expectation = self.expectation(description: "wait")
-//    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//      expectation.fulfill()
-//    }
-//    self.wait(for: [expectation], timeout: 0.5)
-//    assertSnapshot(matching: vc, as: .windowedImage)
-//
-//    store.send(.counter(.alertDismissButtonTapped))
-//    expectation = self.expectation(description: "wait")
-//    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//      expectation.fulfill()
-//    }
-//    self.wait(for: [expectation], timeout: 0.5)
-//    assertSnapshot(matching: vc, as: .windowedImage)
-//
-//    store.send(.counter(.isPrimeButtonTapped))
-//    assertSnapshot(matching: vc, as: .windowedImage)
-//
-//    store.send(.primeModal(.saveFavoritePrimeTapped))
-//    assertSnapshot(matching: vc, as: .windowedImage)
-//
-//    store.send(.counter(.primeModalDismissed))
-//    assertSnapshot(matching: vc, as: .windowedImage)
-//  }
+    let vc = UIHostingController(rootView: view)
+    vc.view.frame = UIScreen.main.bounds
+
+    assertSnapshot(matching: vc, as: .windowedImage)
+
+    store.send(.counter(.incrTapped))
+    assertSnapshot(matching: vc, as: .windowedImage)
+
+    store.send(.counter(.incrTapped))
+    assertSnapshot(matching: vc, as: .windowedImage)
+
+    store.send(.counter(.nthPrimeButtonTapped))
+    assertSnapshot(matching: vc, as: .windowedImage)
+
+    var expectation = self.expectation(description: "wait")
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+      expectation.fulfill()
+    }
+    self.wait(for: [expectation], timeout: 0.5)
+    assertSnapshot(matching: vc, as: .windowedImage)
+
+    store.send(.counter(.alertDismissButtonTapped))
+    expectation = self.expectation(description: "wait")
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+      expectation.fulfill()
+    }
+    self.wait(for: [expectation], timeout: 0.5)
+    assertSnapshot(matching: vc, as: .windowedImage)
+
+    store.send(.counter(.isPrimeButtonTapped))
+    assertSnapshot(matching: vc, as: .windowedImage)
+
+    store.send(.primeModal(.saveFavoritePrimeTapped))
+    assertSnapshot(matching: vc, as: .windowedImage)
+
+    store.send(.counter(.primeModalDismissed))
+    assertSnapshot(matching: vc, as: .windowedImage)
+  }
 
   func testIncrDecrButtonTapped() {
     assert(
@@ -67,8 +63,6 @@ class CounterTests: XCTestCase {
   }
 
   func testNthPrimeButtonHappyFlow() {
-//    Current.nthPrime =
-
     assert(
       initialValue: CounterViewState(
         alertNthPrime: nil,
@@ -92,8 +86,6 @@ class CounterTests: XCTestCase {
   }
 
   func testNthPrimeButtonUnhappyFlow() {
-//    Current.nthPrime =
-
     assert(
       initialValue: CounterViewState(
         alertNthPrime: nil,
@@ -113,8 +105,6 @@ class CounterTests: XCTestCase {
   }
 
   func testPrimeModal() {
-//    Current = .mock
-    
     assert(
       initialValue: CounterViewState(
         count: 1,

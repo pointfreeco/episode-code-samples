@@ -32,3 +32,11 @@ extension Publisher where Failure == Never {
     return Effect(publisher: self.eraseToAnyPublisher())
   }
 }
+
+extension Publisher where Output == Never, Failure == Never {
+  public func fireAndForget<A>() -> Effect<A> {
+    return self.map(absurd).eraseToEffect()
+  }
+}
+
+private func absurd<A>(_ never: Never) -> A {}

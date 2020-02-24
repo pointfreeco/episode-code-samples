@@ -26,6 +26,7 @@
 		DC90717C22FA102A00B38B42 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC90717A22FA102A00B38B42 /* LaunchScreen.storyboard */; };
 		DC90718722FA102B00B38B42 /* PrimeTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90718622FA102B00B38B42 /* PrimeTimeTests.swift */; };
 		DC90719222FA151D00B38B42 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90719122FA151D00B38B42 /* Util.swift */; };
+		DCC168BD24044DED006A68B3 /* FileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC168BC24044DED006A68B3 /* FileClient.swift */; };
 		DCF0C5A42326032B008B45A0 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
 		DCF0C5AB2326032B008B45A0 /* ComposableArchitectureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C5AA2326032B008B45A0 /* ComposableArchitectureTests.swift */; };
 		DCF0C5AD2326032B008B45A0 /* ComposableArchitecture.h in Headers */ = {isa = PBXBuildFile; fileRef = DCF0C59D2326032B008B45A0 /* ComposableArchitecture.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -112,13 +113,6 @@
 			remoteGlobalIDString = DCF0C59A2326032B008B45A0;
 			remoteInfo = ComposableArchitecture;
 		};
-		DCF0C5A72326032B008B45A0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC90716422FA102900B38B42 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DC90716B22FA102900B38B42;
-			remoteInfo = PrimeTime;
-		};
 		DCF0C5AE2326032B008B45A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DC90716422FA102900B38B42 /* Project object */;
@@ -132,13 +126,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = DCF0C5BD23260348008B45A0;
 			remoteInfo = Counter;
-		};
-		DCF0C5CA23260348008B45A0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC90716422FA102900B38B42 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DC90716B22FA102900B38B42;
-			remoteInfo = PrimeTime;
 		};
 		DCF0C5D123260348008B45A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -154,26 +141,12 @@
 			remoteGlobalIDString = DCF0C5DF2326035C008B45A0;
 			remoteInfo = PrimeModal;
 		};
-		DCF0C5EC2326035C008B45A0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC90716422FA102900B38B42 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DC90716B22FA102900B38B42;
-			remoteInfo = PrimeTime;
-		};
 		DCF0C60C2326036F008B45A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DC90716422FA102900B38B42 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = DCF0C6012326036F008B45A0;
 			remoteInfo = FavoritePrimes;
-		};
-		DCF0C60E2326036F008B45A0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC90716422FA102900B38B42 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DC90716B22FA102900B38B42;
-			remoteInfo = PrimeTime;
 		};
 		DCF0C6152326036F008B45A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -281,6 +254,7 @@
 		DC90718622FA102B00B38B42 /* PrimeTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeTimeTests.swift; sourceTree = "<group>"; };
 		DC90718822FA102B00B38B42 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC90719122FA151D00B38B42 /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		DCC168BC24044DED006A68B3 /* FileClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileClient.swift; sourceTree = "<group>"; };
 		DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitecture.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCF0C59D2326032B008B45A0 /* ComposableArchitecture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitecture.h; sourceTree = "<group>"; };
 		DCF0C59E2326032B008B45A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -597,6 +571,7 @@
 				DCF0C6042326036F008B45A0 /* FavoritePrimes.h */,
 				DCF0C6052326036F008B45A0 /* Info.plist */,
 				DCF0C62923260405008B45A0 /* FavoritePrimes.swift */,
+				DCC168BC24044DED006A68B3 /* FileClient.swift */,
 			);
 			path = FavoritePrimes;
 			sourceTree = "<group>";
@@ -784,7 +759,6 @@
 			);
 			dependencies = (
 				DCF0C5A62326032B008B45A0 /* PBXTargetDependency */,
-				DCF0C5A82326032B008B45A0 /* PBXTargetDependency */,
 			);
 			name = ComposableArchitectureTests;
 			productName = ComposableArchitectureTests;
@@ -825,7 +799,6 @@
 			dependencies = (
 				DCF6C52623ECD13200A54EE0 /* PBXTargetDependency */,
 				DCF0C5C923260348008B45A0 /* PBXTargetDependency */,
-				DCF0C5CB23260348008B45A0 /* PBXTargetDependency */,
 			);
 			name = CounterTests;
 			packageProductDependencies = (
@@ -867,7 +840,6 @@
 			dependencies = (
 				DCF6C52923ECD13B00A54EE0 /* PBXTargetDependency */,
 				DCF0C5EB2326035C008B45A0 /* PBXTargetDependency */,
-				DCF0C5ED2326035C008B45A0 /* PBXTargetDependency */,
 			);
 			name = PrimeModalTests;
 			productName = PrimeModalTests;
@@ -907,7 +879,6 @@
 			dependencies = (
 				DCF6C52C23ECD14100A54EE0 /* PBXTargetDependency */,
 				DCF0C60D2326036F008B45A0 /* PBXTargetDependency */,
-				DCF0C60F2326036F008B45A0 /* PBXTargetDependency */,
 			);
 			name = FavoritePrimesTests;
 			productName = FavoritePrimesTests;
@@ -1215,6 +1186,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCC168BD24044DED006A68B3 /* FileClient.swift in Sources */,
 				DCF0C62A23260405008B45A0 /* FavoritePrimes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1273,11 +1245,6 @@
 			target = DCF0C59A2326032B008B45A0 /* ComposableArchitecture */;
 			targetProxy = DCF0C5A52326032B008B45A0 /* PBXContainerItemProxy */;
 		};
-		DCF0C5A82326032B008B45A0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DC90716B22FA102900B38B42 /* PrimeTime */;
-			targetProxy = DCF0C5A72326032B008B45A0 /* PBXContainerItemProxy */;
-		};
 		DCF0C5AF2326032B008B45A0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DCF0C59A2326032B008B45A0 /* ComposableArchitecture */;
@@ -1287,11 +1254,6 @@
 			isa = PBXTargetDependency;
 			target = DCF0C5BD23260348008B45A0 /* Counter */;
 			targetProxy = DCF0C5C823260348008B45A0 /* PBXContainerItemProxy */;
-		};
-		DCF0C5CB23260348008B45A0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DC90716B22FA102900B38B42 /* PrimeTime */;
-			targetProxy = DCF0C5CA23260348008B45A0 /* PBXContainerItemProxy */;
 		};
 		DCF0C5D223260348008B45A0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1303,20 +1265,10 @@
 			target = DCF0C5DF2326035C008B45A0 /* PrimeModal */;
 			targetProxy = DCF0C5EA2326035C008B45A0 /* PBXContainerItemProxy */;
 		};
-		DCF0C5ED2326035C008B45A0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DC90716B22FA102900B38B42 /* PrimeTime */;
-			targetProxy = DCF0C5EC2326035C008B45A0 /* PBXContainerItemProxy */;
-		};
 		DCF0C60D2326036F008B45A0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DCF0C6012326036F008B45A0 /* FavoritePrimes */;
 			targetProxy = DCF0C60C2326036F008B45A0 /* PBXContainerItemProxy */;
-		};
-		DCF0C60F2326036F008B45A0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DC90716B22FA102900B38B42 /* PrimeTime */;
-			targetProxy = DCF0C60E2326036F008B45A0 /* PBXContainerItemProxy */;
 		};
 		DCF0C6162326036F008B45A0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

@@ -3,7 +3,6 @@ import Combine
 import SwiftUI
 
 public typealias Reducer<Value, Action, Environment> = (inout Value, Action, Environment) -> [Effect<Action>]
-//public typealias Reducer<Value, Action, Environment> = (inout Value, Action) -> (Environment) -> [Effect<Action>]
 
 public func combine<Value, Action, Environment>(
   _ reducers: Reducer<Value, Action, Environment>...

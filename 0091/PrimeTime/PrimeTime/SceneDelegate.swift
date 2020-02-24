@@ -15,17 +15,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             initialValue: AppState(),
             reducer: with(
               appReducer,
-              compose(
-                logging,
+//              compose(
+//                logging,
                 activityFeed
-              )
+//              )
             ),
             environment: AppEnvironment(
               fileClient: .live,
               nthPrime: Counter.nthPrime,
               offlineNthPrime: Counter.offlineNthPrime
-//              counter: .live,
-//              favoritePrimes: .live
             )
           )
         )
