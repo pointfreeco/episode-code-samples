@@ -5,9 +5,10 @@ import SwiftUI
 
 PlaygroundPage.current.liveView = UIHostingController(
   rootView: IsPrimeModalView(
-    store: Store<PrimeModalState, PrimeModalAction>(
+    store: Store(
       initialValue: (2, [2, 3, 5]),
-      reducer: primeModalReducer
+      reducer: primeModalReducer,
+      environment: ()
     )
   )
 )

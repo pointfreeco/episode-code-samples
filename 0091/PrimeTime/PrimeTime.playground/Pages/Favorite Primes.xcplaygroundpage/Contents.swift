@@ -3,7 +3,7 @@ import ComposableArchitecture
 import PlaygroundSupport
 import SwiftUI
 
-var environment: FavoritePrimesEnvironment = (
+var environment = FavoritePrimesEnvironment(
   fileClient: .mock,
   nthPrime: { _ in .sync { 17 } }
 )
@@ -14,7 +14,7 @@ environment.fileClient.load = { _ in
 PlaygroundPage.current.liveView = UIHostingController(
   rootView: NavigationView {
     FavoritePrimesView(
-      store: Store<FavoritePrimesState, FavoritePrimesAction>(
+      store: Store(
         initialValue: (
           alertNthPrime: nil,
           favoritePrimes: [2, 3, 5, 7, 11]
