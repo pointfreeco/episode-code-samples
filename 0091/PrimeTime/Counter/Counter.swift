@@ -32,7 +32,6 @@ public func counterReducer(
   switch action {
   case .decrTapped:
     state.count -= 1
-    let count = state.count
     return []
 
   case .incrTapped:
