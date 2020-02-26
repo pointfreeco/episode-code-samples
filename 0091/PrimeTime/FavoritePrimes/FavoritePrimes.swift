@@ -76,7 +76,7 @@ public func favoritePrimesReducer(
 
 public struct FavoritePrimesView: View {
   let store: Store<FavoritePrimesState, FavoritePrimesAction>
-  @ObservedObject var viewStore: ViewStore<FavoritePrimesState>
+  @ObservedObject var viewStore: ViewStore<FavoritePrimesState, FavoritePrimesAction>
 
   public init(store: Store<FavoritePrimesState, FavoritePrimesAction>) {
     print("FavoritePrimesView.init")
@@ -89,27 +89,27 @@ public struct FavoritePrimesView: View {
     return List {
       ForEach(self.viewStore.value.favoritePrimes, id: \.self) { prime in
         Button("\(prime)") {
-          self.store.send(.primeButtonTapped(prime))
+          self.viewStore.send(.primeButtonTapped(prime))
         }
       }
       .onDelete { indexSet in
-        self.store.send(.deleteFavoritePrimes(indexSet))
+        self.viewStore.send(.deleteFavoritePrimes(indexSet))
       }
     }
     .navigationBarTitle("Favorite primes")
     .navigationBarItems(
       trailing: HStack {
         Button("Save") {
-          self.store.send(.saveButtonTapped)
+          self.viewStore.send(.saveButtonTapped)
         }
         Button("Load") {
-          self.store.send(.loadButtonTapped)
+          self.viewStore.send(.loadButtonTapped)
         }
       }
     )
       .alert(item: .constant(self.viewStore.value.alertNthPrime)) { primeAlert in
         Alert(title: Text(primeAlert.title), dismissButton: Alert.Button.default(Text("Ok"), action: {
-          self.store.send(.alertDismissButtonTapped)
+          self.viewStore.send(.alertDismissButtonTapped)
         }))
     }
   }
