@@ -8,7 +8,7 @@ import SwiftUI
 public typealias CounterState = (
   alertNthPrime: PrimeAlert?,
   count: Int,
-  isNthPrimeButtonDisabled: Bool,
+  isNthPrimeRequestInFlight: Bool,
   isPrimeModalShown: Bool
 )
 
@@ -39,7 +39,7 @@ public func counterReducer(
     return []
 
   case .nthPrimeButtonTapped:
-    state.isNthPrimeButtonDisabled = true
+    state.isNthPrimeRequestInFlight = true
     let n = state.count
     return [
       environment(state.count)
@@ -50,7 +50,7 @@ public func counterReducer(
 
   case let .nthPrimeResponse(n, prime):
     state.alertNthPrime = prime.map { PrimeAlert(n: n, prime: $0) }
-    state.isNthPrimeButtonDisabled = false
+    state.isNthPrimeRequestInFlight = false
     return []
 
   case .alertDismissButtonTapped:
@@ -86,26 +86,29 @@ public struct CounterFeatureState: Equatable {
   public var alertNthPrime: PrimeAlert?
   public var count: Int
   public var favoritePrimes: [Int]
-  public var isNthPrimeButtonDisabled: Bool
+//  public var isNthPrimeButtonDisabled: Bool
+  public var isNthPrimeRequestInFlight: Bool
   public var isPrimeModalShown: Bool
+  
+//  public var isLoadingIndicatorHidden: Bool
 
   public init(
     alertNthPrime: PrimeAlert? = nil,
     count: Int = 0,
     favoritePrimes: [Int] = [],
-    isNthPrimeButtonDisabled: Bool = false,
+    isNthPrimeRequestInFlight: Bool = false,
     isPrimeModalShown: Bool = false
   ) {
     self.alertNthPrime = alertNthPrime
     self.count = count
     self.favoritePrimes = favoritePrimes
-    self.isNthPrimeButtonDisabled = isNthPrimeButtonDisabled
+    self.isNthPrimeRequestInFlight = isNthPrimeRequestInFlight
     self.isPrimeModalShown = isPrimeModalShown
   }
 
   var counter: CounterState {
-    get { (self.alertNthPrime, self.count, self.isNthPrimeButtonDisabled, self.isPrimeModalShown) }
-    set { (self.alertNthPrime, self.count, self.isNthPrimeButtonDisabled, self.isPrimeModalShown) = newValue }
+    get { (self.alertNthPrime, self.count, self.isNthPrimeRequestInFlight, self.isPrimeModalShown) }
+    set { (self.alertNthPrime, self.count, self.isNthPrimeRequestInFlight, self.isPrimeModalShown) = newValue }
   }
 
   var primeModal: PrimeModalState {
@@ -125,6 +128,8 @@ public struct CounterView: View {
     let count: Int
     let isNthPrimeButtonDisabled: Bool
     let isPrimeModalShown: Bool
+    let isIncrementButtonDisabled: Bool
+    let isDecrementButtonDisabled: Bool
   }
   let store: Store<CounterFeatureState, CounterFeatureAction>
   @ObservedObject var viewStore: ViewStore<State>
@@ -142,8 +147,10 @@ public struct CounterView: View {
     return VStack {
       HStack {
         Button("-") { self.store.send(.counter(.decrTapped)) }
+          .disabled(self.viewStore.value.isDecrementButtonDisabled)
         Text("\(self.viewStore.value.count)")
         Button("+") { self.store.send(.counter(.incrTapped)) }
+          .disabled(self.viewStore.value.isIncrementButtonDisabled)
       }
       Button("Is this prime?") { self.store.send(.counter(.isPrimeButtonTapped)) }
       Button("What is the \(ordinal(self.viewStore.value.count)) prime?") {
@@ -181,7 +188,9 @@ extension CounterView.State {
   init(counterFeatureState: CounterFeatureState) {
     self.alertNthPrime = counterFeatureState.alertNthPrime
     self.count = counterFeatureState.count
-    self.isNthPrimeButtonDisabled = counterFeatureState.isNthPrimeButtonDisabled
+    self.isNthPrimeButtonDisabled = counterFeatureState.isNthPrimeRequestInFlight
     self.isPrimeModalShown = counterFeatureState.isPrimeModalShown
+    self.isIncrementButtonDisabled = counterFeatureState.isNthPrimeRequestInFlight
+    self.isDecrementButtonDisabled = counterFeatureState.isNthPrimeRequestInFlight
   }
 }
