@@ -137,9 +137,15 @@ let isInExperiment = false //Bool.random()
 
 struct ContentView: View {
   @ObservedObject var store: Store<AppState, AppAction>
+  
+  init(store: Store<AppState, AppAction>) {
+    print("ContentView.init")
+    self.store = store
+  }
 
   var body: some View {
-    NavigationView {
+    print("ContentView.body")
+    return NavigationView {
       List {
         if !isInExperiment {
           NavigationLink(
@@ -171,6 +177,11 @@ struct ContentView: View {
             )
           )
         )
+
+        ForEach(Array(1...500_000), id: \.self) { value in
+          Text("\(value)")
+        }
+
       }
       .navigationBarTitle("State management")
     }

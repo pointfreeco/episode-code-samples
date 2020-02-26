@@ -78,11 +78,13 @@ public struct FavoritePrimesView: View {
   @ObservedObject var store: Store<FavoritePrimesState, FavoritePrimesAction>
 
   public init(store: Store<FavoritePrimesState, FavoritePrimesAction>) {
+    print("FavoritePrimesView.init")
     self.store = store
   }
 
   public var body: some View {
-    List {
+    print("FavoritePrimesView.body")
+    return List {
       ForEach(self.store.value.favoritePrimes, id: \.self) { prime in
         Button("\(prime)") {
           self.store.send(.primeButtonTapped(prime))

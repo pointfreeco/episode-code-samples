@@ -28,11 +28,13 @@ public struct IsPrimeModalView: View {
   @ObservedObject var store: Store<PrimeModalState, PrimeModalAction>
 
   public init(store: Store<PrimeModalState, PrimeModalAction>) {
+    print("IsPrimeModalView.init")
     self.store = store
   }
 
   public var body: some View {
-    VStack {
+    print("IsPrimeModalView.body")
+    return VStack {
       if isPrime(self.store.value.count) {
         Text("\(self.store.value.count) is prime 🎉")
         if self.store.value.favoritePrimes.contains(self.store.value.count) {
