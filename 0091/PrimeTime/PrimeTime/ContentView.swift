@@ -133,7 +133,7 @@ func activityFeed(
   }
 }
 
-let isInExperiment = Bool.random()
+let isInExperiment = false //Bool.random()
 
 struct ContentView: View {
   @ObservedObject var store: Store<AppState, AppAction>
