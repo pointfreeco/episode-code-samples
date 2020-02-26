@@ -20,6 +20,7 @@ public enum CounterAction: Equatable {
   case alertDismissButtonTapped
   case isPrimeButtonTapped
   case primeModalDismissed
+  case doubleTap
 }
 
 public typealias CounterEnvironment = (Int) -> Effect<Int?>
@@ -38,7 +39,7 @@ public func counterReducer(
     state.count += 1
     return []
 
-  case .nthPrimeButtonTapped:
+  case .nthPrimeButtonTapped, .doubleTap:
     state.isNthPrimeRequestInFlight = true
     let n = state.count
     return [
@@ -64,6 +65,16 @@ public func counterReducer(
   case .primeModalDismissed:
     state.isPrimeModalShown = false
     return []
+    
+//  case .doubleTap:
+//        state.isNthPrimeRequestInFlight = true
+//    let n = state.count
+//    return [
+//      environment(state.count)
+//        .map { CounterAction.nthPrimeResponse(n: n, prime: $0) }
+//        .receive(on: DispatchQueue.main)
+//        .eraseToEffect()
+//    ]
   }
 }
 
@@ -154,6 +165,7 @@ public struct CounterView: View {
       }
       Button("Is this prime?") { self.store.send(.counter(.isPrimeButtonTapped)) }
       Button("What is the \(ordinal(self.viewStore.value.count)) prime?") {
+//        self.store.send(.counter(.nthPrimeResponse(n: 7, prime: 17)))
         self.store.send(.counter(.nthPrimeButtonTapped))
       }
       .disabled(self.viewStore.value.isNthPrimeButtonDisabled)
@@ -180,6 +192,11 @@ public struct CounterView: View {
           self.store.send(.counter(.alertDismissButtonTapped))
         }
       )
+    }
+    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+    .background(Color.white)
+    .onTapGesture(count: 2) {
+      self.store.send(.counter(.doubleTap))
     }
   }
 }
