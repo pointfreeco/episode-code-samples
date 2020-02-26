@@ -33,8 +33,8 @@ struct AppState: Equatable {
 }
 
 enum AppAction: Equatable {
-  case counterView(CounterViewAction)
-  case offlineCounterView(CounterViewAction)
+  case counterView(CounterFeatureAction)
+  case offlineCounterView(CounterFeatureAction)
   case favoritePrimes(FavoritePrimesAction)
 }
 
@@ -48,9 +48,9 @@ extension AppState {
     }
   }
 
-  var counterView: CounterViewState {
+  var counterView: CounterFeatureState {
     get {
-      CounterViewState(
+      CounterFeatureState(
         alertNthPrime: self.alertNthPrime,
         count: self.count,
         favoritePrimes: self.favoritePrimes,
@@ -136,7 +136,8 @@ func activityFeed(
 let isInExperiment = false //Bool.random()
 
 struct ContentView: View {
-  @ObservedObject var store: Store<AppState, AppAction>
+  let store: Store<AppState, AppAction>
+//  @ObservedObject var viewStore: ViewStore<???>
   
   init(store: Store<AppState, AppAction>) {
     print("ContentView.init")

@@ -55,13 +55,13 @@ public final class ViewStore<Value>: ObservableObject {
 }
 
 extension Store where Value: Equatable {
-  var view: ViewStore<Value> {
+  public var view: ViewStore<Value> {
     self.view(removeDuplicates: ==)
   }
 }
 
 extension Store {
-  func view(
+  public func view(
     removeDuplicates predicate: @escaping (Value, Value) -> Bool
   ) -> ViewStore<Value> {
     let viewStore = ViewStore(initialValue: self.value)
@@ -70,6 +70,7 @@ extension Store {
       .removeDuplicates(by: predicate)
       .sink(receiveValue: { [weak viewStore] value in
         viewStore?.value = value
+        self
       })
     
     return viewStore

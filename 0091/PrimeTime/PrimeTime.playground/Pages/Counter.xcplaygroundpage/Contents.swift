@@ -6,7 +6,7 @@ import SwiftUI
 PlaygroundPage.current.liveView = UIHostingController(
   rootView: CounterView(
     store: Store(
-      initialValue: CounterViewState(
+      initialValue: CounterFeatureState(
         alertNthPrime: nil,
         count: 0,
         favoritePrimes: [],
