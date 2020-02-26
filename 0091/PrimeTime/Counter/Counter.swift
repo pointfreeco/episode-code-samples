@@ -148,7 +148,7 @@ public struct CounterView: View {
       onDismiss: { self.store.send(.counter(.primeModalDismissed)) }
     ) {
       IsPrimeModalView(
-        store: self.store.view(
+        store: self.store.scope(
           value: { ($0.count, $0.favoritePrimes) },
           action: { .primeModal($0) }
         )

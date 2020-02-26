@@ -45,10 +45,41 @@ public func logging<Value, Action, Environment>(
   }
 }
 
-public final class Store<Value, Action>: ObservableObject {
+public final class ViewStore<Value>: ObservableObject {
+  @Published public fileprivate(set) var value: Value
+  fileprivate var cancellable: Cancellable?
+  
+  public init(initialValue value: Value) {
+    self.value = value
+  }
+}
+
+extension Store where Value: Equatable {
+  var view: ViewStore<Value> {
+    self.view(removeDuplicates: ==)
+  }
+}
+
+extension Store {
+  func view(
+    removeDuplicates predicate: @escaping (Value, Value) -> Bool
+  ) -> ViewStore<Value> {
+    let viewStore = ViewStore(initialValue: self.value)
+    
+    viewStore.cancellable = self.$value
+      .removeDuplicates(by: predicate)
+      .sink(receiveValue: { [weak viewStore] value in
+        viewStore?.value = value
+      })
+    
+    return viewStore
+  }
+}
+
+public final class Store<Value, Action> /*: ObservableObject */ {
   private let reducer: Reducer<Value, Action, Any>
   private let environment: Any
-  @Published public private(set) var value: Value
+  @Published private var value: Value
   private var viewCancellable: Cancellable?
   private var effectCancellables: Set<AnyCancellable> = []
 
@@ -83,7 +114,7 @@ public final class Store<Value, Action>: ObservableObject {
     }
   }
 
-  public func view<LocalValue, LocalAction>(
+  public func scope<LocalValue, LocalAction>(
     value toLocalValue: @escaping (Value) -> LocalValue,
     action toGlobalAction: @escaping (LocalAction) -> Action
   ) -> Store<LocalValue, LocalAction> {

@@ -151,7 +151,7 @@ struct ContentView: View {
           NavigationLink(
             "Counter demo",
             destination: CounterView(
-              store: self.store.view(
+              store: self.store.scope(
                 value: { $0.counterView },
                 action: { .counterView($0) }
               )
@@ -161,7 +161,7 @@ struct ContentView: View {
           NavigationLink(
             "Offline counter demo",
             destination: CounterView(
-              store: self.store.view(
+              store: self.store.scope(
                 value: { $0.counterView },
                 action: { .offlineCounterView($0) }
               )
@@ -171,7 +171,7 @@ struct ContentView: View {
         NavigationLink(
           "Favorite primes",
           destination: FavoritePrimesView(
-            store: self.store.view(
+            store: self.store.scope(
               value: { $0.favoritePrimesState },
               action: { .favoritePrimes($0) }
             )
