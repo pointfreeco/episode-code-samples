@@ -193,7 +193,7 @@ let chars = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345678
 let alphanum = element(of: chars).map { $0! }
 
 let passwordSegment = alphanum.array(count: .init { 6 })
-  .map { $0.map(String.init).joined() }
+  .map { String($0) }
 
 let password = passwordSegment.array(count: .init { 3 })
   .map { $0.joined(separator: "-") }

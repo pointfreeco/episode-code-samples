@@ -171,6 +171,10 @@ struct ContentView: View {
             )
           )
         )
+
+        ForEach(Array(1...500_000), id: \.self) { value in
+          Text("\(value)")
+        }
       }
       .navigationBarTitle("State management")
     }

@@ -38,16 +38,6 @@
                ReferencedContainer = "container:PrimeTime.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CA79FC2C239C23310096D881"
-               BuildableName = "PrimeTimeUITests.xctest"
-               BlueprintName = "PrimeTimeUITests"
-               ReferencedContainer = "container:PrimeTime.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -267,6 +267,10 @@
 		CA304E8223F48C2400E79D83 /* PrimeAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeAlert.swift; sourceTree = "<group>"; };
 		CA35D26024046179003E4A95 /* CounterView_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView_iOS.swift; sourceTree = "<group>"; };
 		CA35D262240461B2003E4A95 /* CounterView_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView_macOS.swift; sourceTree = "<group>"; };
+		CA35D26B24047533003E4A95 /* Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Framework.xcconfig; sourceTree = "<group>"; };
+		CA35D26C24047533003E4A95 /* Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
+		CA35D26D24047533003E4A95 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+		CA35D26E2404772E003E4A95 /* PrimeTimeMac.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = PrimeTimeMac.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitectureTestSupport.swift; sourceTree = "<group>"; };
 		CA79FC2D239C23310096D881 /* PrimeTimeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrimeTimeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeTimeUITests.swift; sourceTree = "<group>"; };
@@ -445,6 +449,16 @@
 			path = PrimeAlert;
 			sourceTree = "<group>";
 		};
+		CA35D26A24047533003E4A95 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				CA35D26B24047533003E4A95 /* Framework.xcconfig */,
+				CA35D26C24047533003E4A95 /* Test.xcconfig */,
+				CA35D26D24047533003E4A95 /* Base.xcconfig */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		CA79FC2E239C23310096D881 /* PrimeTimeUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -464,7 +478,9 @@
 		DC90716322FA102900B38B42 = {
 			isa = PBXGroup;
 			children = (
+				CA35D26E2404772E003E4A95 /* PrimeTimeMac.playground */,
 				DC39325F230241AF005A0B0A /* PrimeTime.playground */,
+				CA35D26A24047533003E4A95 /* Shared */,
 				DC90716E22FA102900B38B42 /* PrimeTime */,
 				DC90718522FA102B00B38B42 /* PrimeTimeTests */,
 				CA79FC2E239C23310096D881 /* PrimeTimeUITests */,
@@ -1387,6 +1403,7 @@
 /* Begin XCBuildConfiguration section */
 		CA304E7F23F48C1400E79D83 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1415,6 +1432,7 @@
 		};
 		CA304E8023F48C1400E79D83 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1674,6 +1692,7 @@
 		};
 		DCF0C5B32326032B008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1702,6 +1721,7 @@
 		};
 		DCF0C5B42326032B008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1729,6 +1749,7 @@
 		};
 		DCF0C5B52326032B008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26C24047533003E4A95 /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1748,6 +1769,7 @@
 		};
 		DCF0C5B62326032B008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26C24047533003E4A95 /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1767,6 +1789,7 @@
 		};
 		DCF0C5D623260348008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1795,6 +1818,7 @@
 		};
 		DCF0C5D723260348008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1822,6 +1846,7 @@
 		};
 		DCF0C5D923260348008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26C24047533003E4A95 /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1841,6 +1866,7 @@
 		};
 		DCF0C5DA23260348008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26C24047533003E4A95 /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1860,6 +1886,7 @@
 		};
 		DCF0C5F82326035C008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1888,6 +1915,7 @@
 		};
 		DCF0C5F92326035C008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1915,6 +1943,7 @@
 		};
 		DCF0C5FB2326035C008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26C24047533003E4A95 /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1933,6 +1962,7 @@
 		};
 		DCF0C5FC2326035C008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26C24047533003E4A95 /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1951,6 +1981,7 @@
 		};
 		DCF0C61A2326036F008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1979,6 +2010,7 @@
 		};
 		DCF0C61B2326036F008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26B24047533003E4A95 /* Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -2006,6 +2038,7 @@
 		};
 		DCF0C61D2326036F008B45A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26C24047533003E4A95 /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -2024,6 +2057,7 @@
 		};
 		DCF0C61E2326036F008B45A0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA35D26C24047533003E4A95 /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
