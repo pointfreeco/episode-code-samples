@@ -55,7 +55,7 @@ public struct CounterView: View {
       }
       .disabled(self.viewStore.value.isNthPrimeButtonDisabled)
     }
-    .font(.title)
+//    .font(.title)
 //    .navigationBarTitle("Counter demo")
     .popover(
       isPresented: Binding(
