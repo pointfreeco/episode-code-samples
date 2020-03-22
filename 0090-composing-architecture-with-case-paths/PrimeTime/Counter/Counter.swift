@@ -86,7 +86,7 @@ public let counterViewReducer = combine(
   )
 )
 
-public struct PrimeAlert: Equatable, Identifiable {
+public struct PrimeAlert: Equatable, Identifiable, Codable {
   let prime: Int
   public var id: Int { self.prime }
 }

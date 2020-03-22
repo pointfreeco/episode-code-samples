@@ -2,9 +2,10 @@ import Combine
 import ComposableArchitecture
 import Counter
 import FavoritePrimes
+import HistoryTransceiver
 import SwiftUI
 
-struct AppState {
+struct AppState: Codable {
   var count = 0
   var favoritePrimes: [Int] = []
   var loggedInUser: User? = nil
@@ -13,7 +14,7 @@ struct AppState {
   var isNthPrimeButtonDisabled: Bool = false
   var isPrimeModalShown: Bool = false
 
-  struct Activity {
+  struct Activity: Codable {
     let timestamp: Date
     let type: ActivityType
 
@@ -23,7 +24,7 @@ struct AppState {
     }
   }
 
-  struct User {
+  struct User: Codable {
     let id: Int
     let name: String
     let bio: String
@@ -148,4 +149,45 @@ struct ContentView: View {
       .navigationBarTitle("State management")
     }
   }
+}
+
+
+// MARK:- State Surfing
+
+
+extension AppState: StateInitializable {}
+
+
+extension AppState.Activity.ActivityType: Codable {
+    enum DecodingError: Error {
+        case keysNotFound
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let value = try? container.decode(Int.self, forKey: .addedFavoritePrime) {
+            self = .addedFavoritePrime(value)
+            return
+        }
+        if let value = try? container.decode(Int.self, forKey: .removedFavoritePrime) {
+            self = .removedFavoritePrime(value)
+            return
+        }
+        throw DecodingError.keysNotFound
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+            case .addedFavoritePrime(let value):
+                try container.encode(value, forKey: .addedFavoritePrime)
+            case .removedFavoritePrime(let value):
+                try container.encode(value, forKey: .removedFavoritePrime)
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case addedFavoritePrime
+        case removedFavoritePrime
+    }
 }
