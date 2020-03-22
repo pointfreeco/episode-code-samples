@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5AD08DA92427C3E60071DC45 /* HistoryTransceiver in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD08DA82427C3E60071DC45 /* HistoryTransceiver */; };
 		CA675A56238072DB00724A38 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */; };
 		CA79FC28239C158C0096D881 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = CA79FC27239C158C0096D881 /* SnapshotTesting */; };
 		CA79FC30239C23310096D881 /* PrimeTimeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */; };
@@ -251,6 +252,7 @@
 			files = (
 				DCF88F02234D4A3B001BA79A /* ComposableArchitecture.framework in Frameworks */,
 				DCF0C5D323260348008B45A0 /* Counter.framework in Frameworks */,
+				5AD08DA92427C3E60071DC45 /* HistoryTransceiver in Frameworks */,
 				DCF0C6172326036F008B45A0 /* FavoritePrimes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -568,6 +570,9 @@
 				DCF0C6162326036F008B45A0 /* PBXTargetDependency */,
 			);
 			name = PrimeTime;
+			packageProductDependencies = (
+				5AD08DA82427C3E60071DC45 /* HistoryTransceiver */,
+			);
 			productName = PrimeTime;
 			productReference = DC90716C22FA102900B38B42 /* PrimeTime.app */;
 			productType = "com.apple.product-type.application";
@@ -813,6 +818,7 @@
 			packageReferences = (
 				CA79FC26239C158C0096D881 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				CADB167123DCC4A30052C18C /* XCRemoteSwiftPackageReference "swift-case-paths" */,
+				5AD08DA72427C3E60071DC45 /* XCRemoteSwiftPackageReference "HistoryTransceiver" */,
 			);
 			productRefGroup = DC90716D22FA102900B38B42 /* Products */;
 			projectDirPath = "";
@@ -1826,6 +1832,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5AD08DA72427C3E60071DC45 /* XCRemoteSwiftPackageReference "HistoryTransceiver" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/finestructure/HistoryTransceiver";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.6;
+			};
+		};
 		CA79FC26239C158C0096D881 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
@@ -1845,6 +1859,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5AD08DA82427C3E60071DC45 /* HistoryTransceiver */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5AD08DA72427C3E60071DC45 /* XCRemoteSwiftPackageReference "HistoryTransceiver" */;
+			productName = HistoryTransceiver;
+		};
 		CA79FC27239C158C0096D881 /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CA79FC26239C158C0096D881 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
