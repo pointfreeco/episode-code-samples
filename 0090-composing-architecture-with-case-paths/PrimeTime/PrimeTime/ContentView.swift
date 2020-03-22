@@ -157,6 +157,17 @@ struct ContentView: View {
 
 extension AppState: StateInitializable {}
 
+extension ContentView: StateSurfable {
+    typealias State = AppState
+    typealias Action = AppAction
+
+    static func body(store: Store<State, Action>) -> ContentView {
+        ContentView(store: store)
+    }
+    static var reducer: (inout State, Action) -> [Effect<Action>] {
+        appReducer
+    }
+}
 
 extension AppState.Activity.ActivityType: Codable {
     enum DecodingError: Error {
