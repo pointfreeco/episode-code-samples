@@ -165,7 +165,13 @@ extension ContentView: StateSurfable {
         ContentView(store: store)
     }
     static var reducer: (inout State, Action) -> [Effect<Action>] {
-        appReducer
+        with(
+          appReducer,
+          compose(
+            logging,
+            activityFeed
+          )
+        )
     }
 }
 
