@@ -8,12 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		5AD08DA92427C3E60071DC45 /* HistoryTransceiver in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD08DA82427C3E60071DC45 /* HistoryTransceiver */; };
+		5AD08DAC2427CC380071DC45 /* CompArch in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD08DAB2427CC380071DC45 /* CompArch */; };
+		5AD08DAE2427CC610071DC45 /* CompArch in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD08DAD2427CC610071DC45 /* CompArch */; };
+		5AD08DB02427CC8F0071DC45 /* CompArch in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD08DAF2427CC8F0071DC45 /* CompArch */; };
+		5AD08DB22427CCAB0071DC45 /* CompArch in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD08DB12427CCAB0071DC45 /* CompArch */; };
 		CA675A56238072DB00724A38 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA675A55238072DB00724A38 /* ComposableArchitectureTestSupport.swift */; };
 		CA79FC28239C158C0096D881 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = CA79FC27239C158C0096D881 /* SnapshotTesting */; };
 		CA79FC30239C23310096D881 /* PrimeTimeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA79FC2F239C23310096D881 /* PrimeTimeUITests.swift */; };
 		CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29217322FB231F006090DF /* WolframAlpha.swift */; };
 		CADB167323DCC4A30052C18C /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = CADB167223DCC4A30052C18C /* CasePaths */; };
-		DC36ED17234CD8040027F7A1 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
 		DC90717022FA102900B38B42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90716F22FA102900B38B42 /* AppDelegate.swift */; };
 		DC90717222FA102900B38B42 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90717122FA102900B38B42 /* SceneDelegate.swift */; };
 		DC90717422FA102900B38B42 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90717322FA102900B38B42 /* ContentView.swift */; };
@@ -25,7 +28,6 @@
 		DCF0C5A42326032B008B45A0 /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
 		DCF0C5AB2326032B008B45A0 /* ComposableArchitectureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C5AA2326032B008B45A0 /* ComposableArchitectureTests.swift */; };
 		DCF0C5AD2326032B008B45A0 /* ComposableArchitecture.h in Headers */ = {isa = PBXBuildFile; fileRef = DCF0C59D2326032B008B45A0 /* ComposableArchitecture.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DCF0C5B22326032B008B45A0 /* ComposableArchitecture.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DCF0C5C723260348008B45A0 /* Counter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C5BE23260348008B45A0 /* Counter.framework */; };
 		DCF0C5CE23260348008B45A0 /* CounterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C5CD23260348008B45A0 /* CounterTests.swift */; };
 		DCF0C5D023260348008B45A0 /* Counter.h in Headers */ = {isa = PBXBuildFile; fileRef = DCF0C5C023260348008B45A0 /* Counter.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -44,10 +46,7 @@
 		DCF0C62A23260405008B45A0 /* FavoritePrimes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C62923260405008B45A0 /* FavoritePrimes.swift */; };
 		DCF0C62C2326040D008B45A0 /* PrimeModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C62B2326040D008B45A0 /* PrimeModal.swift */; };
 		DCF0C62E23260414008B45A0 /* Counter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C62D23260414008B45A0 /* Counter.swift */; };
-		DCF88EFF234D4A20001BA79A /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
-		DCF88F00234D4A28001BA79A /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
 		DCF88F01234D4A28001BA79A /* PrimeModal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C5E02326035C008B45A0 /* PrimeModal.framework */; };
-		DCF88F02234D4A3B001BA79A /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF0C59B2326032B008B45A0 /* ComposableArchitecture.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,13 +84,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = DC90716B22FA102900B38B42;
 			remoteInfo = PrimeTime;
-		};
-		DCF0C5AE2326032B008B45A0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC90716422FA102900B38B42 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DCF0C59A2326032B008B45A0;
-			remoteInfo = ComposableArchitecture;
 		};
 		DCF0C5C823260348008B45A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -149,27 +141,6 @@
 			remoteGlobalIDString = DCF0C6012326036F008B45A0;
 			remoteInfo = FavoritePrimes;
 		};
-		DCF0C61F23260383008B45A0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC90716422FA102900B38B42 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DCF0C59A2326032B008B45A0;
-			remoteInfo = ComposableArchitecture;
-		};
-		DCF0C62123260387008B45A0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC90716422FA102900B38B42 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DCF0C59A2326032B008B45A0;
-			remoteInfo = ComposableArchitecture;
-		};
-		DCF0C6232326038A008B45A0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC90716422FA102900B38B42 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DCF0C59A2326032B008B45A0;
-			remoteInfo = ComposableArchitecture;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -180,7 +151,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				DCF0C6182326036F008B45A0 /* FavoritePrimes.framework in Embed Frameworks */,
-				DCF0C5B22326032B008B45A0 /* ComposableArchitecture.framework in Embed Frameworks */,
 				DCF0C5D423260348008B45A0 /* Counter.framework in Embed Frameworks */,
 				DCF0C5F62326035C008B45A0 /* PrimeModal.framework in Embed Frameworks */,
 			);
@@ -250,7 +220,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCF88F02234D4A3B001BA79A /* ComposableArchitecture.framework in Frameworks */,
+				5AD08DAC2427CC380071DC45 /* CompArch in Frameworks */,
 				DCF0C5D323260348008B45A0 /* Counter.framework in Frameworks */,
 				5AD08DA92427C3E60071DC45 /* HistoryTransceiver in Frameworks */,
 				DCF0C6172326036F008B45A0 /* FavoritePrimes.framework in Frameworks */,
@@ -285,7 +255,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCF88F01234D4A28001BA79A /* PrimeModal.framework in Frameworks */,
-				DCF88F00234D4A28001BA79A /* ComposableArchitecture.framework in Frameworks */,
+				5AD08DB22427CCAB0071DC45 /* CompArch in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,7 +272,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCF88EFF234D4A20001BA79A /* ComposableArchitecture.framework in Frameworks */,
+				5AD08DAE2427CC610071DC45 /* CompArch in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,7 +288,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC36ED17234CD8040027F7A1 /* ComposableArchitecture.framework in Frameworks */,
+				5AD08DB02427CC8F0071DC45 /* CompArch in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,13 +535,13 @@
 			buildRules = (
 			);
 			dependencies = (
-				DCF0C5AF2326032B008B45A0 /* PBXTargetDependency */,
 				DCF0C5D223260348008B45A0 /* PBXTargetDependency */,
 				DCF0C6162326036F008B45A0 /* PBXTargetDependency */,
 			);
 			name = PrimeTime;
 			packageProductDependencies = (
 				5AD08DA82427C3E60071DC45 /* HistoryTransceiver */,
+				5AD08DAB2427CC380071DC45 /* CompArch */,
 			);
 			productName = PrimeTime;
 			productReference = DC90716C22FA102900B38B42 /* PrimeTime.app */;
@@ -648,9 +618,11 @@
 			);
 			dependencies = (
 				CAD67E1D2332982E000C7787 /* PBXTargetDependency */,
-				DCF0C6242326038A008B45A0 /* PBXTargetDependency */,
 			);
 			name = Counter;
+			packageProductDependencies = (
+				5AD08DB12427CCAB0071DC45 /* CompArch */,
+			);
 			productName = Counter;
 			productReference = DCF0C5BE23260348008B45A0 /* Counter.framework */;
 			productType = "com.apple.product-type.framework";
@@ -689,9 +661,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				DCF0C62223260387008B45A0 /* PBXTargetDependency */,
 			);
 			name = PrimeModal;
+			packageProductDependencies = (
+				5AD08DAD2427CC610071DC45 /* CompArch */,
+			);
 			productName = PrimeModal;
 			productReference = DCF0C5E02326035C008B45A0 /* PrimeModal.framework */;
 			productType = "com.apple.product-type.framework";
@@ -727,9 +701,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				DCF0C62023260383008B45A0 /* PBXTargetDependency */,
 			);
 			name = FavoritePrimes;
+			packageProductDependencies = (
+				5AD08DAF2427CC8F0071DC45 /* CompArch */,
+			);
 			productName = FavoritePrimes;
 			productReference = DCF0C6022326036F008B45A0 /* FavoritePrimes.framework */;
 			productType = "com.apple.product-type.framework";
@@ -819,6 +795,7 @@
 				CA79FC26239C158C0096D881 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				CADB167123DCC4A30052C18C /* XCRemoteSwiftPackageReference "swift-case-paths" */,
 				5AD08DA72427C3E60071DC45 /* XCRemoteSwiftPackageReference "HistoryTransceiver" */,
+				5AD08DAA2427CC380071DC45 /* XCRemoteSwiftPackageReference "CompArch" */,
 			);
 			productRefGroup = DC90716D22FA102900B38B42 /* Products */;
 			projectDirPath = "";
@@ -1044,11 +1021,6 @@
 			target = DC90716B22FA102900B38B42 /* PrimeTime */;
 			targetProxy = DCF0C5A72326032B008B45A0 /* PBXContainerItemProxy */;
 		};
-		DCF0C5AF2326032B008B45A0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DCF0C59A2326032B008B45A0 /* ComposableArchitecture */;
-			targetProxy = DCF0C5AE2326032B008B45A0 /* PBXContainerItemProxy */;
-		};
 		DCF0C5C923260348008B45A0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DCF0C5BD23260348008B45A0 /* Counter */;
@@ -1088,21 +1060,6 @@
 			isa = PBXTargetDependency;
 			target = DCF0C6012326036F008B45A0 /* FavoritePrimes */;
 			targetProxy = DCF0C6152326036F008B45A0 /* PBXContainerItemProxy */;
-		};
-		DCF0C62023260383008B45A0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DCF0C59A2326032B008B45A0 /* ComposableArchitecture */;
-			targetProxy = DCF0C61F23260383008B45A0 /* PBXContainerItemProxy */;
-		};
-		DCF0C62223260387008B45A0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DCF0C59A2326032B008B45A0 /* ComposableArchitecture */;
-			targetProxy = DCF0C62123260387008B45A0 /* PBXContainerItemProxy */;
-		};
-		DCF0C6242326038A008B45A0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DCF0C59A2326032B008B45A0 /* ComposableArchitecture */;
-			targetProxy = DCF0C6232326038A008B45A0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1840,6 +1797,14 @@
 				minimumVersion = 0.0.6;
 			};
 		};
+		5AD08DAA2427CC380071DC45 /* XCRemoteSwiftPackageReference "CompArch" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/finestructure/CompArch";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.7.3;
+			};
+		};
 		CA79FC26239C158C0096D881 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
@@ -1863,6 +1828,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5AD08DA72427C3E60071DC45 /* XCRemoteSwiftPackageReference "HistoryTransceiver" */;
 			productName = HistoryTransceiver;
+		};
+		5AD08DAB2427CC380071DC45 /* CompArch */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5AD08DAA2427CC380071DC45 /* XCRemoteSwiftPackageReference "CompArch" */;
+			productName = CompArch;
+		};
+		5AD08DAD2427CC610071DC45 /* CompArch */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5AD08DAA2427CC380071DC45 /* XCRemoteSwiftPackageReference "CompArch" */;
+			productName = CompArch;
+		};
+		5AD08DAF2427CC8F0071DC45 /* CompArch */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5AD08DAA2427CC380071DC45 /* XCRemoteSwiftPackageReference "CompArch" */;
+			productName = CompArch;
+		};
+		5AD08DB12427CCAB0071DC45 /* CompArch */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5AD08DAA2427CC380071DC45 /* XCRemoteSwiftPackageReference "CompArch" */;
+			productName = CompArch;
 		};
 		CA79FC27239C158C0096D881 /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;

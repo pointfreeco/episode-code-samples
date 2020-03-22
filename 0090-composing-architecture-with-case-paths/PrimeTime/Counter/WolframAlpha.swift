@@ -1,5 +1,5 @@
 import Combine
-import ComposableArchitecture
+import CompArch
 import Foundation
 
 private let wolframAlphaApiKey = "6H69Q3-828TKQJ4EP"

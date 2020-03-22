@@ -1,5 +1,5 @@
 import Combine
-import ComposableArchitecture
+import CompArch
 import Counter
 import FavoritePrimes
 import HistoryTransceiver

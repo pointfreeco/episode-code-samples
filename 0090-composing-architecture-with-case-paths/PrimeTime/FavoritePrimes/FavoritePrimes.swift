@@ -1,4 +1,4 @@
-import ComposableArchitecture
+import CompArch
 import SwiftUI
 
 public enum FavoritePrimesAction: Equatable {
