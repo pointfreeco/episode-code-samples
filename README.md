@@ -97,3 +97,4 @@ This repository is the home of code written on episodes of
 1. [Dependency Injection Made Modular](0092-modular-dependency-injection-pt2)
 1. [Modular Dependency Injection: The Point](0093-modular-dependency-injection-pt3)
 1. [Adaptive State Management: Performance](0094-adaptive-state-management-pt1)
+1. [Adaptive State Management: State](0095-adaptive-state-management-pt2)
