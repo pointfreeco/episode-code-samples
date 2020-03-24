@@ -8,7 +8,7 @@ import XCTest
 
 class CounterTests: XCTestCase {
   func testSnapshots() {
-    let store = Store(initialValue: CounterViewState(), reducer: counterViewReducer, environment: { _ in .sync { 17 } })
+    let store = Store(initialValue: CounterFeatureState(), reducer: counterViewReducer, environment: { _ in .sync { 17 } })
     let view = CounterView(store: store)
 
     let vc = UIHostingController(rootView: view)
@@ -52,7 +52,7 @@ class CounterTests: XCTestCase {
 
   func testIncrDecrButtonTapped() {
     assert(
-      initialValue: CounterViewState(count: 2),
+      initialValue: CounterFeatureState(count: 2),
       reducer: counterViewReducer,
       environment: { _ in .sync { 17 } },
       steps:
@@ -64,20 +64,20 @@ class CounterTests: XCTestCase {
 
   func testNthPrimeButtonHappyFlow() {
     assert(
-      initialValue: CounterViewState(
+      initialValue: CounterFeatureState(
         alertNthPrime: nil,
         count: 7,
-        isNthPrimeButtonDisabled: false
+        isNthPrimeRequestInFlight: false
       ),
       reducer: counterViewReducer,
       environment: { _ in .sync { 17 } },
       steps:
       Step(.send, .counter(.nthPrimeButtonTapped)) {
-        $0.isNthPrimeButtonDisabled = true
+        $0.isNthPrimeRequestInFlight = true
       },
       Step(.receive, .counter(.nthPrimeResponse(n: 7, prime: 17))) {
         $0.alertNthPrime = PrimeAlert(n: $0.count, prime: 17)
-        $0.isNthPrimeButtonDisabled = false
+        $0.isNthPrimeRequestInFlight = false
       },
       Step(.send, .counter(.alertDismissButtonTapped)) {
         $0.alertNthPrime = nil
@@ -87,26 +87,26 @@ class CounterTests: XCTestCase {
 
   func testNthPrimeButtonUnhappyFlow() {
     assert(
-      initialValue: CounterViewState(
+      initialValue: CounterFeatureState(
         alertNthPrime: nil,
         count: 7,
-        isNthPrimeButtonDisabled: false
+        isNthPrimeRequestInFlight: false
       ),
       reducer: counterViewReducer,
       environment: { _ in .sync { nil } },
       steps:
       Step(.send, .counter(.nthPrimeButtonTapped)) {
-        $0.isNthPrimeButtonDisabled = true
+        $0.isNthPrimeRequestInFlight = true
       },
       Step(.receive, .counter(.nthPrimeResponse(n: 7, prime: nil))) {
-        $0.isNthPrimeButtonDisabled = false
+        $0.isNthPrimeRequestInFlight = false
       }
     )
   }
 
   func testPrimeModal() {
     assert(
-      initialValue: CounterViewState(
+      initialValue: CounterFeatureState(
         count: 1,
         favoritePrimes: [3, 5]
       ),
