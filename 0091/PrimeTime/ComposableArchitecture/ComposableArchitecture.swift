@@ -149,3 +149,25 @@ public final class Store<Value, Action> /*: ObservableObject */ {
     return localStore
   }
 }
+
+extension ViewStore {
+//  public func binding<LocalValue>(
+//    get: @escaping (Value) -> LocalValue,
+//    send: @escaping (LocalValue) -> Action
+//  ) -> Binding<LocalValue> {
+//    Binding(
+//      get: { get(self.value) },
+//      set: { self.send(send($0)) }
+//    )
+//  }
+
+  public func binding<LocalValue>(
+    get: @escaping (Value) -> LocalValue,
+    send action: Action
+  ) -> Binding<LocalValue> {
+    Binding(
+      get: { get(self.value) },
+      set: { _ in self.send(action) }
+    )
+  }
+}

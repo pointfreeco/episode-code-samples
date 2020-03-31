@@ -55,15 +55,11 @@ public struct CounterView: View {
       }
       .disabled(self.viewStore.value.isNthPrimeButtonDisabled)
     }
-//    .font(.title)
-//    .navigationBarTitle("Counter demo")
     .popover(
-      isPresented: Binding(
-        get: { self.viewStore.value.isPrimePopoverShown },
-        set: { _ in self.viewStore.send(.primePopoverDismissed) }
+      isPresented: self.viewStore.binding(
+        get: \.isPrimePopoverShown,
+        send: Action.primePopoverDismissed
       )
-      //.constant(self.viewStore.value.isPrimeModalShown)
-//      onDismiss: { self.viewStore.send(.primeModalDismissed) }
     ) {
       IsPrimeModalView(
         store: self.store.scope(
@@ -73,7 +69,10 @@ public struct CounterView: View {
       )
     }
     .alert(
-      item: .constant(self.viewStore.value.alertNthPrime)
+      item: self.viewStore.binding(
+        get: \.alertNthPrime,
+        send: Action.alertDismissButtonTapped
+      )
     ) { alert in
       Alert(
         title: Text(alert.title),
@@ -82,11 +81,6 @@ public struct CounterView: View {
         }
       )
     }
-//    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-//    .background(Color.white)
-//    .onTapGesture(count: 2) {
-//      self.viewStore.send(.doubleTap)
-//    }
   }
 }
 

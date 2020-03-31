@@ -58,8 +58,10 @@ public struct CounterView: View {
     .font(.title)
     .navigationBarTitle("Counter demo")
     .sheet(
-      isPresented: .constant(self.viewStore.value.isPrimeModalShown),
-      onDismiss: { self.viewStore.send(.primeModalDismissed) }
+      isPresented: self.viewStore.binding(
+        get: \.isPrimeModalShown,
+        send: Action.primeModalDismissed
+      )
     ) {
       IsPrimeModalView(
         store: self.store.scope(
@@ -69,7 +71,10 @@ public struct CounterView: View {
       )
     }
     .alert(
-      item: .constant(self.viewStore.value.alertNthPrime)
+      item: self.viewStore.binding(
+        get: \.alertNthPrime,
+        send: Action.alertDismissButtonTapped
+      )
     ) { alert in
       Alert(
         title: Text(alert.title),
