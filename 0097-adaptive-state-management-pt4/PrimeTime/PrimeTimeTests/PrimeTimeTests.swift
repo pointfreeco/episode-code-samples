@@ -21,11 +21,11 @@ class PrimeTimeTests: XCTestCase {
         offlineNthPrime: { _ in .sync { 17 } }
       ),
       steps:
-      Step(.send, .counterView(.counter(.nthPrimeButtonTapped))) {
-        $0.isNthPrimeButtonDisabled = true
+      Step(.send, .counterView(.counter(.requestNthPrime))) {
+        $0.isNthPrimeRequestInFlight = true
       },
       Step(.receive, .counterView(.counter(.nthPrimeResponse(n: 4, prime: 17)))) {
-        $0.isNthPrimeButtonDisabled = false
+        $0.isNthPrimeRequestInFlight = false
         $0.alertNthPrime = PrimeAlert(n: 4, prime: 17)
       },
       Step(.send, .favoritePrimes(.loadButtonTapped)),
