@@ -74,59 +74,88 @@ typealias AppEnvironment = (
   offlineNthPrime: (Int) -> Effect<Int?>
 )
 
-let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
-  pullback(
-    counterFeatureReducer,
+let appReducer: Reducer<AppState, AppAction, AppEnvironment> = .combine(
+  counterFeatureReducer.pullback(
     value: \AppState.counterView,
     action: /AppAction.counterView,
     environment: { $0.nthPrime }
   ),
-  pullback(
-    counterFeatureReducer,
+  counterFeatureReducer.pullback(
     value: \AppState.counterView,
     action: /AppAction.offlineCounterView,
     environment: { $0.offlineNthPrime }
   ),
-  pullback(
-    favoritePrimesReducer,
+  favoritePrimesReducer.pullback(
     value: \.favoritePrimesState,
     action: /AppAction.favoritePrimes,
     environment: { ($0.fileClient, $0.nthPrime) }
   )
 )
 
-func activityFeed(
-  _ reducer: @escaping Reducer<AppState, AppAction, AppEnvironment>
-) -> Reducer<AppState, AppAction, AppEnvironment> {
+extension Reducer where Value == AppState, Action == AppAction, Environment == AppEnvironment {
+  func activityFeed() -> Reducer {
+    return .init { state, action, environment in
+      switch action {
+      case .counterView(.counter),
+           .offlineCounterView(.counter),
+           .favoritePrimes(.loadedFavoritePrimes),
+           .favoritePrimes(.loadButtonTapped),
+           .favoritePrimes(.saveButtonTapped),
+           .favoritePrimes(.primeButtonTapped(_)),
+           .favoritePrimes(.nthPrimeResponse),
+           .favoritePrimes(.alertDismissButtonTapped):
+        break
+      case .counterView(.primeModal(.removeFavoritePrimeTapped)),
+           .offlineCounterView(.primeModal(.removeFavoritePrimeTapped)):
+        state.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(state.count)))
 
-  return { state, action, environment in
-    switch action {
-    case .counterView(.counter),
-         .offlineCounterView(.counter),
-         .favoritePrimes(.loadedFavoritePrimes),
-         .favoritePrimes(.loadButtonTapped),
-         .favoritePrimes(.saveButtonTapped),
-         .favoritePrimes(.primeButtonTapped(_)),
-         .favoritePrimes(.nthPrimeResponse),
-         .favoritePrimes(.alertDismissButtonTapped):
-      break
-    case .counterView(.primeModal(.removeFavoritePrimeTapped)),
-         .offlineCounterView(.primeModal(.removeFavoritePrimeTapped)):
-      state.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(state.count)))
+      case .counterView(.primeModal(.saveFavoritePrimeTapped)),
+           .offlineCounterView(.primeModal(.saveFavoritePrimeTapped)):
+        state.activityFeed.append(.init(timestamp: Date(), type: .addedFavoritePrime(state.count)))
 
-    case .counterView(.primeModal(.saveFavoritePrimeTapped)),
-         .offlineCounterView(.primeModal(.saveFavoritePrimeTapped)):
-      state.activityFeed.append(.init(timestamp: Date(), type: .addedFavoritePrime(state.count)))
-
-    case let .favoritePrimes(.deleteFavoritePrimes(indexSet)):
-      for index in indexSet {
-        state.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(state.favoritePrimes[index])))
+      case let .favoritePrimes(.deleteFavoritePrimes(indexSet)):
+        for index in indexSet {
+          state.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(state.favoritePrimes[index])))
+        }
       }
-    }
 
-    return reducer(&state, action, environment)
+      return self(&state, action, environment)
+    }
   }
 }
+
+//func activityFeed(
+//  _ reducer: Reducer<AppState, AppAction, AppEnvironment>
+//) -> Reducer<AppState, AppAction, AppEnvironment> {
+//
+//  return .init { state, action, environment in
+//    switch action {
+//    case .counterView(.counter),
+//         .offlineCounterView(.counter),
+//         .favoritePrimes(.loadedFavoritePrimes),
+//         .favoritePrimes(.loadButtonTapped),
+//         .favoritePrimes(.saveButtonTapped),
+//         .favoritePrimes(.primeButtonTapped(_)),
+//         .favoritePrimes(.nthPrimeResponse),
+//         .favoritePrimes(.alertDismissButtonTapped):
+//      break
+//    case .counterView(.primeModal(.removeFavoritePrimeTapped)),
+//         .offlineCounterView(.primeModal(.removeFavoritePrimeTapped)):
+//      state.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(state.count)))
+//
+//    case .counterView(.primeModal(.saveFavoritePrimeTapped)),
+//         .offlineCounterView(.primeModal(.saveFavoritePrimeTapped)):
+//      state.activityFeed.append(.init(timestamp: Date(), type: .addedFavoritePrime(state.count)))
+//
+//    case let .favoritePrimes(.deleteFavoritePrimes(indexSet)):
+//      for index in indexSet {
+//        state.activityFeed.append(.init(timestamp: Date(), type: .removedFavoritePrime(state.favoritePrimes[index])))
+//      }
+//    }
+//
+//    return reducer(&state, action, environment)
+//  }
+//}
 
 let isInExperiment = false //Bool.random()
 

@@ -24,11 +24,12 @@ public enum CounterAction: Equatable {
 
 public typealias CounterEnvironment = (Int) -> Effect<Int?>
 
-public func counterReducer(
-  state: inout CounterState,
-  action: CounterAction,
-  environment: CounterEnvironment
-) -> [Effect<CounterAction>] {
+//public func counterReducer(
+//  state: inout CounterState,
+//  action: CounterAction,
+//  environment: CounterEnvironment
+//) -> [Effect<CounterAction>] {
+public let counterReducer = Reducer<CounterState, CounterAction, CounterEnvironment> { state, action, environment in
   switch action {
   case .decrTapped:
     state.count -= 1
@@ -66,16 +67,15 @@ public func counterReducer(
     return []
   }
 }
+.logging()
 
-public let counterFeatureReducer: Reducer<CounterFeatureState, CounterFeatureAction, CounterEnvironment> = combine(
-  pullback(
-    counterReducer,
+public let counterFeatureReducer = Reducer.combine(
+  counterReducer.pullback(
     value: \CounterFeatureState.counter,
     action: /CounterFeatureAction.counter,
     environment: { $0 }
   ),
-  pullback(
-    primeModalReducer,
+  primeModalReducer.pullback(
     value: \.primeModal,
     action: /CounterFeatureAction.primeModal,
     environment: { _ in () }

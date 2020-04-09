@@ -21,13 +21,13 @@ struct Parser<A> {
 public struct Reducer<Value, Action, Environment> {
   let reducer: (inout Value, Action, Environment) -> [Effect<Action>]
   
-  init(_ reducer: @escaping (inout Value, Action, Environment) -> [Effect<Action>]) {
+  public init(_ reducer: @escaping (inout Value, Action, Environment) -> [Effect<Action>]) {
     self.reducer = reducer
   }
 }
 
 extension Reducer {
-  func callAsFunction(_ value: inout Value, _ action: Action, _ environment: Environment) -> [Effect<Action>] {
+  public func callAsFunction(_ value: inout Value, _ action: Action, _ environment: Environment) -> [Effect<Action>] {
     self.reducer(&value, action, environment)
   }
 }
