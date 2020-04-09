@@ -2,24 +2,52 @@ import CasePaths
 import Combine
 import SwiftUI
 
-public typealias Reducer<Value, Action, Environment> = (inout Value, Action, Environment) -> [Effect<Action>]
+//(inout RandomNumberGenerator) -> A
+struct Gen<A> {
+  let run: (inout RandomNumberGenerator) -> A
+}
+
+//(inout Substring) -> A?
+struct Parser<A> {
+  let run: (inout Substring) -> A?
+}
+
+//(@escaping (A) -> Void) -> Void
+//struct Effect<A> {
+//  let run: (@escaping (A) -> Void) -> Void
+//}
+
+//public typealias Reducer<Value, Action, Environment> = (inout Value, Action, Environment) -> [Effect<Action>]
+public struct Reducer<Value, Action, Environment> {
+  let reducer: (inout Value, Action, Environment) -> [Effect<Action>]
+  
+  init(_ reducer: @escaping (inout Value, Action, Environment) -> [Effect<Action>]) {
+    self.reducer = reducer
+  }
+}
+
+extension Reducer {
+  func callAsFunction(_ value: inout Value, _ action: Action, _ environment: Environment) -> [Effect<Action>] {
+    self.reducer(&value, action, environment)
+  }
+}
 
 public func combine<Value, Action, Environment>(
   _ reducers: Reducer<Value, Action, Environment>...
 ) -> Reducer<Value, Action, Environment> {
-  return { value, action, environment in
+  .init { value, action, environment in
     let effects = reducers.flatMap { $0(&value, action, environment) }
     return effects
   }
 }
 
 public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEnvironment, GlobalEnvironment>(
-  _ reducer: @escaping Reducer<LocalValue, LocalAction, LocalEnvironment>,
+  _ reducer: Reducer<LocalValue, LocalAction, LocalEnvironment>,
   value: WritableKeyPath<GlobalValue, LocalValue>,
   action: CasePath<GlobalAction, LocalAction>,
   environment: @escaping (GlobalEnvironment) -> LocalEnvironment
 ) -> Reducer<GlobalValue, GlobalAction, GlobalEnvironment> {
-  return { globalValue, globalAction, globalEnvironment in
+  return .init { globalValue, globalAction, globalEnvironment in
     guard let localAction = action.extract(from: globalAction) else { return [] }
     let localEffects = reducer(&globalValue[keyPath: value], localAction, environment(globalEnvironment))
 
@@ -31,9 +59,9 @@ public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEn
 }
 
 public func logging<Value, Action, Environment>(
-  _ reducer: @escaping Reducer<Value, Action, Environment>
+  _ reducer: Reducer<Value, Action, Environment>
 ) -> Reducer<Value, Action, Environment> {
-  return { value, action, environment in
+  return .init { value, action, environment in
     let effects = reducer(&value, action, environment)
     let newValue = value
     return [.fireAndForget {
@@ -54,10 +82,10 @@ public final class Store<Value, Action> {
 
   public init<Environment>(
     initialValue: Value,
-    reducer: @escaping Reducer<Value, Action, Environment>,
+    reducer: Reducer<Value, Action, Environment>,
     environment: Environment
   ) {
-    self.reducer = { value, action, environment in
+    self.reducer = .init { value, action, environment in
       reducer(&value, action, environment as! Environment)
     }
     self.value = initialValue
@@ -89,7 +117,7 @@ public final class Store<Value, Action> {
   ) -> Store<LocalValue, LocalAction> {
     let localStore = Store<LocalValue, LocalAction>(
       initialValue: toLocalValue(self.value),
-      reducer: { localValue, localAction, _ in
+      reducer: .init { localValue, localAction, _ in
         self.send(toGlobalAction(localAction))
         localValue = toLocalValue(self.value)
         return []
