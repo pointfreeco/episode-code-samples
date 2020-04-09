@@ -88,7 +88,7 @@ public struct FavoritePrimesView: View {
   public var body: some View {
     print("FavoritePrimesView.body")
     return List {
-      ForEach(self.viewStore.value.favoritePrimes, id: \.self) { prime in
+      ForEach(self.viewStore.favoritePrimes, id: \.self) { prime in
         Button("\(prime)") {
           self.viewStore.send(.primeButtonTapped(prime))
         }
@@ -108,7 +108,7 @@ public struct FavoritePrimesView: View {
         }
       }
     )
-      .alert(item: .constant(self.viewStore.value.alertNthPrime)) { primeAlert in
+      .alert(item: .constant(self.viewStore.alertNthPrime)) { primeAlert in
         Alert(title: Text(primeAlert.title), dismissButton: Alert.Button.default(Text("Ok"), action: {
           self.viewStore.send(.alertDismissButtonTapped)
         }))

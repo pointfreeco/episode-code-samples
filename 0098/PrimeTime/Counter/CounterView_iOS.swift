@@ -44,21 +44,21 @@ public struct CounterView: View {
     return VStack {
       HStack {
         Button("-") { self.viewStore.send(.decrTapped) }
-          .disabled(self.viewStore.value.isDecrementButtonDisabled)
-        Text("\(self.viewStore.value.count)")
+          .disabled(self.viewStore.isDecrementButtonDisabled)
+        Text("\(self.viewStore.count)")
         Button("+") { self.viewStore.send(.incrTapped) }
-          .disabled(self.viewStore.value.isIncrementButtonDisabled)
+          .disabled(self.viewStore.isIncrementButtonDisabled)
       }
       Button("Is this prime?") { self.viewStore.send(.isPrimeButtonTapped) }
-      Button(self.viewStore.value.nthPrimeButtonTitle) {
+      Button(self.viewStore.nthPrimeButtonTitle) {
         self.viewStore.send(.nthPrimeButtonTapped)
       }
-      .disabled(self.viewStore.value.isNthPrimeButtonDisabled)
+      .disabled(self.viewStore.isNthPrimeButtonDisabled)
     }
     .font(.title)
     .navigationBarTitle("Counter demo")
     .sheet(
-      isPresented: .constant(self.viewStore.value.isPrimeModalShown),
+      isPresented: .constant(self.viewStore.isPrimeModalShown),
       onDismiss: { self.viewStore.send(.primeModalDismissed) }
     ) {
       IsPrimeModalView(
@@ -69,7 +69,7 @@ public struct CounterView: View {
       )
     }
     .alert(
-      item: .constant(self.viewStore.value.alertNthPrime)
+      item: .constant(self.viewStore.alertNthPrime)
     ) { alert in
       Alert(
         title: Text(alert.title),
