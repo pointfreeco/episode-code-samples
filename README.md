@@ -100,3 +100,5 @@ This repository is the home of code written on episodes of
 1. [Adaptive State Management: State](0095-adaptive-state-management-pt2)
 1. [Adaptive State Management: Actions](0096-adaptive-state-management-pt3)
 1. [Adaptive State Management: The Point](0097-adaptive-state-management-pt4)
+1. [Ergonomic State Management: Part 1](0098-ergonomic-state-management-pt1)
+1. [Ergonomic State Management: Part 2](0099-ergonomic-state-management-pt2)

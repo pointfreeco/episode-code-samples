@@ -1,5 +1,5 @@
 ## [Point-Free](https://www.pointfree.co)
 
-> #### This directory contains code from Point-Free Episode: [Adaptive State Management: The Point](https://www.pointfree.co/episodes/ep98-ergonomic-state-management-part-1)
+> #### This directory contains code from Point-Free Episode: [Ergonomic State Management: Part 1](https://www.pointfree.co/episodes/ep98-ergonomic-state-management-part-1)
 >
-> Over many episodes we've now built out an architecture that not only solves the problems we set out to solve, but we've made it performant and adaptable. But before sharing it with everyone, let's polish it with a focus on ergonomics.
+> The Composable Architecture is robust and solves all of the problems we set out to solve (and more), but we haven't given enough attention to ergonomics. We will enhance one of its core units to be a little friendlier to use and extend, which will bring us one step closing to being ready for production.
