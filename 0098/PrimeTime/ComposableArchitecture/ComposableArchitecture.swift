@@ -197,6 +197,26 @@ public final class ViewStore<Value, Action>: ObservableObject {
     self.value = value
     self.send = send
   }
+  
+  public func binding<LocalValue>(
+    get: @escaping (Value) -> LocalValue,
+    send toAction: @escaping (LocalValue) -> Action
+  ) -> Binding<LocalValue> {
+    Binding(
+      get: { get(self.value) },
+      set: { self.send(toAction($0)) }
+    )
+  }
+  
+  public func binding<LocalValue>(
+    get: @escaping (Value) -> LocalValue,
+    send action: Action
+  ) -> Binding<LocalValue> {
+    Binding(
+      get: { get(self.value) },
+      set: { _ in self.send(action) }
+    )
+  }
 }
 
 extension Store where Value: Equatable {

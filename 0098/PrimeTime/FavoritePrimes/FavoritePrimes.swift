@@ -108,10 +108,14 @@ public struct FavoritePrimesView: View {
         }
       }
     )
-      .alert(item: .constant(self.viewStore.alertNthPrime)) { primeAlert in
-        Alert(title: Text(primeAlert.title), dismissButton: Alert.Button.default(Text("Ok"), action: {
-          self.viewStore.send(.alertDismissButtonTapped)
-        }))
+      .alert(
+//        item: .constant(self.viewStore.alertNthPrime)
+        item: self.viewStore.binding(
+          get: \.alertNthPrime,
+          send: .alertDismissButtonTapped
+        )
+      ) { primeAlert in
+        Alert(title: Text(primeAlert.title))
     }
   }
 }
