@@ -56,6 +56,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2A29B7D9245A322B00248B5A /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		2A7569A32459E73400647512 /* Todos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A7569A62459E73400647512 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2A7569A82459E73400647512 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -92,6 +93,7 @@
 		2A75699A2459E73400647512 = {
 			isa = PBXGroup;
 			children = (
+				2A29B7D9245A322B00248B5A /* Playground.playground */,
 				2A7569A52459E73400647512 /* Todos */,
 				2A7569BC2459E73500647512 /* TodosTests */,
 				2A7569A42459E73400647512 /* Products */,
