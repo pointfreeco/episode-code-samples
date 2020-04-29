@@ -7,7 +7,7 @@ struct Todo: Equatable, Identifiable {
   var isComplete = false
 }
 
-enum TodoAction {
+enum TodoAction: Equatable {
   case checkboxTapped
   case textFieldChanged(String)
 }
@@ -30,22 +30,34 @@ struct AppState: Equatable {
   var todos: [Todo] = []
 }
 
-enum AppAction {
+enum AppAction: Equatable {
+  case addButtonTapped
   case todo(index: Int, action: TodoAction)
 //  case todoCheckboxTapped(index: Int)
 //  case todoTextFieldChanged(index: Int, text: String)
 }
 
 struct AppEnvironment {
+  var uuid: () -> UUID
 }
 
-let appReducer: Reducer<AppState, AppAction, AppEnvironment> =
+let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
   todoReducer.forEach(
     state: \AppState.todos,
     action: /AppAction.todo(index:action:),
     environment: { _ in TodoEnvironment() }
-  )
-    .debug()
+  ),
+  Reducer { state, action, environment in
+    switch action {
+    case .addButtonTapped:
+      state.todos.insert(Todo(id: environment.uuid()), at: 0)
+      return .none
+    case .todo(index: let index, action: let action):
+      return .none
+    }
+  }
+)
+  .debug()
   
 //  Reducer<AppState, AppAction, AppEnvironment> { state, action, environment in
 //  switch action {
@@ -73,6 +85,9 @@ struct ContentView: View {
           )
         }
         .navigationBarTitle("Todos")
+        .navigationBarItems(trailing: Button("Add") {
+          viewStore.send(.addButtonTapped)
+        })
       }
     }
   }
@@ -126,7 +141,9 @@ struct ContentView_Previews: PreviewProvider {
           ]
         ),
         reducer: appReducer,
-        environment: AppEnvironment()
+        environment: AppEnvironment(
+          uuid: UUID.init
+        )
       )
     )
   }

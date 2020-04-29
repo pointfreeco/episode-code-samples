@@ -1,34 +1,51 @@
-//
-//  TodosTests.swift
-//  TodosTests
-//
-//  Created by Point-Free on 4/29/20.
-//  Copyright © 2020 Point-Free. All rights reserved.
-//
-
+import ComposableArchitectureTestSupport
 import XCTest
 @testable import Todos
 
 class TodosTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
+  func testCompletingTodo() {
+    let store = TestStore(
+      initialState: AppState(
+        todos: [
+          Todo(
+            description: "Milk",
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+            isComplete: false
+          )
+        ]
+      ),
+      reducer: appReducer,
+      environment: AppEnvironment(
+        uuid: { fatalError("unimplemented") }
+      )
+    )
+    
+    store.assert(
+      .send(.todo(index: 0, action: .checkboxTapped)) {
+        $0.todos[0].isComplete = true
+      }
+    )
+  }
+  
+  func testAddTodo() {
+    let store = TestStore(
+      initialState: AppState(),
+      reducer: appReducer,
+      environment: AppEnvironment(
+        uuid: { UUID(uuidString: "DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFDEAD")! }
+      )
+    )
+    
+    store.assert(
+      .send(.addButtonTapped) {
+        $0.todos = [
+          Todo(
+            description: "",
+            id: UUID(uuidString: "DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFDEAD")!,
+            isComplete: false
+          )
+        ]
+      }
+    )
+  }
 }
