@@ -9,7 +9,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     let contentView = ContentView(
       store: Store(
-        initialState: AppState(),
+        initialState: AppState(
+          todos: [
+            Todo(
+              description: "Milk",
+              id: UUID(),
+              isComplete: false
+            ),
+            Todo(
+              description: "Eggs",
+              id: UUID(),
+              isComplete: false
+            ),
+            Todo(
+              description: "Hand Soap",
+              id: UUID(),
+              isComplete: true
+            ),
+        ]),
         reducer: appReducer,
         environment: AppEnvironment()
       )
