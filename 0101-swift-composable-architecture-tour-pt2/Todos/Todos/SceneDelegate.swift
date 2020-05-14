@@ -28,9 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             ),
         ]),
         reducer: appReducer,
-        environment: AppEnvironment(
-          uuid: UUID.init
-        )
+        environment: AppEnvironment()
       )
     )
     
