@@ -103,3 +103,5 @@ This repository is the home of code written on episodes of
 1. [Ergonomic State Management: Part 1](0098-ergonomic-state-management-pt1)
 1. [Ergonomic State Management: Part 2](0099-ergonomic-state-management-pt2)
 1. [A Tour of the Composable Architecture: Part 1](0100-swift-composable-architecture-tour-pt1)
+1. [A Tour of the Composable Architecture: Part 1](0101-swift-composable-architecture-tour-pt2)
+1. [A Tour of the Composable Architecture: Part 1](0102-swift-composable-architecture-tour-pt3)
