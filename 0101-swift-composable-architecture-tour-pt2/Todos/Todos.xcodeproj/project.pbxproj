@@ -16,8 +16,6 @@
 		2A7569BE2459E73500647512 /* TodosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7569BD2459E73500647512 /* TodosTests.swift */; };
 		2A7569CA2459E94800647512 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 2A7569C92459E94800647512 /* ComposableArchitecture */; };
 		2A7569CB2459E94800647512 /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A7569C92459E94800647512 /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		2A7569CD2459E94800647512 /* ComposableArchitectureTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 2A7569CC2459E94800647512 /* ComposableArchitectureTestSupport */; };
-		2A7569CE2459E94800647512 /* ComposableArchitectureTestSupport in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A7569CC2459E94800647512 /* ComposableArchitectureTestSupport */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +46,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2A7569CE2459E94800647512 /* ComposableArchitectureTestSupport in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,7 +79,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A7569CD2459E94800647512 /* ComposableArchitectureTestSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,7 +174,6 @@
 			);
 			name = TodosTests;
 			packageProductDependencies = (
-				2A7569CC2459E94800647512 /* ComposableArchitectureTestSupport */,
 			);
 			productName = TodosTests;
 			productReference = 2A7569B92459E73500647512 /* TodosTests.xctest */;
@@ -528,11 +523,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2A7569C82459E94800647512 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
-		};
-		2A7569CC2459E94800647512 /* ComposableArchitectureTestSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2A7569C82459E94800647512 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitectureTestSupport;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -14,10 +14,7 @@
 		2A7569B02459E73500647512 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A7569AF2459E73500647512 /* Preview Assets.xcassets */; };
 		2A7569B32459E73500647512 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A7569B12459E73500647512 /* LaunchScreen.storyboard */; };
 		2A7569BE2459E73500647512 /* TodosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7569BD2459E73500647512 /* TodosTests.swift */; };
-		2A7569CA2459E94800647512 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 2A7569C92459E94800647512 /* ComposableArchitecture */; };
-		2A7569CB2459E94800647512 /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A7569C92459E94800647512 /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		2A7569CD2459E94800647512 /* ComposableArchitectureTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 2A7569CC2459E94800647512 /* ComposableArchitectureTestSupport */; };
-		2A7569CE2459E94800647512 /* ComposableArchitectureTestSupport in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A7569CC2459E94800647512 /* ComposableArchitectureTestSupport */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		CAFB83172482C1D8002A5029 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = CAFB83162482C1D8002A5029 /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +34,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2A7569CB2459E94800647512 /* ComposableArchitecture in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -48,7 +44,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2A7569CE2459E94800647512 /* ComposableArchitectureTestSupport in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A7569CA2459E94800647512 /* ComposableArchitecture in Frameworks */,
+				CAFB83172482C1D8002A5029 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +77,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A7569CD2459E94800647512 /* ComposableArchitectureTestSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +89,7 @@
 				2A7569A52459E73400647512 /* Todos */,
 				2A7569BC2459E73500647512 /* TodosTests */,
 				2A7569A42459E73400647512 /* Products */,
+				CAFB83152482C1D8002A5029 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -138,6 +133,13 @@
 			path = TodosTests;
 			sourceTree = "<group>";
 		};
+		CAFB83152482C1D8002A5029 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -153,10 +155,11 @@
 			buildRules = (
 			);
 			dependencies = (
+				CAFB83192482C1E0002A5029 /* PBXTargetDependency */,
 			);
 			name = Todos;
 			packageProductDependencies = (
-				2A7569C92459E94800647512 /* ComposableArchitecture */,
+				CAFB83162482C1D8002A5029 /* ComposableArchitecture */,
 			);
 			productName = Todos;
 			productReference = 2A7569A32459E73400647512 /* Todos.app */;
@@ -178,7 +181,6 @@
 			);
 			name = TodosTests;
 			packageProductDependencies = (
-				2A7569CC2459E94800647512 /* ComposableArchitectureTestSupport */,
 			);
 			productName = TodosTests;
 			productReference = 2A7569B92459E73500647512 /* TodosTests.xctest */;
@@ -271,6 +273,10 @@
 			isa = PBXTargetDependency;
 			target = 2A7569A22459E73400647512 /* Todos */;
 			targetProxy = 2A7569BA2459E73500647512 /* PBXContainerItemProxy */;
+		};
+		CAFB83192482C1E0002A5029 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = CAFB83182482C1E0002A5029 /* ComposableArchitecture */;
 		};
 /* End PBXTargetDependency section */
 
@@ -524,15 +530,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2A7569C92459E94800647512 /* ComposableArchitecture */ = {
+		CAFB83162482C1D8002A5029 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2A7569C82459E94800647512 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
 		};
-		2A7569CC2459E94800647512 /* ComposableArchitectureTestSupport */ = {
+		CAFB83182482C1E0002A5029 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2A7569C82459E94800647512 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitectureTestSupport;
+			productName = ComposableArchitecture;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
