@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  CombineSchedulers
 //
-//  Created by Point-Free on 6/2/20.
+//  Created by Point-Free on 5/29/20.
 //  Copyright © 2020 Point-Free. All rights reserved.
 //
 

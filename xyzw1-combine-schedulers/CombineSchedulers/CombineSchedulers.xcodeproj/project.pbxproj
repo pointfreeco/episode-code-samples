@@ -7,48 +7,48 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2A3CEE872486B4EA00C69C3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3CEE862486B4EA00C69C3C /* AppDelegate.swift */; };
-		2A3CEE892486B4EA00C69C3C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3CEE882486B4EA00C69C3C /* SceneDelegate.swift */; };
-		2A3CEE8B2486B4EA00C69C3C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3CEE8A2486B4EA00C69C3C /* ContentView.swift */; };
-		2A3CEE8D2486B4EC00C69C3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A3CEE8C2486B4EC00C69C3C /* Assets.xcassets */; };
-		2A3CEE902486B4EC00C69C3C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A3CEE8F2486B4EC00C69C3C /* Preview Assets.xcassets */; };
-		2A3CEE932486B4EC00C69C3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A3CEE912486B4EC00C69C3C /* LaunchScreen.storyboard */; };
-		2A3CEE9E2486B4EC00C69C3C /* CombineSchedulersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3CEE9D2486B4EC00C69C3C /* CombineSchedulersTests.swift */; };
+		2A6F2AC924817B1E00ED215A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6F2AC824817B1E00ED215A /* AppDelegate.swift */; };
+		2A6F2ACB24817B1E00ED215A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6F2ACA24817B1E00ED215A /* SceneDelegate.swift */; };
+		2A6F2ACD24817B1E00ED215A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6F2ACC24817B1E00ED215A /* ContentView.swift */; };
+		2A6F2ACF24817B1F00ED215A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A6F2ACE24817B1F00ED215A /* Assets.xcassets */; };
+		2A6F2AD224817B1F00ED215A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A6F2AD124817B1F00ED215A /* Preview Assets.xcassets */; };
+		2A6F2AD524817B1F00ED215A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A6F2AD324817B1F00ED215A /* LaunchScreen.storyboard */; };
+		2A6F2AE024817B1F00ED215A /* CombineSchedulersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6F2ADF24817B1F00ED215A /* CombineSchedulersTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2A3CEE9A2486B4EC00C69C3C /* PBXContainerItemProxy */ = {
+		2A6F2ADC24817B1F00ED215A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 2A3CEE7B2486B4EA00C69C3C /* Project object */;
+			containerPortal = 2A6F2ABD24817B1E00ED215A /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 2A3CEE822486B4EA00C69C3C;
+			remoteGlobalIDString = 2A6F2AC424817B1E00ED215A;
 			remoteInfo = CombineSchedulers;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2A3CEE832486B4EA00C69C3C /* CombineSchedulers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CombineSchedulers.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2A3CEE862486B4EA00C69C3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2A3CEE882486B4EA00C69C3C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		2A3CEE8A2486B4EA00C69C3C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		2A3CEE8C2486B4EC00C69C3C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		2A3CEE8F2486B4EC00C69C3C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		2A3CEE922486B4EC00C69C3C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		2A3CEE942486B4EC00C69C3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2A3CEE992486B4EC00C69C3C /* CombineSchedulersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CombineSchedulersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2A3CEE9D2486B4EC00C69C3C /* CombineSchedulersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineSchedulersTests.swift; sourceTree = "<group>"; };
-		2A3CEE9F2486B4EC00C69C3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2A6F2AC524817B1E00ED215A /* CombineSchedulers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CombineSchedulers.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A6F2AC824817B1E00ED215A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2A6F2ACA24817B1E00ED215A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		2A6F2ACC24817B1E00ED215A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2A6F2ACE24817B1F00ED215A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2A6F2AD124817B1F00ED215A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		2A6F2AD424817B1F00ED215A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2A6F2AD624817B1F00ED215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2A6F2ADB24817B1F00ED215A /* CombineSchedulersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CombineSchedulersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A6F2ADF24817B1F00ED215A /* CombineSchedulersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineSchedulersTests.swift; sourceTree = "<group>"; };
+		2A6F2AE124817B1F00ED215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		2A3CEE802486B4EA00C69C3C /* Frameworks */ = {
+		2A6F2AC224817B1E00ED215A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2A3CEE962486B4EC00C69C3C /* Frameworks */ = {
+		2A6F2AD824817B1F00ED215A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -58,51 +58,51 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2A3CEE7A2486B4EA00C69C3C = {
+		2A6F2ABC24817B1E00ED215A = {
 			isa = PBXGroup;
 			children = (
-				2A3CEE852486B4EA00C69C3C /* CombineSchedulers */,
-				2A3CEE9C2486B4EC00C69C3C /* CombineSchedulersTests */,
-				2A3CEE842486B4EA00C69C3C /* Products */,
+				2A6F2AC724817B1E00ED215A /* CombineSchedulers */,
+				2A6F2ADE24817B1F00ED215A /* CombineSchedulersTests */,
+				2A6F2AC624817B1E00ED215A /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		2A3CEE842486B4EA00C69C3C /* Products */ = {
+		2A6F2AC624817B1E00ED215A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2A3CEE832486B4EA00C69C3C /* CombineSchedulers.app */,
-				2A3CEE992486B4EC00C69C3C /* CombineSchedulersTests.xctest */,
+				2A6F2AC524817B1E00ED215A /* CombineSchedulers.app */,
+				2A6F2ADB24817B1F00ED215A /* CombineSchedulersTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2A3CEE852486B4EA00C69C3C /* CombineSchedulers */ = {
+		2A6F2AC724817B1E00ED215A /* CombineSchedulers */ = {
 			isa = PBXGroup;
 			children = (
-				2A3CEE862486B4EA00C69C3C /* AppDelegate.swift */,
-				2A3CEE882486B4EA00C69C3C /* SceneDelegate.swift */,
-				2A3CEE8A2486B4EA00C69C3C /* ContentView.swift */,
-				2A3CEE8C2486B4EC00C69C3C /* Assets.xcassets */,
-				2A3CEE912486B4EC00C69C3C /* LaunchScreen.storyboard */,
-				2A3CEE942486B4EC00C69C3C /* Info.plist */,
-				2A3CEE8E2486B4EC00C69C3C /* Preview Content */,
+				2A6F2AC824817B1E00ED215A /* AppDelegate.swift */,
+				2A6F2ACA24817B1E00ED215A /* SceneDelegate.swift */,
+				2A6F2ACC24817B1E00ED215A /* ContentView.swift */,
+				2A6F2ACE24817B1F00ED215A /* Assets.xcassets */,
+				2A6F2AD324817B1F00ED215A /* LaunchScreen.storyboard */,
+				2A6F2AD624817B1F00ED215A /* Info.plist */,
+				2A6F2AD024817B1F00ED215A /* Preview Content */,
 			);
 			path = CombineSchedulers;
 			sourceTree = "<group>";
 		};
-		2A3CEE8E2486B4EC00C69C3C /* Preview Content */ = {
+		2A6F2AD024817B1F00ED215A /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				2A3CEE8F2486B4EC00C69C3C /* Preview Assets.xcassets */,
+				2A6F2AD124817B1F00ED215A /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		2A3CEE9C2486B4EC00C69C3C /* CombineSchedulersTests */ = {
+		2A6F2ADE24817B1F00ED215A /* CombineSchedulersTests */ = {
 			isa = PBXGroup;
 			children = (
-				2A3CEE9D2486B4EC00C69C3C /* CombineSchedulersTests.swift */,
-				2A3CEE9F2486B4EC00C69C3C /* Info.plist */,
+				2A6F2ADF24817B1F00ED215A /* CombineSchedulersTests.swift */,
+				2A6F2AE124817B1F00ED215A /* Info.plist */,
 			);
 			path = CombineSchedulersTests;
 			sourceTree = "<group>";
@@ -110,13 +110,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2A3CEE822486B4EA00C69C3C /* CombineSchedulers */ = {
+		2A6F2AC424817B1E00ED215A /* CombineSchedulers */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2A3CEEA22486B4EC00C69C3C /* Build configuration list for PBXNativeTarget "CombineSchedulers" */;
+			buildConfigurationList = 2A6F2AE424817B1F00ED215A /* Build configuration list for PBXNativeTarget "CombineSchedulers" */;
 			buildPhases = (
-				2A3CEE7F2486B4EA00C69C3C /* Sources */,
-				2A3CEE802486B4EA00C69C3C /* Frameworks */,
-				2A3CEE812486B4EA00C69C3C /* Resources */,
+				2A6F2AC124817B1E00ED215A /* Sources */,
+				2A6F2AC224817B1E00ED215A /* Frameworks */,
+				2A6F2AC324817B1E00ED215A /* Resources */,
 			);
 			buildRules = (
 			);
@@ -124,47 +124,47 @@
 			);
 			name = CombineSchedulers;
 			productName = CombineSchedulers;
-			productReference = 2A3CEE832486B4EA00C69C3C /* CombineSchedulers.app */;
+			productReference = 2A6F2AC524817B1E00ED215A /* CombineSchedulers.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2A3CEE982486B4EC00C69C3C /* CombineSchedulersTests */ = {
+		2A6F2ADA24817B1F00ED215A /* CombineSchedulersTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2A3CEEA52486B4EC00C69C3C /* Build configuration list for PBXNativeTarget "CombineSchedulersTests" */;
+			buildConfigurationList = 2A6F2AE724817B1F00ED215A /* Build configuration list for PBXNativeTarget "CombineSchedulersTests" */;
 			buildPhases = (
-				2A3CEE952486B4EC00C69C3C /* Sources */,
-				2A3CEE962486B4EC00C69C3C /* Frameworks */,
-				2A3CEE972486B4EC00C69C3C /* Resources */,
+				2A6F2AD724817B1F00ED215A /* Sources */,
+				2A6F2AD824817B1F00ED215A /* Frameworks */,
+				2A6F2AD924817B1F00ED215A /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				2A3CEE9B2486B4EC00C69C3C /* PBXTargetDependency */,
+				2A6F2ADD24817B1F00ED215A /* PBXTargetDependency */,
 			);
 			name = CombineSchedulersTests;
 			productName = CombineSchedulersTests;
-			productReference = 2A3CEE992486B4EC00C69C3C /* CombineSchedulersTests.xctest */;
+			productReference = 2A6F2ADB24817B1F00ED215A /* CombineSchedulersTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		2A3CEE7B2486B4EA00C69C3C /* Project object */ = {
+		2A6F2ABD24817B1E00ED215A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1150;
 				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "Point-Free";
 				TargetAttributes = {
-					2A3CEE822486B4EA00C69C3C = {
+					2A6F2AC424817B1E00ED215A = {
 						CreatedOnToolsVersion = 11.5;
 					};
-					2A3CEE982486B4EC00C69C3C = {
+					2A6F2ADA24817B1F00ED215A = {
 						CreatedOnToolsVersion = 11.5;
-						TestTargetID = 2A3CEE822486B4EA00C69C3C;
+						TestTargetID = 2A6F2AC424817B1E00ED215A;
 					};
 				};
 			};
-			buildConfigurationList = 2A3CEE7E2486B4EA00C69C3C /* Build configuration list for PBXProject "CombineSchedulers" */;
+			buildConfigurationList = 2A6F2AC024817B1E00ED215A /* Build configuration list for PBXProject "CombineSchedulers" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -172,29 +172,29 @@
 				en,
 				Base,
 			);
-			mainGroup = 2A3CEE7A2486B4EA00C69C3C;
-			productRefGroup = 2A3CEE842486B4EA00C69C3C /* Products */;
+			mainGroup = 2A6F2ABC24817B1E00ED215A;
+			productRefGroup = 2A6F2AC624817B1E00ED215A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2A3CEE822486B4EA00C69C3C /* CombineSchedulers */,
-				2A3CEE982486B4EC00C69C3C /* CombineSchedulersTests */,
+				2A6F2AC424817B1E00ED215A /* CombineSchedulers */,
+				2A6F2ADA24817B1F00ED215A /* CombineSchedulersTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		2A3CEE812486B4EA00C69C3C /* Resources */ = {
+		2A6F2AC324817B1E00ED215A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A3CEE932486B4EC00C69C3C /* LaunchScreen.storyboard in Resources */,
-				2A3CEE902486B4EC00C69C3C /* Preview Assets.xcassets in Resources */,
-				2A3CEE8D2486B4EC00C69C3C /* Assets.xcassets in Resources */,
+				2A6F2AD524817B1F00ED215A /* LaunchScreen.storyboard in Resources */,
+				2A6F2AD224817B1F00ED215A /* Preview Assets.xcassets in Resources */,
+				2A6F2ACF24817B1F00ED215A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2A3CEE972486B4EC00C69C3C /* Resources */ = {
+		2A6F2AD924817B1F00ED215A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -204,39 +204,39 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		2A3CEE7F2486B4EA00C69C3C /* Sources */ = {
+		2A6F2AC124817B1E00ED215A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A3CEE872486B4EA00C69C3C /* AppDelegate.swift in Sources */,
-				2A3CEE892486B4EA00C69C3C /* SceneDelegate.swift in Sources */,
-				2A3CEE8B2486B4EA00C69C3C /* ContentView.swift in Sources */,
+				2A6F2AC924817B1E00ED215A /* AppDelegate.swift in Sources */,
+				2A6F2ACB24817B1E00ED215A /* SceneDelegate.swift in Sources */,
+				2A6F2ACD24817B1E00ED215A /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2A3CEE952486B4EC00C69C3C /* Sources */ = {
+		2A6F2AD724817B1F00ED215A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A3CEE9E2486B4EC00C69C3C /* CombineSchedulersTests.swift in Sources */,
+				2A6F2AE024817B1F00ED215A /* CombineSchedulersTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		2A3CEE9B2486B4EC00C69C3C /* PBXTargetDependency */ = {
+		2A6F2ADD24817B1F00ED215A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2A3CEE822486B4EA00C69C3C /* CombineSchedulers */;
-			targetProxy = 2A3CEE9A2486B4EC00C69C3C /* PBXContainerItemProxy */;
+			target = 2A6F2AC424817B1E00ED215A /* CombineSchedulers */;
+			targetProxy = 2A6F2ADC24817B1F00ED215A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		2A3CEE912486B4EC00C69C3C /* LaunchScreen.storyboard */ = {
+		2A6F2AD324817B1F00ED215A /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				2A3CEE922486B4EC00C69C3C /* Base */,
+				2A6F2AD424817B1F00ED215A /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -244,7 +244,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		2A3CEEA02486B4EC00C69C3C /* Debug */ = {
+		2A6F2AE224817B1F00ED215A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -304,7 +304,7 @@
 			};
 			name = Debug;
 		};
-		2A3CEEA12486B4EC00C69C3C /* Release */ = {
+		2A6F2AE324817B1F00ED215A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -358,7 +358,7 @@
 			};
 			name = Release;
 		};
-		2A3CEEA32486B4EC00C69C3C /* Debug */ = {
+		2A6F2AE524817B1F00ED215A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -377,7 +377,7 @@
 			};
 			name = Debug;
 		};
-		2A3CEEA42486B4EC00C69C3C /* Release */ = {
+		2A6F2AE624817B1F00ED215A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -396,7 +396,7 @@
 			};
 			name = Release;
 		};
-		2A3CEEA62486B4EC00C69C3C /* Debug */ = {
+		2A6F2AE824817B1F00ED215A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
@@ -417,7 +417,7 @@
 			};
 			name = Debug;
 		};
-		2A3CEEA72486B4EC00C69C3C /* Release */ = {
+		2A6F2AE924817B1F00ED215A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
@@ -441,34 +441,34 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2A3CEE7E2486B4EA00C69C3C /* Build configuration list for PBXProject "CombineSchedulers" */ = {
+		2A6F2AC024817B1E00ED215A /* Build configuration list for PBXProject "CombineSchedulers" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2A3CEEA02486B4EC00C69C3C /* Debug */,
-				2A3CEEA12486B4EC00C69C3C /* Release */,
+				2A6F2AE224817B1F00ED215A /* Debug */,
+				2A6F2AE324817B1F00ED215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2A3CEEA22486B4EC00C69C3C /* Build configuration list for PBXNativeTarget "CombineSchedulers" */ = {
+		2A6F2AE424817B1F00ED215A /* Build configuration list for PBXNativeTarget "CombineSchedulers" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2A3CEEA32486B4EC00C69C3C /* Debug */,
-				2A3CEEA42486B4EC00C69C3C /* Release */,
+				2A6F2AE524817B1F00ED215A /* Debug */,
+				2A6F2AE624817B1F00ED215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2A3CEEA52486B4EC00C69C3C /* Build configuration list for PBXNativeTarget "CombineSchedulersTests" */ = {
+		2A6F2AE724817B1F00ED215A /* Build configuration list for PBXNativeTarget "CombineSchedulersTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2A3CEEA62486B4EC00C69C3C /* Debug */,
-				2A3CEEA72486B4EC00C69C3C /* Release */,
+				2A6F2AE824817B1F00ED215A /* Debug */,
+				2A6F2AE924817B1F00ED215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 2A3CEE7B2486B4EA00C69C3C /* Project object */;
+	rootObject = 2A6F2ABD24817B1E00ED215A /* Project object */;
 }
