@@ -14,6 +14,7 @@
 		2A3CEE902486B4EC00C69C3C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A3CEE8F2486B4EC00C69C3C /* Preview Assets.xcassets */; };
 		2A3CEE932486B4EC00C69C3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A3CEE912486B4EC00C69C3C /* LaunchScreen.storyboard */; };
 		2A3CEE9E2486B4EC00C69C3C /* CombineSchedulersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3CEE9D2486B4EC00C69C3C /* CombineSchedulersTests.swift */; };
+		4B648A612486E87B009448FB /* TestScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B648A602486E87B009448FB /* TestScheduler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 		2A3CEE9D2486B4EC00C69C3C /* CombineSchedulersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineSchedulersTests.swift; sourceTree = "<group>"; };
 		2A3CEE9F2486B4EC00C69C3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2A3CEEA82486E3C200C69C3C /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		4B648A602486E87B009448FB /* TestScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestScheduler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +86,7 @@
 				2A3CEE862486B4EA00C69C3C /* AppDelegate.swift */,
 				2A3CEE882486B4EA00C69C3C /* SceneDelegate.swift */,
 				2A3CEE8A2486B4EA00C69C3C /* ContentView.swift */,
+				4B648A602486E87B009448FB /* TestScheduler.swift */,
 				2A3CEE8C2486B4EC00C69C3C /* Assets.xcassets */,
 				2A3CEE912486B4EC00C69C3C /* LaunchScreen.storyboard */,
 				2A3CEE942486B4EC00C69C3C /* Info.plist */,
@@ -211,6 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2A3CEE872486B4EA00C69C3C /* AppDelegate.swift in Sources */,
+				4B648A612486E87B009448FB /* TestScheduler.swift in Sources */,
 				2A3CEE892486B4EA00C69C3C /* SceneDelegate.swift in Sources */,
 				2A3CEE8B2486B4EA00C69C3C /* ContentView.swift in Sources */,
 			);

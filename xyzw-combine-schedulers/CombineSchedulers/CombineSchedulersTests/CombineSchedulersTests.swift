@@ -82,4 +82,60 @@ class CombineSchedulersTests: XCTestCase {
     _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.31)
     XCTAssertEqual(passwordValidationMessage, ["", "Password is too short 👎", "Password is too long 👎"])
   }
+  
+  let scheduler = DispatchQueue.testScheduler
+  
+  func testImmediateScheduledAction() {
+    var isExecuted = false
+    scheduler.schedule {
+      isExecuted = true
+    }
+    
+    XCTAssertEqual(isExecuted, false)
+    scheduler.advance()
+    XCTAssertEqual(isExecuted, true)
+  }
+  
+  func testMultipleImmediateScheduledActions() {
+    var executionCount = 0
+    
+    scheduler.schedule {
+      executionCount += 1
+    }
+    scheduler.schedule {
+      executionCount += 1
+    }
+    
+    XCTAssertEqual(executionCount, 0)
+    scheduler.advance()
+    XCTAssertEqual(executionCount, 2)
+  }
+  
+  func testImmedateScheduledActionWithPublisher() {
+    var output: [Int] = []
+    
+    Just(1)
+      .receive(on: scheduler)
+      .sink { output.append($0) }
+      .store(in: &self.cancellables)
+    
+    XCTAssertEqual(output, [])
+    scheduler.advance()
+    XCTAssertEqual(output, [1])
+  }
+  
+  func testImmedateScheduledActionWithMultiplePublishers() {
+    var output: [Int] = []
+    
+    Just(1)
+      .receive(on: scheduler)
+      .merge(with: Just(2).receive(on: scheduler))
+      .sink { output.append($0) }
+      .store(in: &self.cancellables)
+    
+    XCTAssertEqual(output, [])
+    scheduler.advance()
+    XCTAssertEqual(output, [1, 2])
+  }
+
 }
