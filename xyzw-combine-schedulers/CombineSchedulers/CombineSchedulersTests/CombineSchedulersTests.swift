@@ -32,7 +32,7 @@ class CombineSchedulersTests: XCTestCase {
     viewModel.registerButtonTapped()
 
 //    XCTAssertEqual(viewModel.isRegistered, true)
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
+//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
     XCTAssertEqual(isRegistered, [false, true])
   }
 
@@ -52,7 +52,7 @@ class CombineSchedulersTests: XCTestCase {
     viewModel.password = "blob is awesome"
     viewModel.registerButtonTapped()
 
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
+//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
     XCTAssertEqual(viewModel.isRegistered, false)
     XCTAssertEqual(viewModel.errorAlert?.title, "Failed to register. Please try again.")
   }

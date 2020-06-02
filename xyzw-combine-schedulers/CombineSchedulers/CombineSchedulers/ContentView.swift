@@ -25,12 +25,14 @@ class RegisterViewModel: ObservableObject {
     self.register = register
 
     self.$password
-      .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+//      .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+      .debounce(for: .milliseconds(300), scheduler: ImmediateScheduler.shared)
       .flatMap { password in
         password.isEmpty
           ? Just("").eraseToAnyPublisher()
           : validatePassword(password)
-            .receive(on: DispatchQueue.main)
+//            .receive(on: DispatchQueue.main)
+            .receive(on: ImmediateScheduler.shared)
             .map { data, _ in
               String(decoding: data, as: UTF8.self)
           }
@@ -44,7 +46,8 @@ class RegisterViewModel: ObservableObject {
   func registerButtonTapped() {
     self.isRegisterRequestInFlight = true
     self.register(self.email, self.password)
-      .receive(on: DispatchQueue.main)
+//      .receive(on: DispatchQueue.main)
+      .receive(on: ImmediateScheduler.shared)
       .map { data, _ in
         Bool(String(decoding: data, as: UTF8.self)) ?? false
     }

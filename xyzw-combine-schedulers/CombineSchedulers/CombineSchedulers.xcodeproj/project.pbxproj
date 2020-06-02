@@ -38,6 +38,7 @@
 		2A3CEE992486B4EC00C69C3C /* CombineSchedulersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CombineSchedulersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A3CEE9D2486B4EC00C69C3C /* CombineSchedulersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineSchedulersTests.swift; sourceTree = "<group>"; };
 		2A3CEE9F2486B4EC00C69C3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2A3CEEA82486E3C200C69C3C /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +62,7 @@
 		2A3CEE7A2486B4EA00C69C3C = {
 			isa = PBXGroup;
 			children = (
+				2A3CEEA82486E3C200C69C3C /* Playground.playground */,
 				2A3CEE852486B4EA00C69C3C /* CombineSchedulers */,
 				2A3CEE9C2486B4EC00C69C3C /* CombineSchedulersTests */,
 				2A3CEE842486B4EA00C69C3C /* Products */,
