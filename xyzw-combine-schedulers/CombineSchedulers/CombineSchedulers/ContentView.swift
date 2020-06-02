@@ -12,20 +12,34 @@ class RegisterViewModel: ObservableObject {
   @Published var isRegistered = false
   @Published var isRegisterRequestInFlight = false
   @Published var password = ""
+  @Published var passwordValidationMessage = ""
 
   let register: (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
 
   var cancellables: Set<AnyCancellable> = []
 
   init(
-    register: @escaping (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
+    register: @escaping (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>,
+    validatePassword: @escaping (String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
   ) {
     self.register = register
+
+    self.$password
+      .flatMap { password in
+        validatePassword(password)
+          .map { data, _ in
+            String(decoding: data, as: UTF8.self)
+        }
+        .replaceError(with: "Could not validate password.")
+    }
+    .sink { [weak self] in self?.passwordValidationMessage = $0 }
+    .store(in: &self.cancellables)
   }
 
   func registerButtonTapped() {
     self.isRegisterRequestInFlight = true
     self.register(self.email, self.password)
+      .receive(on: DispatchQueue.main)
       .map { data, _ in
         Bool(String(decoding: data, as: UTF8.self)) ?? false
     }
@@ -78,6 +92,9 @@ struct ContentView: View {
               "Password",
               text: self.$viewModel.password
             )
+            if !self.viewModel.passwordValidationMessage.isEmpty {
+              Text(self.viewModel.passwordValidationMessage)
+            }
           }
 
           if self.viewModel.isRegisterRequestInFlight {
@@ -95,6 +112,15 @@ struct ContentView: View {
   }
 }
 
+func mockValidate(password: String) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
+  let message = password.count < 5 ? "Password is too short 👎"
+    : password.count > 20 ? "Password is too long 👎"
+    : "Password is good 👍"
+  return Just((Data(message.utf8), URLResponse()))
+    .setFailureType(to: URLError.self)
+    .eraseToAnyPublisher()
+}
+
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     ContentView(
@@ -104,7 +130,9 @@ struct ContentView_Previews: PreviewProvider {
             .setFailureType(to: URLError.self)
             .delay(for: 1, scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
-      })
+      },
+        validatePassword: mockValidate(password:)
+      )
     )
   }
 }

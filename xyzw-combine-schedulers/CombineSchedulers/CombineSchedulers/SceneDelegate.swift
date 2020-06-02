@@ -8,7 +8,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     let contentView = ContentView(
       viewModel: RegisterViewModel(
-        register: registerRequest(email:password:)
+        register: registerRequest(email:password:),
+        validatePassword: mockValidate(password:)
       )
     )
 
