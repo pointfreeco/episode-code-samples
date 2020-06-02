@@ -25,12 +25,17 @@ class RegisterViewModel: ObservableObject {
     self.register = register
 
     self.$password
+      .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
       .flatMap { password in
-        validatePassword(password)
-          .map { data, _ in
-            String(decoding: data, as: UTF8.self)
-        }
-        .replaceError(with: "Could not validate password.")
+        password.isEmpty
+          ? Just("").eraseToAnyPublisher()
+          : validatePassword(password)
+            .receive(on: DispatchQueue.main)
+            .map { data, _ in
+              String(decoding: data, as: UTF8.self)
+          }
+          .replaceError(with: "Could not validate password.")
+          .eraseToAnyPublisher()
     }
     .sink { [weak self] in self?.passwordValidationMessage = $0 }
     .store(in: &self.cancellables)
@@ -131,8 +136,11 @@ struct ContentView_Previews: PreviewProvider {
             .delay(for: 1, scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
       },
-        validatePassword: mockValidate(password:)
-      )
+        validatePassword: {
+          mockValidate(password: $0)
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .eraseToAnyPublisher()
+      })
     )
   }
 }

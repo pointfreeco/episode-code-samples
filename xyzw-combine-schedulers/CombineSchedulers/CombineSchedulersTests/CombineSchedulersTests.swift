@@ -11,7 +11,9 @@ class CombineSchedulersTests: XCTestCase {
         Just((Data("true".utf8), URLResponse()))
           .setFailureType(to: URLError.self)
           .eraseToAnyPublisher()
-    })
+    },
+      validatePassword: { _ in Empty(completeImmediately: true).eraseToAnyPublisher() }
+    )
 
     var isRegistered: [Bool] = []
     viewModel.$isRegistered
@@ -40,7 +42,9 @@ class CombineSchedulersTests: XCTestCase {
         Just((Data("false".utf8), URLResponse()))
           .setFailureType(to: URLError.self)
           .eraseToAnyPublisher()
-    })
+    },
+      validatePassword: { _ in Empty(completeImmediately: true).eraseToAnyPublisher() }
+    )
 
     XCTAssertEqual(viewModel.isRegistered, false)
 
@@ -51,5 +55,31 @@ class CombineSchedulersTests: XCTestCase {
     _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
     XCTAssertEqual(viewModel.isRegistered, false)
     XCTAssertEqual(viewModel.errorAlert?.title, "Failed to register. Please try again.")
+  }
+  
+  func testValidatePassword() {
+    let viewModel = RegisterViewModel(
+      register: { _, _ in fatalError() },
+      validatePassword: mockValidate(password:)
+    )
+    
+    var passwordValidationMessage: [String] = []
+    viewModel.$passwordValidationMessage
+      .sink { passwordValidationMessage.append($0) }
+      .store(in: &self.cancellables)
+    
+    XCTAssertEqual(passwordValidationMessage, [""])
+    
+    viewModel.password = "blob"
+    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.301)
+    XCTAssertEqual(passwordValidationMessage, ["", "Password is too short 👎"])
+
+    viewModel.password = "blob is awesome"
+    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.21)
+    XCTAssertEqual(passwordValidationMessage, ["", "Password is too short 👎"])
+    
+    viewModel.password = "blob is awesome!!!!!!"
+    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.31)
+    XCTAssertEqual(passwordValidationMessage, ["", "Password is too short 👎", "Password is too long 👎"])
   }
 }
