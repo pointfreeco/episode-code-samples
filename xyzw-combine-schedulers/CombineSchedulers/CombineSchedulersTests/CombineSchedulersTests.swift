@@ -32,7 +32,7 @@ class CombineSchedulersTests: XCTestCase {
     viewModel.registerButtonTapped()
 
 //    XCTAssertEqual(viewModel.isRegistered, true)
-//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
+    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
     XCTAssertEqual(isRegistered, [false, true])
   }
 
@@ -52,7 +52,7 @@ class CombineSchedulersTests: XCTestCase {
     viewModel.password = "blob is awesome"
     viewModel.registerButtonTapped()
 
-//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
+    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
     XCTAssertEqual(viewModel.isRegistered, false)
     XCTAssertEqual(viewModel.errorAlert?.title, "Failed to register. Please try again.")
   }
@@ -71,7 +71,7 @@ class CombineSchedulersTests: XCTestCase {
     XCTAssertEqual(passwordValidationMessage, [""])
     
     viewModel.password = "blob"
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.301)
+    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.31)
     XCTAssertEqual(passwordValidationMessage, ["", "Password is too short 👎"])
 
     viewModel.password = "blob is awesome"
@@ -136,6 +136,57 @@ class CombineSchedulersTests: XCTestCase {
     XCTAssertEqual(output, [])
     scheduler.advance()
     XCTAssertEqual(output, [1, 2])
+  }
+
+  func testScheduledAfterDelay() {
+    var isExecuted = false
+    scheduler.schedule(after: scheduler.now.advanced(by: 1)) {
+      isExecuted = true
+    }
+
+    XCTAssertEqual(isExecuted, false)
+    scheduler.advance(by: .milliseconds(500))
+    XCTAssertEqual(isExecuted, false)
+    scheduler.advance(by: .milliseconds(499))
+    XCTAssertEqual(isExecuted, false)
+    scheduler.advance(by: .microseconds(999))
+    XCTAssertEqual(isExecuted, false)
+    scheduler.advance(by: .microseconds(1))
+    XCTAssertEqual(isExecuted, true)
+  }
+
+  func testScheduledAfterALongDelay() {
+    var isExecuted = false
+    scheduler.schedule(after: scheduler.now.advanced(by: 1_000_000)) {
+      isExecuted = true
+    }
+
+    XCTAssertEqual(isExecuted, false)
+    scheduler.advance(by: .seconds(1_000_000))
+    XCTAssertEqual(isExecuted, true)
+
+  }
+
+  func testSchedulerInterval() {
+    var executionCount = 0
+
+    scheduler.schedule(after: scheduler.now, interval: 1) {
+      executionCount += 1
+    }
+    .store(in: &self.cancellables)
+
+    XCTAssertEqual(executionCount, 0)
+    scheduler.advance()
+    XCTAssertEqual(executionCount, 1)
+    scheduler.advance(by: .milliseconds(500))
+    XCTAssertEqual(executionCount, 1)
+    scheduler.advance(by: .milliseconds(500))
+    XCTAssertEqual(executionCount, 2)
+    scheduler.advance(by: .seconds(1))
+    XCTAssertEqual(executionCount, 3)
+
+    scheduler.advance(by: .seconds(5))
+    XCTAssertEqual(executionCount, 8)
   }
 
 }
