@@ -2,8 +2,15 @@ import Combine
 import SwiftUI
 
 class RegisterViewModel: ObservableObject {
+  struct Alert: Identifiable {
+    var title: String
+    var id: String { self.title }
+  }
+  
   @Published var email = ""
+  @Published var errorAlert: Alert?
   @Published var isRegistered = false
+  @Published var isRegisterRequestInFlight = false
   @Published var password = ""
 
   let register: (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
@@ -17,12 +24,19 @@ class RegisterViewModel: ObservableObject {
   }
 
   func registerButtonTapped() {
+    self.isRegisterRequestInFlight = true
     self.register(self.email, self.password)
       .map { data, _ in
         Bool(String(decoding: data, as: UTF8.self)) ?? false
     }
     .replaceError(with: false)
-    .sink { self.isRegistered = $0 }
+    .sink {
+      self.isRegistered = $0
+      self.isRegisterRequestInFlight = false
+      if !$0 {
+        self.errorAlert = Alert(title: "Failed to register. Please try again.")
+      }
+    }
     .store(in: &self.cancellables)
   }
 }
@@ -66,9 +80,16 @@ struct ContentView: View {
             )
           }
 
-          Button("Register") { self.viewModel.registerButtonTapped() }
+          if self.viewModel.isRegisterRequestInFlight {
+            Text("Registering...")
+          } else {
+            Button("Register") { self.viewModel.registerButtonTapped() }
+          }
         }
         .navigationBarTitle("Register")
+        .alert(item: self.$viewModel.errorAlert) { errorAlert in
+          Alert(title: Text(errorAlert.title))
+        }
       }
     }
   }
@@ -81,6 +102,7 @@ struct ContentView_Previews: PreviewProvider {
         register: { _, _ in
           Just((Data("false".utf8), URLResponse()))
             .setFailureType(to: URLError.self)
+            .delay(for: 1, scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
       })
     )
