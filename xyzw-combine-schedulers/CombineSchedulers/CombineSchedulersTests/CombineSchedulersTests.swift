@@ -188,5 +188,55 @@ class CombineSchedulersTests: XCTestCase {
     scheduler.advance(by: .seconds(5))
     XCTAssertEqual(executionCount, 8)
   }
+  
+  func testScheduledTwoIntervals_Fail() {
+    var values: [String] = []
+    scheduler.schedule(after: scheduler.now, interval: 1) {
+      values.append("Hello")
+    }
+    .store(in: &self.cancellables)
+    scheduler.schedule(after: scheduler.now, interval: 2) {
+      values.append("World")
+    }
+    .store(in: &self.cancellables)
+
+    XCTAssertEqual(values, [])
+    scheduler.advance(by: 2)
+    XCTAssertEqual(values, ["Hello", "Hello", "World"])
+  }
+  
+  func testSchedulerNow() {
+    var times: [UInt64] = []
+    scheduler.schedule(after: scheduler.now, interval: 1) {
+      times.append(self.scheduler.now.dispatchTime.uptimeNanoseconds)
+    }
+    .store(in: &self.cancellables)
+    
+    XCTAssertEqual(times, [])
+    scheduler.advance(by: 3)
+    XCTAssertEqual(times, [1, 1_000_000_001, 2_000_000_001, 3_000_000_001])
+  }
+  
+  func testScheduledIntervalCancellation() {
+    var executionCount = 0
+
+    scheduler.schedule(after: scheduler.now, interval: 1) {
+      executionCount += 1
+    }
+    .store(in: &self.cancellables)
+
+    XCTAssertEqual(executionCount, 0)
+    scheduler.advance()
+    XCTAssertEqual(executionCount, 1)
+    scheduler.advance(by: .milliseconds(500))
+    XCTAssertEqual(executionCount, 1)
+    scheduler.advance(by: .milliseconds(500))
+    XCTAssertEqual(executionCount, 2)
+    
+    self.cancellables.removeAll()
+    
+    scheduler.advance(by: .seconds(1))
+    XCTAssertEqual(executionCount, 2)
+  }
 
 }
