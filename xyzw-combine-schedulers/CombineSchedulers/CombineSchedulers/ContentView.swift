@@ -1,7 +1,7 @@
 import Combine
 import SwiftUI
 
-class RegisterViewModel<S: Scheduler>: ObservableObject {
+class RegisterViewModel: ObservableObject {
   struct Alert: Identifiable {
     var title: String
     var id: String { self.title }
@@ -15,14 +15,16 @@ class RegisterViewModel<S: Scheduler>: ObservableObject {
   @Published var passwordValidationMessage = ""
 
   let register: (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
-  let scheduler: S
+
+  let scheduler: AnyScheduler<DispatchQueue.SchedulerTimeType, DispatchQueue.SchedulerOptions>
+//  let scheduler: any Scheduler where .SchedulerTimeType == DispatchQueue.SchedulerTimeType, .SchedulerOptions == DispatchQueue.SchedulerOptions
 
   var cancellables: Set<AnyCancellable> = []
 
   init(
     register: @escaping (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>,
     validatePassword: @escaping (String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>,
-    scheduler: S
+    scheduler: AnyScheduler<DispatchQueue.SchedulerTimeType, DispatchQueue.SchedulerOptions>
   ) {
     self.register = register
     self.scheduler = scheduler
@@ -84,7 +86,7 @@ func registerRequest(
 
 
 struct ContentView: View {
-  @ObservedObject var viewModel: RegisterViewModel<DispatchQueue>
+  @ObservedObject var viewModel: RegisterViewModel
 
   var body: some View {
     NavigationView {
@@ -148,7 +150,7 @@ struct ContentView_Previews: PreviewProvider {
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
       },
-        scheduler: DispatchQueue.main
+        scheduler: AnyScheduler(DispatchQueue.main)
       )
     )
   }
