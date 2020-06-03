@@ -272,4 +272,71 @@ class CombineSchedulersTests: XCTestCase {
     scheduler.advance(by: 100)
     XCTAssertEqual(count, 1)
   }
+
+  func testRace_CacheEmitsFirst() {
+    var output: [Int] = []
+
+    race(
+      cached: Future<Int, Never> { callback in
+        self.scheduler.schedule(after: self.scheduler.now.advanced(by: 1)) {
+          callback(.success(2))
+        }
+      },
+      fresh: Future<Int, Never> { callback in
+        self.scheduler.schedule(after: self.scheduler.now.advanced(by: 2)) {
+          callback(.success(42))
+        }
+      }
+    )
+      .sink { output.append($0) }
+      .store(in: &self.cancellables)
+
+    XCTAssertEqual(output, [])
+    scheduler.advance(by: 2)
+    XCTAssertEqual(output, [2, 42])
+  }
+
+  func testRace_FreshEmitsFirst() {
+    var output: [Int] = []
+
+    race(
+      cached: Future<Int, Never> { callback in
+        self.scheduler.schedule(after: self.scheduler.now.advanced(by: 2)) {
+          callback(.success(2))
+        }
+      },
+      fresh: Future<Int, Never> { callback in
+        self.scheduler.schedule(after: self.scheduler.now.advanced(by: 1)) {
+          callback(.success(42))
+        }
+      }
+    )
+      .sink { output.append($0) }
+      .store(in: &self.cancellables)
+
+    XCTAssertEqual(output, [])
+    scheduler.advance(by: 2)
+    XCTAssertEqual(output, [42])
+  }
+}
+
+import Combine
+
+func race<Output, Failure: Error>(
+  cached: Future<Output, Failure>,
+  fresh: Future<Output, Failure>
+  ) -> AnyPublisher<Output, Failure> {
+
+  Publishers.Merge(
+    cached.map { (model: $0, isCached: true) },
+    fresh.map { (model: $0, isCached: false) }
+  )
+    .scan((nil, nil)) { accum, output in
+      (accum.1, output)
+  }
+  .prefix(while: { lhs, rhs in
+    !(rhs?.isCached ?? true) || (lhs?.isCached ?? true)
+  })
+    .compactMap(\.1?.model)
+    .eraseToAnyPublisher()
 }
