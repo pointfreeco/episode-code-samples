@@ -43,3 +43,5 @@ struct AnyScheduler<SchedulerTimeType, SchedulerOptions>: Scheduler
     self._schedulerWithInterval = { scheduler.schedule(after: $0, interval: $1, tolerance: $2, options: $3, $4) }
   }
 }
+
+typealias AnySchedulerOf<S: Scheduler> = AnyScheduler<S.SchedulerTimeType, S.SchedulerOptions>

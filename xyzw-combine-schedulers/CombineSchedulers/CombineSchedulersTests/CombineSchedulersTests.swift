@@ -14,7 +14,7 @@ class CombineSchedulersTests: XCTestCase {
           .eraseToAnyPublisher()
     },
       validatePassword: { _ in Empty(completeImmediately: true).eraseToAnyPublisher() },
-      scheduler: scheduler
+      scheduler: scheduler.eraseToAnyScheduler()
     )
 
     var isRegistered: [Bool] = []
@@ -47,7 +47,7 @@ class CombineSchedulersTests: XCTestCase {
           .eraseToAnyPublisher()
     },
       validatePassword: { _ in Empty(completeImmediately: true).eraseToAnyPublisher() },
-      scheduler: scheduler
+      scheduler: scheduler.eraseToAnyScheduler()
     )
 
     XCTAssertEqual(viewModel.isRegistered, false)
@@ -66,7 +66,7 @@ class CombineSchedulersTests: XCTestCase {
     let viewModel = RegisterViewModel(
       register: { _, _ in fatalError() },
       validatePassword: mockValidate(password:),
-      scheduler: scheduler
+      scheduler: scheduler.eraseToAnyScheduler()
     )
     
     var passwordValidationMessage: [String] = []

@@ -10,7 +10,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       viewModel: RegisterViewModel(
         register: registerRequest(email:password:),
         validatePassword: mockValidate(password:),
-        scheduler: AnyScheduler(DispatchQueue.main)
+        scheduler: DispatchQueue.main.eraseToAnyScheduler()
       )
     )
 

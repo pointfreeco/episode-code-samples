@@ -16,7 +16,8 @@ class RegisterViewModel: ObservableObject {
 
   let register: (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
 
-  let scheduler: AnyScheduler<DispatchQueue.SchedulerTimeType, DispatchQueue.SchedulerOptions>
+  let scheduler: AnySchedulerOf<DispatchQueue>
+//  let scheduler: AnyScheduler<DispatchQueue.SchedulerTimeType, DispatchQueue.SchedulerOptions>
 //  let scheduler: any Scheduler where .SchedulerTimeType == DispatchQueue.SchedulerTimeType, .SchedulerOptions == DispatchQueue.SchedulerOptions
 
   var cancellables: Set<AnyCancellable> = []
@@ -24,7 +25,7 @@ class RegisterViewModel: ObservableObject {
   init(
     register: @escaping (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>,
     validatePassword: @escaping (String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>,
-    scheduler: AnyScheduler<DispatchQueue.SchedulerTimeType, DispatchQueue.SchedulerOptions>
+    scheduler: AnySchedulerOf<DispatchQueue>
   ) {
     self.register = register
     self.scheduler = scheduler
@@ -150,8 +151,15 @@ struct ContentView_Previews: PreviewProvider {
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
       },
-        scheduler: AnyScheduler(DispatchQueue.main)
+//        scheduler: AnyScheduler(DispatchQueue.main)
+        scheduler: DispatchQueue.main.eraseToAnyScheduler()
       )
     )
+  }
+}
+
+extension Scheduler {
+  func eraseToAnyScheduler() -> AnySchedulerOf<Self> {
+    AnyScheduler(self)
   }
 }
