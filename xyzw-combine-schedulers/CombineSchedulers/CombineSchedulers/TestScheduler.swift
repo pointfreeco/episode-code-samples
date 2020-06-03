@@ -14,18 +14,42 @@ final class TestScheduler<SchedulerTimeType, SchedulerOptions>: Scheduler where 
   }
   
   func advance(by stride: SchedulerTimeType.Stride = .zero) {
-    self.now = self.now.advanced(by: stride)
 
-    var index = 0
-    while index < self.scheduled.count {
-      let (id, action, date) = self.scheduled[index]
-      if date <= self.now {
-        action()
-        self.scheduled.remove(at: index)
-      } else {
-        index += 1
-      }
+    self.scheduled.sort { lhs, rhs in
+      (lhs.date, lhs.id) < (rhs.date, rhs.id)
     }
+
+    guard
+      let nextDate = scheduled.first?.date,
+      self.now.advanced(by: stride) >= nextDate
+      else {
+        self.now = self.now.advanced(by: stride)
+        return
+    }
+
+    let nextStride = stride - self.now.distance(to: nextDate)
+    self.now = nextDate
+
+    while let (_, action, date) = self.scheduled.first, date == nextDate {
+      self.scheduled.removeFirst()
+      action()
+    }
+
+    self.advance(by: nextStride)
+
+
+//    self.now = self.now.advanced(by: stride)
+//
+//    var index = 0
+//    while index < self.scheduled.count {
+//      let (id, action, date) = self.scheduled[index]
+//      if date <= self.now {
+//        action()
+//        self.scheduled.remove(at: index)
+//      } else {
+//        index += 1
+//      }
+//    }
 //    for (id, action, date) in self.scheduled {
 //      if date <= self.now {
 //        action()
@@ -63,9 +87,9 @@ final class TestScheduler<SchedulerTimeType, SchedulerOptions>: Scheduler where 
 
     func scheduleAction(for date: SchedulerTimeType) -> () -> Void {
       return { [weak self] in
-        action()
         let nextDate = date.advanced(by: interval)
         self?.scheduled.append((id, scheduleAction(for: nextDate), nextDate))
+        action()
       }
     }
 

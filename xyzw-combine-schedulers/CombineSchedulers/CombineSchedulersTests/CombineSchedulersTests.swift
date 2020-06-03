@@ -191,11 +191,11 @@ class CombineSchedulersTests: XCTestCase {
   
   func testScheduledTwoIntervals_Fail() {
     var values: [String] = []
-    scheduler.schedule(after: scheduler.now, interval: 1) {
+    scheduler.schedule(after: scheduler.now.advanced(by: 1), interval: 1) {
       values.append("Hello")
     }
     .store(in: &self.cancellables)
-    scheduler.schedule(after: scheduler.now, interval: 2) {
+    scheduler.schedule(after: scheduler.now.advanced(by: 2), interval: 2) {
       values.append("World")
     }
     .store(in: &self.cancellables)
@@ -239,4 +239,30 @@ class CombineSchedulersTests: XCTestCase {
     XCTAssertEqual(executionCount, 2)
   }
 
+  func testFun() {
+    var values: [Int] = []
+    scheduler.schedule(after: scheduler.now, interval: 1) {
+      values.append(values.count)
+    }
+    .store(in: &self.cancellables)
+
+    XCTAssertEqual(values, [])
+    scheduler.advance(by: 1000)
+    XCTAssertEqual(values, Array(0...1_000))
+  }
+
+  func testFail() {
+    let subject = PassthroughSubject<Void, Never>()
+
+    var count = 0
+    subject
+      .debounce(for: 1, scheduler: scheduler)
+      .receive(on: scheduler)
+      .sink { count += 1 }
+      .store(in: &self.cancellables)
+
+    subject.send()
+    scheduler.advance(by: 100)
+    XCTAssertEqual(count, 1)
+  }
 }
