@@ -4,6 +4,7 @@ import XCTest
 
 class CombineSchedulersTests: XCTestCase {
   var cancellables: Set<AnyCancellable> = []
+  let scheduler = DispatchQueue.testScheduler
 
   func testRegistrationSuccessful() {
     let viewModel = RegisterViewModel(
@@ -12,7 +13,8 @@ class CombineSchedulersTests: XCTestCase {
           .setFailureType(to: URLError.self)
           .eraseToAnyPublisher()
     },
-      validatePassword: { _ in Empty(completeImmediately: true).eraseToAnyPublisher() }
+      validatePassword: { _ in Empty(completeImmediately: true).eraseToAnyPublisher() },
+      scheduler: scheduler
     )
 
     var isRegistered: [Bool] = []
@@ -32,7 +34,8 @@ class CombineSchedulersTests: XCTestCase {
     viewModel.registerButtonTapped()
 
 //    XCTAssertEqual(viewModel.isRegistered, true)
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
+//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
+    scheduler.advance()
     XCTAssertEqual(isRegistered, [false, true])
   }
 
@@ -43,7 +46,8 @@ class CombineSchedulersTests: XCTestCase {
           .setFailureType(to: URLError.self)
           .eraseToAnyPublisher()
     },
-      validatePassword: { _ in Empty(completeImmediately: true).eraseToAnyPublisher() }
+      validatePassword: { _ in Empty(completeImmediately: true).eraseToAnyPublisher() },
+      scheduler: scheduler
     )
 
     XCTAssertEqual(viewModel.isRegistered, false)
@@ -52,7 +56,8 @@ class CombineSchedulersTests: XCTestCase {
     viewModel.password = "blob is awesome"
     viewModel.registerButtonTapped()
 
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
+//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
+    scheduler.advance()
     XCTAssertEqual(viewModel.isRegistered, false)
     XCTAssertEqual(viewModel.errorAlert?.title, "Failed to register. Please try again.")
   }
@@ -60,7 +65,8 @@ class CombineSchedulersTests: XCTestCase {
   func testValidatePassword() {
     let viewModel = RegisterViewModel(
       register: { _, _ in fatalError() },
-      validatePassword: mockValidate(password:)
+      validatePassword: mockValidate(password:),
+      scheduler: scheduler
     )
     
     var passwordValidationMessage: [String] = []
@@ -71,20 +77,21 @@ class CombineSchedulersTests: XCTestCase {
     XCTAssertEqual(passwordValidationMessage, [""])
     
     viewModel.password = "blob"
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.31)
+//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.31)
+    scheduler.advance(by: .milliseconds(300))
     XCTAssertEqual(passwordValidationMessage, ["", "Password is too short 👎"])
 
     viewModel.password = "blob is awesome"
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.21)
+//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.21)
+    scheduler.advance(by: .milliseconds(200))
     XCTAssertEqual(passwordValidationMessage, ["", "Password is too short 👎"])
     
     viewModel.password = "blob is awesome!!!!!!"
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.31)
+//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.31)
+    scheduler.advance(by: .milliseconds(300))
     XCTAssertEqual(passwordValidationMessage, ["", "Password is too short 👎", "Password is too long 👎"])
   }
-  
-  let scheduler = DispatchQueue.testScheduler
-  
+    
   func testImmediateScheduledAction() {
     var isExecuted = false
     scheduler.schedule {

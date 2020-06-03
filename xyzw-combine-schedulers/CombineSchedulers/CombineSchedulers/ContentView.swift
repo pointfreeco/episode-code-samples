@@ -1,7 +1,7 @@
 import Combine
 import SwiftUI
 
-class RegisterViewModel: ObservableObject {
+class RegisterViewModel<S: Scheduler>: ObservableObject {
   struct Alert: Identifiable {
     var title: String
     var id: String { self.title }
@@ -15,23 +15,26 @@ class RegisterViewModel: ObservableObject {
   @Published var passwordValidationMessage = ""
 
   let register: (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
+  let scheduler: S
 
   var cancellables: Set<AnyCancellable> = []
 
   init(
     register: @escaping (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>,
-    validatePassword: @escaping (String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
+    validatePassword: @escaping (String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>,
+    scheduler: S
   ) {
     self.register = register
+    self.scheduler = scheduler
 
     self.$password
-      .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+      .debounce(for: .milliseconds(300), scheduler: scheduler)
 //      .debounce(for: .milliseconds(300), scheduler: ImmediateScheduler.shared)
       .flatMap { password in
         password.isEmpty
           ? Just("").eraseToAnyPublisher()
           : validatePassword(password)
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
 //            .receive(on: ImmediateScheduler.shared)
             .map { data, _ in
               String(decoding: data, as: UTF8.self)
@@ -44,9 +47,10 @@ class RegisterViewModel: ObservableObject {
   }
 
   func registerButtonTapped() {
+//    scheduler
     self.isRegisterRequestInFlight = true
     self.register(self.email, self.password)
-      .receive(on: DispatchQueue.main)
+      .receive(on: scheduler)
 //      .receive(on: ImmediateScheduler.shared)
       .map { data, _ in
         Bool(String(decoding: data, as: UTF8.self)) ?? false
@@ -80,7 +84,7 @@ func registerRequest(
 
 
 struct ContentView: View {
-  @ObservedObject var viewModel: RegisterViewModel
+  @ObservedObject var viewModel: RegisterViewModel<DispatchQueue>
 
   var body: some View {
     NavigationView {
@@ -143,7 +147,9 @@ struct ContentView_Previews: PreviewProvider {
           mockValidate(password: $0)
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
-      })
+      },
+        scheduler: DispatchQueue.main
+      )
     )
   }
 }
