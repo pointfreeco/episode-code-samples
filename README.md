@@ -106,3 +106,5 @@ This repository is the home of code written on episodes of
 1. [A Tour of the Composable Architecture: Part 2](0101-swift-composable-architecture-tour-pt2)
 1. [A Tour of the Composable Architecture: Part 3](0102-swift-composable-architecture-tour-pt3)
 1. [A Tour of the Composable Architecture: Part 4](0103-swift-composable-architecture-tour-pt4)
+1. [Combine Schedulers: Testing Time](0104-combine-schedulers-pt1)
+1. [Combine Schedulers: Controlling Time](0105-combine-schedulers-pt2)
