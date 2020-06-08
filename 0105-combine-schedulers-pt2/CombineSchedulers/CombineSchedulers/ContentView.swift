@@ -1,91 +1,146 @@
 import Combine
 import SwiftUI
 
-func validationMessage<P: Publisher>(
-  forPassword password: P
-) -> AnyPublisher<String, Never> where P.Output == String, P.Failure == Never {
-
-  password.map {
-    $0.count < 5 ? "Password is too short 👎"
-      : $0.count > 20 ? "Password is too long 👎"
-      : "Password is good 👍"
-  }
-  .eraseToAnyPublisher()
-
-}
-
-
 class RegisterViewModel: ObservableObject {
+  struct Alert: Identifiable {
+    var title: String
+    var id: String { self.title }
+  }
+  
   @Published var email = ""
+  @Published var errorAlert: Alert?
+  @Published var isRegistered = false
+  @Published var isRegisterRequestInFlight = false
   @Published var password = ""
-  @Published var isLoginSuccessful = false
   @Published var passwordValidationMessage = ""
+
+  let register: (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
 
   var cancellables: Set<AnyCancellable> = []
 
-  let login: (String, String) -> AnyPublisher<Bool, Never>
-
   init(
-    login: @escaping (String, String) -> AnyPublisher<Bool, Never>
+    register: @escaping (String, String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>,
+    validatePassword: @escaping (String) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
   ) {
-    self.login = login
+    self.register = register
 
     self.$password
-      .map {
-        $0.count < 5 ? "Password is too short 👎"
-          : $0.count > 20 ? "Password is too long 👎"
-          : "Password is good 👍"
-      }
-    .sink { self.passwordValidationMessage = $0 }
+      .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+      .flatMap { password in
+        password.isEmpty
+          ? Just("").eraseToAnyPublisher()
+          : validatePassword(password)
+            .receive(on: DispatchQueue.main)
+            .map { data, _ in
+              String(decoding: data, as: UTF8.self)
+          }
+          .replaceError(with: "Could not validate password.")
+          .eraseToAnyPublisher()
+    }
+    .sink { [weak self] in self?.passwordValidationMessage = $0 }
     .store(in: &self.cancellables)
   }
 
-  func loginButtonTapped() {
-    self.login(self.email, self.password)
+  func registerButtonTapped() {
+    self.isRegisterRequestInFlight = true
+    self.register(self.email, self.password)
       .receive(on: DispatchQueue.main)
-      .sink { self.isLoginSuccessful = $0 }
+      .map { data, _ in
+        Bool(String(decoding: data, as: UTF8.self)) ?? false
+    }
+    .replaceError(with: false)
+    .sink {
+      self.isRegistered = $0
+      self.isRegisterRequestInFlight = false
+      if !$0 {
+        self.errorAlert = Alert(title: "Failed to register. Please try again.")
+      }
+    }
     .store(in: &self.cancellables)
   }
 }
 
+func registerRequest(
+  email: String,
+  password: String
+) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
+  var components = URLComponents(string: "https://www.pointfree.co/register")!
+  components.queryItems = [
+    URLQueryItem(name: "email", value: email),
+    URLQueryItem(name: "password", value: password)
+  ]
 
+  return URLSession.shared
+    .dataTaskPublisher(for: components.url!)
+    .eraseToAnyPublisher()
+}
 
-//class PasswordViewModel: ObservableObject {
-//  @Published var password: String = ""
-//
-//  //let passwordValidationMessage: AnyPublisher<String, Never>
-//  @Published var passwordValidationMessage = ""
-//
-//  func validatePassword() {
-//    validationMessage(forPassword: Just(self.password))
-//      .sink { self.passwordValidationMessage = $0 }
-//  }
-//}
 
 struct ContentView: View {
-//  @State var password: String = ""
-  @ObservedObject var viewModel = RegisterViewModel(
-    login: { _, _ in Just(true).eraseToAnyPublisher() }
-  )
+  @ObservedObject var viewModel: RegisterViewModel
 
   var body: some View {
-    Form {
-      if self.viewModel.isLoginSuccessful {
-        Text("Logged in! Welcome!")
+    NavigationView {
+      if self.viewModel.isRegistered {
+        Text("Welcome!")
       } else {
-        TextField("Email", text: self.$viewModel.email)
-        TextField("Password", text: self.$viewModel.password)
+        Form {
+          Section(header: Text("Email")) {
+            TextField(
+              "blob@pointfree.co",
+              text: self.$viewModel.email
+            )
+          }
 
-        Text(self.viewModel.passwordValidationMessage)
+          Section(header: Text("Password")) {
+            TextField(
+              "Password",
+              text: self.$viewModel.password
+            )
+            if !self.viewModel.passwordValidationMessage.isEmpty {
+              Text(self.viewModel.passwordValidationMessage)
+            }
+          }
 
-        Button("Login") { self.viewModel.loginButtonTapped() }
+          if self.viewModel.isRegisterRequestInFlight {
+            Text("Registering...")
+          } else {
+            Button("Register") { self.viewModel.registerButtonTapped() }
+          }
+        }
+        .navigationBarTitle("Register")
+        .alert(item: self.$viewModel.errorAlert) { errorAlert in
+          Alert(title: Text(errorAlert.title))
+        }
       }
     }
   }
 }
 
+func mockValidate(password: String) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
+  let message = password.count < 5 ? "Password is too short 👎"
+    : password.count > 20 ? "Password is too long 👎"
+    : "Password is good 👍"
+  return Just((Data(message.utf8), URLResponse()))
+    .setFailureType(to: URLError.self)
+    .eraseToAnyPublisher()
+}
+
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView()
+    ContentView(
+      viewModel: RegisterViewModel(
+        register: { _, _ in
+          Just((Data("false".utf8), URLResponse()))
+            .setFailureType(to: URLError.self)
+            .delay(for: 1, scheduler: DispatchQueue.main)
+            .eraseToAnyPublisher()
+      },
+        validatePassword: {
+          mockValidate(password: $0)
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .eraseToAnyPublisher()
+      })
+    )
   }
 }
