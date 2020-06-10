@@ -1,73 +1,46 @@
-
 struct Parser<A> {
   let run: (inout Substring) -> A?
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-let int = Parser<Int> { str in
-  let prefix = str.prefix(while: { $0.isNumber })
-  let match = Int(prefix)
-  str.removeFirst(prefix.count)
-  return match
-}
-
-let double = Parser<Double> { str in
-  let prefix = str.prefix(while: { $0.isNumber || $0 == "." })
-  let match = Double(prefix)
-  str.removeFirst(prefix.count)
-  return match
-}
-
-let char = Parser<Character> { str in
-  guard !str.isEmpty else { return nil }
-  return str.removeFirst()
-}
-
-func literal(_ p: String) -> Parser<Void> {
-  return Parser<Void> { str in
-    guard str.hasPrefix(p) else { return nil }
-    str.removeFirst(p.count)
-    return ()
+extension Parser where A == Int {
+  static let int = Self { str in
+    let prefix = str.prefix(while: { $0.isNumber })
+    let match = Int(prefix)
+    str.removeFirst(prefix.count)
+    return match
   }
 }
 
+extension Parser where A == Double {
+  static let double = Self { str in
+    let prefix = str.prefix(while: { $0.isNumber || $0 == "." })
+    let match = Double(prefix)
+    str.removeFirst(prefix.count)
+    return match
+  }
+}
 
+extension Parser where A == Character {
+  static let char = Self { str in
+    guard !str.isEmpty else { return nil }
+    return str.removeFirst()
+  }
+}
 
+extension Parser where A == Void {
+  static func literal(_ p: String) -> Self {
+    return Parser<Void> { str in
+      guard str.hasPrefix(p) else { return nil }
+      str.removeFirst(p.count)
+      return ()
+    }
+  }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-func always<A>(_ a: A) -> Parser<A> {
-  return Parser<A> { _ in a }
+extension Parser {
+  static func always(_ a: A) -> Self {
+    return Parser<A> { _ in a }
+  }
 }
 
 extension Parser {
@@ -75,26 +48,6 @@ extension Parser {
     return Parser { _ in nil }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 extension Parser {
   func map<B>(_ f: @escaping (A) -> B) -> Parser<B> {
@@ -129,9 +82,34 @@ func zip<A, B>(_ a: Parser<A>, _ b: Parser<B>) -> Parser<(A, B)> {
   }
 }
 
-
-
-
+extension Parser {
+  static func __zip<B, C>(_ b: Parser<B>, _ c: Parser<C>) -> Parser<A> where A == (B, C) {
+    return Self { str -> A? in
+      let original = str
+      guard let matchB = b.run(&str) else { return nil }
+      guard let matchC = c.run(&str) else {
+        str = original
+        return nil
+      }
+      return (matchB, matchC)
+    }
+  }
+  // TODO: how to show the problem with this style?
+  // TODO: should we move zip to be static or keep it free? how to justify?
+  static func _zip<B>(_ a: Parser<A>, _ b: Parser<B>) -> Parser<(A, B)> {
+    return .init { str -> (A, B)? in
+      let original = str
+      guard let matchA = a.run(&str) else { return nil }
+      guard let matchB = b.run(&str) else {
+        str = original
+        return nil
+      }
+      return (matchA, matchB)
+    }
+  }
+}
+Parser._zip(.double, .literal("°"))
+Parser.__zip(.double, .literal("°"))
 
 func zip<A, B, C>(
   _ a: Parser<A>,
@@ -185,26 +163,6 @@ func zip<A, B, C, D, E, F, G>(
     .map { a, bcdefg in (a, bcdefg.0, bcdefg.1, bcdefg.2, bcdefg.3, bcdefg.4, bcdefg.5) }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 extension Parser {
   func run(_ str: String) -> (match: A?, rest: Substring) {
     var str = str[...]
@@ -213,113 +171,97 @@ extension Parser {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 40.446° N, 79.982° W
 struct Coordinate {
   let latitude: Double
   let longitude: Double
 }
 
-func prefix(while p: @escaping (Character) -> Bool) -> Parser<Substring> {
-  return Parser<Substring> { str in
-    let prefix = str.prefix(while: p)
-    str.removeFirst(prefix.count)
-    return prefix
+extension Parser where A == Substring {
+  static func prefix(while p: @escaping (Character) -> Bool) -> Parser<Substring> {
+    return Parser<Substring> { str in
+      let prefix = str.prefix(while: p)
+      str.removeFirst(prefix.count)
+      return prefix
+    }
   }
 }
 
-let zeroOrMoreSpaces = prefix(
-  while: { $0 == " " })
-  .map { _ in () }
-//  Parser<Void> { str -> Void? in
-//  let prefix = str.prefix(while: { $0 == " " })
-//  str.removeFirst(prefix.count)
-//  return ()
-//}
-let oneOrMoreSpaces = prefix(
-  while: { $0 == " " })
-  .flatMap {
-    $0.isEmpty
-      ? .never
-      : always(())
-}
-//  Parser<Void> { str -> Void? in
-//  let prefix = str.prefix(while: { $0 == " " })
-//  guard !prefix.isEmpty else { return nil }
-//  str.removeFirst(prefix.count)
-//  return ()
-//}
+extension Parser where A == Void {
 
-
-
-let northSouth = char
-  .flatMap {
-    $0 == "N" ? always(1.0)
-      : $0 == "S" ? always(-1)
-      : .never
+  static let zeroOrMoreSpaces = Parser<Substring>.prefix(
+    while: { $0 == " " })
+    .map { _ in () }
+  //  Parser<Void> { str -> Void? in
+  //  let prefix = str.prefix(while: { $0 == " " })
+  //  str.removeFirst(prefix.count)
+  //  return ()
+  //}
+  static let oneOrMoreSpaces = Parser<Substring>.prefix(
+    while: { $0 == " " })
+    .flatMap {
+      $0.isEmpty
+        ? .never
+        : .always(())
+  }
+  //  Parser<Void> { str -> Void? in
+  //  let prefix = str.prefix(while: { $0 == " " })
+  //  guard !prefix.isEmpty else { return nil }
+  //  str.removeFirst(prefix.count)
+  //  return ()
+  //}
 }
-let eastWest = char
-  .flatMap {
-    $0 == "E" ? always(1.0)
-      : $0 == "W" ? always(-1)
-      : .never
-}
-let latitude = zip(
-  double,
-  literal("°"),
-  oneOrMoreSpaces,
-  northSouth
+
+extension Parser where A == Double {
+  static let northSouth = Parser<Character>.char
+    .flatMap {
+      $0 == "N" ? .always(1.0)
+        : $0 == "S" ? .always(-1)
+        : .never
+  }
+  static let eastWest = Parser<Character>.char
+    .flatMap {
+      $0 == "E" ? .always(1.0)
+        : $0 == "W" ? .always(-1)
+        : .never
+  }
+
+  static let latitude = zip(
+    .double,
+    .literal("°"),
+    .oneOrMoreSpaces,
+    .northSouth
   )
-  .map { lat, _, _, latSign in lat * latSign }
-let longitude = zip(
-  double,
-  literal("°"),
-  oneOrMoreSpaces,
-  eastWest
+    .map { lat, _, _, latSign in lat * latSign }
+
+  static let longitude = zip(
+    .double,
+    .literal("°"),
+    .oneOrMoreSpaces,
+    .eastWest
   )
-  .map { long, _, _, longSign in long * longSign }
-let coord = zip(
-  zeroOrMoreSpaces,
-  latitude,
-  literal(","),
-  oneOrMoreSpaces,
-  longitude
+    .map { long, _, _, longSign in long * longSign }
+}
+extension Parser where A == Coordinate {
+  static let coord = zip(
+    .zeroOrMoreSpaces,
+    .latitude,
+    .literal(","),
+    .oneOrMoreSpaces,
+    .longitude
   )
-  .map { _, lat, _, _, long in
-    Coordinate(
-      latitude: lat,
-      longitude: long
-    )
+    .map { _, lat, _, _, long in
+      Coordinate(
+        latitude: lat,
+        longitude: long
+      )
+  }
 }
 
-
-
-coord.run("40.446° N, 79.982° W")
-
-
-coord.run("40.446°   N,   79.982°   W")
-coord.run("40.446°   N,   79.982°   W   ")
-coord.run("   40.446°   N,   79.982°   W   ")
-
+Parser.coord.run("40.446° N, 79.982° W")
+Parser.coord.run("40.446°   N,   79.982°   W")
+Parser.coord.run("40.446°   N,   79.982°   W   ")
+Parser.coord.run("   40.446°   N,   79.982°   W   ")
 
 import Foundation
 
@@ -329,111 +271,103 @@ df.dateStyle = .medium
 df.date(from: "Jan 29, 2018")
 df.date(from: "Jan   29,   2018")
 df.date(from: "   Jan   29,   2018")
-
-
-
 try NSRegularExpression(pattern: " *")
-
-
-
 Scanner().charactersToBeSkipped = .whitespaces
 
-
-
-oneOrMoreSpaces.run("   Hello, world!")
-oneOrMoreSpaces.run("Hello, world!")
-
-
+Parser.oneOrMoreSpaces.run("   Hello, world!")
+Parser.oneOrMoreSpaces.run("Hello, world!")
 
 "€42,£42,$42"
 
-
-func oneOf<A>(
-  _ ps: [Parser<A>]
-  ) -> Parser<A> {
-  return Parser<A> { str -> A? in
-    for p in ps {
-      if let match = p.run(&str) {
-        return match
+extension Parser {
+  static func oneOf(
+    _ ps: [Self]
+  ) -> Self {
+    return Self { str -> A? in
+      for p in ps {
+        if let match = p.run(&str) {
+          return match
+        }
       }
+      return nil
+      //    if let value = p1.run(&str) {
+      //      return value
+      //    }
+      //    if let value = p2.run(&str) {
+      //      return value
+      //    }
+      //    return nil
     }
-    return nil
-    //    if let value = p1.run(&str) {
-    //      return value
-    //    }
-    //    if let value = p2.run(&str) {
-    //      return value
-    //    }
-    //    return nil
   }
 }
 
-
 enum Currency { case eur, gbp, usd }
-let currency = oneOf([
-  literal("€").map { Currency.eur },
-  literal("£").map { .gbp },
-  literal("$").map { .usd }
+
+extension Parser where A == Currency {
+  static let currency = Parser.oneOf([
+    Parser<Void>.literal("€").map { Currency.eur },
+    Parser<Void>.literal("£").map { .gbp },
+    Parser<Void>.literal("$").map { .usd }
   ])
-//  char.flatMap {
-//  $0 == "€" ? always(Currency.eur)
-//    : $0 == "£" ? always(.gbp)
-//    : $0 == "$" ? always(.usd)
-//    : .never
-//}
+  //  char.flatMap {
+  //  $0 == "€" ? always(Currency.eur)
+  //    : $0 == "£" ? always(.gbp)
+  //    : $0 == "$" ? always(.usd)
+  //    : .never
+  //}
+}
 
 
 struct Money {
   let currency: Currency
   let value: Double
 }
-let money = zip(currency, double).map(Money.init)
-
-
-money.run("€42,£42,$42")
-
-
-zip(money, literal(","), money, literal(","), money)
+extension Parser where A == Money {
+  static let money = zip(.currency, .double).map(Money.init)
+}
+Parser.money.run("€42,£42,$42")
+zip(.money, .literal(","), .money, .literal(","), .money)
   .run("€42,£42")
 
-
-func zeroOrMore<A>(
-  _ p: Parser<A>,
-  separatedBy s: Parser<Void>
-  ) -> Parser<[A]> {
-  return Parser<[A]> { str in
-    var rest = str
-    var matches: [A] = []
-    while let match = p.run(&str) {
-      rest = str
-      matches.append(match)
-      if s.run(&str) == nil {
-        return matches
+extension Parser {
+  static func zeroOrMore<Element>(
+    _ p: Parser<Element>,
+    separatedBy s: Parser<Void>
+  ) -> Parser<A> where A == [Element] {
+    return .init { str in
+      var rest = str
+      var matches: [Element] = []
+      while let match = p.run(&str) {
+        rest = str
+        matches.append(match)
+        if s.run(&str) == nil {
+          return matches
+        }
       }
+      str = rest
+      return matches
     }
-    str = rest
-    return matches
   }
 }
 
 
-zeroOrMore(money, separatedBy: literal(","))
+Parser.zeroOrMore(.money, separatedBy: .literal(","))
   .run("€42,£42,$42,")
   .match
-zeroOrMore(money, separatedBy: literal(","))
+Parser.zeroOrMore(.money, separatedBy: .literal(","))
   .run("€42,£42,$42,")
   .rest
 
 
-zeroOrMore(money, separatedBy: literal(""))
+Parser.zeroOrMore(.money, separatedBy: .literal(""))
   .run("€42£42$42")
   .match
 
-let commaOrNewline = char
-  .flatMap { $0 == "," || $0 == "\n" ? always(()) : .never }
+let commaOrNewline = Parser.char
+  .flatMap { $0 == "," || $0 == "\n" ? .always(()) : .never }
 
 dump(
-zeroOrMore(money, separatedBy: commaOrNewline)
+  Parser.zeroOrMore(.money, separatedBy: commaOrNewline)
   .run("""
 €42,£42,$42
 €42,£42,$42
@@ -441,7 +375,7 @@ zeroOrMore(money, separatedBy: commaOrNewline)
 """)
   .match)
 
-zeroOrMore(money, separatedBy: commaOrNewline)
+Parser.zeroOrMore(.money, separatedBy: commaOrNewline)
   .run("""
 €42,£42,$42
 €42,£42,$42
@@ -450,7 +384,7 @@ zeroOrMore(money, separatedBy: commaOrNewline)
   .rest
 
 dump(
-  zeroOrMore(money, separatedBy: commaOrNewline)
+  Parser.zeroOrMore(.money, separatedBy: commaOrNewline)
     .run("""
 €42,£42,$42,€42,£42,$42,€42,£42,$42,€42,£42,$42
 €42,£42,$42,€42,£42,$42,€42,£42,$42,€42,£42,$42
@@ -472,14 +406,14 @@ dump(
 
 "($19.00)"
 
-let moneyLoss = zip(literal("("), money, literal(")"))
+let moneyLoss = zip(.literal("("), .money, .literal(")"))
   .map { _, money, _ in
     Money(currency: money.currency, value: -money.value)
 }
 
 moneyLoss.run("($19.00)")
 
-let accounting = oneOf([money, moneyLoss])
+let accounting = Parser.oneOf([.money, moneyLoss])
 //  Parser<Money> { str -> Money? in
 //  if let value = money.run(&str) {
 //    return value
@@ -506,24 +440,26 @@ struct Race {
   let path: [Coordinate]
 }
 
-let location = oneOf([
-  literal("New York City").map { Location.nyc },
-  literal("Berlin").map { .berlin },
-  literal("London").map { .london }
+extension Parser where A == Location {
+  static let location = Parser.oneOf([
+    Parser<Void>.literal("New York City").map { Location.nyc },
+    Parser<Void>.literal("Berlin").map { .berlin },
+    Parser<Void>.literal("London").map { .london }
   ])
+}
 
 let race: Parser<Race> = zip(
-  location,
-  literal(","),
-  oneOrMoreSpaces,
-  money,
-  literal("\n"),
-  zeroOrMore(coord, separatedBy: literal("\n"))
+  .location,
+  .literal(","),
+  .oneOrMoreSpaces,
+  .money,
+  .literal("\n"),
+  .zeroOrMore(.coord, separatedBy: .literal("\n"))
   ).map { location, _, _, entranceFee, _, path in
     Race(location: location, entranceFee: entranceFee, path: path)
 }
 
-let races: Parser<[Race]> = zeroOrMore(race, separatedBy: literal("\n---\n"))
+let races: Parser<[Race]> = Parser.zeroOrMore(race, separatedBy: .literal("\n---\n"))
 
 let upcomingRaces = """
 New York City, $300
