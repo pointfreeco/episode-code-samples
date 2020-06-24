@@ -82,6 +82,36 @@ struct Item {
 //  }
 }
 
+extension Binding {
+
+  // (WritableKeyPath<Value, LocalValue>) -> (Binding<Value>) -> Binding<LocalValue>
+
+  // (WritableKeyPath<A, B>) -> (Binding<A>) -> Binding<B>
+
+  // ((A) -> B) -> ([A]) -> [B]
+  // ((A) -> B) -> (A?) -> B?
+  // ((A) -> B) -> (Result<A, E>) -> Result<B, E>
+
+
+  // pullback: ((A) -> B) -> (Predicate<B>) -> Predicate<A>
+  // pullback: ((A) -> B) -> (Snapshotting<B>) -> Snapshotting<A>
+
+
+  // pullback: (WritableKeyPath<A, B>) -> (Reducer<B>) -> Reducer<A>
+
+
+
+  func map<LocalValue>(_ keyPath: WritableKeyPath<Value, LocalValue>) -> Binding<LocalValue> {
+
+    self[dynamicMember: keyPath]
+
+//    Binding<LocalValue>(
+//      get: { self.wrappedValue[keyPath: keyPath] },
+//      set: { localValue in self.wrappedValue[keyPath: keyPath] = localValue }
+//    )
+  }
+}
+
 struct ItemView: View {
   @Binding var item: Item
 
@@ -110,7 +140,11 @@ struct ItemView: View {
         }
       } else {
         Section(header: Text("Out of stock")) {
-          Toggle("Is on back order?", isOn: self.$item.status.isOnBackOrder)
+          Toggle("Is on back order?", isOn:
+//            self.$item.transform(\.self)
+            self.$item.map(\.self).map(\.status.isOnBackOrder).map(\.self)
+            //self.$item.transform(\.status).transform(\.isOnBackOrder)
+            /*self.$item.status.isOnBackOrder*/)
           Button("Is back in stock!") {
 //            self.item.quantity = 1
 //            self.item.isInStock = true
