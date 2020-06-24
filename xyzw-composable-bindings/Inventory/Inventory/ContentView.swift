@@ -12,51 +12,51 @@ struct Item {
     case inStock(quantity: Int)
     case outOfStock(isOnBackOrder: Bool)
     
-    var isInStock: Bool {
-      guard case .inStock = self else { return false }
-      return true
-    }
+//    var isInStock: Bool {
+//      guard case .inStock = self else { return false }
+//      return true
+//    }
     
-    var quantity: Int? {
-      get {
-        switch self {
-        case .inStock(quantity: let quantity):
-          return quantity
-        case .outOfStock:
-          return nil
-        }
-      }
-      set {
+//    var quantity: Int? {
+//      get {
 //        switch self {
-//        case .inStock:
-//          self = .inStock(quantity: newValue)
+//        case .inStock(quantity: let quantity):
+//          return quantity
 //        case .outOfStock:
-//          break
+//          return nil
 //        }
-        guard let quantity = newValue else { return }
-        self = .inStock(quantity: quantity)
-      }
-    }
-    
-    var isOnBackOrder: Bool? {
-      get {
-        guard case let .outOfStock(isOnBackOrder) = self else {
-//          return false
-//          return true
-          return nil
-        }
-        return isOnBackOrder
-      }
-      set {
-//        switch self {
-//        case .inStock:
-//          break
-//        case .outOfStock:
-        guard let newValue = newValue else { return }
-        self = .outOfStock(isOnBackOrder: newValue)
+//      }
+//      set {
+////        switch self {
+////        case .inStock:
+////          self = .inStock(quantity: newValue)
+////        case .outOfStock:
+////          break
+////        }
+//        guard let quantity = newValue else { return }
+//        self = .inStock(quantity: quantity)
+//      }
+//    }
+//
+//    var isOnBackOrder: Bool? {
+//      get {
+//        guard case let .outOfStock(isOnBackOrder) = self else {
+////          return false
+////          return true
+//          return nil
 //        }
-      }
-    }
+//        return isOnBackOrder
+//      }
+//      set {
+////        switch self {
+////        case .inStock:
+////          break
+////        case .outOfStock:
+//        guard let newValue = newValue else { return }
+//        self = .outOfStock(isOnBackOrder: newValue)
+////        }
+//      }
+//    }
   }
 
   enum Color: String, CaseIterable {
@@ -124,7 +124,27 @@ extension Binding {
       set: { self.wrappedValue = $0 }
     )
   }
+
+  subscript<Case>(
+    casePath: CasePath<Value, Case>
+  ) -> Binding<Case>? {
+    self.matching(casePath)
+  }
+
+  func matching<Case>(
+    _ casePath: CasePath<Value, Case>
+//    extract: @escaping (Value) -> Case?,
+//    embed: @escaping (Case) -> Value
+  ) -> Binding<Case>? {
+    guard let `case` = casePath.extract(from: self.wrappedValue) else { return nil }
+    return Binding<Case>(
+      get: { `case` },
+      set: { `case` in self.wrappedValue = casePath.embed(`case`) }
+    )
+  }
 }
+
+import CasePaths
 
 struct ItemView: View {
   @Binding var item: Item
@@ -142,12 +162,9 @@ struct ItemView: View {
             .tag(Optional(color))
         }
       }
-      
-      // (Binding<Int?>) -> Binding<Int>?
-      // unwrap: (Binding<A?>) -> Binding<A>?
-      
-//      if let quantity = self.$item.status.quantity.unwrap() {
-      self.$item.status.quantity.unwrap().map { (quantity: Binding<Int>) in
+
+      self.$item.status[/Item.Status.inStock].map { quantity in
+//      if let quantity = self.$item.status.matching(/Item.Status.inStock) {
         Section(header: Text("In stock")) {
           Stepper("Quantity: \(quantity.wrappedValue)", value: quantity)
           Button("Mark as sold out") {
@@ -156,27 +173,17 @@ struct ItemView: View {
         }
       }
 
-//      if self.item.status.isInStock {
-//        Section(header: Text("In stock")) {
-//          Stepper("Quantity: \(self.item.status.quantity)", value: self.$item.status.quantity)
-//          Button("Mark as sold out") {
-////            self.item.quantity = 0
-////            self.item.isInStock = false
-//            self.item.status = .outOfStock(isOnBackOrder: false)
-//          }
-//        }
+//      self.$item.status.quantity.unwrap().map { (quantity: Binding<Int>) in
+//
 //      }
-//      if !self.item.status.isInStock {
-      self.$item.status.isOnBackOrder.unwrap().map { isOnBackOrder in
+
+//      self.$item.status.isOnBackOrder.unwrap().map { isOnBackOrder in
+//      if let isOnBackOrder = self.$item.status[/Item.Status.outOfStock] {
+      self.$item.status[/Item.Status.outOfStock].map { isOnBackOrder in
         Section(header: Text("Out of stock")) {
           Toggle("Is on back order?", isOn:
-//            self.$item.transform(\.self)
-//            self.$item.map(\.self).map(\.status.isOnBackOrder).map(\.self)
-            //self.$item.transform(\.status).transform(\.isOnBackOrder)
             isOnBackOrder)
           Button("Is back in stock!") {
-//            self.item.quantity = 1
-//            self.item.isInStock = true
             self.item.status = .inStock(quantity: 1)
           }
         }

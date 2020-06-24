@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,6 +14,7 @@
 		2A6F01E224A3BA3600C64BEF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A6F01E124A3BA3600C64BEF /* Preview Assets.xcassets */; };
 		2A6F01E524A3BA3600C64BEF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A6F01E324A3BA3600C64BEF /* LaunchScreen.storyboard */; };
 		2A6F01F024A3BA3600C64BEF /* InventoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6F01EF24A3BA3600C64BEF /* InventoryTests.swift */; };
+		2A6F01FC24A3D96900C64BEF /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 2A6F01FB24A3D96900C64BEF /* CasePaths */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A6F01FC24A3D96900C64BEF /* CasePaths in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +125,9 @@
 			dependencies = (
 			);
 			name = Inventory;
+			packageProductDependencies = (
+				2A6F01FB24A3D96900C64BEF /* CasePaths */,
+			);
 			productName = Inventory;
 			productReference = 2A6F01D524A3BA3500C64BEF /* Inventory.app */;
 			productType = "com.apple.product-type.application";
@@ -173,6 +178,9 @@
 				Base,
 			);
 			mainGroup = 2A6F01CC24A3BA3500C64BEF;
+			packageReferences = (
+				2A6F01FA24A3D96900C64BEF /* XCRemoteSwiftPackageReference "swift-case-paths" */,
+			);
 			productRefGroup = 2A6F01D624A3BA3500C64BEF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -469,6 +477,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2A6F01FA24A3D96900C64BEF /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-case-paths";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2A6F01FB24A3D96900C64BEF /* CasePaths */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2A6F01FA24A3D96900C64BEF /* XCRemoteSwiftPackageReference "swift-case-paths" */;
+			productName = CasePaths;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2A6F01CD24A3BA3500C64BEF /* Project object */;
 }
