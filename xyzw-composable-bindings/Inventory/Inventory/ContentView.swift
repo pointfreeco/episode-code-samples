@@ -17,31 +17,33 @@ struct Item {
       return true
     }
     
-    var quantity: Int {
+    var quantity: Int? {
       get {
         switch self {
         case .inStock(quantity: let quantity):
           return quantity
         case .outOfStock:
-          return 0
+          return nil
         }
       }
       set {
 //        switch self {
 //        case .inStock:
-          self = .inStock(quantity: newValue)
+//          self = .inStock(quantity: newValue)
 //        case .outOfStock:
 //          break
 //        }
+        guard let quantity = newValue else { return }
+        self = .inStock(quantity: quantity)
       }
     }
     
-    var isOnBackOrder: Bool {
+    var isOnBackOrder: Bool? {
       get {
         guard case let .outOfStock(isOnBackOrder) = self else {
-          return false
+//          return false
 //          return true
-//          return nil
+          return nil
         }
         return isOnBackOrder
       }
@@ -50,7 +52,8 @@ struct Item {
 //        case .inStock:
 //          break
 //        case .outOfStock:
-          self = .outOfStock(isOnBackOrder: newValue)
+        guard let newValue = newValue else { return }
+        self = .outOfStock(isOnBackOrder: newValue)
 //        }
       }
     }
@@ -112,6 +115,17 @@ extension Binding {
   }
 }
 
+//extension <Wrapped> Binding where Value == Optional<Wrapped> {
+extension Binding {
+  func unwrap<Wrapped>() -> Binding<Wrapped>? where Value == Wrapped? {
+    guard let value = self.wrappedValue else { return nil }
+    return Binding<Wrapped>(
+      get: { value },
+      set: { self.wrappedValue = $0 }
+    )
+  }
+}
+
 struct ItemView: View {
   @Binding var item: Item
 
@@ -128,23 +142,38 @@ struct ItemView: View {
             .tag(Optional(color))
         }
       }
-
-      if self.item.status.isInStock {
+      
+      // (Binding<Int?>) -> Binding<Int>?
+      // unwrap: (Binding<A?>) -> Binding<A>?
+      
+//      if let quantity = self.$item.status.quantity.unwrap() {
+      self.$item.status.quantity.unwrap().map { (quantity: Binding<Int>) in
         Section(header: Text("In stock")) {
-          Stepper("Quantity: \(self.item.status.quantity)", value: self.$item.status.quantity)
+          Stepper("Quantity: \(quantity.wrappedValue)", value: quantity)
           Button("Mark as sold out") {
-//            self.item.quantity = 0
-//            self.item.isInStock = false
             self.item.status = .outOfStock(isOnBackOrder: false)
           }
         }
-      } else {
+      }
+
+//      if self.item.status.isInStock {
+//        Section(header: Text("In stock")) {
+//          Stepper("Quantity: \(self.item.status.quantity)", value: self.$item.status.quantity)
+//          Button("Mark as sold out") {
+////            self.item.quantity = 0
+////            self.item.isInStock = false
+//            self.item.status = .outOfStock(isOnBackOrder: false)
+//          }
+//        }
+//      }
+//      if !self.item.status.isInStock {
+      self.$item.status.isOnBackOrder.unwrap().map { isOnBackOrder in
         Section(header: Text("Out of stock")) {
           Toggle("Is on back order?", isOn:
 //            self.$item.transform(\.self)
-            self.$item.map(\.self).map(\.status.isOnBackOrder).map(\.self)
+//            self.$item.map(\.self).map(\.status.isOnBackOrder).map(\.self)
             //self.$item.transform(\.status).transform(\.isOnBackOrder)
-            /*self.$item.status.isOnBackOrder*/)
+            isOnBackOrder)
           Button("Is back in stock!") {
 //            self.item.quantity = 1
 //            self.item.isInStock = true
