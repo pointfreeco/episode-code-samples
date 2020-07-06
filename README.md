@@ -109,3 +109,4 @@ This repository is the home of code written on episodes of
 1. [Combine Schedulers: Testing Time](0104-combine-schedulers-pt1)
 1. [Combine Schedulers: Controlling Time](0105-combine-schedulers-pt2)
 1. [Combine Schedulers: Erasing Time](0106-combine-schedulers-pt3)
+1. [Composable SwiftUI Bindings: The Problem](0107-composable-bindings-pt1)
