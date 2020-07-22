@@ -111,3 +111,4 @@ This repository is the home of code written on episodes of
 1. [Combine Schedulers: Erasing Time](0106-combine-schedulers-pt3)
 1. [Composable SwiftUI Bindings: The Problem](0107-composable-bindings-pt1)
 1. [Composable SwiftUI Bindings: Case Paths](0108-composable-bindings-pt2)
+1. [Composable SwiftUI Bindings: The Point](0109-composable-bindings-pt3)
