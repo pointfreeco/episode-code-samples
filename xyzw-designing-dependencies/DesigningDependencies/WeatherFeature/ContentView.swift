@@ -2,15 +2,15 @@ import Combine
 import SwiftUI
 import WeatherClient
 
-class AppViewModel: ObservableObject {
+public class AppViewModel: ObservableObject {
   @Published var isConnected = true
   @Published var weatherResults: [WeatherResponse.ConsolidatedWeather] = []
 
   var weatherRequestCancellable: AnyCancellable?
 
-  init(
+  public init(
     isConnected: Bool = true,
-    weatherClient: WeatherClient = .live
+    weatherClient: WeatherClient
   ) {
     self.isConnected = isConnected
 
@@ -24,10 +24,14 @@ class AppViewModel: ObservableObject {
   }
 }
 
-struct ContentView: View {
+public struct ContentView: View {
   @ObservedObject var viewModel: AppViewModel
 
-  var body: some View {
+  public init(viewModel: AppViewModel) {
+    self.viewModel = viewModel
+  }
+
+  public var body: some View {
     NavigationView {
       ZStack(alignment: .bottom) {
         ZStack(alignment: .bottomTrailing) {
