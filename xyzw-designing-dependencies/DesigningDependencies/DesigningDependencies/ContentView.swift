@@ -7,13 +7,14 @@ class AppViewModel: ObservableObject {
 
   var weatherRequestCancellable: AnyCancellable?
 
-  init(isConnected: Bool = true) {
+  init(
+    isConnected: Bool = true,
+    weatherClient: WeatherClientProtocol = WeatherClient()
+  ) {
     self.isConnected = isConnected
 
-    self.weatherRequestCancellable = URLSession.shared.dataTaskPublisher(for: URL(string: "https://www.metaweather.com/api/location/2459115")!)
-      .map { data, _ in data }
-      .decode(type: WeatherResponse.self, decoder: weatherJsonDecoder)
-      .receive(on: DispatchQueue.main)
+    self.weatherRequestCancellable = weatherClient
+      .weather()
       .sink(
         receiveCompletion: { _ in },
         receiveValue: { [weak self] response in
@@ -72,7 +73,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView(viewModel: AppViewModel())
+    ContentView(viewModel: AppViewModel(weatherClient: MockWeatherClient()))
   }
 }
 
@@ -85,6 +86,37 @@ let dayOfWeekFormatter: DateFormatter = {
 
 
 import Foundation
+
+protocol WeatherClientProtocol {
+  func weather() -> AnyPublisher<WeatherResponse, Error>
+}
+
+struct WeatherClient: WeatherClientProtocol {
+  func weather() -> AnyPublisher<WeatherResponse, Error> {
+    URLSession.shared.dataTaskPublisher(for: URL(string: "https://www.metaweather.com/api/location/2459115")!)
+      .map { data, _ in data }
+      .decode(type: WeatherResponse.self, decoder: weatherJsonDecoder)
+      .receive(on: DispatchQueue.main)
+      .eraseToAnyPublisher()
+  }
+}
+
+struct MockWeatherClient: WeatherClientProtocol {
+  func weather() -> AnyPublisher<WeatherResponse, Error> {
+    Just(
+      WeatherResponse(
+        consolidatedWeather: [
+        .init(applicableDate: Date(), id: 1, maxTemp: 30, minTemp: 10, theTemp: 20),
+        .init(applicableDate: Date().addingTimeInterval(86400), id: 2, maxTemp: -10, minTemp: -30, theTemp: -20),
+        ]
+    )
+    )
+      .setFailureType(to: Error.self)
+      .delay(for: 2, scheduler: DispatchQueue.main)
+//    Fail(error: NSError(domain: "", code: 1, userInfo: nil))
+      .eraseToAnyPublisher()
+  }
+}
 
 struct WeatherResponse: Decodable, Equatable {
   var consolidatedWeather: [ConsolidatedWeather]
