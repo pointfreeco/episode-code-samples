@@ -210,10 +210,25 @@ struct ItemView: View {
   }
 }
 
+enum Draft: Identifiable {
+  case adding(Item)
+  case duplicating(Item)
+
+  var id: UUID {
+    switch self {
+    case let .adding(item):
+      return item.id
+    case let .duplicating(item):
+      return item.id
+    }
+  }
+}
+
 class InventoryViewModel: ObservableObject {
-  @Published var draft: Item?
+  //@Published var draft: Item?
+  @Published var draft: Draft?
   @Published var inventory: [Item]
-  
+
   init(
     inventory: [Item] = []
   ) {
@@ -221,26 +236,36 @@ class InventoryViewModel: ObservableObject {
   }
   
   func addButtonTapped() {
-    self.draft = Item(name: "", color: nil, status: .inStock(quantity: 1))
+    self.draft = .adding(Item(name: "", color: nil, status: .inStock(quantity: 1)))
   }
   
   func cancelButtonTapped() {
     self.draft = nil
   }
+
+  func saveButtonTapped(item: Item) {
+    self.inventory.append(item)
+  }
   
   func saveButtonTapped() {
-    if let item = self.draft {
+    switch self.draft {
+    case .none:
+      break
+    case let .adding(item),
+         let .duplicating(item):
       self.inventory.append(item)
     }
     self.draft = nil
   }
   
   func duplicate(item: Item) {
-    self.draft = Item(name: item.name, color: item.color, status: item.status) // item.duplicate()
+    self.draft = .duplicating(Item(name: item.name, color: item.color, status: item.status)) // item.duplicate()
   }
 }
 
 struct InventoryView: View {
+//  @State var draft: Item = .invalid //Item(name: "", color: nil, status: .inStock(quantity: 1))
+//  @State var isAdding = false
   @ObservedObject var viewModel: InventoryViewModel
   
   var body: some View {
@@ -270,7 +295,12 @@ struct InventoryView: View {
                 .border(Color.black, width: 1)
             }
             
-            Button(action: { self.viewModel.duplicate(item: item) }) {
+            Button(action: {
+              self.viewModel.duplicate(item: item)
+//              self.isAdding = true
+//              self.draft = Item(name: item.name, color: item.color, status: item.status)
+
+            }) {
               Image(systemName: "doc.on.doc.fill")
             }
             .padding(.leading)
@@ -282,22 +312,64 @@ struct InventoryView: View {
       .navigationBarTitle("Inventory")
       .navigationBarItems(
         trailing: Button("Add") {
+//          self.isAdding = true
+//          self.draft = Item(name: "", color: nil, status: .inStock(quantity: 1))
+
           self.viewModel.addButtonTapped()
         }
       )
 //        .sheet(item: self.$viewModel.draft) { _ in
 //          self.$viewModel.draft.unwrap().map { item in
-        .sheet(unwrap: self.$viewModel.draft) { item in
+
+//        .sheet(isPresented: self.$isAdding) {
+//          NavigationView {
+//            ItemView(item: self.$draft)
+//              .navigationBarItems(
+//                leading: Button("Cancel") {
+//                  self.isAdding = false
+////                  self.draft = Item(name: "", color: nil, status: .inStock(quantity: 1))
+//                },
+//                trailing: Button("Save") {
+//                  self.isAdding = false
+//                  self.viewModel.saveButtonTapped(item: self.draft)
+////                  self.draft = Item(name: "", color: nil, status: .inStock(quantity: 1))
+//                }
+//            )
+//              .onDisappear {
+////                self.draft = Item(name: "", color: nil, status: .inStock(quantity: 1))
+//            }
+//          }
+//      }
+
+
+        .sheet(unwrap: self.$viewModel.draft) { draft in
           NavigationView {
-            ItemView(item: item)
-              .navigationBarItems(
-                leading: Button("Cancel") { self.viewModel.cancelButtonTapped() },
-                trailing: Button("Save") { self.viewModel.saveButtonTapped() }
-            )
+
+            draft[/Draft.adding].map { item in
+              ItemView(item: item)
+                .navigationBarItems(
+                  leading: Button("Cancel") { self.viewModel.cancelButtonTapped() },
+                  trailing: Button("Save") { self.viewModel.saveButtonTapped() }
+              )
+              .navigationBarTitle("Add item")
+            }
+
+            draft[/Draft.duplicating].map { item in
+              ItemView(item: item)
+                .navigationBarItems(
+                  leading: Button("Cancel") { self.viewModel.cancelButtonTapped() },
+                  trailing: Button("Save") { self.viewModel.saveButtonTapped() }
+              )
+              .navigationBarTitle("Duplicate item")
+            }
           }
       }
     }
   }
+}
+
+extension Item {
+  static let invalid = Item(name: "Invalid", color: nil, status: .inStock(quantity: -1))
 }
 
 extension View {
