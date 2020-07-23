@@ -5,6 +5,62 @@ import Network
 import PathMonitorClient
 import WeatherClient
 
+struct LocationClient {
+  var authorizationStatus: () -> CLAuthorizationStatus
+  var requestWhenInUseAuthorization: () -> Void
+  var requestLocation: () -> Void
+//  var setDelegate: (CLLocationManagerDelegate) -> Void
+  
+//  var didChangeAuthorization: AnyPublisher<CLAuthorizationStatus, Never>
+//  var didUpdateLocations: AnyPublisher<[CLLocation], Never>
+//  var didFailWithError: AnyPublisher<Error, Never>
+  var delegate: AnyPublisher<DelegateEvent, Never>
+  
+  enum DelegateEvent {
+    case didChangeAuthorization(CLAuthorizationStatus)
+    case didUpdateLocations([CLLocation])
+    case didFailWithError(Error)
+  }
+}
+
+extension LocationClient {
+  static var live: Self {
+    class Delegate: NSObject, CLLocationManagerDelegate {
+      let subject: PassthroughSubject<DelegateEvent, Never>
+      
+      init(subject: PassthroughSubject<DelegateEvent, Never>) {
+        self.subject = subject
+      }
+      
+      func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        self.subject.send(.didChangeAuthorization(status))
+      }
+      
+      func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        self.subject.send(.didUpdateLocations(locations))
+      }
+      
+      func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        self.subject.send(.didFailWithError(error))
+      }
+    }
+    
+    let locationManager = CLLocationManager()
+    let subject = PassthroughSubject<DelegateEvent, Never>()
+    var delegate: Delegate? = Delegate(subject: subject)
+    locationManager.delegate = delegate
+    
+    return Self(
+      authorizationStatus: CLLocationManager.authorizationStatus,
+      requestWhenInUseAuthorization: locationManager.requestWhenInUseAuthorization,
+      requestLocation: locationManager.requestLocation,
+      delegate: subject
+        .handleEvents(receiveCancel: { delegate = nil })
+        .eraseToAnyPublisher()
+    )
+  }
+}
+
 public class AppViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
   @Published var currentLocation: Location?
   @Published var isConnected = true
@@ -125,6 +181,7 @@ public class AppViewModel: NSObject, ObservableObject, CLLocationManagerDelegate
   }
 
   public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+//    manager.
   }
 }
 
