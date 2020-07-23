@@ -27,6 +27,10 @@
 		2ACAD45024CA04F800352F1E /* PathMonitorClientLive in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44E24CA04F800352F1E /* PathMonitorClientLive */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2ACAD45224CA051D00352F1E /* WeatherClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD45124CA051D00352F1E /* WeatherClientLive */; };
 		2ACAD45324CA051D00352F1E /* WeatherClientLive in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD45124CA051D00352F1E /* WeatherClientLive */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4B28C0E824CA40A5001381C9 /* LocationClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 4B28C0E724CA40A5001381C9 /* LocationClientLive */; };
+		4B28C0E924CA40A5001381C9 /* LocationClientLive in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4B28C0E724CA40A5001381C9 /* LocationClientLive */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4B28C0EB24CA40AA001381C9 /* LocationClient in Frameworks */ = {isa = PBXBuildFile; productRef = 4B28C0EA24CA40AA001381C9 /* LocationClient */; };
+		4B28C0EC24CA40AA001381C9 /* LocationClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4B28C0EA24CA40AA001381C9 /* LocationClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +73,7 @@
 			files = (
 				2A55626524C8B82200955510 /* WeatherFeature.framework in Embed Frameworks */,
 				2ACAD45024CA04F800352F1E /* PathMonitorClientLive in Embed Frameworks */,
+				4B28C0E924CA40A5001381C9 /* LocationClientLive in Embed Frameworks */,
 				2ACAD45324CA051D00352F1E /* WeatherClientLive in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -80,6 +85,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				4B28C0EC24CA40AA001381C9 /* LocationClient in Embed Frameworks */,
 				2A55F5AB24C8BCB600ED4286 /* WeatherClient in Embed Frameworks */,
 				2ACAD44D24CA04F000352F1E /* PathMonitorClient in Embed Frameworks */,
 			);
@@ -108,6 +114,7 @@
 		2A55625F24C8B82200955510 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2ACAD44A24CA041E00352F1E /* PathMonitorClient */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PathMonitorClient; sourceTree = "<group>"; };
 		4B16222124C8B141007FE7AD /* WeatherClient */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WeatherClient; sourceTree = "<group>"; };
+		4B28C0E624CA3FA8001381C9 /* LocationClient */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LocationClient; path = DesigningDependencies/LocationClient; sourceTree = "<group>"; };
 		4B67DA2324C9EF880024EFB1 /* DesigningDependencies.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = DesigningDependencies.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
@@ -118,6 +125,7 @@
 			files = (
 				2ACAD44F24CA04F800352F1E /* PathMonitorClientLive in Frameworks */,
 				2A55626324C8B82200955510 /* WeatherFeature.framework in Frameworks */,
+				4B28C0E824CA40A5001381C9 /* LocationClientLive in Frameworks */,
 				2ACAD45224CA051D00352F1E /* WeatherClientLive in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,6 +141,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B28C0EB24CA40AA001381C9 /* LocationClient in Frameworks */,
 				2A55F5A924C8BCB600ED4286 /* WeatherClient in Frameworks */,
 				2ACAD44C24CA04F000352F1E /* PathMonitorClient in Frameworks */,
 			);
@@ -154,6 +163,7 @@
 			children = (
 				4B16222124C8B141007FE7AD /* WeatherClient */,
 				2ACAD44A24CA041E00352F1E /* PathMonitorClient */,
+				4B28C0E624CA3FA8001381C9 /* LocationClient */,
 				4B67DA2324C9EF880024EFB1 /* DesigningDependencies.playground */,
 				2A55622424C8972A00955510 /* DesigningDependencies */,
 				2A55623B24C8972B00955510 /* DesigningDependenciesTests */,
@@ -263,6 +273,7 @@
 			packageProductDependencies = (
 				2ACAD44E24CA04F800352F1E /* PathMonitorClientLive */,
 				2ACAD45124CA051D00352F1E /* WeatherClientLive */,
+				4B28C0E724CA40A5001381C9 /* LocationClientLive */,
 			);
 			productName = DesigningDependencies;
 			productReference = 2A55622224C8972A00955510 /* DesigningDependencies.app */;
@@ -304,6 +315,7 @@
 			packageProductDependencies = (
 				2A55F5A824C8BCB600ED4286 /* WeatherClient */,
 				2ACAD44B24CA04F000352F1E /* PathMonitorClient */,
+				4B28C0EA24CA40AA001381C9 /* LocationClient */,
 			);
 			productName = WeatherFeature;
 			productReference = 2A55624E24C8B82200955510 /* WeatherFeature.framework */;
@@ -836,6 +848,14 @@
 		2ACAD45124CA051D00352F1E /* WeatherClientLive */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WeatherClientLive;
+		};
+		4B28C0E724CA40A5001381C9 /* LocationClientLive */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LocationClientLive;
+		};
+		4B28C0EA24CA40AA001381C9 /* LocationClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LocationClient;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

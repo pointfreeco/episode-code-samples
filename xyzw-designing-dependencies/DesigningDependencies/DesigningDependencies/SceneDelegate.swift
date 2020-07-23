@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import LocationClientLive
 import PathMonitorClientLive
 import WeatherClientLive
 import WeatherFeature
@@ -10,6 +11,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     let contentView = ContentView(
       viewModel: AppViewModel(
+        locationClient: .live,
         pathMonitorClient: .live(queue: .main),
         weatherClient: .live
       )
