@@ -1,11 +1,13 @@
 import SwiftUI
 import UIKit
+import WeatherClientLive
+import WeatherFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
 
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-    let contentView = ContentView(viewModel: AppViewModel())
+    let contentView = ContentView(viewModel: AppViewModel(weatherClient: .live))
 
     if let windowScene = scene as? UIWindowScene {
         let window = UIWindow(windowScene: windowScene)
