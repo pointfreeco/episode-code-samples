@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import Network
 import WeatherClient
 
 public class AppViewModel: ObservableObject {
@@ -7,14 +8,35 @@ public class AppViewModel: ObservableObject {
   @Published var weatherResults: [WeatherResponse.ConsolidatedWeather] = []
 
   var weatherRequestCancellable: AnyCancellable?
+  
+  let weatherClient: WeatherClient
 
   public init(
-    isConnected: Bool = true,
+//    isConnected: Bool = true,
     weatherClient: WeatherClient
   ) {
-    self.isConnected = isConnected
+    self.weatherClient = weatherClient
+    
+    let pathMonitor = NWPathMonitor()
+//    self.isConnected = isConnected
+    pathMonitor.pathUpdateHandler = { [weak self] path in
+      guard let self = self else { return }
+      self.isConnected = path.status == .satisfied
+      if self.isConnected {
+        self.refreshWeather()
+      } else {
+        self.weatherResults = []
+      }
+    }
+    pathMonitor.start(queue: .main)
 
-    self.weatherRequestCancellable = weatherClient
+    self.refreshWeather()
+  }
+  
+  func refreshWeather() {
+    self.weatherResults = []
+    
+    self.weatherRequestCancellable = self.weatherClient
       .weather()
       .sink(
         receiveCompletion: { _ in },
