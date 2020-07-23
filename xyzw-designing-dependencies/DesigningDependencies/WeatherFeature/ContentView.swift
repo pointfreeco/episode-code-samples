@@ -1,18 +1,22 @@
 import Combine
+import CoreLocation
 import SwiftUI
 import Network
 import PathMonitorClient
 import WeatherClient
 
-public class AppViewModel: ObservableObject {
+public class AppViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
+  @Published var currentLocation: Location?
   @Published var isConnected = true
   @Published var weatherResults: [WeatherResponse.ConsolidatedWeather] = []
 
   var weatherRequestCancellable: AnyCancellable?
   var pathUpdateCancellable: AnyCancellable?
+  var searchLocationsCancellable: AnyCancellable?
 
   let weatherClient: WeatherClient
   let pathMonitorClient: PathMonitorClient
+  let locationManager = CLLocationManager()
 
   public init(
 //    isConnected: Bool = true,
@@ -24,6 +28,9 @@ public class AppViewModel: ObservableObject {
 //    let pathMonitor = NWPathMonitor()
 //    self.isConnected = isConnected
     self.pathMonitorClient = pathMonitorClient
+
+    super.init()
+
 //    self.pathMonitorClient.setPathUpdateHandler { [weak self] path in
     self.pathUpdateCancellable = self.pathMonitorClient.networkPathPublisher
       .map { $0.status == .satisfied }
@@ -40,6 +47,8 @@ public class AppViewModel: ObservableObject {
 //    self.pathMonitorClient.start(.main)
 
 //    self.refreshWeather()
+
+    self.locationManager.delegate = self
   }
 
 //  deinit {
@@ -47,15 +56,75 @@ public class AppViewModel: ObservableObject {
 //  }
   
   func refreshWeather() {
+    guard let location = self.currentLocation else { return }
+
     self.weatherResults = []
     
     self.weatherRequestCancellable = self.weatherClient
-      .weather()
+      .weather(location.woeid)
       .sink(
         receiveCompletion: { _ in },
         receiveValue: { [weak self] response in
           self?.weatherResults = response.consolidatedWeather
       })
+  }
+
+  func locationButtonTapped() {
+    switch CLLocationManager.authorizationStatus() {
+    case .notDetermined:
+      self.locationManager.requestWhenInUseAuthorization()
+
+    case .restricted:
+      // TODO: show an alert
+      break
+    case .denied:
+      // TODO: show an alert
+      break
+
+    case .authorizedAlways, .authorizedWhenInUse:
+      self.locationManager.requestLocation()
+
+    @unknown default:
+      break
+    }
+  }
+
+  public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+    switch status {
+    case .notDetermined:
+      break
+
+    case .restricted:
+      // TODO: show an alert
+      break
+    case .denied:
+      // TODO: show an alert
+      break
+
+    case .authorizedAlways, .authorizedWhenInUse:
+      self.locationManager.requestLocation()
+
+    @unknown default:
+      break
+    }
+  }
+
+  public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+
+    guard let location = locations.first else { return }
+
+    self.searchLocationsCancellable =  self.weatherClient
+      .searchLocations(location.coordinate)
+      .sink(
+        receiveCompletion: { _ in },
+        receiveValue: { [weak self] locations in
+          self?.currentLocation = locations.first
+          self?.refreshWeather()
+        }
+      )
+  }
+
+  public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
   }
 }
 
@@ -84,7 +153,7 @@ public struct ContentView: View {
           }
 
           Button(
-            action: {  }
+            action: { self.viewModel.locationButtonTapped() }
           ) {
             Image(systemName: "location.fill")
               .foregroundColor(.white)
@@ -106,7 +175,7 @@ public struct ContentView: View {
           .background(Color.red)
         }
       }
-      .navigationBarTitle("Weather")
+      .navigationBarTitle(self.viewModel.currentLocation?.title ?? "Weather")
     }
   }
 }
