@@ -5,7 +5,7 @@ import Network
 import PathMonitorClient
 import WeatherClient
 
-struct LocationClient {
+public struct LocationClient {
   var authorizationStatus: () -> CLAuthorizationStatus
   var requestWhenInUseAuthorization: () -> Void
   var requestLocation: () -> Void
@@ -61,7 +61,39 @@ extension LocationClient {
   }
 }
 
-public class AppViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
+extension LocationClient {
+  static var authorizedWhenInUse: Self {
+    let subject = PassthroughSubject<DelegateEvent, Never>()
+
+    return Self(
+      authorizationStatus: { .authorizedWhenInUse },
+      requestWhenInUseAuthorization: { },
+      requestLocation: {
+        subject.send(.didUpdateLocations([CLLocation()]))
+      },
+      delegate: subject.eraseToAnyPublisher()
+    )
+  }
+
+  static var notDetermined: Self {
+    var status = CLAuthorizationStatus.notDetermined
+    let subject = PassthroughSubject<DelegateEvent, Never>()
+
+    return Self(
+      authorizationStatus: { status },
+      requestWhenInUseAuthorization: {
+        status = .authorizedWhenInUse
+        subject.send(.didChangeAuthorization(status))
+      },
+      requestLocation: {
+        subject.send(.didUpdateLocations([CLLocation()]))
+      },
+      delegate: subject.eraseToAnyPublisher()
+    )
+  }
+}
+
+public class AppViewModel: ObservableObject {
   @Published var currentLocation: Location?
   @Published var isConnected = true
   @Published var weatherResults: [WeatherResponse.ConsolidatedWeather] = []
@@ -69,23 +101,21 @@ public class AppViewModel: NSObject, ObservableObject, CLLocationManagerDelegate
   var weatherRequestCancellable: AnyCancellable?
   var pathUpdateCancellable: AnyCancellable?
   var searchLocationsCancellable: AnyCancellable?
+  var locationDelegateCancellable: AnyCancellable?
 
   let weatherClient: WeatherClient
   let pathMonitorClient: PathMonitorClient
-  let locationManager = CLLocationManager()
+  let locationClient: LocationClient
 
   public init(
 //    isConnected: Bool = true,
+    locationClient: LocationClient,
     pathMonitorClient: PathMonitorClient,
     weatherClient: WeatherClient
   ) {
     self.weatherClient = weatherClient
-    
-//    let pathMonitor = NWPathMonitor()
-//    self.isConnected = isConnected
+    self.locationClient = locationClient
     self.pathMonitorClient = pathMonitorClient
-
-    super.init()
 
 //    self.pathMonitorClient.setPathUpdateHandler { [weak self] path in
     self.pathUpdateCancellable = self.pathMonitorClient.networkPathPublisher
@@ -100,11 +130,52 @@ public class AppViewModel: NSObject, ObservableObject, CLLocationManagerDelegate
           self.weatherResults = []
         }
       })
-//    self.pathMonitorClient.start(.main)
 
-//    self.refreshWeather()
+    //delegate
 
-    self.locationManager.delegate = self
+    self.locationDelegateCancellable = self.locationClient.delegate
+      .sink { event in
+        switch event {
+        case let .didChangeAuthorization(status):
+          switch status {
+          case .notDetermined:
+            break
+
+          case .restricted:
+            // TODO: show an alert
+            break
+          case .denied:
+            // TODO: show an alert
+            break
+
+          case .authorizedAlways, .authorizedWhenInUse:
+            self.locationClient.requestLocation()
+
+          @unknown default:
+            break
+          }
+
+        case let .didUpdateLocations(locations):
+          guard let location = locations.first else { return }
+
+          self.searchLocationsCancellable =  self.weatherClient
+            .searchLocations(location.coordinate)
+            .sink(
+              receiveCompletion: { _ in },
+              receiveValue: { [weak self] locations in
+                self?.currentLocation = locations.first
+                self?.refreshWeather()
+              }
+            )
+
+        case .didFailWithError:
+          break
+        }
+      }
+
+    if self.locationClient.authorizationStatus() == .authorizedWhenInUse {
+      self.locationClient.requestLocation()
+    }
   }
 
 //  deinit {
@@ -126,9 +197,9 @@ public class AppViewModel: NSObject, ObservableObject, CLLocationManagerDelegate
   }
 
   func locationButtonTapped() {
-    switch CLLocationManager.authorizationStatus() {
+    switch self.locationClient.authorizationStatus() {
     case .notDetermined:
-      self.locationManager.requestWhenInUseAuthorization()
+      self.locationClient.requestWhenInUseAuthorization()
 
     case .restricted:
       // TODO: show an alert
@@ -138,50 +209,11 @@ public class AppViewModel: NSObject, ObservableObject, CLLocationManagerDelegate
       break
 
     case .authorizedAlways, .authorizedWhenInUse:
-      self.locationManager.requestLocation()
+      self.locationClient.requestLocation()
 
     @unknown default:
       break
     }
-  }
-
-  public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-    switch status {
-    case .notDetermined:
-      break
-
-    case .restricted:
-      // TODO: show an alert
-      break
-    case .denied:
-      // TODO: show an alert
-      break
-
-    case .authorizedAlways, .authorizedWhenInUse:
-      self.locationManager.requestLocation()
-
-    @unknown default:
-      break
-    }
-  }
-
-  public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-
-    guard let location = locations.first else { return }
-
-    self.searchLocationsCancellable =  self.weatherClient
-      .searchLocations(location.coordinate)
-      .sink(
-        receiveCompletion: { _ in },
-        receiveValue: { [weak self] locations in
-          self?.currentLocation = locations.first
-          self?.refreshWeather()
-        }
-      )
-  }
-
-  public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-//    manager.
   }
 }
 
@@ -203,6 +235,7 @@ public struct ContentView: View {
                   .font(.title)
 
                 Text("Current temp: \(weather.theTemp, specifier: "%.1f")°C")
+                  .bold()
                 Text("Max temp: \(weather.maxTemp, specifier: "%.1f")°C")
                 Text("Min temp: \(weather.minTemp, specifier: "%.1f")°C")
               }
@@ -242,15 +275,9 @@ struct ContentView_Previews: PreviewProvider {
     return ContentView(
       viewModel: AppViewModel(
 //        isConnected: false,
-        pathMonitorClient: .flakey,
-        weatherClient: {
-          var client = WeatherClient.happyPath
-          client.searchLocations = { _ in
-            Fail(error: NSError(domain: "", code: 1))
-              .eraseToAnyPublisher()
-          }
-          return client
-      }()
+        locationClient: .notDetermined, // .notDeterminedDenied
+        pathMonitorClient: .satisfied,
+        weatherClient: .happyPath
       )
     )
   }
