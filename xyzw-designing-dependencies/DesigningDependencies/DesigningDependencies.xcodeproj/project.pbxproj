@@ -13,7 +13,6 @@
 		2A55622F24C8972B00955510 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A55622E24C8972B00955510 /* Preview Assets.xcassets */; };
 		2A55623224C8972B00955510 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A55623024C8972B00955510 /* LaunchScreen.storyboard */; };
 		2A55623D24C8972B00955510 /* DesigningDependenciesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A55623C24C8972B00955510 /* DesigningDependenciesTests.swift */; };
-		2A55624824C8B6E500955510 /* WeatherClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2A55624724C8B6E500955510 /* WeatherClientLive */; };
 		2A55625724C8B82200955510 /* WeatherFeature.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A55624E24C8B82200955510 /* WeatherFeature.framework */; };
 		2A55625E24C8B82200955510 /* WeatherFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A55625D24C8B82200955510 /* WeatherFeatureTests.swift */; };
 		2A55626024C8B82200955510 /* WeatherFeature.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A55625024C8B82200955510 /* WeatherFeature.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -22,6 +21,12 @@
 		2A55626C24C8B83300955510 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A55622924C8972A00955510 /* ContentView.swift */; };
 		2A55F5A924C8BCB600ED4286 /* WeatherClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2A55F5A824C8BCB600ED4286 /* WeatherClient */; };
 		2A55F5AB24C8BCB600ED4286 /* WeatherClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A55F5A824C8BCB600ED4286 /* WeatherClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2ACAD44C24CA04F000352F1E /* PathMonitorClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44B24CA04F000352F1E /* PathMonitorClient */; };
+		2ACAD44D24CA04F000352F1E /* PathMonitorClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44B24CA04F000352F1E /* PathMonitorClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2ACAD44F24CA04F800352F1E /* PathMonitorClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44E24CA04F800352F1E /* PathMonitorClientLive */; };
+		2ACAD45024CA04F800352F1E /* PathMonitorClientLive in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44E24CA04F800352F1E /* PathMonitorClientLive */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2ACAD45224CA051D00352F1E /* WeatherClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD45124CA051D00352F1E /* WeatherClientLive */; };
+		2ACAD45324CA051D00352F1E /* WeatherClientLive in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD45124CA051D00352F1E /* WeatherClientLive */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +68,8 @@
 			dstSubfolderSpec = 10;
 			files = (
 				2A55626524C8B82200955510 /* WeatherFeature.framework in Embed Frameworks */,
+				2ACAD45024CA04F800352F1E /* PathMonitorClientLive in Embed Frameworks */,
+				2ACAD45324CA051D00352F1E /* WeatherClientLive in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,6 +81,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				2A55F5AB24C8BCB600ED4286 /* WeatherClient in Embed Frameworks */,
+				2ACAD44D24CA04F000352F1E /* PathMonitorClient in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,6 +106,7 @@
 		2A55625624C8B82200955510 /* WeatherFeatureTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherFeatureTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A55625D24C8B82200955510 /* WeatherFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherFeatureTests.swift; sourceTree = "<group>"; };
 		2A55625F24C8B82200955510 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2ACAD44A24CA041E00352F1E /* PathMonitorClient */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PathMonitorClient; sourceTree = "<group>"; };
 		4B16222124C8B141007FE7AD /* WeatherClient */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WeatherClient; sourceTree = "<group>"; };
 		4B67DA2324C9EF880024EFB1 /* DesigningDependencies.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = DesigningDependencies.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
@@ -107,8 +116,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A55624824C8B6E500955510 /* WeatherClientLive in Frameworks */,
+				2ACAD44F24CA04F800352F1E /* PathMonitorClientLive in Frameworks */,
 				2A55626324C8B82200955510 /* WeatherFeature.framework in Frameworks */,
+				2ACAD45224CA051D00352F1E /* WeatherClientLive in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,6 +134,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2A55F5A924C8BCB600ED4286 /* WeatherClient in Frameworks */,
+				2ACAD44C24CA04F000352F1E /* PathMonitorClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,6 +152,8 @@
 		2A55621924C8972A00955510 = {
 			isa = PBXGroup;
 			children = (
+				4B16222124C8B141007FE7AD /* WeatherClient */,
+				2ACAD44A24CA041E00352F1E /* PathMonitorClient */,
 				4B67DA2324C9EF880024EFB1 /* DesigningDependencies.playground */,
 				2A55622424C8972A00955510 /* DesigningDependencies */,
 				2A55623B24C8972B00955510 /* DesigningDependenciesTests */,
@@ -165,7 +178,6 @@
 		2A55622424C8972A00955510 /* DesigningDependencies */ = {
 			isa = PBXGroup;
 			children = (
-				4B16222124C8B141007FE7AD /* WeatherClient */,
 				2A55622524C8972A00955510 /* AppDelegate.swift */,
 				2A55622724C8972A00955510 /* SceneDelegate.swift */,
 				2A55622B24C8972B00955510 /* Assets.xcassets */,
@@ -249,7 +261,8 @@
 			);
 			name = DesigningDependencies;
 			packageProductDependencies = (
-				2A55624724C8B6E500955510 /* WeatherClientLive */,
+				2ACAD44E24CA04F800352F1E /* PathMonitorClientLive */,
+				2ACAD45124CA051D00352F1E /* WeatherClientLive */,
 			);
 			productName = DesigningDependencies;
 			productReference = 2A55622224C8972A00955510 /* DesigningDependencies.app */;
@@ -290,6 +303,7 @@
 			name = WeatherFeature;
 			packageProductDependencies = (
 				2A55F5A824C8BCB600ED4286 /* WeatherClient */,
+				2ACAD44B24CA04F000352F1E /* PathMonitorClient */,
 			);
 			productName = WeatherFeature;
 			productReference = 2A55624E24C8B82200955510 /* WeatherFeature.framework */;
@@ -807,13 +821,21 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2A55624724C8B6E500955510 /* WeatherClientLive */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = WeatherClientLive;
-		};
 		2A55F5A824C8BCB600ED4286 /* WeatherClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WeatherClient;
+		};
+		2ACAD44B24CA04F000352F1E /* PathMonitorClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PathMonitorClient;
+		};
+		2ACAD44E24CA04F800352F1E /* PathMonitorClientLive */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PathMonitorClientLive;
+		};
+		2ACAD45124CA051D00352F1E /* WeatherClientLive */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WeatherClientLive;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

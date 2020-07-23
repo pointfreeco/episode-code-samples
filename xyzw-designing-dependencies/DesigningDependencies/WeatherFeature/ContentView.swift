@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 import Network
+import PathMonitorClient
 import WeatherClient
 
 public class AppViewModel: ObservableObject {
@@ -10,16 +11,19 @@ public class AppViewModel: ObservableObject {
   var weatherRequestCancellable: AnyCancellable?
   
   let weatherClient: WeatherClient
+  let pathMonitorClient: PathMonitorClient
 
   public init(
 //    isConnected: Bool = true,
+    pathMonitorClient: PathMonitorClient,
     weatherClient: WeatherClient
   ) {
     self.weatherClient = weatherClient
     
-    let pathMonitor = NWPathMonitor()
+//    let pathMonitor = NWPathMonitor()
 //    self.isConnected = isConnected
-    pathMonitor.pathUpdateHandler = { [weak self] path in
+    self.pathMonitorClient = pathMonitorClient
+    self.pathMonitorClient.setPathUpdateHandler { [weak self] path in
       guard let self = self else { return }
       self.isConnected = path.status == .satisfied
       if self.isConnected {
@@ -28,9 +32,13 @@ public class AppViewModel: ObservableObject {
         self.weatherResults = []
       }
     }
-    pathMonitor.start(queue: .main)
+    self.pathMonitorClient.start(.main)
 
-    self.refreshWeather()
+//    self.refreshWeather()
+  }
+
+  deinit {
+    self.pathMonitorClient.cancel()
   }
   
   func refreshWeather() {
@@ -102,6 +110,8 @@ struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     return ContentView(
       viewModel: AppViewModel(
+//        isConnected: false,
+        pathMonitorClient: .flakey,
         weatherClient: {
           var client = WeatherClient.happyPath
           client.searchLocations = { _ in
