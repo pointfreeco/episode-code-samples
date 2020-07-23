@@ -40,6 +40,7 @@
 		2A55623C24C8972B00955510 /* DesigningDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesigningDependenciesTests.swift; sourceTree = "<group>"; };
 		2A55623E24C8972B00955510 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4B16222124C8B141007FE7AD /* WeatherClient */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WeatherClient; sourceTree = "<group>"; };
+		4B67DA2324C9EF880024EFB1 /* DesigningDependencies.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = DesigningDependencies.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +65,7 @@
 		2A55621924C8972A00955510 = {
 			isa = PBXGroup;
 			children = (
+				4B67DA2324C9EF880024EFB1 /* DesigningDependencies.playground */,
 				2A55622424C8972A00955510 /* DesigningDependencies */,
 				2A55623B24C8972B00955510 /* DesigningDependenciesTests */,
 				2A55622324C8972A00955510 /* Products */,
