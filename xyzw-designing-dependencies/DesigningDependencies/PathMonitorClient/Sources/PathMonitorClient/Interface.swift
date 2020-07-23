@@ -1,3 +1,4 @@
+import Combine
 import Network
 
 public struct NetworkPath {
@@ -15,17 +16,11 @@ extension NetworkPath {
 }
 
 public struct PathMonitorClient {
-  public var cancel: () -> Void
-  public var setPathUpdateHandler: (@escaping (NetworkPath) -> Void) -> Void
-  public var start: (DispatchQueue) -> Void
+  public var networkPathPublisher: AnyPublisher<NetworkPath, Never>
 
   public init(
-    cancel: @escaping () -> Void,
-    setPathUpdateHandler: @escaping (@escaping (NetworkPath) -> Void) -> Void,
-    start: @escaping (DispatchQueue) -> Void
+    networkPathPublisher: AnyPublisher<NetworkPath, Never>
   ) {
-    self.cancel = cancel
-    self.setPathUpdateHandler = setPathUpdateHandler
-    self.start = start
+    self.networkPathPublisher = networkPathPublisher
   }
 }

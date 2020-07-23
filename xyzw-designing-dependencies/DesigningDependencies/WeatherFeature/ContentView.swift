@@ -9,7 +9,8 @@ public class AppViewModel: ObservableObject {
   @Published var weatherResults: [WeatherResponse.ConsolidatedWeather] = []
 
   var weatherRequestCancellable: AnyCancellable?
-  
+  var pathUpdateCancellable: AnyCancellable?
+
   let weatherClient: WeatherClient
   let pathMonitorClient: PathMonitorClient
 
@@ -23,23 +24,27 @@ public class AppViewModel: ObservableObject {
 //    let pathMonitor = NWPathMonitor()
 //    self.isConnected = isConnected
     self.pathMonitorClient = pathMonitorClient
-    self.pathMonitorClient.setPathUpdateHandler { [weak self] path in
-      guard let self = self else { return }
-      self.isConnected = path.status == .satisfied
-      if self.isConnected {
-        self.refreshWeather()
-      } else {
-        self.weatherResults = []
-      }
-    }
-    self.pathMonitorClient.start(.main)
+//    self.pathMonitorClient.setPathUpdateHandler { [weak self] path in
+    self.pathUpdateCancellable = self.pathMonitorClient.networkPathPublisher
+      .map { $0.status == .satisfied }
+      .removeDuplicates()
+      .sink(receiveValue: { [weak self] isConnected in
+        guard let self = self else { return }
+        self.isConnected = isConnected
+        if self.isConnected {
+          self.refreshWeather()
+        } else {
+          self.weatherResults = []
+        }
+      })
+//    self.pathMonitorClient.start(.main)
 
 //    self.refreshWeather()
   }
 
-  deinit {
-    self.pathMonitorClient.cancel()
-  }
+//  deinit {
+//    self.pathMonitorClient.cancel()
+//  }
   
   func refreshWeather() {
     self.weatherResults = []

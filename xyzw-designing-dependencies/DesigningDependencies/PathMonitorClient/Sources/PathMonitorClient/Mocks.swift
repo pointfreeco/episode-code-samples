@@ -1,33 +1,25 @@
+import Combine
 import Foundation
 import Network
 
 extension PathMonitorClient {
   public static let satisfied = Self(
-    cancel: { },
-    setPathUpdateHandler: { callback in
-      callback(NetworkPath(status: .satisfied))
-    },
-    start: { _ in }
+    networkPathPublisher: Just(NetworkPath(status: .satisfied))
+      .eraseToAnyPublisher()
   )
 
   public static let unsatisfied = Self(
-    cancel: { },
-    setPathUpdateHandler: { callback in
-      callback(NetworkPath(status: .unsatisfied))
-    },
-    start: { _ in }
+    networkPathPublisher: Just(NetworkPath(status: .unsatisfied))
+      .eraseToAnyPublisher()
   )
 
   public static let flakey = Self(
-    cancel: { },
-    setPathUpdateHandler: { callback in
-      var status = NWPath.Status.satisfied
-
-      Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-        callback(.init(status: status))
-        status = status == .satisfied ? .unsatisfied : .satisfied
+    networkPathPublisher: Timer.publish(every: 2, on: .main, in: .default)
+      .autoconnect()
+      .scan(.satisfied) { status, _ in
+        status == .satisfied ? .unsatisfied : .satisfied
       }
-    },
-    start: { _ in }
+      .map { NetworkPath(status: $0) }
+      .eraseToAnyPublisher()
   )
 }
