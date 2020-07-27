@@ -112,3 +112,4 @@ This repository is the home of code written on episodes of
 1. [Composable SwiftUI Bindings: The Problem](0107-composable-bindings-pt1)
 1. [Composable SwiftUI Bindings: Case Paths](0108-composable-bindings-pt2)
 1. [Composable SwiftUI Bindings: The Point](0109-composable-bindings-pt3)
+1. [Designing Dependencies: The Problem](0110-designing-dependencies-pt1)
