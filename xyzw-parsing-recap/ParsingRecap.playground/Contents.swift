@@ -235,3 +235,96 @@ let temperature = zip(.int, .prefix("°F"))
 
 temperature.run("100°F")
 temperature.run("-100°F")
+
+"40.446° N"
+"40.446° S"
+
+let northSouth = Parser.char.flatMap {
+  $0 == "N" ? .always(1.0)
+    : $0 == "S" ? .always(-1)
+    : .never
+}
+
+let eastWest = Parser.char.flatMap {
+  $0 == "E" ? .always(1.0)
+    : $0 == "W" ? .always(-1)
+    : .never
+}
+
+
+func zip<Output1, Output2, Output3>(
+  _ p1: Parser<Output1>,
+  _ p2: Parser<Output2>,
+  _ p3: Parser<Output3>
+) -> Parser<(Output1, Output2, Output3)> {
+  zip(p1, zip(p2, p3))
+    .map { output1, output23 in (output1, output23.0, output23.1) }
+}
+
+let latitude = zip(.double, .prefix("° "), northSouth)
+  .map { latitude, _, latSign in
+    latitude * latSign
+  }
+
+let longitude = zip(.double, .prefix("° "), eastWest)
+  .map { longitude, _, longSign in
+    longitude * longSign
+  }
+
+"40.446° N, 79.982° W"
+
+struct Coordinate {
+  let latitude: Double
+  let longitude: Double
+}
+
+let coord = zip(
+  latitude,
+  .prefix(", "),
+  longitude
+)
+  .map { lat, _, long in
+    Coordinate(latitude: lat, longitude: long)
+  }
+
+
+enum Currency { case eur, gbp, usd }
+
+extension Parser {
+  static func oneOf(_ ps: [Self]) -> Self {
+    .init { input in
+      for p in ps {
+        if let match = p.run(&input) {
+          return match
+        }
+      }
+      return nil
+    }
+  }
+  
+  static func oneOf(_ ps: Self...) -> Self {
+    self.oneOf(ps)
+  }
+}
+
+
+let currency = Parser.oneOf(
+  Parser.prefix("€").map { Currency.eur },
+  Parser.prefix("£").map { .gbp },
+  Parser.prefix("$").map { .usd }
+)
+
+"$100"
+
+
+struct Money {
+  let currency: Currency
+  let value: Double
+}
+
+let money = zip(currency, .double)
+  .map(Money.init(currency:value:))
+
+money.run("$100")
+money.run("£100")
+money.run("€100")
