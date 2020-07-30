@@ -69,7 +69,7 @@ public class AppViewModel: ObservableObject {
           }
 
         case let .didUpdateLocations(locations):
-          guard let location = locations.first else { return }
+          guard self.isConnected, let location = locations.first else { return }
 
           self.searchLocationsCancellable =  self.weatherClient
             .searchLocations(location.coordinate)

@@ -5,41 +5,95 @@ import PathMonitorClient
 import XCTest
 @testable import WeatherFeature
 
+extension WeatherResponse {
+  static let moderateWeather = WeatherResponse(
+    consolidatedWeather: [
+      .init(
+        applicableDate: Date(timeIntervalSinceReferenceDate: 0),
+        id: 1,
+        maxTemp: 30,
+        minTemp: 20,
+        theTemp: 25
+      ),
+    ]
+  )
+}
+
+extension Location {
+  static let brooklyn = Location(title: "Brooklyn", woeid: 1)
+}
+
+extension AnyPublisher {
+  init(_ value: Output) {
+    self = Just(value).setFailureType(to: Failure.self).eraseToAnyPublisher()
+  }
+}
+
+extension WeatherClient {
+  static let unimplemented = Self(
+    weather: { _ in fatalError() },
+    searchLocations: { _ in fatalError() }
+  )
+}
+
 class WeatherFeatureTests: XCTestCase {
 
   func testBasics() {
-    let moderateWeather = WeatherResponse(
-      consolidatedWeather: [
-        .init(
-          applicableDate: Date(timeIntervalSinceReferenceDate: 0),
-          id: 1,
-          maxTemp: 30,
-          minTemp: 20,
-          theTemp: 25
-        ),
-      ]
-    )
-    let brooklyn = Location(title: "Brooklyn", woeid: 1)
-
     let viewModel = AppViewModel(
       locationClient: .authorizedWhenInUse,
       pathMonitorClient: .satisfied,
       weatherClient: WeatherClient(
-        weather: { _ in
-          Just(moderateWeather)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-        },
-        searchLocations: { _ in
-          Just([brooklyn])
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-        }
+        weather: { _ in .init(.moderateWeather) },
+        searchLocations: { _ in .init([.brooklyn]) }
       )
     )
 
-    XCTAssertEqual(viewModel.currentLocation, brooklyn)
+    XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
-    XCTAssertEqual(viewModel.weatherResults, moderateWeather.consolidatedWeather)
+    XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
+  }
+  
+  func testDisconnected() {
+    let viewModel = AppViewModel(
+      locationClient: .authorizedWhenInUse,
+      pathMonitorClient: .unsatisfied,
+      weatherClient: .unimplemented
+    )
+    
+    XCTAssertEqual(viewModel.currentLocation, nil)
+    XCTAssertEqual(viewModel.isConnected, false)
+    XCTAssertEqual(viewModel.weatherResults, [])
+  }
+  
+  func testPathUpdates() {
+    let pathUpdateSubject = PassthroughSubject<NetworkPath, Never>()
+    let viewModel = AppViewModel(
+      locationClient: .authorizedWhenInUse,
+      pathMonitorClient: PathMonitorClient(
+        networkPathPublisher: pathUpdateSubject
+          .eraseToAnyPublisher()
+      ),
+      weatherClient: WeatherClient(
+        weather: { _ in .init(.moderateWeather) },
+        searchLocations: { _ in .init([.brooklyn]) }
+      )
+    )
+    pathUpdateSubject.send(.init(status: .satisfied))
+    
+    XCTAssertEqual(viewModel.currentLocation, .brooklyn)
+    XCTAssertEqual(viewModel.isConnected, true)
+    XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
+    
+    pathUpdateSubject.send(.init(status: .unsatisfied))
+    
+    XCTAssertEqual(viewModel.currentLocation, .brooklyn)
+    XCTAssertEqual(viewModel.isConnected, false)
+    XCTAssertEqual(viewModel.weatherResults, [])
+    
+    pathUpdateSubject.send(.init(status: .satisfied))
+    
+    XCTAssertEqual(viewModel.currentLocation, .brooklyn)
+    XCTAssertEqual(viewModel.isConnected, true)
+    XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
   }
 }
