@@ -21,6 +21,12 @@
 		2A55626C24C8B83300955510 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A55622924C8972A00955510 /* ContentView.swift */; };
 		2A55F5A924C8BCB600ED4286 /* WeatherClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2A55F5A824C8BCB600ED4286 /* WeatherClient */; };
 		2A55F5AB24C8BCB600ED4286 /* WeatherClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A55F5A824C8BCB600ED4286 /* WeatherClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2A99D92424D3157D00008F0B /* LocationClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2A99D92324D3157D00008F0B /* LocationClient */; };
+		2A99D92624D3157D00008F0B /* LocationClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A99D92324D3157D00008F0B /* LocationClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2A99D92824D3157D00008F0B /* PathMonitorClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2A99D92724D3157D00008F0B /* PathMonitorClient */; };
+		2A99D92924D3157D00008F0B /* PathMonitorClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A99D92724D3157D00008F0B /* PathMonitorClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2A99D92B24D3157D00008F0B /* WeatherClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2A99D92A24D3157D00008F0B /* WeatherClient */; };
+		2A99D92C24D3157D00008F0B /* WeatherClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A99D92A24D3157D00008F0B /* WeatherClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2ACAD44C24CA04F000352F1E /* PathMonitorClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44B24CA04F000352F1E /* PathMonitorClient */; };
 		2ACAD44D24CA04F000352F1E /* PathMonitorClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44B24CA04F000352F1E /* PathMonitorClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2ACAD44F24CA04F800352F1E /* PathMonitorClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44E24CA04F800352F1E /* PathMonitorClientLive */; };
@@ -55,13 +61,6 @@
 			remoteGlobalIDString = 2A55624D24C8B82200955510;
 			remoteInfo = WeatherFeature;
 		};
-		2A64479924C8B93E00ECE190 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2A55621A24C8972A00955510 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2A55622124C8972A00955510;
-			remoteInfo = DesigningDependencies;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -88,6 +87,19 @@
 				4B28C0EC24CA40AA001381C9 /* LocationClient in Embed Frameworks */,
 				2A55F5AB24C8BCB600ED4286 /* WeatherClient in Embed Frameworks */,
 				2ACAD44D24CA04F000352F1E /* PathMonitorClient in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A99D92524D3157D00008F0B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2A99D92624D3157D00008F0B /* LocationClient in Embed Frameworks */,
+				2A99D92C24D3157D00008F0B /* WeatherClient in Embed Frameworks */,
+				2A99D92924D3157D00008F0B /* PathMonitorClient in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -151,6 +163,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A99D92B24D3157D00008F0B /* WeatherClient in Frameworks */,
+				2A99D92824D3157D00008F0B /* PathMonitorClient in Frameworks */,
+				2A99D92424D3157D00008F0B /* LocationClient in Frameworks */,
 				2A55625724C8B82200955510 /* WeatherFeature.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -328,14 +343,19 @@
 				2A55625224C8B82200955510 /* Sources */,
 				2A55625324C8B82200955510 /* Frameworks */,
 				2A55625424C8B82200955510 /* Resources */,
+				2A99D92524D3157D00008F0B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				2A64479A24C8B93E00ECE190 /* PBXTargetDependency */,
 				2A55625924C8B82200955510 /* PBXTargetDependency */,
 			);
 			name = WeatherFeatureTests;
+			packageProductDependencies = (
+				2A99D92324D3157D00008F0B /* LocationClient */,
+				2A99D92724D3157D00008F0B /* PathMonitorClient */,
+				2A99D92A24D3157D00008F0B /* WeatherClient */,
+			);
 			productName = WeatherFeatureTests;
 			productReference = 2A55625624C8B82200955510 /* WeatherFeatureTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -362,7 +382,6 @@
 					};
 					2A55625524C8B82200955510 = {
 						CreatedOnToolsVersion = 11.6;
-						TestTargetID = 2A55622124C8972A00955510;
 					};
 				};
 			};
@@ -472,11 +491,6 @@
 			isa = PBXTargetDependency;
 			target = 2A55624D24C8B82200955510 /* WeatherFeature */;
 			targetProxy = 2A55626124C8B82200955510 /* PBXContainerItemProxy */;
-		};
-		2A64479A24C8B93E00ECE190 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2A55622124C8972A00955510 /* DesigningDependencies */;
-			targetProxy = 2A64479924C8B93E00ECE190 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -759,7 +773,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DesigningDependencies.app/DesigningDependencies";
 			};
 			name = Debug;
 		};
@@ -778,7 +791,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DesigningDependencies.app/DesigningDependencies";
 			};
 			name = Release;
 		};
@@ -834,6 +846,18 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		2A55F5A824C8BCB600ED4286 /* WeatherClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WeatherClient;
+		};
+		2A99D92324D3157D00008F0B /* LocationClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LocationClient;
+		};
+		2A99D92724D3157D00008F0B /* PathMonitorClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PathMonitorClient;
+		};
+		2A99D92A24D3157D00008F0B /* WeatherClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WeatherClient;
 		};

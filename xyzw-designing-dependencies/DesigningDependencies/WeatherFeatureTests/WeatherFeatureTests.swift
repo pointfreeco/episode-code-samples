@@ -1,34 +1,45 @@
-//
-//  WeatherFeatureTests.swift
-//  WeatherFeatureTests
-//
-//  Created by Point-Free on 7/22/20.
-//  Copyright © 2020 Point-Free. All rights reserved.
-//
-
+import Combine
+import LocationClient
+import PathMonitorClient
+@testable import WeatherClient
 import XCTest
 @testable import WeatherFeature
 
 class WeatherFeatureTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+  func testBasics() {
+    let moderateWeather = WeatherResponse(
+      consolidatedWeather: [
+        .init(
+          applicableDate: Date(timeIntervalSinceReferenceDate: 0),
+          id: 1,
+          maxTemp: 30,
+          minTemp: 20,
+          theTemp: 25
+        ),
+      ]
+    )
+    let brooklyn = Location(title: "Brooklyn", woeid: 1)
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    let viewModel = AppViewModel(
+      locationClient: .authorizedWhenInUse,
+      pathMonitorClient: .satisfied,
+      weatherClient: WeatherClient(
+        weather: { _ in
+          Just(moderateWeather)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+        },
+        searchLocations: { _ in
+          Just([brooklyn])
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
         }
-    }
+      )
+    )
 
+    XCTAssertEqual(viewModel.currentLocation, brooklyn)
+    XCTAssertEqual(viewModel.isConnected, true)
+    XCTAssertEqual(viewModel.weatherResults, moderateWeather.consolidatedWeather)
+  }
 }
