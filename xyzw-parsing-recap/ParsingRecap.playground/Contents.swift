@@ -159,3 +159,79 @@ extension Parser where Output == Void {
 }
 
 Parser.prefix("Hello").run("Hello Blob")
+
+extension Parser {
+  func map<NewOutput>(_ f: @escaping (Output) -> NewOutput) -> Parser<NewOutput> {
+    .init { input in
+      self.run(&input).map(f)
+    }
+  }
+}
+
+let even = Parser.int.map { $0.isMultiple(of: 2) }
+
+even.run("123 Hello")
+even.run("124 Hello")
+
+
+extension Parser {
+  func flatMap<NewOutput>(
+    _ f: @escaping (Output) -> Parser<NewOutput>
+  ) -> Parser<NewOutput> {
+    .init { input in
+      let original = input
+      let output = self.run(&input)
+      let newParser = output.map(f)
+      guard let newOutput = newParser?.run(&input) else {
+        input = original
+        return nil
+      }
+      return newOutput
+    }
+  }
+}
+
+extension Parser {
+  static func always(_ output: Output) -> Self {
+    Self { _ in output }
+  }
+
+  static var never: Self {
+    Self { _ in nil }
+  }
+}
+
+let evenInt = Parser.int
+  .flatMap { n in
+    n.isMultiple(of: 2)
+      ? .always(n)
+      : .never
+  }
+
+evenInt.run("123 Hello")
+evenInt.run("124 Hello")
+
+
+func zip<Output1, Output2>(
+  _ p1: Parser<Output1>,
+  _ p2: Parser<Output2>
+) -> Parser<(Output1, Output2)> {
+
+  .init { input -> (Output1, Output2)? in
+    let original = input
+    guard let output1 = p1.run(&input) else { return nil }
+    guard let output2 = p2.run(&input) else {
+      input = original
+      return nil
+    }
+    return (output1, output2)
+  }
+}
+
+"100°F"
+
+let temperature = zip(.int, .prefix("°F"))
+  .map { temperature, _ in temperature }
+
+temperature.run("100°F")
+temperature.run("-100°F")
