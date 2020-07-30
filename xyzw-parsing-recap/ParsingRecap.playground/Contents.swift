@@ -230,7 +230,7 @@ func zip<Output1, Output2>(
 
 "100°F"
 
-let temperature = zip(.int, .prefix("°F"))
+let temperature = zip(.int, "°F")
   .map { temperature, _ in temperature }
 
 temperature.run("100°F")
@@ -261,12 +261,12 @@ func zip<Output1, Output2, Output3>(
     .map { output1, output23 in (output1, output23.0, output23.1) }
 }
 
-let latitude = zip(.double, .prefix("° "), northSouth)
+let latitude = zip(.double, "° ", northSouth)
   .map { latitude, _, latSign in
     latitude * latSign
   }
 
-let longitude = zip(.double, .prefix("° "), eastWest)
+let longitude = zip(.double, "° ", eastWest)
   .map { longitude, _, longSign in
     longitude * longSign
   }
@@ -278,9 +278,25 @@ struct Coordinate {
   let longitude: Double
 }
 
+extension Parser: ExpressibleByUnicodeScalarLiteral where Output == Void {
+  typealias UnicodeScalarLiteralType = StringLiteralType
+}
+
+extension Parser: ExpressibleByExtendedGraphemeClusterLiteral where Output == Void {
+  typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
+}
+
+extension Parser: ExpressibleByStringLiteral where Output == Void {
+  typealias StringLiteralType = String
+  
+  init(stringLiteral value: String) {
+    self = .prefix(value)
+  }
+}
+
 let coord = zip(
   latitude,
-  .prefix(", "),
+  ", ",
   longitude
 )
   .map { lat, _, long in
@@ -444,7 +460,7 @@ func zip<A, B, C, D, E>(
 
 extension Parser {
   func zeroOrMore(
-    separatedBy separator: Parser<Void>
+    separatedBy separator: Parser<Void> = ""
   ) -> Parser<[Output]> {
     Parser<[Output]> { input in
       var rest = input
@@ -464,10 +480,10 @@ extension Parser {
 
 let race = zip(
   .prefix(while: { $0 != "," }),
-  .prefix(", "),
+  ", ",
   money,
-  .prefix("\n"),
-  coord.zeroOrMore(separatedBy: .prefix("\n"))
+  "\n",
+  coord.zeroOrMore(separatedBy: "\n")
 )
 .map { locationName, _, entranceFee, _, path in
   Race(
@@ -477,7 +493,7 @@ let race = zip(
   )
 }
 
-let races = race.zeroOrMore(separatedBy: .prefix("\n---\n"))
+let races = race.zeroOrMore(separatedBy: "\n---\n")
 
 dump(
 races.run(upcomingRaces)
