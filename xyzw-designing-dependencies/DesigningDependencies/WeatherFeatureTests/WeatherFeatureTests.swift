@@ -1,4 +1,5 @@
 import Combine
+import CoreLocation
 import LocationClient
 import PathMonitorClient
 @testable import WeatherClient
@@ -95,5 +96,73 @@ class WeatherFeatureTests: XCTestCase {
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
     XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
+  }
+
+  func testLocationAuthorization() {
+    var authorizationStatus = CLAuthorizationStatus.notDetermined
+    let locationDelegateSubject = PassthroughSubject<LocationClient.DelegateEvent, Never>()
+
+    let viewModel = AppViewModel(
+      locationClient: LocationClient(
+        authorizationStatus: { authorizationStatus },
+        requestWhenInUseAuthorization: {
+          authorizationStatus = .authorizedWhenInUse
+          locationDelegateSubject.send(.didChangeAuthorization(authorizationStatus))
+        },
+        requestLocation: {
+          locationDelegateSubject.send(.didUpdateLocations([CLLocation()]))
+        },
+        delegate: locationDelegateSubject.eraseToAnyPublisher()
+      ),
+      pathMonitorClient: .satisfied,
+      weatherClient: WeatherClient(
+        weather: { _ in .init(.moderateWeather) },
+        searchLocations: { _ in .init([.brooklyn]) }
+      )
+    )
+
+    XCTAssertEqual(viewModel.currentLocation, nil)
+    XCTAssertEqual(viewModel.isConnected, true)
+    XCTAssertEqual(viewModel.weatherResults, [])
+
+    viewModel.locationButtonTapped()
+
+    XCTAssertEqual(viewModel.currentLocation, .brooklyn)
+    XCTAssertEqual(viewModel.isConnected, true)
+    XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
+  }
+
+  func testLocationAuthorizationDenied() {
+    var authorizationStatus = CLAuthorizationStatus.notDetermined
+    let locationDelegateSubject = PassthroughSubject<LocationClient.DelegateEvent, Never>()
+
+    let viewModel = AppViewModel(
+      locationClient: LocationClient(
+        authorizationStatus: { authorizationStatus },
+        requestWhenInUseAuthorization: {
+          authorizationStatus = .denied
+          locationDelegateSubject.send(.didChangeAuthorization(authorizationStatus))
+        },
+        requestLocation: { fatalError() },
+        delegate: locationDelegateSubject.eraseToAnyPublisher()
+      ),
+      pathMonitorClient: .satisfied,
+      weatherClient: WeatherClient(
+        weather: { _ in .init(.moderateWeather) },
+        searchLocations: { _ in .init([.brooklyn]) }
+      )
+    )
+
+    XCTAssertEqual(viewModel.currentLocation, nil)
+    XCTAssertEqual(viewModel.isConnected, true)
+    XCTAssertEqual(viewModel.weatherResults, [])
+    //XCTAssertEqual(viewModel.authorizationAlert, nil)
+
+    viewModel.locationButtonTapped()
+
+    XCTAssertEqual(viewModel.currentLocation, nil)
+    XCTAssertEqual(viewModel.isConnected, true)
+    XCTAssertEqual(viewModel.weatherResults, [])
+    //XCTAssertEqual(viewModel.authorizationAlert, "Please give us location access.")
   }
 }
