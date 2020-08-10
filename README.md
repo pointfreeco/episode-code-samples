@@ -114,3 +114,4 @@ This repository is the home of code written on episodes of
 1. [Composable SwiftUI Bindings: The Point](0109-composable-bindings-pt3)
 1. [Designing Dependencies: The Problem](0110-designing-dependencies-pt1)
 1. [Designing Dependencies: Modularization](0111-designing-dependencies-pt2)
+1. [Designing Dependencies: Reachability](0112-designing-dependencies-pt3)
