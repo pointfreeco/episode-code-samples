@@ -115,3 +115,4 @@ This repository is the home of code written on episodes of
 1. [Designing Dependencies: The Problem](0110-designing-dependencies-pt1)
 1. [Designing Dependencies: Modularization](0111-designing-dependencies-pt2)
 1. [Designing Dependencies: Reachability](0112-designing-dependencies-pt3)
+1. [Designing Dependencies: Core Location](0113-designing-dependencies-pt4)
