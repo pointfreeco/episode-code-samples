@@ -1,32 +1,32 @@
 
-Int.init as (String) -> Int?
-
-Int("42")
-Int("Blob")
-
-Double.init as (String) -> Double?
-
-Double("42.42")
-Double("Blob")
-
-Bool.init as (String) -> Bool?
-
-Bool("true")
-Bool("false")
-Bool("1")
-Bool("tru")
-Bool("verdad")
+//Int.init as (String) -> Int?
+//
+//Int("42")
+//Int("Blob")
+//
+//Double.init as (String) -> Double?
+//
+//Double("42.42")
+//Double("Blob")
+//
+//Bool.init as (String) -> Bool?
+//
+//Bool("true")
+//Bool("false")
+//Bool("1")
+//Bool("tru")
+//Bool("verdad")
 
 import Foundation
 
-URL.init(string:) as (String) -> URL?
-
-URL(string: "https://www.pointfree.co")
-URL(string: "bad^website")
-
-
-URLComponents.init(string:) as (String) -> URLComponents?
-UUID.init(uuidString:) as (String) -> UUID?
+//URL.init(string:) as (String) -> URL?
+//
+//URL(string: "https://www.pointfree.co")
+//URL(string: "bad^website")
+//
+//
+//URLComponents.init(string:) as (String) -> URLComponents?
+//UUID.init(uuidString:) as (String) -> UUID?
 
 //import UIKit
 //
@@ -35,8 +35,8 @@ UUID.init(uuidString:) as (String) -> UUID?
 //NSCoder.uiEdgeInsets(for: "{1,2,3,4}")
 //NSCoder.uiEdgeInsets(for: "")
 
-DateFormatter().date(from:) as (String) -> Date?
-NumberFormatter().number(from:) as (String) -> NSNumber?
+//DateFormatter().date(from:) as (String) -> Date?
+//NumberFormatter().number(from:) as (String) -> NSNumber?
 
 // (String) -> A?
 // (String) -> (match: A?, rest: String)
@@ -79,7 +79,7 @@ var input = "123 Hello"[...]
 //var input = "123 Hello" as Substring
 
 Parser.int.run(&input)
-input
+//input
 
 extension Parser {
   func run(_ input: String) -> (match: Output?, rest: Substring) {
@@ -753,3 +753,12 @@ func format(result: TestResult) -> String {
 print(
 format(result: .failed(failureMessage: "XCTAssertTrue failed", file: "VoiceMemosTest.swift", line: 123, testName: "testFailed", time: 0.03))
 )
+
+var stdinLogs = ""
+while let line = readLine() {
+  stdinLogs.append(line)
+  stdinLogs.append("\n")
+}
+testResults.run(stdinLogs).match?.forEach { result in
+  print(format(result: result))
+}
