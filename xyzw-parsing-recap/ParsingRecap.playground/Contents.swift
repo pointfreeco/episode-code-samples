@@ -530,14 +530,13 @@ extension Parser where Output == Substring {
 }
 
 let logs = """
-2020-08-19 12:36:07.528 xcodebuild[45126:3958202] [MT] IDETestOperationsObserverDebug: (444776CA-26EF-481A-8BF7-DC816C5C4DD0) Finished requesting crash reports. Continuing with testing.
-2020-08-19 12:36:11.698683-0400 VoiceMemos[45357:3964974] Launching with XCTest injected. Preparing to run tests.
-2020-08-19 12:36:11.708349-0400 VoiceMemos[45357:3964974] Waiting to run tests until the app finishes launching.
 Test Suite 'All tests' started at 2020-08-19 12:36:12.062
 Test Suite 'VoiceMemosTests.xctest' started at 2020-08-19 12:36:12.062
 Test Suite 'VoiceMemosTests' started at 2020-08-19 12:36:12.062
-
-
+Test Case '-[VoiceMemosTests.VoiceMemosTests testDeleteMemo]' started.
+Test Case '-[VoiceMemosTests.VoiceMemosTests testDeleteMemo]' passed (0.004 seconds).
+Test Case '-[VoiceMemosTests.VoiceMemosTests testDeleteMemoWhilePlaying]' started.
+Test Case '-[VoiceMemosTests.VoiceMemosTests testDeleteMemoWhilePlaying]' passed (0.002 seconds).
 Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' started.
 /Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed
 Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' failed (0.003 seconds).
@@ -545,7 +544,78 @@ Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoFailure]' started.
 Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoFailure]' passed (0.002 seconds).
 Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoHappyPath]' started.
 Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoHappyPath]' passed (0.002 seconds).
+Test Case '-[VoiceMemosTests.VoiceMemosTests testRecordMemoFailure]' started.
+/Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:144: error: -[VoiceMemosTests.VoiceMemosTests testRecordMemoFailure] : State change does not match expectation: …
+
+      VoiceMemosState(
+    −   alert: nil,
+    +   alert: AlertState<VoiceMemosAction>(
+    +     title: "Voice memo recording failed.",
+    +     message: nil,
+    +     primaryButton: nil,
+    +     secondaryButton: nil
+    +   ),
+        audioRecorderPermission: RecorderPermission.allowed,
+        currentRecording: nil,
+        voiceMemos: [
+        ]
+      )
+
+(Expected: −, Actual: +)
+Test Case '-[VoiceMemosTests.VoiceMemosTests testRecordMemoFailure]' failed (0.009 seconds).
+Test Case '-[VoiceMemosTests.VoiceMemosTests testRecordMemoHappyPath]' started.
+/Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:56: error: -[VoiceMemosTests.VoiceMemosTests testRecordMemoHappyPath] : State change does not match expectation: …
+
+      VoiceMemosState(
+        alert: nil,
+        audioRecorderPermission: RecorderPermission.allowed,
+        currentRecording: CurrentRecording(
+          date: 2001-01-01T00:00:00Z,
+    −     duration: 3.0,
+    +     duration: 2.0,
+          mode: Mode.recording,
+          url: file:///tmp/DEADBEEF-DEAD-BEEF-DEAD-BEEFDEADBEEF.m4a
+        ),
+        voiceMemos: [
+        ]
+      )
+
+(Expected: −, Actual: +)
+Test Case '-[VoiceMemosTests.VoiceMemosTests testRecordMemoHappyPath]' failed (0.006 seconds).
+Test Case '-[VoiceMemosTests.VoiceMemosTests testStopMemo]' started.
+Test Case '-[VoiceMemosTests.VoiceMemosTests testStopMemo]' passed (0.001 seconds).
+Test Suite 'VoiceMemosTests' failed at 2020-08-19 12:36:12.094.
+   Executed 8 tests, with 3 failures (0 unexpected) in 0.029 (0.032) seconds
+Test Suite 'VoiceMemosTests.xctest' failed at 2020-08-19 12:36:12.094.
+   Executed 8 tests, with 3 failures (0 unexpected) in 0.029 (0.032) seconds
+Test Suite 'All tests' failed at 2020-08-19 12:36:12.095.
+   Executed 8 tests, with 3 failures (0 unexpected) in 0.029 (0.033) seconds
+2020-08-19 12:36:19.538 xcodebuild[45126:3958202] [MT] IDETestOperationsObserverDebug: 14.165 elapsed -- Testing started completed.
+2020-08-19 12:36:19.538 xcodebuild[45126:3958202] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2020-08-19 12:36:19.538 xcodebuild[45126:3958202] [MT] IDETestOperationsObserverDebug: 14.165 sec, +14.165 sec -- end
+
+Test session results, code coverage, and logs:
+  /Users/point-free/Library/Developer/Xcode/DerivedData/ComposableArchitecture-fnpkwoynrpjrkrfemkkhfdzooaes/Logs/Test/Test-VoiceMemos-2020.08.19_12-35-57--0400.xcresult
+
+Failing tests:
+  VoiceMemosTests:
+    VoiceMemosTests.testPermissionDenied()
+    VoiceMemosTests.testRecordMemoFailure()
+    VoiceMemosTests.testRecordMemoHappyPath()
+
 """
+
+let testCaseFinishedLine = zip(
+  .prefix(through: " ("),
+  .double,
+  " seconds).\n"
+)
+.map { _, time, _ in time }
+
+testCaseFinishedLine.run("""
+Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' failed (0.003 seconds).
+
+""")
 
 let testCaseStartedLine = zip(
   .prefix(upTo: "Test Case '-["),
@@ -567,25 +637,44 @@ let testCaseStartedLine = zip(
 //  return line.split(separator: " ")[3].dropLast(2)
 //}
 
-let testCaseBody = Parser<Substring> { input in
-  guard let endIndex = input.range(of: "Test Case '-[")?.lowerBound
-  else { return nil }
-  
-  let body = input[..<endIndex].dropLast()
-  
-  input = input[endIndex...]
-  
-  return body
+// /Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed
+
+let fileName = zip("/", .prefix(through: ".swift"))
+  .flatMap { _, path in
+    path.split(separator: "/").last.map(Parser.always)
+      ?? .never
+  }
+
+let testCaseBody = zip(
+  fileName,
+  ":",
+  .int,
+  .prefix(through: "] : "),
+  .prefix(upTo: "Test Case '-[")
+).map { fileName, _, line, _, failureMessage in
+  (fileName, line, failureMessage.dropLast())
 }
+
+testCaseBody.run("""
+/Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed
+Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' failed (0.003 seconds).
+""")
+
+
+//  Parser<Substring> { input in
+//  guard let endIndex = input.range(of: "Test Case '-[")?.lowerBound
+//  else { return nil }
+//
+//  let body = input[..<endIndex].dropLast()
+//
+//  input = input[endIndex...]
+//
+//  return body
+//}
 
 ["a", "b", "c"].prefix(upTo: 2)
 ["a", "b", "c"].prefix(through: 2)
 
-let fileName = Parser.prefix(through: ".swift")
-  .flatMap { path in
-    path.split(separator: "/").last.map(Parser.always)
-      ?? .never
-  }
 //  Parser<Substring> { input in
 //  guard let endIndex = input.range(of: ".swift")?.upperBound
 //  else { return nil }
@@ -606,8 +695,26 @@ enum TestResult {
   case passed(testName: Substring, time: TimeInterval)
 }
 
-let testResult: Parser<TestResult> = .never
+let testFailed = zip(
+  testCaseStartedLine,
+  testCaseBody,
+  testCaseFinishedLine
+)
+.map { testName, bodyData, time in
+  TestResult.failed(failureMessage: bodyData.2, file: bodyData.0, line: bodyData.1, testName: testName, time: time)
+}
+
+let testPassed = zip(
+  testCaseStartedLine,
+  testCaseFinishedLine
+)
+.map(TestResult.passed(testName:time:))
+
+let testResult: Parser<TestResult> = .oneOf(testFailed, testPassed)
+
 let testResults: Parser<[TestResult]> = testResult.zeroOrMore()
+
+dump(testResults.run(logs))
 
 
 testCaseStartedLine.run(logs)
