@@ -500,3 +500,48 @@ races.run(upcomingRaces)
 )
 
 // coord.zeroOrMore()
+
+let logs = """
+2020-08-19 12:36:07.528 xcodebuild[45126:3958202] [MT] IDETestOperationsObserverDebug: (444776CA-26EF-481A-8BF7-DC816C5C4DD0) Finished requesting crash reports. Continuing with testing.
+2020-08-19 12:36:11.698683-0400 VoiceMemos[45357:3964974] Launching with XCTest injected. Preparing to run tests.
+2020-08-19 12:36:11.708349-0400 VoiceMemos[45357:3964974] Waiting to run tests until the app finishes launching.
+Test Suite 'All tests' started at 2020-08-19 12:36:12.062
+Test Suite 'VoiceMemosTests.xctest' started at 2020-08-19 12:36:12.062
+Test Suite 'VoiceMemosTests' started at 2020-08-19 12:36:12.062
+
+
+Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' started.
+/Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed
+Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' failed (0.003 seconds).
+Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoFailure]' started.
+Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoFailure]' passed (0.002 seconds).
+Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoHappyPath]' started.
+Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoHappyPath]' passed (0.002 seconds).
+"""
+
+let testCaseStartedLine = Parser<Substring> { input in
+  guard let startIndex = input.range(of: "Test Case '-[")?.lowerBound
+  else { return nil }
+
+  guard let newlineRange = input.range(of: "\n", range: startIndex..<input.endIndex)
+  else { return nil }
+
+  let line = input[startIndex..<newlineRange.lowerBound]
+
+  input = input[newlineRange.upperBound...]
+
+  return line.split(separator: " ")[3].dropLast(2)
+}
+
+enum TestResult {
+  case failed(failureMessage: Substring, file: Substring, line: Int, testName: Substring, time: TimeInterval)
+  case passed(testName: Substring, time: TimeInterval)
+}
+
+let testResult: Parser<TestResult> = .never
+let testResults: Parser<[TestResult]> = testResult.zeroOrMore()
+
+
+testCaseStartedLine.run(logs)
+
+
