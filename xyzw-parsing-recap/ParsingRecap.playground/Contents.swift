@@ -501,6 +501,34 @@ races.run(upcomingRaces)
 
 // coord.zeroOrMore()
 
+extension Parser where Output == Substring {
+  static func prefix(upTo substring: Substring) -> Self {
+    Self { input in
+      guard let endIndex = input.range(of: substring)?.lowerBound
+      else { return nil }
+      
+      let match = input[..<endIndex]
+      
+      input = input[endIndex...]
+      
+      return match
+    }
+  }
+  
+  static func prefix(through substring: Substring) -> Self {
+    Self { input in
+      guard let endIndex = input.range(of: substring)?.upperBound
+      else { return nil }
+      
+      let match = input[..<endIndex]
+      
+      input = input[endIndex...]
+      
+      return match
+    }
+  }
+}
+
 let logs = """
 2020-08-19 12:36:07.528 xcodebuild[45126:3958202] [MT] IDETestOperationsObserverDebug: (444776CA-26EF-481A-8BF7-DC816C5C4DD0) Finished requesting crash reports. Continuing with testing.
 2020-08-19 12:36:11.698683-0400 VoiceMemos[45357:3964974] Launching with XCTest injected. Preparing to run tests.
@@ -519,19 +547,59 @@ Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoHappyPath]' started.
 Test Case '-[VoiceMemosTests.VoiceMemosTests testPlayMemoHappyPath]' passed (0.002 seconds).
 """
 
-let testCaseStartedLine = Parser<Substring> { input in
-  guard let startIndex = input.range(of: "Test Case '-[")?.lowerBound
-  else { return nil }
-
-  guard let newlineRange = input.range(of: "\n", range: startIndex..<input.endIndex)
-  else { return nil }
-
-  let line = input[startIndex..<newlineRange.lowerBound]
-
-  input = input[newlineRange.upperBound...]
-
-  return line.split(separator: " ")[3].dropLast(2)
+let testCaseStartedLine = zip(
+  .prefix(upTo: "Test Case '-["),
+  .prefix(through: "\n")
+).map { _, line in
+  line.split(separator: " ")[3].dropLast(2)
 }
+//  Parser<Substring> { input in
+//  guard let startIndex = input.range(of: "Test Case '-[")?.lowerBound
+//  else { return nil }
+//
+//  guard let newlineRange = input.range(of: "\n", range: startIndex..<input.endIndex)
+//  else { return nil }
+//
+//  let line = input[startIndex..<newlineRange.lowerBound]
+//
+//  input = input[newlineRange.upperBound...]
+//
+//  return line.split(separator: " ")[3].dropLast(2)
+//}
+
+let testCaseBody = Parser<Substring> { input in
+  guard let endIndex = input.range(of: "Test Case '-[")?.lowerBound
+  else { return nil }
+  
+  let body = input[..<endIndex].dropLast()
+  
+  input = input[endIndex...]
+  
+  return body
+}
+
+["a", "b", "c"].prefix(upTo: 2)
+["a", "b", "c"].prefix(through: 2)
+
+let fileName = Parser.prefix(through: ".swift")
+  .flatMap { path in
+    path.split(separator: "/").last.map(Parser.always)
+      ?? .never
+  }
+//  Parser<Substring> { input in
+//  guard let endIndex = input.range(of: ".swift")?.upperBound
+//  else { return nil }
+//
+//  let path = input[..<endIndex]
+//  guard let filePath = path.split(separator: "/").last
+//  else { return nil }
+//
+//  input = input[endIndex...]
+//
+//  return filePath
+//}
+
+fileName.run("/Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed")
 
 enum TestResult {
   case failed(failureMessage: Substring, file: Substring, line: Int, testName: Substring, time: TimeInterval)
