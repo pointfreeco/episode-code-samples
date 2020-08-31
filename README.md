@@ -117,3 +117,4 @@ This repository is the home of code written on episodes of
 1. [Designing Dependencies: Reachability](0112-designing-dependencies-pt3)
 1. [Designing Dependencies: Core Location](0113-designing-dependencies-pt4)
 1. [Designing Dependencies: The Point](0114-designing-dependencies-pt5)
+1. [████ed SwiftUI: The Problem](0115-redacted-swiftui-pt1)
