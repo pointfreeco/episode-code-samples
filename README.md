@@ -118,3 +118,5 @@ This repository is the home of code written on episodes of
 1. [Designing Dependencies: Core Location](0113-designing-dependencies-pt4)
 1. [Designing Dependencies: The Point](0114-designing-dependencies-pt5)
 1. [████ed SwiftUI: The Problem](0115-redacted-swiftui-pt1)
+1. [Redacted SwiftUI: The Composable Architecture](0116-redacted-swiftui-pt2)
+1. [The Point of Redacted SwiftUI: Part 1](0117-redacted-swiftui-pt3)
