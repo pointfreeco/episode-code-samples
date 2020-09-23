@@ -610,40 +610,78 @@ Failing tests:
 
 """
 
-let testCaseFinishedLine = zip(
-  .prefix(through: " ("),
-  .double,
-  " seconds).\n"
-)
-.map { _, time, _ in time }
+extension Parser {
+  static func skip(_ p: Self) -> Parser<Void> {
+    p.map { _ in () }
+  }
+}
+
+extension Parser where Output == Void {
+  func take<A>(_ p: Parser<A>) -> Parser<A> {
+    zip(self, p).map { _, a in a }
+  }
+}
+
+let testCaseFinishedLine = Parser
+  .skip(.prefix(through: " ("))
+  .take(.double)
+  .skip(" seconds).\n")
+//  .map { _, seconds in seconds }
+//  zip(
+//  .prefix(through: " ("),
+//  .double,
+//  " seconds).\n"
+//)
+//.map { _, time, _ in time }
 
 testCaseFinishedLine.run("""
 Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' failed (0.003 seconds).
 
 """)
 
-let testCaseStartedLine = zip(
-  .prefix(upTo: "Test Case '-["),
-  .prefix(through: "\n")
-).map { _, line in
-  line.split(separator: " ")[3].dropLast(2)
-}
+let testCaseStartedLine = Parser
+  .skip(.prefix(upTo: "Test Case '-["))
+  .take(.prefix(through: "\n"))
+  .map { line in
+    line.split(separator: " ")[3].dropLast(2)
+  }
+//  zip(
+//  .prefix(upTo: "Test Case '-["),
+//  .prefix(through: "\n")
+//).map { _, line in
+//  line.split(separator: " ")[3].dropLast(2)
+//}
 
-let fileName = zip("/", .prefix(through: ".swift"))
-  .flatMap { _, path in
+let fileName = Parser
+  .skip("/")
+  .take(.prefix(through: ".swift"))
+  .flatMap { path in
     path.split(separator: "/").last.map(Parser.always)
       ?? .never
   }
+//  zip("/", .prefix(through: ".swift"))
+//  .flatMap { _, path in
+//    path.split(separator: "/").last.map(Parser.always)
+//      ?? .never
+//  }
 
-let testCaseBody = zip(
-  fileName,
-  ":",
-  .int,
-  .prefix(through: "] : "),
-  .prefix(upTo: "Test Case '-[")
-).map { fileName, _, line, _, failureMessage in
-  (fileName, line, failureMessage.dropLast())
-}
+let testCaseBody = fileName
+  .skip(":")
+  .take(.int)
+  .skip(.prefix(through: "] : "))
+  .take(Parser.prefix(upTo: "Test Case '-[").map { $0.dropLast() })
+//  .map { fileName, line, failureMessage in
+//    (fileName, line, failureMessage.dropLast())
+//  }
+//  zip(
+//  fileName,
+//  ":",
+//  .int,
+//  .prefix(through: "] : "),
+//  .prefix(upTo: "Test Case '-[")
+//).map { fileName, _, line, _, failureMessage in
+//  (fileName, line, failureMessage.dropLast())
+//}
 
 testCaseBody.run("""
 /Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed
@@ -657,20 +695,29 @@ enum TestResult {
   case passed(testName: Substring, time: TimeInterval)
 }
 
-let testFailed = zip(
-  testCaseStartedLine,
-  testCaseBody,
-  testCaseFinishedLine
-)
-.map { testName, bodyData, time in
-  TestResult.failed(failureMessage: bodyData.2, file: bodyData.0, line: bodyData.1, testName: testName, time: time)
-}
+let testFailed = testCaseStartedLine
+  .take(testCaseBody)
+  .take(testCaseFinishedLine)
+  .map { testName, bodyData, time in
+    TestResult.failed(failureMessage: bodyData.2, file: bodyData.0, line: bodyData.1, testName: testName, time: time)
+  }
+//  zip(
+//  testCaseStartedLine,
+//  testCaseBody,
+//  testCaseFinishedLine
+//)
+//.map { testName, bodyData, time in
+//  TestResult.failed(failureMessage: bodyData.2, file: bodyData.0, line: bodyData.1, testName: testName, time: time)
+//}
 
-let testPassed = zip(
-  testCaseStartedLine,
-  testCaseFinishedLine
-)
-.map(TestResult.passed(testName:time:))
+let testPassed = testCaseStartedLine
+  .take(testCaseFinishedLine)
+  .map(TestResult.passed(testName:time:))
+//  zip(
+//  testCaseStartedLine,
+//  testCaseFinishedLine
+//)
+//.map(TestResult.passed(testName:time:))
 
 let testResult: Parser<TestResult> = .oneOf(testFailed, testPassed)
 
