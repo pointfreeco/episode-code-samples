@@ -156,6 +156,14 @@ func zip<A, B, C, D, E>(
     .map { a, bcde in (a, bcde.0, bcde.1, bcde.2, bcde.3) }
 }
 
+// zip(a, b, c, d, e, f, g, h, i)
+// zip(zip(a, b, c), zip(d, e, f), zip(g, h, i))
+
+// let totalWidth = leadingInset + leadingPadding + width + trailingPadding + trailingInset
+
+// let totalWidth = (leadingInset + leadingPadding) + width + (trailingPadding + trailingInset)
+
+
 extension Parser {
   static func oneOf(_ ps: [Self]) -> Self {
     .init { input in
@@ -257,13 +265,11 @@ extension Parser: ExpressibleByStringLiteral where Output == Void {
 
 //"98°F"
 let temperature = zip(.int, "°F")
-  .map { temperature, _ in temperature }
+//  .map { temperature, _ in temperature }
 
 temperature.run("100°F")
 temperature.run("-100°F")
 
-//"40.446° N"
-//"40.446° S"
 let northSouth = Parser.char.flatMap {
   $0 == "N" ? .always(1.0)
     : $0 == "S" ? .always(-1)
@@ -276,6 +282,8 @@ let eastWest = Parser.char.flatMap {
     : .never
 }
 
+//"40.446° N"
+//"40.446° S"
 let latitude = zip(
   .double,
   "° ",
