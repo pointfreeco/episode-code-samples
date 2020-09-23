@@ -264,8 +264,9 @@ extension Parser: ExpressibleByStringLiteral where Output == Void {
 }
 
 //"98°F"
-let temperature = zip(.int, "°F")
-  .map { temperature, _ in temperature }
+let temperature = Parser.int.skip("°F")
+//  zip(.int, "°F")
+//  .map { temperature, _ in temperature }
 
 func zip<A, B>(take a: Parser<A>, skip b: Parser<B>) -> Parser<A> {
   zip(a, b).map { a, _ in a }
@@ -316,36 +317,69 @@ func zip<A, B, C>(
 // zip(skip:skip:take:) -> Parser<C>
 // zip(skip:skip:skip:) -> Parser<Void>
 
+extension Parser /*Output*/ {
+  func skip<B>(_ p: Parser<B>) -> Self {
+    zip(self, p).map { a, _ in a }
+  }
+}
+
+extension Parser {
+  func take<NewOutput>(_ p: Parser<NewOutput>) -> Parser<(Output, NewOutput)> {
+    zip(self, p)
+  }
+}
+
 //"40.446° N"
 //"40.446° S"
-let latitude = zip(
-  take: .double,
-  skip: "° ",
-  take: northSouth
-)
-.map(*)
+let latitude = Parser.double
+  .skip("° ")
+  .take(northSouth)
+  .map(*)
+//  zip(
+//  take: .double,
+//  skip: "° ",
+//  take: northSouth
+//)
+//.map(*)
 
-let longitude = zip(
-  .double,
-  "° ",
-  eastWest
-)
-.map { longitude, _, longSign in
-  longitude * longSign
-}
+let longitude = Parser.double
+  .skip("° ")
+  .take(eastWest)
+  .map(*)
+//  zip(
+//  .double,
+//  "° ",
+//  eastWest
+//)
+//.map { longitude, _, longSign in
+//  longitude * longSign
+//}
 
 struct Coordinate {
   let latitude: Double
   let longitude: Double
 }
 
+let zeroOrMoreSpaces = Parser.prefix(" ").zeroOrMore()
+
 //"40.446° N, 79.982° W"
-let coord = zip(
+let coord = latitude
+  .skip(",")
+  .skip(zeroOrMoreSpaces)
+  .take(longitude)
+  .map(Coordinate.init)
+
+//  .map { lat, long in
+//    Coordinate(latitude: lat, longitude: long)
+//  }
+
+zip(
   latitude,
-  ", ",
+  ",",
+  Parser.prefix(" ").zeroOrMore(),
   longitude
 )
-.map { lat, _, long in
+.map { lat, _, _, long in
   Coordinate(latitude: lat, longitude: long)
 }
 
@@ -450,9 +484,36 @@ struct Race {
   let path: [Coordinate]
 }
 
+extension Parser  {
+  // (Parser<(A, B)>, Parser<C>) -> Parser<(A, B, C)>
+  // (Parser<(A...)>, Parser<Z>) -> Parser<(A..., Z)>
+  func take<A, B, C>(_ p: Parser<C>) -> Parser<(A, B, C)> where Output == (A, B) {
+    zip(self, p).map { ab, c in
+      (ab.0, ab.1, c)
+    }
+  }
+}
+
 let locationName = Parser.prefix(while: { $0 != "," })
 
-let race = zip(
+let race = locationName.map(String.init)
+  .skip(",")
+  .skip(zeroOrMoreSpaces)
+  .take(money)
+  .skip("\n")
+  .take(coord.zeroOrMore(separatedBy: "\n"))
+  .map(Race.init(location:entranceFee:path:))
+
+//  .map { location, entranceFee, path in
+//    Race(
+//      location: location,
+//      entranceFee: entranceFee,
+//      path: path
+//    )
+//  }
+
+
+zip(
   locationName,
   ", ",
   money,
