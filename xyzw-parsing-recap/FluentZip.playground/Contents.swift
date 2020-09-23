@@ -265,7 +265,24 @@ extension Parser: ExpressibleByStringLiteral where Output == Void {
 
 //"98°F"
 let temperature = zip(.int, "°F")
-//  .map { temperature, _ in temperature }
+  .map { temperature, _ in temperature }
+
+func zip<A, B>(take a: Parser<A>, skip b: Parser<B>) -> Parser<A> {
+  zip(a, b).map { a, _ in a }
+}
+func zip<A, B>(skip a: Parser<A>, take b: Parser<B>) -> Parser<B> {
+  zip(a, b).map { _, b in b }
+}
+
+let atMentioned = zip(
+  skip: "@",
+  take: .prefix(while: { $0.isLetter || $0.isNumber })
+)
+//.map { _, username in username }
+atMentioned.run("@pointfreeco")
+
+
+let temperature2 = zip(take: .int, skip: "°F")
 
 temperature.run("100°F")
 temperature.run("-100°F")
@@ -282,16 +299,31 @@ let eastWest = Parser.char.flatMap {
     : .never
 }
 
+func zip<A, B, C>(
+  take a: Parser<A>,
+  skip b: Parser<B>,
+  take c: Parser<C>
+) -> Parser<(A, C)> {
+  zip(a, b, c).map { a, _, c in (a, c) }
+}
+
+// zip(take:take:take:) -> Parser<(A, B, C)>
+// zip(take:take:skip:) -> Parser<(A, B)>
+// zip(take:skip:take:) -> Parser<(A, C)>
+// zip(skip:take:take:) -> Parser<(B, C)>
+// zip(take:skip:skip:) -> Parser<A>
+// zip(skip:take:skip:) -> Parser<B>
+// zip(skip:skip:take:) -> Parser<C>
+// zip(skip:skip:skip:) -> Parser<Void>
+
 //"40.446° N"
 //"40.446° S"
 let latitude = zip(
-  .double,
-  "° ",
-  northSouth
+  take: .double,
+  skip: "° ",
+  take: northSouth
 )
-.map { latitude, _, latSign in
-  latitude * latSign
-}
+.map(*)
 
 let longitude = zip(
   .double,
