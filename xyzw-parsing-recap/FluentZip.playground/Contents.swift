@@ -172,8 +172,12 @@ Parser.prefix("Hi").run("Hi Blob"[...])
 
 let x: Array<Int>.SubSequence
 
-Parser<Array<Int>.SubSequence, Void>.prefix([1, 2][...]).run([1, 2, 3])
-Parser<ArraySlice<Int>, Void>.prefix([1, 2][...]).run([1, 2, 3])
+Parser<Array<Int>.SubSequence, Void>.prefix([1, 2]).run([1, 2, 3])
+Parser<ArraySlice<Int>, Void>.prefix([1, 2]).run([1, 2, 3])
+
+//let tmp: Slice<[Int]> = [1, 2, 3][...]
+
+let tmp: ArraySlice<Int> = [1, 2, 3]
 
 
 extension Parser where Input == Substring, Output == Substring {
