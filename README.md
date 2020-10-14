@@ -122,3 +122,4 @@ This repository is the home of code written on episodes of
 1. [The Point of Redacted SwiftUI: Part 1](0117-redacted-swiftui-pt3)
 1. [The Point of Redacted SwiftUI: Part 2](0118-redacted-swiftui-pt4)
 1. [Parser Combinators Recap: Part 1](0119-parsing-recap-pt1)
+1. [Parser Combinators Recap: Part 2](0119-parsing-recap-pt2)
