@@ -47,10 +47,6 @@ extension Parser where Input == Substring, Output == Int {
   }
 }
 
-Parser.int.run("123 Hello")
-Parser.int.run("-123 Hello")
-Parser.int.run("+123 Hello")
-
 extension Parser where Input == Substring, Output == Double {
   static let double = Self { input in
     let original = input
@@ -83,10 +79,6 @@ extension Parser where Input == Substring, Output == Double {
   }
 }
 
-
-Parser.double.run("123.2 Hello")
-Parser.double.run("-123.3 Hello")
-Parser.double.run("+123. Hello")
 
 
 extension Parser where Input == Substring, Output == Character {
@@ -176,25 +168,6 @@ where Input: Collection,
     }
   }
 }
-
-Parser.prefix("Hi").run("Hi Blob"[...])
-
-let x: Array<Int>.SubSequence
-
-Parser<Array<Int>.SubSequence, Void>.prefix([1, 2]).run([1, 2, 3])
-Parser<ArraySlice<Int>, Void>.prefix([1, 2]).run([1, 2, 3])
-Parser.prefix([1, 2]).run([1, 2, 3, 4, 5, 6][...])
-
-//Parser.prefix([1, 2]).run([1, 2, 3, 4, 5, 6])
-
-
-
-// 🛑 Parser.prefix([1, 2]).run([1, 2, 3, 4, 5, 6])
-
-//let tmp: Slice<[Int]> = [1, 2, 3][...]
-
-//let tmp: ArraySlice<Int> = [1, 2, 3]
-
 
 extension Parser where Input == Substring, Output == Substring {
   static func prefix(while p: @escaping (Character) -> Bool) -> Self {
@@ -358,19 +331,6 @@ extension Parser where Output == Void {
 //"98°F"
 let temperature = Parser.int.skip("°F")
 
-//let atMentioned = zip(
-//  skip: "@",
-//  take: .prefix(while: { $0.isLetter || $0.isNumber })
-//)
-////.map { _, username in username }
-//atMentioned.run("@pointfreeco")
-
-
-//let temperature2 = zip(take: .int, skip: "°F")
-
-temperature.run("100°F")
-temperature.run("-100°F")
-
 let northSouth = Parser.char.flatMap {
   $0 == "N" ? .always(1.0)
     : $0 == "S" ? .always(-1)
@@ -410,7 +370,6 @@ let coord = latitude
   .take(longitude)
   .map(Coordinate.init)
 
-coord.run("40.446° N, 79.982° W")
 
 //  .map { lat, long in
 //    Coordinate(latitude: lat, longitude: long)
@@ -442,10 +401,6 @@ struct Money {
 //"$100"
 let money = zip(currency, .double)
   .map(Money.init(currency:value:))
-
-money.run("$100")
-money.run("£100")
-money.run("€100")
 
 let upcomingRaces = """
   New York City, $300
@@ -540,13 +495,8 @@ let race = locationName.map(String.init)
 
 let races = race.zeroOrMore(separatedBy: "\n---\n")
 
-races.run(upcomingRaces[...])
 
-
-let logs = """
-Test Suite 'All tests' started at 2020-08-19 12:36:12.062
-Test Suite 'VoiceMemosTests.xctest' started at 2020-08-19 12:36:12.062
-Test Suite 'VoiceMemosTests' started at 2020-08-19 12:36:12.062
+let logs = (0...10_000).map { _ in "Build logs\n" }.joined() + """
 Test Case '-[VoiceMemosTests.VoiceMemosTests testDeleteMemo]' started.
 Test Case '-[VoiceMemosTests.VoiceMemosTests testDeleteMemo]' passed (0.004 seconds).
 Test Case '-[VoiceMemosTests.VoiceMemosTests testDeleteMemoWhilePlaying]' started.
@@ -665,7 +615,6 @@ let testResult = Parser.oneOf(testFailed, testPassed)
 let testResults = testResult.zeroOrMore()
 
 //dump(
-testResults.run(logs[...])
 //)
 
 //VoiceMemoTests.swift:123, testDelete failed in 2.00 seconds.
@@ -697,12 +646,6 @@ func format(result: TestResult) -> String {
   }
 }
 
-//print(
-  format(result: .failed(failureMessage: "XCTAssertTrue failed", file: "VoiceMemosTest.swift", line: 123, testName: "testFailed", time: 0.03))
-//)
-
-print("✅")
-
 
 extension Parser where Input == [String: String] {
   static func key(_ key: String, _ parser: Parser<Substring, Output>) -> Self {
@@ -720,19 +663,6 @@ extension Parser where Input == [String: String] {
 let path = Parser.key("DYLD_FRAMEWORK_PATH", .prefix(through: ".app"))
   .take(.key("HOME", Parser.skip("/Users/").take(.rest)))
 
-Parser.skip(.prefix("/Users/"))
-  .take(.oneOf(.prefix(upTo: "/"), .rest))
-
-path.run(ProcessInfo.processInfo.environment)
-//  .map { $0[...] }
-//  .pipe(Parser.prefix(through: ".app"))
-
-//print(ProcessInfo.processInfo.environment)
-
-Parser.prefix(through: ".app")
-//  .run(ProcessInfo.processInfo.environment["DYLD_FRAMEWORK_PATH"]![...])
-
-  //?.prefix(through: ".app")
 
 struct RequestData {
   var body: Data? = nil
@@ -812,9 +742,7 @@ extension Parser {
 
 let url = URL(string: "https://www.pointfree.co/episodes/1?ref=twitter")!
 let components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-components.host
-components.path
-components.queryItems
+
 
 let request = RequestData(
   body: nil,
@@ -848,7 +776,6 @@ let router = Parser.oneOf(
 )
 //  .run(request)
 
-dump(router.run(request).match)
 
 //dump(
 //  Parser
@@ -899,13 +826,6 @@ extension Parser {
   }
 }
 
-
-
-dump(ProcessInfo.processInfo.environment)
-
-
-
-dump(CommandLine.arguments)
 
 
 extension Parser {
@@ -981,7 +901,3 @@ let cli = Parser
   .take(.flag(long: "dry-run", short: "n"))
   .take(.files)
   .skip(.end)
-
-dump(cli.run(&toParse[...]))
-
-toParse.map(Substring.init)
