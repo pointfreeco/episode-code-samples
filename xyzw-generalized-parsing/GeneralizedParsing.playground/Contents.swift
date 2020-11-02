@@ -189,10 +189,14 @@ extension Parser {
   }
 }
 
-extension Parser where Input == Substring, Output == Void {
-  static func prefix(_ p: String) -> Self {
+extension Parser
+where Input: Collection,
+      Input.SubSequence == Input,
+      Output == Void,
+      Input.Element: Equatable {
+  static func prefix(_ p: Input.SubSequence) -> Self {
     Self { input in
-      guard input.hasPrefix(p) else { return nil }
+      guard input.starts(with: p) else { return nil }
       input.removeFirst(p.count)
       return ()
     }
@@ -247,7 +251,7 @@ extension Parser: ExpressibleByStringLiteral where Input == Substring, Output ==
   typealias StringLiteralType = String
 
   init(stringLiteral value: String) {
-    self = .prefix(value)
+    self = .prefix(value[...])
   }
 }
 
@@ -313,7 +317,7 @@ struct Coordinate {
   let longitude: Double
 }
 
-let zeroOrMoreSpaces = Parser.prefix(" ").zeroOrMore()
+let zeroOrMoreSpaces = Parser<Substring, Void>.prefix(" ").zeroOrMore()
 
 //"40.446° N, 79.982° W"
 let coord = latitude
@@ -323,10 +327,14 @@ let coord = latitude
   .map(Coordinate.init)
 
 
+Parser.prefix([1, 2]).run([1, 2, 3, 4, 5, 6][...])
+Parser<ArraySlice<Int>, Void>.prefix([1, 2]).run([1, 2, 3, 4, 5, 6])
+
+Parser.prefix([1, 2]).run([1, 2, 3, 4, 5, 6][...])
 
 enum Currency { case eur, gbp, usd }
 
-let currency = Parser.oneOf(
+let currency = Parser<Substring, Currency>.oneOf(
   Parser.prefix("€").map { Currency.eur },
   Parser.prefix("£").map { .gbp },
   Parser.prefix("$").map { .usd }
