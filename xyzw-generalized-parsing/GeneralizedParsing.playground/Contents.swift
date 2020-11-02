@@ -4,6 +4,30 @@ struct Parser<Output> {
   let run: (inout Substring) -> Output?
 }
 
+dump(
+ProcessInfo.processInfo.environment
+)
+
+//URLComponents
+let components = URLComponents(string: "https://www.pointfree.co/episodes/1?time=120")
+components?.host
+components?.path
+components?.query
+components?.queryItems
+//URLQueryItem.init(name: <#T##String#>, value: <#T##String?#>)
+
+// swift package init --name=MyPackage --type=executable
+// swift build -v
+// swift build --verbose --sanitize
+// swift build --sanitize --verbose
+dump(CommandLine.arguments)
+
+[
+  "/Users/point-free/Library/Developer/XCPGDevices/7791186F-129C-4B2D-A0DF-2B685D338A84/data/Containers/Bundle/Application/F6013A8B-FED5-4A87-B7E7-D2BA154AE029/GeneralizedParsing-17305-7.app/GeneralizedParsing",
+  "-DVTDeviceRunExecutableOptionREPLMode",
+  "1"
+]
+
 extension Parser {
   func run(_ input: String) -> (match: Output?, rest: Substring) {
     var input = input[...]
