@@ -4,8 +4,50 @@ struct Parser<Input, Output> {
   let run: (inout Input) -> Output?
 }
 
+extension Parser where Input == [String: String] {
+  static func key(_ key: String, _ parser: Parser<Substring, Output>) -> Self {
+    Self { dict in
+      guard var value = dict[key]?[...]
+      else { return nil }
+      
+      guard let output = parser.run(&value)
+      else { return nil }
+      
+      dict[key] = value.isEmpty ? nil : String(value)
+      return output
+    }
+  }
+}
+
+let xcodePath = Parser.key("IPHONE_SIMULATOR_ROOT", .prefix(through: ".app"))
+
+xcodePath.run(ProcessInfo.processInfo.environment).rest["IPHONE_SIMULATOR_ROOT"]
+
+ProcessInfo.processInfo.environment["SIMULATOR_HOST_HOME"]
+
+extension Parser where Input == Substring, Output == Substring {
+  static var rest: Self {
+//    Self.prefix(while: { _ in true })
+    Self { input in
+      let rest = input
+      input = ""
+      return rest
+    }
+  }
+}
+
+let username = Parser.key("SIMULATOR_HOST_HOME", Parser<Substring, Void>.prefix("/Users/")
+            .take(.rest))
+
+username.run(ProcessInfo.processInfo.environment).rest["SIMULATOR_HOST_HOME"]
+
+xcodePath.take(username)
+
 //dump(
-//ProcessInfo.processInfo.environment
+Parser.prefix(through: ".app")
+  .run(
+    ProcessInfo.processInfo.environment["IPHONE_SIMULATOR_ROOT"]![...]
+)
 //)
 
 //URLComponents
