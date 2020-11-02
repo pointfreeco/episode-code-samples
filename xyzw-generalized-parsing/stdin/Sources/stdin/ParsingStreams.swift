@@ -21,9 +21,9 @@ extension Parser where Input == [String: String] {
 
 let xcodePath = Parser.key("IPHONE_SIMULATOR_ROOT", .prefix(through: ".app"))
 
-xcodePath.run(ProcessInfo.processInfo.environment).rest["IPHONE_SIMULATOR_ROOT"]
+//xcodePath.run(ProcessInfo.processInfo.environment).rest["IPHONE_SIMULATOR_ROOT"]
 
-ProcessInfo.processInfo.environment["SIMULATOR_HOST_HOME"]
+//ProcessInfo.processInfo.environment["SIMULATOR_HOST_HOME"]
 
 extension Parser where Input == Substring, Output == Substring {
   static var rest: Self {
@@ -39,15 +39,15 @@ extension Parser where Input == Substring, Output == Substring {
 let username = Parser.key("SIMULATOR_HOST_HOME", Parser<Substring, Void>.prefix("/Users/")
             .take(.rest))
 
-username.run(ProcessInfo.processInfo.environment).rest["SIMULATOR_HOST_HOME"]
+//username.run(ProcessInfo.processInfo.environment).rest["SIMULATOR_HOST_HOME"]
 
-xcodePath.take(username)
+//xcodePath.take(username)
 
 //dump(
-Parser.prefix(through: ".app")
-  .run(
-    ProcessInfo.processInfo.environment["IPHONE_SIMULATOR_ROOT"]![...]
-)
+//Parser.prefix(through: ".app")
+//  .run(
+//    ProcessInfo.processInfo.environment["IPHONE_SIMULATOR_ROOT"]![...]
+//)
 //)
 
 
@@ -161,9 +161,9 @@ let request = RequestData(
   queryItems: [(name: "time", value: "120")]
 )
 
-dump(
-episode.run(request)
-)
+//dump(
+//episode.run(request)
+//)
 
 enum Route {
   // GET /episodes/:int?time=:int
@@ -189,17 +189,17 @@ let router = Parser.oneOf(
     .map(Route.episodeComments(id:))
 )
 
-dump(
-router.run(request)
-)
+//dump(
+//router.run(request)
+//)
 
 
 //URLComponents
 let components = URLComponents(string: "https://www.pointfree.co/episodes/1?time=120")
-components?.host
-components?.path
-components?.query
-components?.queryItems
+//components?.host
+//components?.path
+//components?.query
+//components?.queryItems
 //URLQueryItem.init(name: <#T##String#>, value: <#T##String?#>)
 
 // swift package init --name=MyPackage --type=executable
@@ -208,11 +208,11 @@ components?.queryItems
 // swift build --sanitize --verbose
 //dump(CommandLine.arguments)
 
-[
-  "/Users/point-free/Library/Developer/XCPGDevices/7791186F-129C-4B2D-A0DF-2B685D338A84/data/Containers/Bundle/Application/F6013A8B-FED5-4A87-B7E7-D2BA154AE029/GeneralizedParsing-17305-7.app/GeneralizedParsing",
-  "-DVTDeviceRunExecutableOptionREPLMode",
-  "1"
-]
+//[
+//  "/Users/point-free/Library/Developer/XCPGDevices/7791186F-129C-4B2D-A0DF-2B685D338A84/data/Containers/Bundle/Application/F6013A8B-FED5-4A87-B7E7-D2BA154AE029/GeneralizedParsing-17305-7.app/GeneralizedParsing",
+//  "-DVTDeviceRunExecutableOptionREPLMode",
+//  "1"
+//]
 
 extension Parser {
   func run(_ input: Input) -> (match: Output?, rest: Input) {
@@ -243,7 +243,7 @@ extension Parser where Input == Substring, Output == Int {
   }
 }
 
-Parser.int.run("123 Hello")
+//Parser.int.run("123 Hello")
 
 
 extension Parser where Input == Substring, Output == Double {
@@ -277,7 +277,7 @@ extension Parser where Input == Substring, Output == Double {
   }
 }
 
-Parser.double.run("123.4 Hello")
+//Parser.double.run("123.4 Hello")
 
 
 extension Parser where Input == Substring, Output == Character {
@@ -471,8 +471,8 @@ extension Parser {
 
 let temperature = Parser.int.skip("°F")
 
-temperature.run("100°F")
-temperature.run("-100°F")
+//temperature.run("100°F")
+//temperature.run("-100°F")
 
 let northSouth = Parser.char.flatMap {
   $0 == "N" ? .always(1.0)
@@ -513,10 +513,10 @@ let coord = latitude
   .map(Coordinate.init)
 
 
-Parser.prefix([1, 2]).run([1, 2, 3, 4, 5, 6][...])
-Parser<ArraySlice<Int>, Void>.prefix([1, 2]).run([1, 2, 3, 4, 5, 6])
-
-Parser.prefix([1, 2]).run([1, 2, 3, 4, 5, 6][...])
+//Parser.prefix([1, 2]).run([1, 2, 3, 4, 5, 6][...])
+//Parser<ArraySlice<Int>, Void>.prefix([1, 2]).run([1, 2, 3, 4, 5, 6])
+//
+//Parser.prefix([1, 2]).run([1, 2, 3, 4, 5, 6][...])
 
 enum Currency { case eur, gbp, usd }
 
@@ -535,9 +535,9 @@ struct Money {
 let money = zip(currency, .double)
   .map(Money.init(currency:value:))
 
-money.run("$100")
-money.run("£100")
-money.run("€100")
+//money.run("$100")
+//money.run("£100")
+//money.run("€100")
 
 
 
@@ -634,7 +634,7 @@ let race = locationName.map(String.init)
 
 let races = race.zeroOrMore(separatedBy: "\n---\n")
 
-races.run(upcomingRaces[...])
+//races.run(upcomingRaces[...])
 
 
 
@@ -719,10 +719,10 @@ let testCaseFinishedLine = Parser
   .take(.double)
   .skip(" seconds).\n")
 
-testCaseFinishedLine.run("""
-Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' failed (0.003 seconds).
-
-""")
+//testCaseFinishedLine.run("""
+//Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' failed (0.003 seconds).
+//
+//""")
 
 let testCaseStartedLine = Parser
   .skip(.prefix(upTo: "Test Case '-["))
@@ -745,12 +745,12 @@ let testCaseBody = fileName
   .skip(.prefix(through: "] : "))
   .take(Parser.prefix(upTo: "Test Case '-[").map { $0.dropLast() })
 
-testCaseBody.run("""
-/Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed
-Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' failed (0.003 seconds).
-""")
-
-fileName.run("/Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed")
+//testCaseBody.run("""
+///Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed
+//Test Case '-[VoiceMemosTests.VoiceMemosTests testPermissionDenied]' failed (0.003 seconds).
+//""")
+//
+//fileName.run("/Users/point-free/projects/swift-composable-architecture/Examples/VoiceMemos/VoiceMemosTests/VoiceMemosTests.swift:107: error: -[VoiceMemosTests.VoiceMemosTests testPermissionDenied] : XCTAssertTrue failed")
 
 enum TestResult {
   case failed(failureMessage: Substring, file: Substring, line: Int, testName: Substring, time: TimeInterval)
@@ -772,9 +772,9 @@ let testResult = Parser.oneOf(testFailed, testPassed)
 
 let testResults = testResult.zeroOrMore()
 
-testResults.run(logs[...])
-
-testCaseStartedLine.run(logs[...])
+//testResults.run(logs[...])
+//
+//testCaseStartedLine.run(logs[...])
 
 //VoiceMemoTests.swift:123, testDelete failed in 2.00 seconds.
 //  ┃
@@ -805,8 +805,9 @@ func format(result: TestResult) -> String {
   }
 }
 
-format(result: .failed(failureMessage: "XCTAssertTrue failed", file: "VoiceMemosTest.swift", line: 123, testName: "testFailed", time: 0.03))
+//format(result: .failed(failureMessage: "XCTAssertTrue failed", file: "VoiceMemosTest.swift", line: 123, testName: "testFailed", time: 0.03))
+//
+//while let line = readLine() {
+//  // process line
+//}
 
-while let line = readLine() {
-  // process line
-}
