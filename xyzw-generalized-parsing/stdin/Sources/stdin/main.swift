@@ -34,17 +34,46 @@ let randomNumbers = AnyIterator {
   Int.random(in: 1 ... .max)
 }
 
-let stdin = AnyIterator { readLine() }
+// (Parser<Input, Output>) -> Parser<AnyIterator<Input>, [Output]>
 
-var stdinLogs: Substring = ""
-var results: [TestResult] = []
-while let line = readLine() {
-  stdinLogs.append(contentsOf: line)
-  stdinLogs.append("\n")
-  if let result = testResult.run(&stdinLogs) {
-    results.append(result)
+extension Parser where Input: RangeReplaceableCollection {
+  var stream: Parser<AnyIterator<Input>, [Output]> {
+    .init { stream in
+      var buffer = Input()
+      var outputs: [Output] = []
+      while let chunk = stream.next() {
+        buffer.append(contentsOf: chunk)
+
+        while let output = self.run(&buffer) {
+          outputs.append(output)
+        }
+      }
+
+      return outputs
+    }
   }
 }
-results.forEach { result in
-  print(format(result: result))
-}
+
+let stdin = AnyIterator { readLine(strippingNewline: false)?[...] }
+
+testResult
+  .stream
+  .run(stdin)
+  .match?
+  .forEach {
+    print(format(result: $0))
+  }
+
+//
+//var stdinLogs: Substring = ""
+//var results: [TestResult] = []
+//while let line = readLine() {
+//  stdinLogs.append(contentsOf: line)
+//  stdinLogs.append("\n")
+//  if let result = testResult.run(&stdinLogs) {
+//    results.append(result)
+//  }
+//}
+//results.forEach { result in
+//  print(format(result: result))
+//}
