@@ -1,12 +1,12 @@
 import Foundation
 
-struct Parser<Output> {
-  let run: (inout Substring) -> Output?
+struct Parser<Input, Output> {
+  let run: (inout Input) -> Output?
 }
 
-dump(
-ProcessInfo.processInfo.environment
-)
+//dump(
+//ProcessInfo.processInfo.environment
+//)
 
 //URLComponents
 let components = URLComponents(string: "https://www.pointfree.co/episodes/1?time=120")
@@ -20,7 +20,7 @@ components?.queryItems
 // swift build -v
 // swift build --verbose --sanitize
 // swift build --sanitize --verbose
-dump(CommandLine.arguments)
+//dump(CommandLine.arguments)
 
 [
   "/Users/point-free/Library/Developer/XCPGDevices/7791186F-129C-4B2D-A0DF-2B685D338A84/data/Containers/Bundle/Application/F6013A8B-FED5-4A87-B7E7-D2BA154AE029/GeneralizedParsing-17305-7.app/GeneralizedParsing",
@@ -29,14 +29,14 @@ dump(CommandLine.arguments)
 ]
 
 extension Parser {
-  func run(_ input: String) -> (match: Output?, rest: Substring) {
-    var input = input[...]
+  func run(_ input: Input) -> (match: Output?, rest: Input) {
+    var input = input
     let match = self.run(&input)
     return (match, input)
   }
 }
 
-extension Parser where Output == Int {
+extension Parser where Input == Substring, Output == Int {
   static let int = Self { input in
     let original = input
 
@@ -57,7 +57,10 @@ extension Parser where Output == Int {
   }
 }
 
-extension Parser where Output == Double {
+Parser.int.run("123 Hello")
+
+
+extension Parser where Input == Substring, Output == Double {
   static let double = Self { input in
     let original = input
     let sign: Double
@@ -70,25 +73,28 @@ extension Parser where Output == Double {
     } else {
       sign = 1
     }
-  
+
     var decimalCount = 0
     let prefix = input.prefix { char in
       if char == "." { decimalCount += 1 }
       return char.isNumber || (char == "." && decimalCount <= 1)
     }
-  
+
     guard let match = Double(prefix)
     else {
       input = original
       return nil
     }
-  
+
     input.removeFirst(prefix.count)
     return match * sign
   }
 }
 
-extension Parser where Output == Character {
+Parser.double.run("123.4 Hello")
+
+
+extension Parser where Input == Substring, Output == Character {
   static let char = Self { input in
     guard !input.isEmpty else { return nil }
     return input.removeFirst()
@@ -106,7 +112,7 @@ extension Parser {
 }
 
 extension Parser {
-  func map<NewOutput>(_ f: @escaping (Output) -> NewOutput) -> Parser<NewOutput> {
+  func map<NewOutput>(_ f: @escaping (Output) -> NewOutput) -> Parser<Input, NewOutput> {
     .init { input in
       self.run(&input).map(f)
     }
@@ -115,8 +121,8 @@ extension Parser {
 
 extension Parser {
   func flatMap<NewOutput>(
-    _ f: @escaping (Output) -> Parser<NewOutput>
-  ) -> Parser<NewOutput> {
+    _ f: @escaping (Output) -> Parser<Input, NewOutput>
+  ) -> Parser<Input, NewOutput> {
     .init { input in
       let original = input
       let output = self.run(&input)
@@ -130,10 +136,10 @@ extension Parser {
   }
 }
 
-func zip<Output1, Output2>(
-  _ p1: Parser<Output1>,
-  _ p2: Parser<Output2>
-) -> Parser<(Output1, Output2)> {
+func zip<Input, Output1, Output2>(
+  _ p1: Parser<Input, Output1>,
+  _ p2: Parser<Input, Output2>
+) -> Parser<Input, (Output1, Output2)> {
 
   .init { input -> (Output1, Output2)? in
     let original = input
@@ -165,9 +171,9 @@ extension Parser {
 
 extension Parser {
   func zeroOrMore(
-    separatedBy separator: Parser<Void> = ""
-  ) -> Parser<[Output]> {
-    Parser<[Output]> { input in
+    separatedBy separator: Parser<Input, Void> = .always(())
+  ) -> Parser<Input, [Output]> {
+    Parser<Input, [Output]> { input in
       var rest = input
       var matches: [Output] = []
       while let match = self.run(&input) {
@@ -183,7 +189,7 @@ extension Parser {
   }
 }
 
-extension Parser where Output == Void {
+extension Parser where Input == Substring, Output == Void {
   static func prefix(_ p: String) -> Self {
     Self { input in
       guard input.hasPrefix(p) else { return nil }
@@ -193,7 +199,7 @@ extension Parser where Output == Void {
   }
 }
 
-extension Parser where Output == Substring {
+extension Parser where Input == Substring, Output == Substring {
   static func prefix(while p: @escaping (Character) -> Bool) -> Self {
     Self { input in
       let output = input.prefix(while: p)
@@ -229,15 +235,15 @@ extension Parser where Output == Substring {
   }
 }
 
-extension Parser: ExpressibleByUnicodeScalarLiteral where Output == Void {
+extension Parser: ExpressibleByUnicodeScalarLiteral where Input == Substring, Output == Void {
   typealias UnicodeScalarLiteralType = StringLiteralType
 }
 
-extension Parser: ExpressibleByExtendedGraphemeClusterLiteral where Output == Void {
+extension Parser: ExpressibleByExtendedGraphemeClusterLiteral where Input == Substring, Output == Void {
   typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
 }
 
-extension Parser: ExpressibleByStringLiteral where Output == Void {
+extension Parser: ExpressibleByStringLiteral where Input == Substring, Output == Void {
   typealias StringLiteralType = String
 
   init(stringLiteral value: String) {
@@ -246,24 +252,24 @@ extension Parser: ExpressibleByStringLiteral where Output == Void {
 }
 
 extension Parser {
-  static func skip(_ p: Self) -> Parser<Void> {
+  static func skip(_ p: Self) -> Parser<Input, Void> {
     p.map { _ in () }
   }
 
-  func skip<OtherOutput>(_ p: Parser<OtherOutput>) -> Self {
+  func skip<OtherOutput>(_ p: Parser<Input, OtherOutput>) -> Self {
     zip(self, p).map { a, _ in a }
   }
 
-  func take<NewOutput>(_ p: Parser<NewOutput>) -> Parser<(Output, NewOutput)> {
+  func take<NewOutput>(_ p: Parser<Input, NewOutput>) -> Parser<Input, (Output, NewOutput)> {
     zip(self, p)
   }
 
-  func take<A>(_ p: Parser<A>) -> Parser<A>
+  func take<A>(_ p: Parser<Input, A>) -> Parser<Input, A>
   where Output == Void {
     zip(self, p).map { _, a in a }
   }
 
-  func take<A, B, C>(_ p: Parser<C>) -> Parser<(A, B, C)>
+  func take<A, B, C>(_ p: Parser<Input, C>) -> Parser<Input, (A, B, C)>
   where Output == (A, B) {
     zip(self, p).map { ab, c in
       (ab.0, ab.1, c)
@@ -434,7 +440,7 @@ let race = locationName.map(String.init)
 
 let races = race.zeroOrMore(separatedBy: "\n---\n")
 
-races.run(upcomingRaces)
+races.run(upcomingRaces[...])
 
 
 
@@ -568,13 +574,13 @@ let testPassed = testCaseStartedLine
   .take(testCaseFinishedLine)
   .map(TestResult.passed(testName:time:))
 
-let testResult: Parser<TestResult> = .oneOf(testFailed, testPassed)
+let testResult = Parser.oneOf(testFailed, testPassed)
 
-let testResults: Parser<[TestResult]> = testResult.zeroOrMore()
+let testResults = testResult.zeroOrMore()
 
-testResults.run(logs)
+testResults.run(logs[...])
 
-testCaseStartedLine.run(logs)
+testCaseStartedLine.run(logs[...])
 
 //VoiceMemoTests.swift:123, testDelete failed in 2.00 seconds.
 //  ┃
