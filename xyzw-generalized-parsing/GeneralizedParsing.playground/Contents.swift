@@ -50,6 +50,150 @@ Parser.prefix(through: ".app")
 )
 //)
 
+
+
+//Parser<URLRequest, ???>
+//Parser<URLComponents, ???>
+
+struct RequestData {
+  var body: Data?
+  var headers: [String: Substring]
+  var method: String?
+  var pathComponents: ArraySlice<Substring>
+  var queryItems: [(name: String, value: Substring)]
+}
+
+extension Parser where Input == RequestData, Output == Void {
+  static func method(_ method: String) -> Self {
+    .init { input in
+      guard input.method?.uppercased() == method.uppercased()
+      else { return nil }
+      input.method = nil
+      return ()
+    }
+  }
+}
+
+// /foo/2
+// /foo3/2
+
+extension Parser where Input == RequestData {
+  static func path(_ parser: Parser<Substring, Output>) -> Self {
+    return .init { input in
+      guard var firstComponent = input.pathComponents.first
+      else { return nil }
+
+      let output = parser.run(&firstComponent)
+      guard firstComponent.isEmpty
+      else { return nil }
+
+      input.pathComponents.removeFirst()
+      return output
+    }
+  }
+}
+
+extension Parser where Input == RequestData {
+  static func query(name: String, _ parser: Parser<Substring, Output>) -> Self {
+    .init { input in
+      guard let index = input.queryItems.firstIndex(where: { n, value in n == name})
+      else { return nil }
+
+      let original = input.queryItems[index].value
+      guard let output = parser.run(&input.queryItems[index].value)
+      else { return nil }
+
+      guard input.queryItems[index].value.isEmpty
+      else {
+        input.queryItems[index].value = original
+        return nil
+      }
+
+      input.queryItems.remove(at: index)
+      return output
+    }
+  }
+}
+
+// optional: (Parser<Input, Output>) -> Parser<Input, Output?>
+
+extension Parser {
+//  var optional: Parser<Input, Output?> {
+//    .init { input in
+//      .some(self.run(&input))
+//    }
+//  }
+  static func optional<A>(_ parser: Parser<Input, A>) -> Self where Output == Optional<A> {
+    .init { input in
+      .some(parser.run(&input))
+    }
+  }
+}
+
+extension Parser where Input == RequestData, Output == Void {
+  static let end = Self { input in
+    guard
+      input.pathComponents.isEmpty,
+      input.method == nil
+    else { return nil }
+
+    input.body = nil
+    input.queryItems = []
+    input.headers = [:]
+    return ()
+  }
+}
+
+// GET /episodes/42?time=120
+// GET /episodes/42
+let episode = Parser.method("GET")
+  .skip(.path("episodes"))
+  .take(.path(.int))
+  .take(.optional(.query(name: "time", .int)))
+  .skip(.end)
+
+
+let request = RequestData(
+  body: nil,
+  headers: ["User-Agent": "Safari"],
+  method: "GET",
+  pathComponents: ["episodes", "1", "comments"],
+  queryItems: [(name: "time", value: "120")]
+)
+
+dump(
+episode.run(request)
+)
+
+enum Route {
+  // GET /episodes/:int?time=:int
+  case episode(id: Int, time: Int?)
+
+  // GET /episodes/:int/comments
+  case episodeComments(id: Int)
+}
+
+let episodeSection = Parser.method("GET")
+  .skip(.path("episodes"))
+  .take(.path(.int))
+
+let router = Parser.oneOf(
+  episodeSection
+    .take(.optional(.query(name: "time", .int)))
+    .skip(.end)
+    .map(Route.episode(id:time:)),
+
+  episodeSection
+    .skip(.path("comments"))
+    .skip(.end)
+    .map(Route.episodeComments(id:))
+)
+
+dump(
+router.run(request)
+)
+
+
 //URLComponents
 let components = URLComponents(string: "https://www.pointfree.co/episodes/1?time=120")
 components?.host
@@ -662,3 +806,5 @@ func format(result: TestResult) -> String {
 }
 
 format(result: .failed(failureMessage: "XCTAssertTrue failed", file: "VoiceMemosTest.swift", line: 123, testName: "testFailed", time: 0.03))
+
+
