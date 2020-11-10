@@ -126,3 +126,4 @@ This repository is the home of code written on episodes of
 1. [Parsing Xcode Logs: Part 1](0121-parsers-recap-pt3)
 1. [Parsing Xcode Logs: Part 2](0122-parsers-recap-pt4)
 1. [Fluently Zipping Parsers](0123-fluently-zipping-parsers)
+1. [Generalized Parsing: Part 1](0124-generalized-parsing-pt1)
