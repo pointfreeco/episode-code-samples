@@ -1,8 +1,8 @@
-print("Starting...")
-while let line = readLine() {
-  print("You typed: \(line)")
-}
-print("Done!")
+//print("Starting...")
+//while let line = readLine() {
+//  print("You typed: \(line)")
+//}
+//print("Done!")
 
 struct NaturalNumbers: IteratorProtocol {
   var count = 0
@@ -24,7 +24,7 @@ struct OneBillionNumbers: IteratorProtocol {
   }
 }
 
-Array(1...1_000_000_000)
+//Array(1...1_000_000_000)
 
 var naturals = sequence(first: 0, next: { $0 + 1 })
 var oneBillion = sequence(first: 0, next: { $0 < 1_000_000_000 ? $0 + 1 : nil })
@@ -54,7 +54,7 @@ extension Parser where Input: RangeReplaceableCollection {
   }
 }
 
-let stdin = AnyIterator { readLine(strippingNewline: false)?[...] }
+var stdin = AnyIterator { readLine(strippingNewline: false)?[...] }
 
 testResult
   .stream
@@ -63,6 +63,29 @@ testResult
   .forEach {
     print(format(result: $0))
   }
+
+extension Parser where Input: RangeReplaceableCollection {
+  func run(
+    input: inout AnyIterator<Input>,
+    output streamOut: (Output) -> Void
+  ) {
+    print("start")
+    var buffer = Input()
+    while let chunk = input.next() {
+      print("chunk", chunk)
+      buffer.append(contentsOf: chunk)
+
+      while let output = self.run(&buffer) {
+        print("output", output)
+        streamOut(output)
+      }
+    }
+    print("done")
+  }
+}
+
+testResult
+  .run(input: &stdin, output: { print(format(result: $0)) })
 
 //
 //var stdinLogs: Substring = ""
