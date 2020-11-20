@@ -1,6 +1,7 @@
 import Benchmark
 
 Benchmark.main([
-  copyingSuite,
+//  copyingSuite,
+  intParserSuite,
 ])
 
