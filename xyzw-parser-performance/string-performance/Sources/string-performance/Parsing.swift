@@ -107,11 +107,58 @@ extension Parser where Input == Substring, Output == Double {
   }
 }
 
-extension Parser where Input == Substring, Output == Character {
-  static let char = Self { input in
-    guard !input.isEmpty else { return nil }
-    return input.removeFirst()
+extension Parser
+where
+  Input: Collection,
+  Input.SubSequence == Input,
+  Output == Input.Element
+{
+  static var first: Self {
+    .init { input in
+      guard !input.isEmpty else { return nil }
+      return input.removeFirst()
+    }
   }
+}
+
+extension Parser where Input == Substring.UTF8View, Output == Double {
+  static let double = Self { input in
+    let original = input
+    let sign: Double
+    if input.first == .init(ascii: "-") {
+      sign = -1
+      input.removeFirst()
+    } else if input.first == .init(ascii: "+") {
+      sign = 1
+      input.removeFirst()
+    } else {
+      sign = 1
+    }
+
+    var decimalCount = 0
+    let prefix = input.prefix { c in
+      if c == .init(ascii: ".") { decimalCount += 1 }
+      return (.init(ascii: "0") ... .init(ascii: "9")).contains(c) || (c == .init(ascii: ".") && decimalCount <= 1)
+    }
+
+    guard let match = Double(String(Substring(prefix)))
+    else {
+      input = original
+      return nil
+    }
+
+    input.removeFirst(prefix.count)
+    return match * sign
+  }
+}
+
+
+extension Parser where Input == Substring, Output == Character {
+  static let char = first
+//  static let char = Self { input in
+//    guard !input.isEmpty else { return nil }
+//    return input.removeFirst()
+//  }
 }
 
 extension Parser {
@@ -216,14 +263,22 @@ where Input: Collection,
   }
 }
 
-extension Parser where Input == Substring, Output == Substring {
-  static func prefix(while p: @escaping (Character) -> Bool) -> Self {
+extension Parser
+where
+  Input: Collection,
+  Input.SubSequence == Input,
+  Output == Input
+{
+  static func prefix(while p: @escaping (Input.Element) -> Bool) -> Self {
     Self { input in
       let output = input.prefix(while: p)
       input.removeFirst(output.count)
       return output
     }
   }
+}
+
+extension Parser where Input == Substring, Output == Substring {
 
   static func prefix(upTo substring: Substring) -> Self {
     Self { input in
