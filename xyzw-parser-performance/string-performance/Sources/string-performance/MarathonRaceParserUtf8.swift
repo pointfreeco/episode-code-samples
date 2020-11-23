@@ -36,12 +36,11 @@ private let currency = Parser<Substring.UTF8View, Currency>.oneOf(
   Parser.prefix("$"[...].utf8).map { .usd }
 )
 
-private let city = Parser<Substring.UTF8View, City>.oneOf(
+private let _city = Parser<Substring.UTF8View, City>.oneOf(
   Parser.prefix("Berlin"[...].utf8).map { .berlin },
   Parser.prefix("London"[...].utf8).map { .london },
   Parser.prefix("New York City"[...].utf8).map { .newYork },
-  Parser.prefix("San José"[...].utf8).map { .sanJose },
-  Parser.prefix("San José"[...].utf8).map { .sanJose }
+  Parser.prefix("San José").utf8.map { .sanJose }
 )
 
 private let money = zip(currency, .double)
@@ -49,7 +48,7 @@ private let money = zip(currency, .double)
 
 private let locationName = Parser<Substring.UTF8View, Substring.UTF8View>.prefix(while: { $0 != .init(ascii: ",") })
 
-private let race = city // locationName.map { String(Substring($0)) }
+private let race = _city // locationName.map { String(Substring($0)) }
   .skip(.prefix(","[...].utf8))
   .skip(zeroOrMoreSpaces)
   .take(money)

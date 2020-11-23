@@ -4,6 +4,17 @@ struct Parser<Input, Output> {
   let run: (inout Input) -> Output?
 }
 
+extension Parser where Input == Substring {
+  var utf8: Parser<Substring.UTF8View, Output> {
+    .init { input in
+      var substring = Substring(input)
+      let output = self.run(&substring)
+      input = substring.utf8
+      return output
+    }
+  }
+}
+
 extension Parser {
   func run(_ input: Input) -> (match: Output?, rest: Input) {
     var input = input
@@ -278,34 +289,54 @@ where
   }
 }
 
-extension Parser where Input == Substring, Output == Substring {
-
-  static func prefix(upTo substring: Substring) -> Self {
+extension Parser
+where
+  Input: Collection,
+  Input.SubSequence == Input,
+  Input.Element: Equatable,
+  Output == Input
+{
+  static func prefix(upTo subsequence: Input) -> Self {
     Self { input in
-      guard let endIndex = input.range(of: substring)?.lowerBound
-      else { return nil }
-
-      let match = input[..<endIndex]
-
-      input = input[endIndex...]
-
-      return match
-    }
-  }
-
-  static func prefix(through substring: Substring) -> Self {
-    Self { input in
-      guard let endIndex = input.range(of: substring)?.upperBound
-      else { return nil }
-
-      let match = input[..<endIndex]
-
-      input = input[endIndex...]
-
-      return match
+      guard !subsequence.isEmpty else { return subsequence }
+      let original = input
+      while !input.isEmpty {
+        if input.starts(with: subsequence) {
+          return original[..<input.startIndex]
+        }
+        input.removeFirst()
+      }
+      input = original
+      return nil
     }
   }
 }
+
+extension Parser
+where
+  Input: Collection,
+  Input.SubSequence == Input,
+  Input.Element: Equatable,
+  Output == Input
+{
+  static func prefix(through subsequence: Input) -> Self {
+    Self { input in
+      guard !subsequence.isEmpty else { return subsequence }
+      let original = input
+      while !input.isEmpty {
+        if input.starts(with: subsequence) {
+          let index = input.index(input.startIndex, offsetBy: subsequence.count)
+          input = input[index...]
+          return original[..<index]
+        }
+        input.removeFirst()
+      }
+      input = original
+      return nil
+    }
+  }
+}
+
 
 extension Parser: ExpressibleByUnicodeScalarLiteral where Input == Substring, Output == Void {
   typealias UnicodeScalarLiteralType = StringLiteralType

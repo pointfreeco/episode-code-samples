@@ -151,7 +151,7 @@ private let currency = Parser<Substring, Currency>.oneOf(
   Parser.prefix("$").map { .usd }
 )
 
-private let city = Parser<Substring, City>.oneOf(
+let city = Parser<Substring, City>.oneOf(
   Parser.prefix("Berlin").map { .berlin },
   Parser.prefix("London").map { .london },
   Parser.prefix("New York City").map { .newYork },
