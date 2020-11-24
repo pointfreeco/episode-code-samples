@@ -539,9 +539,51 @@ money.run("$100")
 money.run("£100")
 money.run("€100")
 
+enum City {
+  case berlin
+  case london
+  case newYorkCity
+  case sanJose
+}
+
+let location = Parser<Substring, City>.oneOf(
+  Parser.prefix("Berlin").map { City.berlin },
+  Parser.prefix("London").map { City.london },
+  Parser.prefix("New York City").map { City.newYorkCity },
+  Parser.prefix("San José").map { City.sanJose }
+)
 
 
 let upcomingRaces = """
+  San José, $900
+  51.48205° N, 0.04283° E
+  51.47439° N, 0.02170° E
+  51.47618° N, 0.02199° E
+  51.49295° N, 0.05658° E
+  51.47542° N, 0.03019° E
+  51.47537° N, 0.03015° E
+  51.47435° N, 0.03733° E
+  51.47954° N, 0.04866° E
+  51.48604° N, 0.06293° E
+  51.49314° N, 0.06104° E
+  51.49248° N, 0.04740° E
+  51.48888° N, 0.03564° E
+  51.48655° N, 0.01830° E
+  51.48085° N, 0.02223° W
+  51.49210° N, 0.04510° W
+  51.49324° N, 0.04699° W
+  51.50959° N, 0.05491° W
+  51.50961° N, 0.05390° W
+  51.49950° N, 0.01356° W
+  51.50898° N, 0.02341° W
+  51.51069° N, 0.04225° W
+  51.51056° N, 0.04353° W
+  51.50946° N, 0.07810° W
+  51.51121° N, 0.09786° W
+  51.50964° N, 0.11870° W
+  51.50273° N, 0.13850° W
+  51.50095° N, 0.12411° W
+  ---
   New York City, $300
   40.60248° N, 74.06433° W
   40.61807° N, 74.02966° W
@@ -616,7 +658,7 @@ let upcomingRaces = """
   """
 
 struct Race {
-  let location: String
+  let location: City
   let entranceFee: Money
   let path: [Coordinate]
 }
@@ -624,7 +666,7 @@ struct Race {
 
 let locationName = Parser.prefix(while: { $0 != "," })
 
-let race = locationName.map(String.init)
+let race = location //.map(String.init)
   .skip(",")
   .skip(zeroOrMoreSpaces)
   .take(money)
