@@ -69,9 +69,6 @@ extension Parser where Input == Substring.UTF8View, Output == Int {
   static let int = Self { input in
     let original = input
 
-//    print(Thread.callStackSymbols.joined(separator: "\n"))
-//    print("---")
-
     var isFirstCharacter = true
     let intPrefix = input.prefix { c in
       defer { isFirstCharacter = false }

@@ -1,10 +1,10 @@
 import Benchmark
 
 let xcodeLogsSuite = BenchmarkSuite(name: "Xcode Logs") { suite in
-  suite.benchmark("Substring") {
-    var input = xcodeLogs[...]
-    precondition(testResults.run(&input)?.count == 283)
-  }
+//  suite.benchmark("Substring") {
+//    var input = xcodeLogs[...]
+//    precondition(testResults.run(&input)?.count == 283)
+//  }
   
   suite.benchmark("UTF8") {
     var input = xcodeLogs[...].utf8

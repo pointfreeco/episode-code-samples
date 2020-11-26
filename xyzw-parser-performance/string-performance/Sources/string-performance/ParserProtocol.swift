@@ -12,10 +12,8 @@ public struct IntParser: ParserProtocol {
   public typealias Input = Substring.UTF8View
   public typealias Output = Int
 
-  @inlinable
   public init() {}
 
-  @inlinable
   public func parse(_ input: inout Substring.UTF8View) -> Int? {
     let original = input
 
@@ -43,13 +41,11 @@ public struct SkipSecond<A, B>: ParserProtocol where A: ParserProtocol, B: Parse
   public let a: A
   public let b: B
 
-  @inlinable
   public init(_ a: A, _ b: B) {
     self.a = a
     self.b = b
   }
 
-  @inlinable
   public func parse(_ input: inout Input) -> Output? {
     let original = input
 
@@ -78,13 +74,11 @@ where
   public let a: A
   public let b: B
 
-  @inlinable
   public init(_ a: A, _ b: B) {
     self.a = a
     self.b = b
   }
 
-  @inlinable
   public func parse(_ input: inout Input) -> Output? {
     let original = input
     guard let a = self.a.parse(&input)
@@ -98,65 +92,23 @@ where
   }
 }
 
-public struct Prefix<Collection>: ParserProtocol
-where
-  Collection: Swift.Collection,
-  Collection.SubSequence == Collection,
-  Collection.Element: Equatable
-{
-  public typealias Input = Collection
-  public typealias Output = Void
-
-  public let possiblePrefix: Collection
-
-  @inlinable
-  public init(_ possiblePrefix: Collection) {
-    self.possiblePrefix = possiblePrefix
-  }
-
-  @inlinable
-  public func parse(_ input: inout Input) -> Output? {
-    guard input.starts(with: self.possiblePrefix)
-    else { return nil }
-
-    input.removeFirst(self.possiblePrefix.count)
-    return ()
+extension ParserProtocol {
+  func take<P>(_ other: P) -> Take2<Self, P>
+  where P: ParserProtocol, P.Input == Input {
+    Take2(self, other)
   }
 }
 
-public struct ZeroOrMore<Upstream, Separator>: ParserProtocol
+struct First<Collection>: ParserProtocol
 where
-  Upstream: ParserProtocol,
-  Separator: ParserProtocol,
-  Upstream.Input == Separator.Input
-{
-  public typealias Input = Upstream.Input
-  public typealias Output = [Upstream.Output]
+  Collection: Swift.Collection,
+  Collection.SubSequence == Collection {
 
-  public let upstream: Upstream
-  public let separator: Separator?
+  typealias Input = Collection
+  typealias Output = Collection.Element
 
-  @inlinable
-  public init(
-    _ upstream: Upstream,
-    separatedBy separator: Separator
-  ) {
-    self.upstream = upstream
-    self.separator = separator
-  }
-
-  @inlinable
-  public func parse(_ input: inout Input) -> Output? {
-    var rest = input
-    var outputs = Output()
-    while let output = self.upstream.parse(&input) {
-      rest = input
-      outputs.append(output)
-      if self.separator != nil, self.separator?.parse(&input) == nil {
-        return outputs
-      }
-    }
-    input = rest
-    return outputs
+  func parse(_ input: inout Collection) -> Collection.Element? {
+    guard !input.isEmpty else { return nil }
+    return input.removeFirst()
   }
 }

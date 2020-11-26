@@ -2,8 +2,9 @@ import Benchmark
 
 Benchmark.main([
 //  copyingSuite,
-  intParserSuite,
+//  intParserSuite,
 //  raceSuite,
 //  xcodeLogsSuite,
+  csvSuite,
+//  protocolSuite,
 ])
-

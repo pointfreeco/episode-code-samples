@@ -1,3 +1,5 @@
+import Foundation
+
 struct Race {
   let location: City
   let entranceFee: Money
