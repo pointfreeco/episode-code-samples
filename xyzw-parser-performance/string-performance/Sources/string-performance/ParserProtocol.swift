@@ -1,4 +1,4 @@
-public protocol ParserProtocol {
+protocol ParserProtocol {
   associatedtype Input
   associatedtype Output
 
@@ -8,13 +8,13 @@ public protocol ParserProtocol {
 import Foundation
 
 // extension Parser where Input == Substring.UTF8View, Output == Int
-public struct IntParser: ParserProtocol {
-  public typealias Input = Substring.UTF8View
-  public typealias Output = Int
+struct IntParser: ParserProtocol {
+  typealias Input = Substring.UTF8View
+  typealias Output = Int
 
-  public init() {}
+  init() {}
 
-  public func parse(_ input: inout Substring.UTF8View) -> Int? {
+  func parse(_ input: inout Substring.UTF8View) -> Int? {
     let original = input
 
     var isFirstCharacter = true
@@ -34,19 +34,24 @@ public struct IntParser: ParserProtocol {
   }
 }
 
-public struct SkipSecond<A, B>: ParserProtocol where A: ParserProtocol, B: ParserProtocol, A.Input == B.Input {
-  public typealias Input = A.Input
-  public typealias Output = A.Output
+struct SkipSecond<A, B>: ParserProtocol
+where
+  A: ParserProtocol,
+  B: ParserProtocol,
+  A.Input == B.Input
+{
+  typealias Input = A.Input
+  typealias Output = A.Output
 
-  public let a: A
-  public let b: B
+  let a: A
+  let b: B
 
-  public init(_ a: A, _ b: B) {
+  init(_ a: A, _ b: B) {
     self.a = a
     self.b = b
   }
 
-  public func parse(_ input: inout Input) -> Output? {
+  func parse(_ input: inout Input) -> Output? {
     let original = input
 
     guard let a = self.a.parse(&input)
@@ -62,24 +67,24 @@ public struct SkipSecond<A, B>: ParserProtocol where A: ParserProtocol, B: Parse
   }
 }
 
-public struct Take2<A, B>: ParserProtocol
+struct Take2<A, B>: ParserProtocol
 where
   A: ParserProtocol,
   B: ParserProtocol,
   A.Input == B.Input
 {
-  public typealias Input = A.Input
-  public typealias Output = (A.Output, B.Output)
+  typealias Input = A.Input
+  typealias Output = (A.Output, B.Output)
 
-  public let a: A
-  public let b: B
+  let a: A
+  let b: B
 
-  public init(_ a: A, _ b: B) {
+  init(_ a: A, _ b: B) {
     self.a = a
     self.b = b
   }
 
-  public func parse(_ input: inout Input) -> Output? {
+  func parse(_ input: inout Input) -> Output? {
     let original = input
     guard let a = self.a.parse(&input)
     else { return nil }
@@ -112,3 +117,179 @@ where
     return input.removeFirst()
   }
 }
+
+struct PrefixWhile<Collection>: ParserProtocol
+where
+  Collection: Swift.Collection,
+  Collection.SubSequence == Collection,
+  Collection.Element: Equatable
+{
+  typealias Input = Collection
+  typealias Output = Collection
+
+  let predicate: (Collection.Element) -> Bool
+
+  func parse(_ input: inout Input) -> Output? {
+    let output = input.prefix(while: self.predicate)
+    input.removeFirst(output.count)
+    return output
+  }
+}
+
+struct Prefix<Collection>: ParserProtocol
+where
+  Collection: Swift.Collection,
+  Collection.SubSequence == Collection,
+  Collection.Element: Equatable
+{
+  typealias Input = Collection
+  typealias Output = Void
+
+  let possiblePrefix: Collection
+
+  init(
+    _ possiblePrefix: Collection
+  ) {
+    self.possiblePrefix = possiblePrefix
+  }
+
+  func parse(_ input: inout Input) -> Output? {
+    guard input.starts(with: self.possiblePrefix)
+    else { return nil }
+
+    input.removeFirst(self.possiblePrefix.count)
+    return ()
+  }
+}
+
+extension ParserProtocol {
+  func skip<P>(_ parser: P) -> SkipSecond<Self, P>
+  where P: ParserProtocol, P.Input == Input {
+    .init(self, parser)
+  }
+}
+
+extension ParserProtocol where Output == Void {
+  func take<P>(_ parser: P) -> SkipFirst<Self, P>
+  where P: ParserProtocol, P.Input == Input, Output == Void {
+    .init(self, parser)
+  }
+}
+
+struct OneOf<A, B>: ParserProtocol
+where
+  A: ParserProtocol,
+  B: ParserProtocol,
+  A.Input == B.Input,
+  A.Output == B.Output
+{
+  typealias Input = A.Input
+  typealias Output = A.Output
+
+  let a: A
+  let b: B
+
+  init(_ a: A, _ b: B) {
+    self.a = a
+    self.b = b
+  }
+
+  func parse(_ input: inout Input) -> Output? {
+    if let output = self.a.parse(&input) { return output }
+    if let output = self.b.parse(&input) { return output }
+    return nil
+  }
+}
+
+struct SkipFirst<A, B>: ParserProtocol
+where
+  A: ParserProtocol,
+  B: ParserProtocol,
+  A.Input == B.Input
+{
+  typealias Input = A.Input
+  typealias Output = B.Output
+
+  let a: A
+  let b: B
+  init(_ a: A, _ b: B) {
+    self.a = a
+    self.b = b
+  }
+
+  func parse(_ input: inout Input) -> Output? {
+    let original = input
+
+    guard self.a.parse(&input) != nil
+    else { return nil }
+
+    guard let b = self.b.parse(&input)
+    else {
+      input = original
+      return nil
+    }
+
+    return b
+  }
+}
+
+struct ZeroOrMore<Upstream, Separator>: ParserProtocol
+where
+  Upstream: ParserProtocol,
+  Separator: ParserProtocol,
+  Upstream.Input == Separator.Input
+{
+  typealias Input = Upstream.Input
+  typealias Output = [Upstream.Output]
+
+  let upstream: Upstream
+  let separator: Separator
+
+  init(
+    _ upstream: Upstream,
+    separatedBy separator: Separator
+  ) {
+    self.upstream = upstream
+    self.separator = separator
+  }
+
+  func parse(_ input: inout Input) -> Output? {
+    var rest = input
+    var outputs = Output()
+    while let output = self.upstream.parse(&input) {
+      rest = input
+      outputs.append(output)
+      if self.separator.parse(&input) == nil {
+        return outputs
+      }
+    }
+    input = rest
+    return outputs
+  }
+}
+
+
+
+extension ParserProtocol {
+  func map<NewOutput>(
+    _ transform: @escaping (Output) -> NewOutput
+  ) -> Map<Self, NewOutput> {
+    .init(upstream: self, transform: transform)
+  }
+}
+
+struct Map<Upstream, Output>: ParserProtocol where Upstream: ParserProtocol {
+  typealias Input = Upstream.Input
+  let upstream: Upstream
+  let transform: (Upstream.Output) -> Output
+
+  init(upstream: Upstream, transform: @escaping (Upstream.Output) -> Output) {
+    self.upstream = upstream
+    self.transform = transform
+  }
+
+  func parse(_ input: inout Input) -> Output? {
+    self.upstream.parse(&input).map(self.transform)
+  }
+}
+

@@ -1,51 +1,69 @@
-let plainField = Parser<Substring.UTF8View, Substring.UTF8View>
+let plainFieldProtocol = PrefixWhile<Substring.UTF8View> {
+  $0 != .init(ascii: ",") && $0 != .init(ascii: "\n")
+}
+let quotedFieldProtocol = Prefix("\""[...].utf8)
+  .take(PrefixWhile { $0 != .init(ascii: "\"") })
+  .skip(Prefix("\""[...].utf8))
+let fieldProtocol = OneOf(quotedFieldProtocol, plainFieldProtocol)
+let lineProtocol = ZeroOrMore(fieldProtocol, separatedBy: Prefix(","[...].utf8))
+let csvProtocol = ZeroOrMore(lineProtocol, separatedBy: Prefix("\n"[...].utf8))
+
+// ---
+
+let plainFieldUtf8 = Parser<Substring.UTF8View, Substring.UTF8View>
   .prefix(while: { $0 != .init(ascii: ",") && $0 != .init(ascii: "\n") })
-
-let quotedField = Parser<Substring.UTF8View, Void>.prefix("\""[...].utf8)
+let quotedFieldUtf8 = Parser<Substring.UTF8View, Void>.prefix("\""[...].utf8)
   .take(.prefix(while: { $0 != .init(ascii: "\"") }))
-  .skip(Parser.prefix("\""[...].utf8))
+  .skip(.prefix("\""[...].utf8))
+let fieldUtf8 = Parser.oneOf(quotedFieldUtf8, plainFieldUtf8)
+let lineUtf8 = fieldUtf8.zeroOrMore(separatedBy: .prefix(","[...].utf8))
+let csvUtf8 = lineUtf8.zeroOrMore(separatedBy: .prefix("\n"[...].utf8))
 
-let field = Parser.oneOf(quotedField, plainField)
-  .map { String(Substring($0)) }
+// ---
 
-let line = field.zeroOrMore(separatedBy: .prefix(","[...].utf8))
 
-let csv = line.zeroOrMore(separatedBy: .oneOf(.prefix("\n"[...].utf8), .prefix("\r\n"[...].utf8)))
+let plainFieldSubstring = Parser<Substring, Substring>
+  .prefix(while: { $0 != "," && $0 != "\n" })
+let quotedFieldSubstring = Parser<Substring, Void>.prefix("\"")
+  .take(.prefix(while: { $0 != "\"" }))
+  .skip("\"")
+let fieldSubstring = Parser.oneOf(quotedFieldSubstring, plainFieldSubstring)
+let lineSubstring = fieldSubstring.zeroOrMore(separatedBy: ",")
+let csvSubstring = lineSubstring.zeroOrMore(separatedBy: "\n")
+
+// ---
+
 
 extension Substring.UTF8View {
-  mutating func parseCsv() -> [[String]] {
-    var results: [[String]] = []
+  mutating func parseCSV() -> [[Substring.UTF8View]] {
+    var results: [[Substring.UTF8View]] = []
     while !self.isEmpty {
       results.append(self.parseLine())
+      if self.first == .init(ascii: "\n") {
+        self.removeFirst()
+      }
     }
     return results
   }
 
-  mutating func parseLine() -> [String] {
-    var row: [String] = []
+  mutating func parseLine() -> [Substring.UTF8View] {
+    var fields: [Substring.UTF8View] = []
     while true {
-      row.append(self.parseField())
-
-      if self.first == UTF8.CodeUnit(ascii: "\n") || self.isEmpty {
-        if !self.isEmpty {
-          self.removeFirst()
-        }
-        break
-      } else if self.starts(with: "\r\n"[...].utf8) {
-        self.removeFirst(2)
-        break
-      } else if self.first == UTF8.CodeUnit(ascii: ",") {
+      fields.append(self.parseField())
+      if self.first == .init(ascii: ",") {
         self.removeFirst()
+      } else {
+        break
       }
     }
-    return row
+    return fields
   }
 
-  mutating func parseField() -> String {
-    if self.first == UTF8.CodeUnit(ascii: "\"") {
-      return String(Substring(self.parseQuotedField()))
+  mutating func parseField() -> Substring.UTF8View {
+    if self.first == .init(ascii: "\"") {
+      return self.parseQuotedField()
     } else {
-      return String(Substring(self.parsePlainField()))
+      return self.parsePlainField()
     }
   }
 
@@ -57,7 +75,7 @@ extension Substring.UTF8View {
   }
 
   mutating func parsePlainField() -> Substring.UTF8View {
-    self.remove(while: { $0 != UTF8.CodeUnit(ascii: "\n") && $0 != UTF8.CodeUnit(ascii: ",") })
+    self.remove(while: { $0 != UTF8.CodeUnit(ascii: ",") && $0 != UTF8.CodeUnit(ascii: "\n") })
   }
 
   mutating func remove(while condition: (Substring.UTF8View.Element) -> Bool) -> Substring.UTF8View {
@@ -67,34 +85,75 @@ extension Substring.UTF8View {
   }
 }
 
+func loopParseCSV(_ input: String) -> [[Substring.UTF8View]] {
+  var result: [[Substring.UTF8View]] = [[]]
+  var startIndex = input.utf8.startIndex
+  var endIndex = startIndex
+  var isInQuotes = false
+
+  for c in input.utf8 {
+    switch c {
+    case .init(ascii: ","):
+      guard !isInQuotes else { continue }
+      result[result.endIndex-1].append(input.utf8[startIndex ..< endIndex])
+      startIndex = input.utf8.index(after: endIndex)
+
+    case .init(ascii: "\n"):
+      guard !isInQuotes else { continue }
+      result[result.endIndex-1].append(input.utf8[startIndex ..< endIndex])
+      startIndex = input.utf8.index(after: endIndex)
+      result.append([])
+
+    case .init(ascii: "\""):
+      isInQuotes.toggle()
+
+    default:
+      break
+    }
+    input.utf8.formIndex(after: &endIndex)
+  }
+
+  result[result.endIndex-1].append(input.utf8[startIndex ..< endIndex])
+  startIndex = input.utf8.index(after: endIndex)
+
+  return result
+}
 
 extension String {
-  func parseImperativeUtf8() -> [[String]] {
-    var result: [[String]] = [[]]
+  func parseImperativeUtf8() -> [[Substring.UTF8View]] {
+    var result: [[Substring.UTF8View]] = [[]]
     var startIndex = self.utf8.startIndex
     var endIndex = startIndex
+    var wasInQuotes = false
     var inQuotes = false
-
-    @inline(__always) func flush() {
-      result[result.endIndex-1].append(String(self.utf8[startIndex..<endIndex])!)
-      startIndex = self.utf8.index(after: endIndex)
-    }
 
     for c in self.utf8 {
       switch (c, inQuotes) {
       case (.init(ascii: ","), false):
-        flush()
+        result[result.endIndex-1].append(self.utf8[startIndex ..< (wasInQuotes ? self.utf8.index(before: endIndex) : endIndex)])
+        startIndex = self.utf8.index(after: endIndex)
+        wasInQuotes = false
+
       case (.init(ascii: "\n"), false):
-        flush()
+        result[result.endIndex-1].append(self.utf8[startIndex ..< (wasInQuotes ? self.utf8.index(before: endIndex) : endIndex)])
+        startIndex = self.utf8.index(after: endIndex)
         result.append([])
+        wasInQuotes = false
+
       case (.init(ascii: "\""), _):
+        wasInQuotes = inQuotes
+        if !inQuotes {
+          startIndex = self.utf8.index(after: startIndex)
+        }
         inQuotes = !inQuotes
+
       default:
         break
       }
       endIndex = self.utf8.index(after: endIndex)
     }
-    flush()
+    result[result.endIndex-1].append(self.utf8[startIndex ..< (wasInQuotes ? self.utf8.index(before: endIndex) : endIndex)])
+    startIndex = self.utf8.index(after: endIndex)
     return result
   }
 }

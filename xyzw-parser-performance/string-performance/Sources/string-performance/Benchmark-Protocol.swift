@@ -3,15 +3,15 @@ import Benchmark
 let protocolSuite = BenchmarkSuite(name: "Protocol") { suite in
   let string = "1234567890"
 
-  suite.benchmark("Parser.int") {
-    var string = string[...].utf8
-    precondition(Parser.int.run(&string) == 1234567890)
-  }
-
-  suite.benchmark("IntParser") {
-    var input = string[...].utf8
-    _ = IntParser().parse(&input)
-  }
+//  suite.benchmark("Parser.int") {
+//    var string = string[...].utf8
+//    precondition(Parser.int.run(&string) == 1234567890)
+//  }
+//
+//  suite.benchmark("IntParser") {
+//    var input = string[...].utf8
+//    _ = IntParser().parse(&input)
+//  }
 
   let p1 = Parser<Substring.UTF8View, Int>.int
     .take(.first)
