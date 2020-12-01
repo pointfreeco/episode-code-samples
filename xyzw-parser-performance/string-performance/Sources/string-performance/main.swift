@@ -6,5 +6,6 @@ Benchmark.main([
 //  raceSuite,
 //  xcodeLogsSuite,
 //  closureSuite,
-  protocolSuite,
+//  protocolSuite,
+  csvSuite,
 ])

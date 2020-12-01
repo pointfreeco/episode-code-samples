@@ -48,3 +48,13 @@ let protocolSuite = BenchmarkSuite(name: "Protocol") { suite in
     precondition(input.isEmpty)
   }
 }
+
+//let csv = #"""
+//id,name,isAdmin
+//1,"Blob",true
+//2,"Blob Jr",false
+//3,"Blob Sr",true
+//4,"Blob, ""Esq.""",false
+//"""#
+//
+//// [[String]]
