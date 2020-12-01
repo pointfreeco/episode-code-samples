@@ -52,3 +52,40 @@ Array("👨‍👨‍👧‍👧".utf8)
 "🇺🇸".unicodeScalars.first == ("🇺" as Unicode.Scalar)
 
 "🇺🇸".utf8.starts(with: [240, 159, 135, 186])
+
+
+let collection = [1, 2, 3]
+  .lazy
+  .filter { _ in true }
+  .map { $0 + 1 }
+  .map { $0 + 1 }
+
+import Combine
+
+let publisher = Future<Int, Never> { $0(.success(1)) }
+  .filter { _ in true }
+  .map { $0 + 1 }
+  .map { $0 + 1 }
+
+import SwiftUI
+
+let view: VStack<
+  TupleView<(
+    Text,
+    HStack<
+      TupleView<(
+        Text,
+        Button<Text>
+      )>
+    >,
+    TextField<Text>
+  )>
+> = VStack {
+  Text("Hi")
+  HStack {
+    Text("Go")
+    Button("Now") {}
+  }
+  TextField("Enter password", text: .constant(""))
+}
+

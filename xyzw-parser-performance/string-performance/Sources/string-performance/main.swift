@@ -4,6 +4,6 @@ Benchmark.main([
 //  copyingSuite,
 //  intParserSuite,
 //  raceSuite,
-  xcodeLogsSuite,
+//  xcodeLogsSuite,
+  closureSuite,
 ])
-
