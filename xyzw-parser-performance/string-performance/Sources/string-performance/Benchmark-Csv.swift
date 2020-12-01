@@ -36,6 +36,25 @@ let csvSuite = BenchmarkSuite(name: "CSV") { suite in
       precondition(output!.allSatisfy { $0.count == 5 })
     }
   }
+  
+  do {
+    let quotedField = Prefix("\""[...].utf8)
+      .take(PrefixWhile { $0 != .init(ascii: "\"") })
+      .skip(Prefix("\""[...].utf8))
+    let plainField = PrefixWhile<Substring.UTF8View> {
+      $0 != .init(ascii: ",") && $0 != .init(ascii: "\n")
+    }
+    let field = OneOf(quotedField, plainField)
+    let line = field.zeroOrMore(separatedBy: Prefix(","[...].utf8))
+    let csv = line.zeroOrMore(separatedBy: Prefix("\n"[...].utf8))
+
+    suite.benchmark("ParserProtocol") {
+      var input = csvSample[...].utf8
+      let output = csv.run(&input)
+      precondition(output!.count == 1000)
+      precondition(output!.allSatisfy { $0.count == 5 })
+    }
+  }
 
   suite.benchmark("Mutating methods") {
     var input = csvSample[...].utf8
