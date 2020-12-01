@@ -241,3 +241,21 @@ extension ParserProtocol {
     .init(upstream: self, separator: separator)
   }
 }
+
+struct Map<Upstream, Output>: ParserProtocol where Upstream: ParserProtocol {
+  typealias Input = Upstream.Input
+  let upstream: Upstream
+  let transform: (Upstream.Output) -> Output
+
+  func run(_ input: inout Input) -> Output? {
+    self.upstream.run(&input).map(self.transform)
+  }
+}
+
+extension ParserProtocol {
+  func map<NewOutput>(
+    _ transform: @escaping (Output) -> NewOutput
+  ) -> Map<Self, NewOutput> {
+    .init(upstream: self, transform: transform)
+  }
+}
