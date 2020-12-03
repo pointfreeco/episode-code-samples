@@ -33,3 +33,22 @@ acuteE1.unicodeScalars.elementsEqual(acuteE2.unicodeScalars)
 "🇸"
 "🇺" + "🇸"
 "\u{1F1FA}\u{1F1F8}"
+
+
+
+"🇺🇸".dropFirst()
+
+String("🇺🇸".unicodeScalars.dropFirst())
+
+Array(acuteE1.utf8)
+Array(acuteE2.utf8)
+
+Array("🇺🇸".unicodeScalars)
+Array("🇺🇸".utf8)
+Array("👨‍👨‍👧‍👧".unicodeScalars)
+Array("👨‍👨‍👧‍👧".utf8)
+"👨‍👨‍👧‍👧".utf8.count
+
+"🇺🇸".unicodeScalars.first == ("🇺" as Unicode.Scalar)
+
+"🇺🇸".utf8.starts(with: [240, 159, 135, 186])
