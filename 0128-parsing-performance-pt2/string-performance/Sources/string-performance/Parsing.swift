@@ -65,27 +65,70 @@ extension Parser where Input == Substring.UnicodeScalarView, Output == Int {
   }
 }
 
-extension Parser where Input == Substring.UTF8View, Output == Int {
-  static let int = Self { input in
-    let original = input
+//extension Parser where Input == Substring.UTF8View, Output == Int {
+//  static let int = Self { input in
+//    let original = input
+//
+//    var isFirstCharacter = true
+//    let intPrefix = input.prefix { c in
+//      defer { isFirstCharacter = false }
+//      return (c == UTF8.CodeUnit(ascii: "-") || c == UTF8.CodeUnit(ascii: "+")) && isFirstCharacter
+//        || (UTF8.CodeUnit(ascii: "0")...UTF8.CodeUnit(ascii: "9")).contains(c)
+//    }
+//
+//    guard let match = Int(String(Substring(intPrefix)))
+//    else {
+//      input = original
+//      return nil
+//    }
+//    input.removeFirst(intPrefix.count)
+//    return match
+//  }
+//}
 
-    var isFirstCharacter = true
-    let intPrefix = input.prefix { c in
-      defer { isFirstCharacter = false }
-      return (c == UTF8.CodeUnit(ascii: "-") || c == UTF8.CodeUnit(ascii: "+")) && isFirstCharacter
-        || (UTF8.CodeUnit(ascii: "0")...UTF8.CodeUnit(ascii: "9")).contains(c)
-    }
+//extension Parser where Input == Slice<UnsafeBufferPointer<UInt8>>, Output == Int {
+//  static let int = Self { input in
+//    let original = input
+//
+//    var isFirstCharacter = true
+//    let intPrefix = input.prefix { c in
+//      defer { isFirstCharacter = false }
+//      return (c == UTF8.CodeUnit(ascii: "-") || c == UTF8.CodeUnit(ascii: "+")) && isFirstCharacter
+//        || (UTF8.CodeUnit(ascii: "0")...UTF8.CodeUnit(ascii: "9")).contains(c)
+//    }
+//
+//    guard let match = Int(String(decoding: intPrefix, as: UTF8.self))
+//    else { return nil }
+//
+//    input.removeFirst(intPrefix.count)
+//    return match
+//  }
+//}
 
-    guard let match = Int(String(Substring(intPrefix)))
-    else {
-      input = original
-      return nil
+extension Parser
+where
+  Input: Collection,
+  Input.SubSequence == Input,
+  Input.Element == UInt8,
+  Output == Int
+{
+  static var int: Self {
+    Self { input in
+      var isFirstCharacter = true
+      let intPrefix = input.prefix { c in
+        defer { isFirstCharacter = false }
+        return (c == UTF8.CodeUnit(ascii: "-") || c == UTF8.CodeUnit(ascii: "+")) && isFirstCharacter
+          || (UTF8.CodeUnit(ascii: "0")...UTF8.CodeUnit(ascii: "9")).contains(c)
+      }
+
+      guard let match = Int(String(decoding: intPrefix, as: UTF8.self))
+      else { return nil }
+
+      input.removeFirst(intPrefix.count)
+      return match
     }
-    input.removeFirst(intPrefix.count)
-    return match
   }
 }
-
 
 extension Parser where Input == Substring, Output == Double {
   static let double = Self { input in

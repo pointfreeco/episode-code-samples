@@ -23,6 +23,19 @@ let intParserSuite = BenchmarkSuite(name: "Int Parsing") { suite in
     precondition(Parser.int.run(&string) == 1234567890)
   }
 
+  var arr = Array(string.utf8)
+  suite.benchmark("Array") {
+    var arr = arr[...]
+    precondition(Parser.int.run(&arr) == 1234567890)
+  }
+
+  suite.benchmark("UnsafeBufferPointer") {
+    string.utf8.withContiguousStorageIfAvailable { ptr in
+      var ptr = ptr[...]
+      precondition(Parser.int.run(&ptr) == 1234567890)
+    }
+  }
+
   var scanner: Scanner!
   suite.register(
     benchmark: Benchmarking(
