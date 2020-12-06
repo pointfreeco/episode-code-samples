@@ -130,3 +130,4 @@ This repository is the home of code written on episodes of
 1. [Generalized Parsing: Part 2](0125-generalized-parsing-pt2)
 1. [Generalized Parsing: Part 3](0126-generalized-parsing-pt3)
 1. [Parsing Performance: Strings](0127-parsing-performance-pt1)
+1. [Parsing Performance: Combinators](0128-parsing-performance-pt2)
