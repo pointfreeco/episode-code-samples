@@ -1,7 +1,6 @@
 # Point-Free Episode Code
 
-This repository is the home of code written on episodes of
-[Point-Free](https://www.pointfree.co).
+This repository is the home of code written on episodes of [Point-Free](https://www.pointfree.co). Want to ask a question that we or the community might be able to answer? Start a [discussion](https://github.com/pointfreeco/episode-code-samples/discussions)!
 
 1. [Functions](0001-functions)
 1. [Side-Effects](0002-side-effects)
