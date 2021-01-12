@@ -1,10 +1,58 @@
 import SwiftUI
+import UserNotifications
+
+struct AlertState: Identifiable {
+  var title: String
+  var id: String { self.title }
+}
 
 class SettingsViewModel: ObservableObject {
+  @Published var alert: AlertState?
   @Published var digest = Digest.off
-  @Published var displayName = ""
+  @Published var displayName = "" {
+    didSet {
+      guard self.displayName.count > 16
+      else { return }
+
+      self.displayName = String(self.displayName.prefix(16))
+    }
+  }
   @Published var protectMyPosts = false
   @Published var sendNotifications = false
+
+  func attemptToggleSendNotifications(isOn: Bool) {
+    guard isOn else {
+      self.sendNotifications = false
+      return
+    }
+
+    UNUserNotificationCenter.current()
+      .getNotificationSettings { settings in
+        guard settings.authorizationStatus != .denied
+        else {
+          DispatchQueue.main.async {
+            self.alert = .init(title: "You need to enable permissions from iOS settings")
+          }
+          return
+        }
+
+        DispatchQueue.main.async {
+          self.sendNotifications = true
+        }
+
+        UNUserNotificationCenter.current()
+          .requestAuthorization(options: .alert) { granted, error in
+
+            if !granted || error != nil {
+              DispatchQueue.main.async {
+                self.sendNotifications = false
+              }
+            } else {
+              UIApplication.shared.registerForRemoteNotifications()
+            }
+          }
+      }
+  }
   
   func reset() {
     self.digest = .off
@@ -24,7 +72,16 @@ struct VanillaSwiftUIFormView: View {
         Toggle("Protect my posts", isOn: self.$viewModel.protectMyPosts)
       }
       Section(header: Text("Communication")) {
-        Toggle("Send notifications", isOn: self.$viewModel.sendNotifications)
+        Toggle(
+          "Send notifications",
+          isOn: Binding(
+            get: { self.viewModel.sendNotifications },
+            set: { isOn in
+              self.viewModel.attemptToggleSendNotifications(isOn: isOn)
+            }
+          )
+            //self.$viewModel.sendNotifications
+        )
 
         if self.viewModel.sendNotifications {
           Picker(
@@ -41,6 +98,9 @@ struct VanillaSwiftUIFormView: View {
       Button("Reset") {
         self.viewModel.reset()
       }
+    }
+    .alert(item: self.$viewModel.alert) { alert in
+      Alert(title: Text(alert.title))
     }
     .navigationTitle("Settings")
   }
