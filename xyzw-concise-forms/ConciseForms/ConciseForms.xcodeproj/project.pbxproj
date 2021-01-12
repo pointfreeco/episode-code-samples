@@ -12,18 +12,10 @@
 		4B4919C125AE076500C48B44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B4919C025AE076500C48B44 /* Assets.xcassets */; };
 		4B4919C425AE076500C48B44 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B4919C325AE076500C48B44 /* Preview Assets.xcassets */; };
 		4B4919CF25AE076600C48B44 /* ConciseFormsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4919CE25AE076600C48B44 /* ConciseFormsTests.swift */; };
-		4B4919DA25AE076600C48B44 /* ConciseFormsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4919D925AE076600C48B44 /* ConciseFormsUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		4B4919CB25AE076600C48B44 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4B4919B125AE076500C48B44 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4B4919B825AE076500C48B44;
-			remoteInfo = ConciseForms;
-		};
-		4B4919D625AE076600C48B44 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4B4919B125AE076500C48B44 /* Project object */;
 			proxyType = 1;
@@ -42,9 +34,6 @@
 		4B4919CA25AE076600C48B44 /* ConciseFormsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConciseFormsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B4919CE25AE076600C48B44 /* ConciseFormsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConciseFormsTests.swift; sourceTree = "<group>"; };
 		4B4919D025AE076600C48B44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4B4919D525AE076600C48B44 /* ConciseFormsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConciseFormsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4B4919D925AE076600C48B44 /* ConciseFormsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConciseFormsUITests.swift; sourceTree = "<group>"; };
-		4B4919DB25AE076600C48B44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,13 +51,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4B4919D225AE076600C48B44 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -77,7 +59,6 @@
 			children = (
 				4B4919BB25AE076500C48B44 /* ConciseForms */,
 				4B4919CD25AE076600C48B44 /* ConciseFormsTests */,
-				4B4919D825AE076600C48B44 /* ConciseFormsUITests */,
 				4B4919BA25AE076500C48B44 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -87,7 +68,6 @@
 			children = (
 				4B4919B925AE076500C48B44 /* ConciseForms.app */,
 				4B4919CA25AE076600C48B44 /* ConciseFormsTests.xctest */,
-				4B4919D525AE076600C48B44 /* ConciseFormsUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,15 +99,6 @@
 				4B4919D025AE076600C48B44 /* Info.plist */,
 			);
 			path = ConciseFormsTests;
-			sourceTree = "<group>";
-		};
-		4B4919D825AE076600C48B44 /* ConciseFormsUITests */ = {
-			isa = PBXGroup;
-			children = (
-				4B4919D925AE076600C48B44 /* ConciseFormsUITests.swift */,
-				4B4919DB25AE076600C48B44 /* Info.plist */,
-			);
-			path = ConciseFormsUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -168,24 +139,6 @@
 			productReference = 4B4919CA25AE076600C48B44 /* ConciseFormsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		4B4919D425AE076600C48B44 /* ConciseFormsUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4B4919E425AE076600C48B44 /* Build configuration list for PBXNativeTarget "ConciseFormsUITests" */;
-			buildPhases = (
-				4B4919D125AE076600C48B44 /* Sources */,
-				4B4919D225AE076600C48B44 /* Frameworks */,
-				4B4919D325AE076600C48B44 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				4B4919D725AE076600C48B44 /* PBXTargetDependency */,
-			);
-			name = ConciseFormsUITests;
-			productName = ConciseFormsUITests;
-			productReference = 4B4919D525AE076600C48B44 /* ConciseFormsUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -199,10 +152,6 @@
 						CreatedOnToolsVersion = 12.3;
 					};
 					4B4919C925AE076600C48B44 = {
-						CreatedOnToolsVersion = 12.3;
-						TestTargetID = 4B4919B825AE076500C48B44;
-					};
-					4B4919D425AE076600C48B44 = {
 						CreatedOnToolsVersion = 12.3;
 						TestTargetID = 4B4919B825AE076500C48B44;
 					};
@@ -223,7 +172,6 @@
 			targets = (
 				4B4919B825AE076500C48B44 /* ConciseForms */,
 				4B4919C925AE076600C48B44 /* ConciseFormsTests */,
-				4B4919D425AE076600C48B44 /* ConciseFormsUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -239,13 +187,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4B4919C825AE076600C48B44 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4B4919D325AE076600C48B44 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -272,14 +213,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4B4919D125AE076600C48B44 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4B4919DA25AE076600C48B44 /* ConciseFormsUITests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -287,11 +220,6 @@
 			isa = PBXTargetDependency;
 			target = 4B4919B825AE076500C48B44 /* ConciseForms */;
 			targetProxy = 4B4919CB25AE076600C48B44 /* PBXContainerItemProxy */;
-		};
-		4B4919D725AE076600C48B44 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4B4919B825AE076500C48B44 /* ConciseForms */;
-			targetProxy = 4B4919D625AE076600C48B44 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -496,44 +424,6 @@
 			};
 			name = Release;
 		};
-		4B4919E525AE076600C48B44 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = ConciseFormsUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.ConciseFormsUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = ConciseForms;
-			};
-			name = Debug;
-		};
-		4B4919E625AE076600C48B44 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = ConciseFormsUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.ConciseFormsUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = ConciseForms;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -560,15 +450,6 @@
 			buildConfigurations = (
 				4B4919E225AE076600C48B44 /* Debug */,
 				4B4919E325AE076600C48B44 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		4B4919E425AE076600C48B44 /* Build configuration list for PBXNativeTarget "ConciseFormsUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4B4919E525AE076600C48B44 /* Debug */,
-				4B4919E625AE076600C48B44 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
