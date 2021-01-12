@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,8 @@
 		4B4919C125AE076500C48B44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B4919C025AE076500C48B44 /* Assets.xcassets */; };
 		4B4919C425AE076500C48B44 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B4919C325AE076500C48B44 /* Preview Assets.xcassets */; };
 		4B4919CF25AE076600C48B44 /* ConciseFormsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4919CE25AE076600C48B44 /* ConciseFormsTests.swift */; };
+		4B4919F625AE21F800C48B44 /* TCAFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4919F525AE21F800C48B44 /* TCAFormView.swift */; };
+		4B4919FB25AE22F200C48B44 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 4B4919FA25AE22F200C48B44 /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +36,7 @@
 		4B4919CA25AE076600C48B44 /* ConciseFormsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConciseFormsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B4919CE25AE076600C48B44 /* ConciseFormsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConciseFormsTests.swift; sourceTree = "<group>"; };
 		4B4919D025AE076600C48B44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4B4919F525AE21F800C48B44 /* TCAFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCAFormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B4919FB25AE22F200C48B44 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +81,7 @@
 			children = (
 				4B4919BC25AE076500C48B44 /* ConciseFormsApp.swift */,
 				2AA1916A25AE0C3200EF6A11 /* VanillaSwiftUIFormView.swift */,
+				4B4919F525AE21F800C48B44 /* TCAFormView.swift */,
 				4B4919C025AE076500C48B44 /* Assets.xcassets */,
 				4B4919C525AE076500C48B44 /* Info.plist */,
 				4B4919C225AE076500C48B44 /* Preview Content */,
@@ -117,6 +122,9 @@
 			dependencies = (
 			);
 			name = ConciseForms;
+			packageProductDependencies = (
+				4B4919FA25AE22F200C48B44 /* ComposableArchitecture */,
+			);
 			productName = ConciseForms;
 			productReference = 4B4919B925AE076500C48B44 /* ConciseForms.app */;
 			productType = "com.apple.product-type.application";
@@ -166,6 +174,9 @@
 				Base,
 			);
 			mainGroup = 4B4919B025AE076500C48B44;
+			packageReferences = (
+				4B4919F925AE22F200C48B44 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			productRefGroup = 4B4919BA25AE076500C48B44 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -202,6 +213,7 @@
 			files = (
 				2AA1916B25AE0C3200EF6A11 /* VanillaSwiftUIFormView.swift in Sources */,
 				4B4919BD25AE076500C48B44 /* ConciseFormsApp.swift in Sources */,
+				4B4919F625AE21F800C48B44 /* TCAFormView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,6 +467,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4B4919F925AE22F200C48B44 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4B4919FA25AE22F200C48B44 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B4919F925AE22F200C48B44 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4B4919B125AE076500C48B44 /* Project object */;
 }
