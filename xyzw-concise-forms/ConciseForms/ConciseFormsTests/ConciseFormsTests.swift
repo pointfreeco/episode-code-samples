@@ -31,4 +31,39 @@ class ConciseFormsTests: XCTestCase {
       }
     )
   }
+
+  func testNotifications_HappyPath() {
+    var didRegisterForRemoteNotifications = false
+
+    let store = TestStore(
+      initialState: SettingsState(),
+      reducer: settingsReducer,
+      environment: SettingsEnvironment(
+        mainQueue: DispatchQueue.immediateScheduler.eraseToAnyScheduler(),
+        userNotifications: UserNotificationsClient(
+          getNotificationSettings: {
+            .init(value: .init(authorizationStatus: .notDetermined))
+          },
+          registerForRemoteNotifications: {
+            .fireAndForget {
+              didRegisterForRemoteNotifications = true
+            }
+          },
+          requestAuthorization: { _ in
+            .init(value: true)
+          }
+        )
+      )
+    )
+
+    store.assert(
+      .send(.sendNotificationsChanged(true)),
+      .receive(.notificationSettingsResponse(.init(authorizationStatus: .notDetermined))) {
+        $0.sendNotifications = true
+      },
+      .receive(.authorizationResponse(.success(true)))
+    )
+
+    XCTAssertEqual(didRegisterForRemoteNotifications, true)
+  }
 }
