@@ -1,6 +1,43 @@
 import ComposableArchitecture
 import SwiftUI
 
+struct UserNotificationsClient {
+  var getNotificationSettings: () -> Effect<UNNotificationSettings, Never>
+  var registerForRemoteNotifications: () -> Effect<Never, Never>
+  var requestAuthorization: (UNAuthorizationOptions) -> Effect<Bool, Error>
+}
+
+extension UserNotificationsClient {
+  static let live = Self(
+    getNotificationSettings: {
+      .future { callback in
+        UNUserNotificationCenter.current()
+          .getNotificationSettings { settings in
+            callback(.success(settings))
+          }
+      }
+    },
+    registerForRemoteNotifications: {
+      .fireAndForget {
+        UIApplication.shared
+          .registerForRemoteNotifications()
+      }
+    },
+    requestAuthorization: { options in
+      .future { callback in
+        UNUserNotificationCenter.current()
+          .requestAuthorization(options: options) { granted, error in
+            if let error = error {
+              callback(.failure(error))
+            } else {
+              callback(.success(granted))
+            }
+          }
+      }
+    }
+  )
+}
+
 struct SettingsState: Equatable {
   var alert: AlertState? = nil
   var digest = Digest.daily
@@ -10,20 +47,37 @@ struct SettingsState: Equatable {
 }
 
 enum SettingsAction {
+  case authorizationResponse(Result<Bool, Error>)
   case digestChanged(Digest)
   case dismissAlert
   case displayNameChanged(String)
+  case notificationSettingsResponse(UNNotificationSettings)
   case protectMyPostsChanged(Bool)
   case resetButtonTapped
   case sendNotificationsChanged(Bool)
 }
 
-struct SettingsEnvironment {}
+struct SettingsEnvironment {
+  var mainQueue: AnySchedulerOf<DispatchQueue>
+  var userNotifications: UserNotificationsClient
+}
 
 let settingsReducer =
   Reducer<SettingsState, SettingsAction, SettingsEnvironment> { state, action, environment in
     
     switch action {
+    case .authorizationResponse(.failure):
+      state.sendNotifications = false
+      return .none
+
+    case let .authorizationResponse(.success(granted)):
+      state.sendNotifications = granted
+      return granted
+        ? environment.userNotifications
+        .registerForRemoteNotifications()
+        .fireAndForget()
+        : .none
+
     case let .digestChanged(digest):
       state.digest = digest
       return .none
@@ -33,8 +87,27 @@ let settingsReducer =
       return .none
       
     case let .displayNameChanged(displayName):
-      state.displayName = displayName
+      state.displayName = String(displayName.prefix(16))
       return .none
+
+    case let .notificationSettingsResponse(settings):
+      switch settings.authorizationStatus {
+      case .notDetermined, .authorized, .provisional, .ephemeral:
+        state.sendNotifications = true
+        return environment.userNotifications
+          .requestAuthorization(.alert)
+          .receive(on: environment.mainQueue)
+          .catchToEffect()
+          .map(SettingsAction.authorizationResponse)
+
+      case .denied:
+        state.sendNotifications = false
+        state.alert = .init(title: "You need to enable permissions from iOS settings")
+        return .none
+
+      @unknown default:
+        return .none
+      }
       
     case let .protectMyPostsChanged(protectMyPosts):
       state.protectMyPosts = protectMyPosts
@@ -45,8 +118,18 @@ let settingsReducer =
       return .none
       
     case let .sendNotificationsChanged(sendNotifications):
-      state.sendNotifications = sendNotifications
-      return .none
+//      state.sendNotifications = sendNotifications
+      guard sendNotifications
+      else {
+        state.sendNotifications = sendNotifications
+        return .none
+      }
+
+      return environment.userNotifications
+        .getNotificationSettings()
+        .receive(on: environment.mainQueue)
+        .map(SettingsAction.notificationSettingsResponse)
+        .eraseToEffect()
     }
 }
 
@@ -120,7 +203,10 @@ struct TCAFormView_Previews: PreviewProvider {
         store: Store(
           initialState: SettingsState(),
           reducer: settingsReducer,
-          environment: SettingsEnvironment()
+          environment: SettingsEnvironment(
+            mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+            userNotifications: .live
+          )
         )
       )
     }
