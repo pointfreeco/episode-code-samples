@@ -2,9 +2,19 @@ import ComposableArchitecture
 import SwiftUI
 
 struct UserNotificationsClient {
-  var getNotificationSettings: () -> Effect<UNNotificationSettings, Never>
+  var getNotificationSettings: () -> Effect<Settings, Never>
   var registerForRemoteNotifications: () -> Effect<Never, Never>
   var requestAuthorization: (UNAuthorizationOptions) -> Effect<Bool, Error>
+  
+  struct Settings: Equatable {
+    var authorizationStatus: UNAuthorizationStatus
+  }
+}
+
+extension UserNotificationsClient.Settings {
+  init(rawValue: UNNotificationSettings) {
+    self.authorizationStatus = rawValue.authorizationStatus
+  }
 }
 
 extension UserNotificationsClient {
@@ -13,7 +23,7 @@ extension UserNotificationsClient {
       .future { callback in
         UNUserNotificationCenter.current()
           .getNotificationSettings { settings in
-            callback(.success(settings))
+            callback(.success(.init(rawValue: settings)))
           }
       }
     },
@@ -46,12 +56,12 @@ struct SettingsState: Equatable {
   var sendNotifications = false
 }
 
-enum SettingsAction {
-  case authorizationResponse(Result<Bool, Error>)
+enum SettingsAction: Equatable {
+  case authorizationResponse(Result<Bool, NSError>)
   case digestChanged(Digest)
   case dismissAlert
   case displayNameChanged(String)
-  case notificationSettingsResponse(UNNotificationSettings)
+  case notificationSettingsResponse(UserNotificationsClient.Settings)
   case protectMyPostsChanged(Bool)
   case resetButtonTapped
   case sendNotificationsChanged(Bool)
@@ -97,6 +107,7 @@ let settingsReducer =
         return environment.userNotifications
           .requestAuthorization(.alert)
           .receive(on: environment.mainQueue)
+          .mapError { $0 as NSError }
           .catchToEffect()
           .map(SettingsAction.authorizationResponse)
 
@@ -205,7 +216,11 @@ struct TCAFormView_Previews: PreviewProvider {
           reducer: settingsReducer,
           environment: SettingsEnvironment(
             mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
-            userNotifications: .live
+            userNotifications: UserNotificationsClient(
+              getNotificationSettings: { Effect(value: .init(authorizationStatus: .denied)) },
+              registerForRemoteNotifications: { fatalError() },
+              requestAuthorization: { _ in fatalError() }
+            )
           )
         )
       )
