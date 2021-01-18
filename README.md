@@ -132,3 +132,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Parsing Performance: Combinators](0128-parsing-performance-pt2)
 1. [Parsing Performance: Protocols](0129-parsing-performance-pt3)
 1. [Parsing Performance: The Point](0130-parsing-performance-pt4)
+1. [Concise Forms: SwiftUI](0131-concise-forms-pt1)
