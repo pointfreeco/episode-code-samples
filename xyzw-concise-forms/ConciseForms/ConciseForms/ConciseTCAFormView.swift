@@ -31,6 +31,13 @@ struct FormAction<Root>: Equatable {
     self.setter = { $0[keyPath: keyPath] = value }
   }
 
+  static func set<Value>(
+    _ keyPath: WritableKeyPath<Root, Value>,
+    _ value: Value
+  ) -> Self where Value: Hashable {
+    .init(keyPath, value)
+  }
+
   static func == (lhs: FormAction<Root>, rhs: FormAction<Root>) -> Bool {
     lhs.keyPath == rhs.keyPath && lhs.value == rhs.value
   }
@@ -109,29 +116,64 @@ let conciseSettingsReducer =
 //    case let .form(update):
 //      update(&state)
 //      return .none
-    case let .form(formAction):
-      formAction.setter(&state)
-//      state[keyPath: formAction.keyPath] = formAction.value
-      
-      if formAction.keyPath == \SettingsState.displayName {
-        state.displayName = String(state.displayName.prefix(16))
-      } else if formAction.keyPath == \SettingsState.sendNotifications {
-        guard state.sendNotifications
-        else {
-          return .none
-        }
-        
-        state.sendNotifications = false
 
-        return environment.userNotifications
-          .getNotificationSettings()
-          .receive(on: environment.mainQueue)
-          .map(ConciseSettingsAction.notificationSettingsResponse)
-          .eraseToEffect()
+
+    case .form(\.displayName):
+      state.displayName = String(state.displayName.prefix(16))
+      return .none
+
+    case .form(\.sendNotifications):
+      guard state.sendNotifications
+      else {
+        return .none
       }
 
+      state.sendNotifications = false
+
+      return environment.userNotifications
+        .getNotificationSettings()
+        .receive(on: environment.mainQueue)
+        .map(ConciseSettingsAction.notificationSettingsResponse)
+        .eraseToEffect()
+
+    case .form:
       return .none
     }
+}
+  .form(action: /ConciseSettingsAction.form)
+
+func ~= <Root, Value> (
+  keyPath: WritableKeyPath<Root, Value>,
+  formAction: FormAction<Root>
+) -> Bool {
+  formAction.keyPath == keyPath
+}
+//
+//func foo() {
+//  switch 42 {
+//  case 10...:
+//    print("10 or more")
+//  default:
+//    break
+//  }
+//
+//  (1...10) ~= 42
+//}
+
+extension Reducer {
+  func form(
+    action formAction: CasePath<Action, FormAction<State>>
+  ) -> Self {
+    Self { state, action, environment in
+      guard let formAction = formAction.extract(from: action)
+      else {
+        return self.run(&state, action, environment)
+      }
+
+      formAction.setter(&state)
+      return self.run(&state, action, environment)
+    }
+  }
 }
 
 struct ConciseTCAFormView: View {
