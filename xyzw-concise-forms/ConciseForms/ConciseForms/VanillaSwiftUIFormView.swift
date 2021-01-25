@@ -1,7 +1,7 @@
 import SwiftUI
 import UserNotifications
 
-struct AlertState: Equatable, Identifiable {
+struct AlertState: Equatable, Hashable, Identifiable {
   var title: String
   var id: String { self.title }
 }
