@@ -14,6 +14,7 @@
 		4B4919CF25AE076600C48B44 /* ConciseFormsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4919CE25AE076600C48B44 /* ConciseFormsTests.swift */; };
 		4B4919F625AE21F800C48B44 /* TCAFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4919F525AE21F800C48B44 /* TCAFormView.swift */; };
 		4B4919FB25AE22F200C48B44 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 4B4919FA25AE22F200C48B44 /* ComposableArchitecture */; };
+		4BDB4F7125BF2368000D2BFB /* ConciseTCAFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDB4F7025BF2368000D2BFB /* ConciseTCAFormView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +38,7 @@
 		4B4919CE25AE076600C48B44 /* ConciseFormsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConciseFormsTests.swift; sourceTree = "<group>"; };
 		4B4919D025AE076600C48B44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4B4919F525AE21F800C48B44 /* TCAFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCAFormView.swift; sourceTree = "<group>"; };
+		4BDB4F7025BF2368000D2BFB /* ConciseTCAFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConciseTCAFormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 				4B4919BC25AE076500C48B44 /* ConciseFormsApp.swift */,
 				2AA1916A25AE0C3200EF6A11 /* VanillaSwiftUIFormView.swift */,
 				4B4919F525AE21F800C48B44 /* TCAFormView.swift */,
+				4BDB4F7025BF2368000D2BFB /* ConciseTCAFormView.swift */,
 				4B4919C025AE076500C48B44 /* Assets.xcassets */,
 				4B4919C525AE076500C48B44 /* Info.plist */,
 				4B4919C225AE076500C48B44 /* Preview Content */,
@@ -213,6 +216,7 @@
 			files = (
 				2AA1916B25AE0C3200EF6A11 /* VanillaSwiftUIFormView.swift in Sources */,
 				4B4919BD25AE076500C48B44 /* ConciseFormsApp.swift in Sources */,
+				4BDB4F7125BF2368000D2BFB /* ConciseTCAFormView.swift in Sources */,
 				4B4919F625AE21F800C48B44 /* TCAFormView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
