@@ -52,17 +52,17 @@ let conciseSettingsReducer =
         .fireAndForget()
         : .none
 
-    case let .digestChanged(digest):
-      state.digest = digest
-      return .none
+//    case let .digestChanged(digest):
+//      state.digest = digest
+//      return .none
       
-    case .dismissAlert:
-      state.alert = nil
-      return .none
+//    case .dismissAlert:
+//      state.alert = nil
+//      return .none
       
-    case let .displayNameChanged(displayName):
-      state.displayName = String(displayName.prefix(16))
-      return .none
+//    case let .displayNameChanged(displayName):
+//      state.displayName = String(displayName.prefix(16))
+//      return .none
 
     case let .notificationSettingsResponse(settings):
       switch settings.authorizationStatus {
@@ -84,27 +84,27 @@ let conciseSettingsReducer =
         return .none
       }
       
-    case let .protectMyPostsChanged(protectMyPosts):
-      state.protectMyPosts = protectMyPosts
-      return .none
+//    case let .protectMyPostsChanged(protectMyPosts):
+//      state.protectMyPosts = protectMyPosts
+//      return .none
       
     case .resetButtonTapped:
       state = .init()
       return .none
       
-    case let .sendNotificationsChanged(sendNotifications):
-//      state.sendNotifications = sendNotifications
-      guard sendNotifications
-      else {
-        state.sendNotifications = sendNotifications
-        return .none
-      }
-
-      return environment.userNotifications
-        .getNotificationSettings()
-        .receive(on: environment.mainQueue)
-        .map(ConciseSettingsAction.notificationSettingsResponse)
-        .eraseToEffect()
+//    case let .sendNotificationsChanged(sendNotifications):
+////      state.sendNotifications = sendNotifications
+//      guard sendNotifications
+//      else {
+//        state.sendNotifications = sendNotifications
+//        return .none
+//      }
+//
+//      return environment.userNotifications
+//        .getNotificationSettings()
+//        .receive(on: environment.mainQueue)
+//        .map(ConciseSettingsAction.notificationSettingsResponse)
+//        .eraseToEffect()
       
 //    case let .form(update):
 //      update(&state)
@@ -114,9 +114,20 @@ let conciseSettingsReducer =
 //      state[keyPath: formAction.keyPath] = formAction.value
       
       if formAction.keyPath == \SettingsState.displayName {
-        // TODO: truncate name
+        state.displayName = String(state.displayName.prefix(16))
       } else if formAction.keyPath == \SettingsState.sendNotifications {
-        // TODO: request notifications authorization
+        guard state.sendNotifications
+        else {
+          return .none
+        }
+        
+        state.sendNotifications = false
+
+        return environment.userNotifications
+          .getNotificationSettings()
+          .receive(on: environment.mainQueue)
+          .map(ConciseSettingsAction.notificationSettingsResponse)
+          .eraseToEffect()
       }
 
       return .none
@@ -177,6 +188,22 @@ struct ConciseTCAFormView: View {
           )
 
           if viewStore.sendNotifications {
+            Toggle(
+              "Mobile",
+              isOn: viewStore.binding(
+                keyPath: \.sendMobileNotifications,
+                send: ConciseSettingsAction.form
+              )
+            )
+
+            Toggle(
+              "Email",
+              isOn: viewStore.binding(
+                keyPath: \.sendEmailNotifications,
+                send: ConciseSettingsAction.form
+              )
+            )
+
             Picker(
               "Top posts digest",
               selection: viewStore.binding(

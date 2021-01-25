@@ -6,7 +6,7 @@ class ConciseFormsTests: XCTestCase {
   func testBasics() {
     let store = TestStore(
       initialState: SettingsState(),
-      reducer: settingsReducer,
+      reducer: conciseSettingsReducer,
       environment: SettingsEnvironment(
         mainQueue: DispatchQueue.immediateScheduler.eraseToAnyScheduler(),
         userNotifications: UserNotificationsClient(
@@ -17,16 +17,16 @@ class ConciseFormsTests: XCTestCase {
       )
     )
     store.assert(
-      .send(.displayNameChanged("Blob")) {
+      .send(.form(.init(\.displayName, "Blob"))) {
         $0.displayName = "Blob"
       },
-      .send(.displayNameChanged("Blob McBlob, Esq.")) {
+      .send(.form(.init(\.displayName, "Blob McBlob, Esq."))) {
         $0.displayName = "Blob McBlob, Esq"
       },
-      .send(.protectMyPostsChanged(true)) {
+      .send(.form(.init(\.protectMyPosts, true))) {
         $0.protectMyPosts = true
       },
-      .send(.digestChanged(.weekly)) {
+      .send(.form(.init(\.digest, .weekly))) {
         $0.digest = .weekly
       }
     )
@@ -37,7 +37,7 @@ class ConciseFormsTests: XCTestCase {
 
     let store = TestStore(
       initialState: SettingsState(),
-      reducer: settingsReducer,
+      reducer: conciseSettingsReducer,
       environment: SettingsEnvironment(
         mainQueue: DispatchQueue.immediateScheduler.eraseToAnyScheduler(),
         userNotifications: UserNotificationsClient(
@@ -57,7 +57,7 @@ class ConciseFormsTests: XCTestCase {
     )
 
     store.assert(
-      .send(.sendNotificationsChanged(true)),
+      .send(.form(.init(\.sendNotifications, true))),
       .receive(.notificationSettingsResponse(.init(authorizationStatus: .notDetermined))) {
         $0.sendNotifications = true
       },
