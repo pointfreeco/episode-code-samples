@@ -17,19 +17,45 @@ enum AppAction {
 
 struct AppEnvironment {}
 
-let mainQueue = AnyScheduler(
-  minimumTolerance: { DispatchQueue.main.minimumTolerance },
-  now: { DispatchQueue.main.now },
-  scheduleImmediately: DispatchQueue.main.schedule,
-  delayed: { duration, tolerance, options, action in
-    DispatchQueue.main.schedule(after: duration, tolerance: tolerance, options: options) {
-      withAnimation {
-        action()
+import Combine
+
+extension Scheduler {
+  func animation(_ animation: Animation? = .default) -> AnySchedulerOf<Self> {
+    .init(
+      minimumTolerance: { self.minimumTolerance },
+      now: { self.now },
+      scheduleImmediately: { options, action in
+        self.schedule(options: options) {
+          withAnimation(animation, action)
+        }
+      },
+      delayed: { after, tolerance, options, action in
+        self.schedule(after: after, tolerance: tolerance, options: options) {
+          withAnimation(animation, action)
+        }
+      },
+      interval: { after, interval, tolerance, options, action in
+        self.schedule(after: after, interval: interval, tolerance: tolerance, options: options) {
+          withAnimation(animation, action)
+        }
       }
-    }
-  },
-  interval: DispatchQueue.main.schedule
-)
+    )
+  }
+}
+
+//let mainQueue = AnyScheduler(
+//  minimumTolerance: { DispatchQueue.main.minimumTolerance },
+//  now: { DispatchQueue.main.now },
+//  scheduleImmediately: DispatchQueue.main.schedule,
+//  delayed: { duration, tolerance, options, action in
+//    DispatchQueue.main.schedule(after: duration, tolerance: tolerance, options: options) {
+//      withAnimation {
+//        action()
+//      }
+//    }
+//  },
+//  interval: DispatchQueue.main.schedule
+//)
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment> {
   state, action, environment in
@@ -38,9 +64,9 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment> {
     state.circleColor = .red
     return Effect.concatenate(
       // withAnimation: (() -> R) -> R
-      [Color.blue, .green, .purple, .black].map { color in
+      [Color.blue, .green, .purple, .black].enumerated().map { index, color in
         Effect(value: withAnimation { .setCircleColor(color) })
-          .delay(for: .seconds(1), scheduler: mainQueue)
+          .delay(for: .seconds(1), scheduler: DispatchQueue.main.animation(index.isMultiple(of: 2) ? nil : .linear))
           .eraseToEffect()
       }
 //      Effect(value: AppAction.setCircleColor(.blue))
@@ -75,6 +101,14 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment> {
   }
 }
 
+extension ViewStore {
+  func send(_ action: Action, animation: Animation) {
+    withAnimation(animation) {
+      self.send(action)
+    }
+  }
+}
+
 struct TCAContentView: View {
   let store: Store<AppState, AppAction>
 //  @State var circleCenter = CGPoint.zero
@@ -97,10 +131,11 @@ struct TCAContentView: View {
 //          .animation(.spring(response: 0.3, dampingFraction: 0.1))
           .gesture(
             DragGesture(minimumDistance: 0).onChanged { value in
-              withAnimation(.spring(response: 0.3, dampingFraction: 0.1)) {
-//                viewStore.circleCenter = value.location
-                viewStore.send(.dragGesture(value.location))
-              }
+//              withAnimation(.spring(response: 0.3, dampingFraction: 0.1)) {
+////                viewStore.circleCenter = value.location
+//                viewStore.send(.dragGesture(value.location))
+//              }
+              viewStore.send(.dragGesture(value.location), animation: .spring(response: 0.3, dampingFraction: 0.1))
             }
           )
           .foregroundColor(viewStore.isCircleScaled ? .red : nil)
@@ -163,7 +198,7 @@ struct TCAContentView: View {
         
         Button("Reset") {
 //          withAnimation {
-            viewStore.send(.resetButtonTapped)
+          viewStore.send(.resetButtonTapped, animation: .linear)
 //          }
           //        self.isResetting = true
 //          withAnimation {
