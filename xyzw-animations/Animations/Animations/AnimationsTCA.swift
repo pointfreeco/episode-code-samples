@@ -17,15 +17,30 @@ enum AppAction {
 
 struct AppEnvironment {}
 
+let mainQueue = AnyScheduler(
+  minimumTolerance: { DispatchQueue.main.minimumTolerance },
+  now: { DispatchQueue.main.now },
+  scheduleImmediately: DispatchQueue.main.schedule,
+  delayed: { duration, tolerance, options, action in
+    DispatchQueue.main.schedule(after: duration, tolerance: tolerance, options: options) {
+      withAnimation {
+        action()
+      }
+    }
+  },
+  interval: DispatchQueue.main.schedule
+)
+
 let appReducer = Reducer<AppState, AppAction, AppEnvironment> {
   state, action, environment in
   switch action {
   case .cycleColorsButtonTapped:
     state.circleColor = .red
     return Effect.concatenate(
+      // withAnimation: (() -> R) -> R
       [Color.blue, .green, .purple, .black].map { color in
-        Effect(value: .setCircleColor(color))
-          .delay(for: .seconds(1), scheduler: DispatchQueue.main)
+        Effect(value: withAnimation { .setCircleColor(color) })
+          .delay(for: .seconds(1), scheduler: mainQueue)
           .eraseToEffect()
       }
 //      Effect(value: AppAction.setCircleColor(.blue))
@@ -79,13 +94,13 @@ struct TCAContentView: View {
           //        .animation(nil, value: self.isCircleScaled)
           //        .animation(.disabled)
           .offset(x: viewStore.circleCenter.x - 25, y: viewStore.circleCenter.y - 25)
-          .animation(.spring(response: 0.3, dampingFraction: 0.1))
+//          .animation(.spring(response: 0.3, dampingFraction: 0.1))
           .gesture(
             DragGesture(minimumDistance: 0).onChanged { value in
-//              withAnimation(.spring(response: 0.3, dampingFraction: 0.1)) {
+              withAnimation(.spring(response: 0.3, dampingFraction: 0.1)) {
 //                viewStore.circleCenter = value.location
                 viewStore.send(.dragGesture(value.location))
-//              }
+              }
             }
           )
           .foregroundColor(viewStore.isCircleScaled ? .red : nil)
