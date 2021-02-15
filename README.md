@@ -133,3 +133,7 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Parsing Performance: Protocols](0129-parsing-performance-pt3)
 1. [Parsing Performance: The Point](0130-parsing-performance-pt4)
 1. [Concise Forms: SwiftUI](0131-concise-forms-pt1)
+1. [Concise Forms: Composable Architecture](0132-concise-forms-pt2)
+1. [Concise Forms: Bye Bye Boilerplate](0133-concise-forms-pt3)
+1. [Concise Forms: The Point](0134-concise-forms-pt4)
+1. [SwiftUI Animation: The Basics](0135-swiftui-animation-pt1)
