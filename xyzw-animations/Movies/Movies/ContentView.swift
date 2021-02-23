@@ -12,11 +12,15 @@ class MoviesViewModel: ObservableObject {
   private var cancellable: Cancellable?
 
   init() {
+    var count = 0
     self.cancellable = self.allMovies()
+      .prepend(self.cachedFavorites())
+      .scan([], +)
       .receive(on: DispatchQueue.main)
 //      .assign(to: &self.$movies)
       .sink { [weak self] movies in
-        withAnimation {
+        count += 1
+        withAnimation(count == 1 ? nil : .default) {
           self?.movies = movies
         }
       }
@@ -28,11 +32,24 @@ class MoviesViewModel: ObservableObject {
         Movie(
           id: UUID(),
           name: "Movie \(index)",
-          isFavorite: index.isMultiple(of: 2)
+          isFavorite: false
         )
       }
     )
     .delay(for: 1, scheduler: DispatchQueue(label: "background.queue"))
+    .eraseToAnyPublisher()
+  }
+  
+  func cachedFavorites() -> AnyPublisher<[Movie], Never> {
+    Just(
+      [
+        .init(id: .init(), name: "2001: A Space Odyssey", isFavorite: true),
+        .init(id: .init(), name: "Parasite", isFavorite: true),
+        .init(id: .init(), name: "Moonlight", isFavorite: true),
+      ]
+    )
+//    .receive(on: DispatchQueue(label: "file.queue"))
+    .delay(for: 0.1, scheduler: DispatchQueue(label: "file.queue"))
     .eraseToAnyPublisher()
   }
 }
