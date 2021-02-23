@@ -1,4 +1,5 @@
 import Combine
+import CombineSchedulers
 import SwiftUI
 
 struct Movie: Identifiable {
@@ -9,21 +10,16 @@ struct Movie: Identifiable {
 
 class MoviesViewModel: ObservableObject {
   @Published var movies: [Movie] = []
-  private var cancellable: Cancellable?
 
   init() {
-    var count = 0
-    self.cancellable = self.allMovies()
-      .prepend(self.cachedFavorites())
+    self.allMovies()
+      .receive(on: DispatchQueue.main.animation())
+      .prepend(
+        self.cachedFavorites()
+          .receive(on: DispatchQueue.main)
+      )
       .scan([], +)
-      .receive(on: DispatchQueue.main)
-//      .assign(to: &self.$movies)
-      .sink { [weak self] movies in
-        count += 1
-        withAnimation(count == 1 ? nil : .default) {
-          self?.movies = movies
-        }
-      }
+      .assign(to: &self.$movies)
   }
 
   func allMovies() -> AnyPublisher<[Movie], Never> {
@@ -79,6 +75,49 @@ struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     ContentView(
       viewModel: MoviesViewModel()
+    )
+  }
+}
+
+extension Scheduler {
+  func animate(
+    withDuration duration: TimeInterval,
+    delay: TimeInterval = 0,
+    options animationOptions: UIView.AnimationOptions = []
+  ) -> AnySchedulerOf<Self> {
+    .init(
+      minimumTolerance: { self.minimumTolerance },
+      now: { self.now },
+      scheduleImmediately: { options, action in
+        self.schedule(options: options) {
+          UIView.animate(
+            withDuration: duration,
+            delay: delay,
+            options: animationOptions,
+            animations: action
+          )
+        }
+      },
+      delayed: { date, tolerance, options, action in
+        self.schedule(after: date, tolerance: tolerance, options: options) {
+          UIView.animate(
+            withDuration: duration,
+            delay: delay,
+            options: animationOptions,
+            animations: action
+          )
+        }
+      },
+      interval: { date, interval, tolerance, options, action in
+        self.schedule(after: date, interval: interval, tolerance: tolerance, options: options) {
+          UIView.animate(
+            withDuration: duration,
+            delay: delay,
+            options: animationOptions,
+            animations: action
+          )
+        }
+      }
     )
   }
 }
