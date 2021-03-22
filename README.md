@@ -140,3 +140,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [SwiftUI Animation: Composable Architecture](0136-swiftui-animation-pt2)
 1. [SwiftUI Animation: The Point](0137-swiftui-animation-pt3)
 1. [Better Test Dependencies: Exhaustivity](0138-better-test-dependencies-pt1)
+1. [Better Test Dependencies: Failability](0139-better-test-dependencies-pt2)
