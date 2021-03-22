@@ -1,4 +1,5 @@
 import Combine
+import CombineSchedulers
 import CoreLocation
 import SwiftUI
 import Network
@@ -19,18 +20,19 @@ public class AppViewModel: ObservableObject {
   let weatherClient: WeatherClient
   let pathMonitorClient: PathMonitorClient
   let locationClient: LocationClient
+  let mainQueue: AnySchedulerOf<DispatchQueue>
 
   public init(
-//    isConnected: Bool = true,
     locationClient: LocationClient,
     pathMonitorClient: PathMonitorClient,
-    weatherClient: WeatherClient
+    weatherClient: WeatherClient,
+    mainQueue: AnySchedulerOf<DispatchQueue>
   ) {
     self.weatherClient = weatherClient
     self.locationClient = locationClient
     self.pathMonitorClient = pathMonitorClient
+    self.mainQueue = mainQueue
 
-//    self.pathMonitorClient.setPathUpdateHandler { [weak self] path in
     self.pathUpdateCancellable = self.pathMonitorClient.networkPathPublisher
       .map { $0.status == .satisfied }
       .removeDuplicates()
@@ -43,8 +45,6 @@ public class AppViewModel: ObservableObject {
           self.weatherResults = []
         }
       })
-
-    //delegate
 
     self.locationDelegateCancellable = self.locationClient.delegate
       .sink { event in
@@ -73,6 +73,7 @@ public class AppViewModel: ObservableObject {
 
           self.searchLocationsCancellable =  self.weatherClient
             .searchLocations(location.coordinate)
+            .receive(on: self.mainQueue)
             .sink(
               receiveCompletion: { _ in },
               receiveValue: { [weak self] locations in
@@ -91,10 +92,6 @@ public class AppViewModel: ObservableObject {
     }
   }
 
-//  deinit {
-//    self.pathMonitorClient.cancel()
-//  }
-  
   func refreshWeather() {
     guard let location = self.currentLocation else { return }
 
@@ -102,6 +99,7 @@ public class AppViewModel: ObservableObject {
     
     self.weatherRequestCancellable = self.weatherClient
       .weather(location.woeid)
+      .receive(on: self.mainQueue)
       .sink(
         receiveCompletion: { _ in },
         receiveValue: { [weak self] response in
@@ -187,15 +185,14 @@ struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     return ContentView(
       viewModel: AppViewModel(
-//        isConnected: false,
-        locationClient: .notDetermined, // .notDeterminedDenied
+        locationClient: .notDetermined,
         pathMonitorClient: .satisfied,
-        weatherClient: .happyPath
+        weatherClient: .happyPath,
+        mainQueue: DispatchQueue.main.eraseToAnyScheduler()
       )
     )
   }
 }
-
 let dayOfWeekFormatter: DateFormatter = {
   let formatter = DateFormatter()
   formatter.dateFormat = "EEEE"

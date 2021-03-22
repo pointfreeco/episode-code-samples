@@ -37,6 +37,8 @@
 		4B28C0E924CA40A5001381C9 /* LocationClientLive in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4B28C0E724CA40A5001381C9 /* LocationClientLive */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4B28C0EB24CA40AA001381C9 /* LocationClient in Frameworks */ = {isa = PBXBuildFile; productRef = 4B28C0EA24CA40AA001381C9 /* LocationClient */; };
 		4B28C0EC24CA40AA001381C9 /* LocationClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4B28C0EA24CA40AA001381C9 /* LocationClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		CA86CC4E25F81D410020EA6E /* CombineSchedulers in Frameworks */ = {isa = PBXBuildFile; productRef = CA86CC4D25F81D410020EA6E /* CombineSchedulers */; };
+		CA86CC5125F81D490020EA6E /* CombineSchedulers in Frameworks */ = {isa = PBXBuildFile; productRef = CA86CC5025F81D490020EA6E /* CombineSchedulers */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2ACAD44F24CA04F800352F1E /* PathMonitorClientLive in Frameworks */,
+				CA86CC4E25F81D410020EA6E /* CombineSchedulers in Frameworks */,
 				2A55626324C8B82200955510 /* WeatherFeature.framework in Frameworks */,
 				4B28C0E824CA40A5001381C9 /* LocationClientLive in Frameworks */,
 				2ACAD45224CA051D00352F1E /* WeatherClientLive in Frameworks */,
@@ -153,6 +156,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA86CC5125F81D490020EA6E /* CombineSchedulers in Frameworks */,
 				4B28C0EB24CA40AA001381C9 /* LocationClient in Frameworks */,
 				2A55F5A924C8BCB600ED4286 /* WeatherClient in Frameworks */,
 				2ACAD44C24CA04F000352F1E /* PathMonitorClient in Frameworks */,
@@ -289,6 +293,7 @@
 				2ACAD44E24CA04F800352F1E /* PathMonitorClientLive */,
 				2ACAD45124CA051D00352F1E /* WeatherClientLive */,
 				4B28C0E724CA40A5001381C9 /* LocationClientLive */,
+				CA86CC4D25F81D410020EA6E /* CombineSchedulers */,
 			);
 			productName = DesigningDependencies;
 			productReference = 2A55622224C8972A00955510 /* DesigningDependencies.app */;
@@ -331,6 +336,7 @@
 				2A55F5A824C8BCB600ED4286 /* WeatherClient */,
 				2ACAD44B24CA04F000352F1E /* PathMonitorClient */,
 				4B28C0EA24CA40AA001381C9 /* LocationClient */,
+				CA86CC5025F81D490020EA6E /* CombineSchedulers */,
 			);
 			productName = WeatherFeature;
 			productReference = 2A55624E24C8B82200955510 /* WeatherFeature.framework */;
@@ -394,6 +400,9 @@
 				Base,
 			);
 			mainGroup = 2A55621924C8972A00955510;
+			packageReferences = (
+				CA86CC4C25F81D410020EA6E /* XCRemoteSwiftPackageReference "combine-schedulers" */,
+			);
 			productRefGroup = 2A55622324C8972A00955510 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -844,6 +853,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		CA86CC4C25F81D410020EA6E /* XCRemoteSwiftPackageReference "combine-schedulers" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/combine-schedulers";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		2A55F5A824C8BCB600ED4286 /* WeatherClient */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -880,6 +900,16 @@
 		4B28C0EA24CA40AA001381C9 /* LocationClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LocationClient;
+		};
+		CA86CC4D25F81D410020EA6E /* CombineSchedulers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CA86CC4C25F81D410020EA6E /* XCRemoteSwiftPackageReference "combine-schedulers" */;
+			productName = CombineSchedulers;
+		};
+		CA86CC5025F81D490020EA6E /* CombineSchedulers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CA86CC4C25F81D410020EA6E /* XCRemoteSwiftPackageReference "combine-schedulers" */;
+			productName = CombineSchedulers;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
