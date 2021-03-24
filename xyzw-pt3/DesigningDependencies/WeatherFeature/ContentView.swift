@@ -1,4 +1,5 @@
 import Combine
+import CombineSchedulers
 import CoreLocation
 import SwiftUI
 import Network
@@ -19,15 +20,18 @@ public class AppViewModel: ObservableObject {
   let weatherClient: WeatherClient
   let pathMonitorClient: PathMonitorClient
   let locationClient: LocationClient
+  let mainQueue: AnySchedulerOf<DispatchQueue>
 
   public init(
     locationClient: LocationClient,
     pathMonitorClient: PathMonitorClient,
-    weatherClient: WeatherClient
+    weatherClient: WeatherClient,
+    mainQueue: AnySchedulerOf<DispatchQueue>
   ) {
     self.weatherClient = weatherClient
     self.locationClient = locationClient
     self.pathMonitorClient = pathMonitorClient
+    self.mainQueue = mainQueue
 
     self.pathUpdateCancellable = self.pathMonitorClient.networkPathPublisher
       .map { $0.status == .satisfied }
@@ -69,7 +73,7 @@ public class AppViewModel: ObservableObject {
 
           self.searchLocationsCancellable =  self.weatherClient
             .searchLocations(location.coordinate)
-            .receive(on: DispatchQueue.main)
+            .receive(on: self.mainQueue)
             .sink(
               receiveCompletion: { _ in },
               receiveValue: { [weak self] locations in
@@ -95,7 +99,7 @@ public class AppViewModel: ObservableObject {
     
     self.weatherRequestCancellable = self.weatherClient
       .weather(location.woeid)
-      .receive(on: DispatchQueue.main)
+      .receive(on: self.mainQueue)
       .sink(
         receiveCompletion: { _ in },
         receiveValue: { [weak self] response in
@@ -183,7 +187,8 @@ struct ContentView_Previews: PreviewProvider {
       viewModel: AppViewModel(
         locationClient: .notDetermined,
         pathMonitorClient: .satisfied,
-        weatherClient: .happyPath
+        weatherClient: .happyPath,
+        mainQueue: DispatchQueue.main.eraseToAnyScheduler()
       )
     )
   }

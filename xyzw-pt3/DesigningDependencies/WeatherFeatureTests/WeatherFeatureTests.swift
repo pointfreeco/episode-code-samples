@@ -38,6 +38,7 @@ extension WeatherClient {
 }
 
 class WeatherFeatureTests: XCTestCase {
+  let mainQueue = DispatchQueue.testScheduler
 
   func testBasics() {
     let viewModel = AppViewModel(
@@ -46,10 +47,13 @@ class WeatherFeatureTests: XCTestCase {
       weatherClient: WeatherClient(
         weather: { _ in .init(.moderateWeather) },
         searchLocations: { _ in .init([.brooklyn]) }
-      )
+      ),
+      mainQueue: mainQueue.eraseToAnyScheduler()
     )
     
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
+//    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
+
+    mainQueue.advance()
 
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
@@ -60,14 +64,15 @@ class WeatherFeatureTests: XCTestCase {
     let viewModel = AppViewModel(
       locationClient: .authorizedWhenInUse,
       pathMonitorClient: .unsatisfied,
-      weatherClient: .unimplemented
+      weatherClient: .unimplemented,
+      mainQueue: .failing
     )
-    
+
     XCTAssertEqual(viewModel.currentLocation, nil)
     XCTAssertEqual(viewModel.isConnected, false)
     XCTAssertEqual(viewModel.weatherResults, [])
   }
-  
+
   func testPathUpdates() {
     let pathUpdateSubject = PassthroughSubject<NetworkPath, Never>()
     let viewModel = AppViewModel(
@@ -79,22 +84,25 @@ class WeatherFeatureTests: XCTestCase {
       weatherClient: WeatherClient(
         weather: { _ in .init(.moderateWeather) },
         searchLocations: { _ in .init([.brooklyn]) }
-      )
+      ),
+      mainQueue: self.mainQueue.eraseToAnyScheduler()
     )
     pathUpdateSubject.send(.init(status: .satisfied))
-    
+    self.mainQueue.advance()
+
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
     XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
-    
+
     pathUpdateSubject.send(.init(status: .unsatisfied))
-    
+
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, false)
     XCTAssertEqual(viewModel.weatherResults, [])
-    
+
     pathUpdateSubject.send(.init(status: .satisfied))
-    
+    self.mainQueue.advance()
+
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
     XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
@@ -120,7 +128,8 @@ class WeatherFeatureTests: XCTestCase {
       weatherClient: WeatherClient(
         weather: { _ in .init(.moderateWeather) },
         searchLocations: { _ in .init([.brooklyn]) }
-      )
+      ),
+      mainQueue: self.mainQueue.eraseToAnyScheduler()
     )
 
     XCTAssertEqual(viewModel.currentLocation, nil)
@@ -128,6 +137,7 @@ class WeatherFeatureTests: XCTestCase {
     XCTAssertEqual(viewModel.weatherResults, [])
 
     viewModel.locationButtonTapped()
+    self.mainQueue.advance()
 
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
@@ -152,7 +162,8 @@ class WeatherFeatureTests: XCTestCase {
       weatherClient: WeatherClient(
         weather: { _ in .init(.moderateWeather) },
         searchLocations: { _ in .init([.brooklyn]) }
-      )
+      ),
+      mainQueue: .failing
     )
 
     XCTAssertEqual(viewModel.currentLocation, nil)

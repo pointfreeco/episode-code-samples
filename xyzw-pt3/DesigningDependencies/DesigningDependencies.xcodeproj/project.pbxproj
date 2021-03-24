@@ -27,6 +27,7 @@
 		2A99D92924D3157D00008F0B /* PathMonitorClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A99D92724D3157D00008F0B /* PathMonitorClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2A99D92B24D3157D00008F0B /* WeatherClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2A99D92A24D3157D00008F0B /* WeatherClient */; };
 		2A99D92C24D3157D00008F0B /* WeatherClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2A99D92A24D3157D00008F0B /* WeatherClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2AA6C8B4260BC61A00ED8F56 /* CombineSchedulers in Frameworks */ = {isa = PBXBuildFile; productRef = 2AA6C8B3260BC61A00ED8F56 /* CombineSchedulers */; };
 		2ACAD44C24CA04F000352F1E /* PathMonitorClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44B24CA04F000352F1E /* PathMonitorClient */; };
 		2ACAD44D24CA04F000352F1E /* PathMonitorClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44B24CA04F000352F1E /* PathMonitorClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2ACAD44F24CA04F800352F1E /* PathMonitorClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACAD44E24CA04F800352F1E /* PathMonitorClientLive */; };
@@ -153,6 +154,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AA6C8B4260BC61A00ED8F56 /* CombineSchedulers in Frameworks */,
 				4B28C0EB24CA40AA001381C9 /* LocationClient in Frameworks */,
 				2A55F5A924C8BCB600ED4286 /* WeatherClient in Frameworks */,
 				2ACAD44C24CA04F000352F1E /* PathMonitorClient in Frameworks */,
@@ -331,6 +333,7 @@
 				2A55F5A824C8BCB600ED4286 /* WeatherClient */,
 				2ACAD44B24CA04F000352F1E /* PathMonitorClient */,
 				4B28C0EA24CA40AA001381C9 /* LocationClient */,
+				2AA6C8B3260BC61A00ED8F56 /* CombineSchedulers */,
 			);
 			productName = WeatherFeature;
 			productReference = 2A55624E24C8B82200955510 /* WeatherFeature.framework */;
@@ -394,6 +397,9 @@
 				Base,
 			);
 			mainGroup = 2A55621924C8972A00955510;
+			packageReferences = (
+				2AA6C8B2260BC61A00ED8F56 /* XCRemoteSwiftPackageReference "combine-schedulers" */,
+			);
 			productRefGroup = 2A55622324C8972A00955510 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -844,6 +850,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		2AA6C8B2260BC61A00ED8F56 /* XCRemoteSwiftPackageReference "combine-schedulers" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/combine-schedulers";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		2A55F5A824C8BCB600ED4286 /* WeatherClient */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -860,6 +877,11 @@
 		2A99D92A24D3157D00008F0B /* WeatherClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WeatherClient;
+		};
+		2AA6C8B3260BC61A00ED8F56 /* CombineSchedulers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2AA6C8B2260BC61A00ED8F56 /* XCRemoteSwiftPackageReference "combine-schedulers" */;
+			productName = CombineSchedulers;
 		};
 		2ACAD44B24CA04F000352F1E /* PathMonitorClient */ = {
 			isa = XCSwiftPackageProductDependency;
