@@ -48,6 +48,8 @@ class WeatherFeatureTests: XCTestCase {
         searchLocations: { _ in .init([.brooklyn]) }
       )
     )
+    
+    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
 
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)

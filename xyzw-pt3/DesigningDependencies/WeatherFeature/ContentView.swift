@@ -69,6 +69,7 @@ public class AppViewModel: ObservableObject {
 
           self.searchLocationsCancellable =  self.weatherClient
             .searchLocations(location.coordinate)
+            .receive(on: DispatchQueue.main)
             .sink(
               receiveCompletion: { _ in },
               receiveValue: { [weak self] locations in
@@ -94,6 +95,7 @@ public class AppViewModel: ObservableObject {
     
     self.weatherRequestCancellable = self.weatherClient
       .weather(location.woeid)
+      .receive(on: DispatchQueue.main)
       .sink(
         receiveCompletion: { _ in },
         receiveValue: { [weak self] response in
@@ -179,7 +181,7 @@ struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     return ContentView(
       viewModel: AppViewModel(
-        locationClient: .authorizedWhenInUse,
+        locationClient: .notDetermined,
         pathMonitorClient: .satisfied,
         weatherClient: .happyPath
       )

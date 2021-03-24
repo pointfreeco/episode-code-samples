@@ -8,14 +8,14 @@ extension WeatherClient {
       URLSession.shared.dataTaskPublisher(for: URL(string: "https://www.metaweather.com/api/location/\(id)")!)
         .map { data, _ in data }
         .decode(type: WeatherResponse.self, decoder: weatherJsonDecoder)
-        .receive(on: DispatchQueue.main)
+//        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
   },
     searchLocations: { coordinate in
       URLSession.shared.dataTaskPublisher(for: URL(string: "https://www.metaweather.com/api/location/search?lattlong=\(coordinate.latitude),\(coordinate.longitude)")!)
         .map { data, _ in data }
         .decode(type: [Location].self, decoder: weatherJsonDecoder)
-        .receive(on: DispatchQueue.main)
+//        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
   })
 }
