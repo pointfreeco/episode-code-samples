@@ -21,7 +21,6 @@ public class AppViewModel: ObservableObject {
   let locationClient: LocationClient
 
   public init(
-//    isConnected: Bool = true,
     locationClient: LocationClient,
     pathMonitorClient: PathMonitorClient,
     weatherClient: WeatherClient
@@ -30,7 +29,6 @@ public class AppViewModel: ObservableObject {
     self.locationClient = locationClient
     self.pathMonitorClient = pathMonitorClient
 
-//    self.pathMonitorClient.setPathUpdateHandler { [weak self] path in
     self.pathUpdateCancellable = self.pathMonitorClient.networkPathPublisher
       .map { $0.status == .satisfied }
       .removeDuplicates()
@@ -43,8 +41,6 @@ public class AppViewModel: ObservableObject {
           self.weatherResults = []
         }
       })
-
-    //delegate
 
     self.locationDelegateCancellable = self.locationClient.delegate
       .sink { event in
@@ -90,10 +86,6 @@ public class AppViewModel: ObservableObject {
       self.locationClient.requestLocation()
     }
   }
-
-//  deinit {
-//    self.pathMonitorClient.cancel()
-//  }
   
   func refreshWeather() {
     guard let location = self.currentLocation else { return }
@@ -187,8 +179,7 @@ struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     return ContentView(
       viewModel: AppViewModel(
-//        isConnected: false,
-        locationClient: .notDetermined, // .notDeterminedDenied
+        locationClient: .authorizedWhenInUse,
         pathMonitorClient: .satisfied,
         weatherClient: .happyPath
       )
