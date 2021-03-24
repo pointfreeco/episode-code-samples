@@ -21,6 +21,8 @@ public class AppViewModel: ObservableObject {
   let pathMonitorClient: PathMonitorClient
   let locationClient: LocationClient
   let mainQueue: AnySchedulerOf<DispatchQueue>
+  // AnyScheduler<DispatchQueue.SchedulerTimeType, DispatchQueue.SchedulerOptions>
+  // any Scheduler
 
   public init(
     locationClient: LocationClient,
@@ -199,3 +201,25 @@ let dayOfWeekFormatter: DateFormatter = {
   formatter.dateFormat = "EEEE"
   return formatter
 }()
+
+extension Scheduler {
+  static func immediate(now: SchedulerTimeType) -> AnySchedulerOf<Self> {
+    .init(
+      minimumTolerance: { .zero },
+      now: { now },
+      scheduleImmediately: { _, action in action() },
+      delayed: { _, _, _, action in action() },
+      interval: { _, _, _, _, action in action(); return AnyCancellable {} }
+    )
+  }
+}
+
+extension Scheduler
+where
+  SchedulerTimeType == DispatchQueue.SchedulerTimeType,
+  SchedulerOptions == DispatchQueue.SchedulerOptions
+{
+  static var immediate: AnySchedulerOf<Self> {
+    .immediate(now: .init(.now()))
+  }
+}

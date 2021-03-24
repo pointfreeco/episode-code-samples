@@ -1,9 +1,16 @@
+//
+//import Network
+//
+//let monitor = NWPathMonitor()
+//monitor.pathUpdateHandler = { path in
+//  print(path.status)
+//}
+//monitor.start(queue: .main)
+//
 
-import Network
+import Combine
 
-let monitor = NWPathMonitor()
-monitor.pathUpdateHandler = { path in
-  print(path.status)
-}
-monitor.start(queue: .main)
-
+ImmediateScheduler.shared
+  .schedule(after: ImmediateScheduler.shared.now.advanced(by: 100)) {
+    print("hi")
+  }

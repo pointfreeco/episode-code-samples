@@ -48,12 +48,16 @@ class WeatherFeatureTests: XCTestCase {
         weather: { _ in .init(.moderateWeather) },
         searchLocations: { _ in .init([.brooklyn]) }
       ),
-      mainQueue: mainQueue.eraseToAnyScheduler()
+      mainQueue: .immediate
+        //ImmediateScheduler.shared.eraseToAnyScheduler()
+        //mainQueue.eraseToAnyScheduler()
     )
+    
+//    ImmediateScheduler
     
 //    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.01)
 
-    mainQueue.advance()
+//    mainQueue.advance()
 
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
@@ -85,10 +89,10 @@ class WeatherFeatureTests: XCTestCase {
         weather: { _ in .init(.moderateWeather) },
         searchLocations: { _ in .init([.brooklyn]) }
       ),
-      mainQueue: self.mainQueue.eraseToAnyScheduler()
+      mainQueue: .immediate // self.mainQueue.eraseToAnyScheduler()
     )
     pathUpdateSubject.send(.init(status: .satisfied))
-    self.mainQueue.advance()
+//    self.mainQueue.advance()
 
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
@@ -101,7 +105,7 @@ class WeatherFeatureTests: XCTestCase {
     XCTAssertEqual(viewModel.weatherResults, [])
 
     pathUpdateSubject.send(.init(status: .satisfied))
-    self.mainQueue.advance()
+//    self.mainQueue.advance()
 
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
@@ -129,7 +133,7 @@ class WeatherFeatureTests: XCTestCase {
         weather: { _ in .init(.moderateWeather) },
         searchLocations: { _ in .init([.brooklyn]) }
       ),
-      mainQueue: self.mainQueue.eraseToAnyScheduler()
+      mainQueue: .immediate //self.mainQueue.eraseToAnyScheduler()
     )
 
     XCTAssertEqual(viewModel.currentLocation, nil)
@@ -137,7 +141,7 @@ class WeatherFeatureTests: XCTestCase {
     XCTAssertEqual(viewModel.weatherResults, [])
 
     viewModel.locationButtonTapped()
-    self.mainQueue.advance()
+//    self.mainQueue.advance()
 
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
