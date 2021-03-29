@@ -109,6 +109,11 @@ public class AppViewModel: ObservableObject {
       })
   }
 
+  func cancelButtonTapped() {
+    self.searchLocationsCancellable = nil
+    self.weatherRequestCancellable = nil
+  }
+
   func locationButtonTapped() {
     switch self.locationClient.authorizationStatus() {
     case .notDetermined:

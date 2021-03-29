@@ -63,6 +63,28 @@ class WeatherFeatureTests: XCTestCase {
     XCTAssertEqual(viewModel.isConnected, true)
     XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
   }
+
+  func testCancellation() {
+    let viewModel = AppViewModel(
+      locationClient: .authorizedWhenInUse,
+      pathMonitorClient: .satisfied,
+      weatherClient: WeatherClient(
+        weather: { _ in .init(.moderateWeather) },
+        searchLocations: { _ in .init([.brooklyn]) }
+      ),
+      mainQueue: mainQueue.eraseToAnyScheduler()
+        // .immediate
+        //ImmediateScheduler.shared.eraseToAnyScheduler()
+        //mainQueue.eraseToAnyScheduler()
+    )
+
+    viewModel.cancelButtonTapped()
+    self.mainQueue.run()
+
+    XCTAssertEqual(viewModel.currentLocation, nil)
+    XCTAssertEqual(viewModel.isConnected, true)
+    XCTAssertEqual(viewModel.weatherResults, [])
+  }
   
   func testDisconnected() {
     let viewModel = AppViewModel(
