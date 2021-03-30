@@ -150,7 +150,7 @@ public struct ContentView: View {
             ForEach(self.viewModel.weatherResults, id: \.id) { weather in
               VStack(alignment: .leading) {
                 Text(dayOfWeekFormatter.string(from: weather.applicableDate).capitalized)
-                  .font(.title)
+                  .font(.largeTitle)
 
                 Text("Current temp: \(weather.theTemp, specifier: "%.1f")°C")
                   .bold()
@@ -190,14 +190,24 @@ public struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    return ContentView(
+    ContentView(
       viewModel: AppViewModel(
-        locationClient: .notDetermined,
+        locationClient: .authorizedWhenInUse,
         pathMonitorClient: .satisfied,
         weatherClient: .happyPath,
-        mainQueue: DispatchQueue.main.eraseToAnyScheduler()
+        mainQueue: .immediate
       )
     )
+
+    ContentView(
+      viewModel: AppViewModel(
+        locationClient: .authorizedWhenInUse,
+        pathMonitorClient: .satisfied,
+        weatherClient: .happyPath,
+        mainQueue: .immediate
+      )
+    )
+    .environment(\.colorScheme, .dark)
   }
 }
 
