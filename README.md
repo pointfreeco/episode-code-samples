@@ -143,3 +143,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Better Test Dependencies: Failability](0139-better-test-dependencies-pt2)
 1. [Better Test Dependencies: Immediacy](0140-better-test-dependencies-pt3)
 1. [Better Test Dependencies: The Point](0141-better-test-dependencies-pt4)
+1. [A Tour of isowords](0142-tour-of-isowords-pt1)
