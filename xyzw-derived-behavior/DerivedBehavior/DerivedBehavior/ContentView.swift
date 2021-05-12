@@ -19,6 +19,27 @@ class AppViewModel: ObservableObject {
     self.profile.objectWillChange
       .sink { [weak self] in self?.objectWillChange.send() }
       .store(in: &self.cancellables)
+
+    var counterIsUpdating = false
+    var profileIsUpdating = false
+
+    self.counter.$favorites
+      .sink { [weak self] in
+        guard !counterIsUpdating else { return }
+        profileIsUpdating = true
+        defer { profileIsUpdating = false }
+        self?.profile.favorites = $0
+      }
+      .store(in: &self.cancellables)
+
+    self.profile.$favorites
+      .sink { [weak self] in
+        counterIsUpdating = true
+        defer { counterIsUpdating = false }
+        guard !profileIsUpdating else { return }
+        self?.counter.favorites = $0
+      }
+      .store(in: &self.cancellables)
   }
 }
 
@@ -47,6 +68,8 @@ struct VanillaCounterView: View {
   @ObservedObject var viewModel: CounterViewModel
 
   var body: some View {
+//    self.$viewModel.count
+
     VStack {
       HStack {
         Button("-") { self.viewModel.count -= 1 }
