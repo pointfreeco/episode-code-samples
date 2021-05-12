@@ -11,7 +11,11 @@ import SwiftUI
 struct DerivedBehaviorApp: App {
     var body: some Scene {
         WindowGroup {
-          VanillaContentView(viewModel: .init())
+          VanillaContentView(
+            viewModel: .init()
+//            counterViewModel: .init(),
+//            profileViewModel: .init()
+          )
         }
     }
 }
