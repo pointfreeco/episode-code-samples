@@ -147,4 +147,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [A Tour of isowords: Part 2](0143-tour-of-isowords-pt2)
 1. [A Tour of isowords: Part 3](0144-tour-of-isowords-pt3)
 1. [A Tour of isowords: Part 4](0145-tour-of-isowords-pt4)
-1. [Derived Behavior: The Problem](0146-derived-behavior-the-problem)
+1. [Derived Behavior: The Problem](0146-derived-behavior-pt1)
+1. [Derived Behavior: Composable-Architecture](0147-derived-behavior-pt2)
