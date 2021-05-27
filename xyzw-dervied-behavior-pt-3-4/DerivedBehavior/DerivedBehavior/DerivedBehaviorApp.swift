@@ -4,7 +4,7 @@ import SwiftUI
 struct DerivedBehaviorApp: App {
   var body: some Scene {
     WindowGroup {
-      EmptyView()
+      CounterView_Previews.previews
     }
   }
 }

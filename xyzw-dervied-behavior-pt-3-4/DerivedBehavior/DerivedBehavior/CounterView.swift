@@ -21,7 +21,6 @@ enum CounterAction: Equatable {
   case incrementButtonTapped
   case factButtonTapped
   case factResponse(Result<String, FactClient.Error>)
-  case squareButtonTapped
 }
 
 struct CounterEnvironment {
@@ -58,10 +57,6 @@ let counterReducer = Reducer<CounterState, CounterAction, CounterEnvironment> {
   case .factResponse(.failure):
     state.alert = .init(message: "Couldn't load fact.", title: "Error")
     return .none
-
-  case .squareButtonTapped:
-    state.count *= state.count
-    return .none
   }
 }
 
@@ -76,8 +71,6 @@ struct CounterView: View {
           Text("\(viewStore.count)")
           Button("+") { viewStore.send(.incrementButtonTapped) }
         }
-
-        Button("Square") { viewStore.send(.squareButtonTapped) }
 
         Button("Fact") { viewStore.send(.factButtonTapped) }
       }

@@ -12,20 +12,12 @@
 		2A66051D265FEE2600FC3837 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A66051C265FEE2600FC3837 /* Assets.xcassets */; };
 		2A660520265FEE2600FC3837 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A66051F265FEE2600FC3837 /* Preview Assets.xcassets */; };
 		2A66052B265FEE2700FC3837 /* DerivedBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66052A265FEE2700FC3837 /* DerivedBehaviorTests.swift */; };
-		2A660536265FEE2700FC3837 /* DerivedBehaviorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A660535265FEE2700FC3837 /* DerivedBehaviorUITests.swift */; };
 		2A660545265FEEBA00FC3837 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 2A660544265FEEBA00FC3837 /* ComposableArchitecture */; };
 		2A660547265FEEEC00FC3837 /* FactClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A660546265FEEEC00FC3837 /* FactClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		2A660527265FEE2700FC3837 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2A66050D265FEE2600FC3837 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2A660514265FEE2600FC3837;
-			remoteInfo = DerivedBehavior;
-		};
-		2A660532265FEE2700FC3837 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2A66050D265FEE2600FC3837 /* Project object */;
 			proxyType = 1;
@@ -44,9 +36,6 @@
 		2A660526265FEE2700FC3837 /* DerivedBehaviorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DerivedBehaviorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A66052A265FEE2700FC3837 /* DerivedBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivedBehaviorTests.swift; sourceTree = "<group>"; };
 		2A66052C265FEE2700FC3837 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2A660531265FEE2700FC3837 /* DerivedBehaviorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DerivedBehaviorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2A660535265FEE2700FC3837 /* DerivedBehaviorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivedBehaviorUITests.swift; sourceTree = "<group>"; };
-		2A660537265FEE2700FC3837 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2A660546265FEEEC00FC3837 /* FactClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,13 +55,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2A66052E265FEE2700FC3837 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -81,7 +63,6 @@
 			children = (
 				2A660517265FEE2600FC3837 /* DerivedBehavior */,
 				2A660529265FEE2700FC3837 /* DerivedBehaviorTests */,
-				2A660534265FEE2700FC3837 /* DerivedBehaviorUITests */,
 				2A660516265FEE2600FC3837 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,7 +72,6 @@
 			children = (
 				2A660515265FEE2600FC3837 /* DerivedBehavior.app */,
 				2A660526265FEE2700FC3837 /* DerivedBehaviorTests.xctest */,
-				2A660531265FEE2700FC3837 /* DerivedBehaviorUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,15 +104,6 @@
 				2A66052C265FEE2700FC3837 /* Info.plist */,
 			);
 			path = DerivedBehaviorTests;
-			sourceTree = "<group>";
-		};
-		2A660534265FEE2700FC3837 /* DerivedBehaviorUITests */ = {
-			isa = PBXGroup;
-			children = (
-				2A660535265FEE2700FC3837 /* DerivedBehaviorUITests.swift */,
-				2A660537265FEE2700FC3837 /* Info.plist */,
-			);
-			path = DerivedBehaviorUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -176,24 +147,6 @@
 			productReference = 2A660526265FEE2700FC3837 /* DerivedBehaviorTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		2A660530265FEE2700FC3837 /* DerivedBehaviorUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 2A660540265FEE2700FC3837 /* Build configuration list for PBXNativeTarget "DerivedBehaviorUITests" */;
-			buildPhases = (
-				2A66052D265FEE2700FC3837 /* Sources */,
-				2A66052E265FEE2700FC3837 /* Frameworks */,
-				2A66052F265FEE2700FC3837 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				2A660533265FEE2700FC3837 /* PBXTargetDependency */,
-			);
-			name = DerivedBehaviorUITests;
-			productName = DerivedBehaviorUITests;
-			productReference = 2A660531265FEE2700FC3837 /* DerivedBehaviorUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -207,10 +160,6 @@
 						CreatedOnToolsVersion = 12.5;
 					};
 					2A660525265FEE2700FC3837 = {
-						CreatedOnToolsVersion = 12.5;
-						TestTargetID = 2A660514265FEE2600FC3837;
-					};
-					2A660530265FEE2700FC3837 = {
 						CreatedOnToolsVersion = 12.5;
 						TestTargetID = 2A660514265FEE2600FC3837;
 					};
@@ -234,7 +183,6 @@
 			targets = (
 				2A660514265FEE2600FC3837 /* DerivedBehavior */,
 				2A660525265FEE2700FC3837 /* DerivedBehaviorTests */,
-				2A660530265FEE2700FC3837 /* DerivedBehaviorUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -250,13 +198,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2A660524265FEE2700FC3837 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2A66052F265FEE2700FC3837 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -284,14 +225,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2A66052D265FEE2700FC3837 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2A660536265FEE2700FC3837 /* DerivedBehaviorUITests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -299,11 +232,6 @@
 			isa = PBXTargetDependency;
 			target = 2A660514265FEE2600FC3837 /* DerivedBehavior */;
 			targetProxy = 2A660527265FEE2700FC3837 /* PBXContainerItemProxy */;
-		};
-		2A660533265FEE2700FC3837 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2A660514265FEE2600FC3837 /* DerivedBehavior */;
-			targetProxy = 2A660532265FEE2700FC3837 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -508,44 +436,6 @@
 			};
 			name = Release;
 		};
-		2A660541265FEE2700FC3837 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = DerivedBehaviorUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.DerivedBehaviorUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = DerivedBehavior;
-			};
-			name = Debug;
-		};
-		2A660542265FEE2700FC3837 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = DerivedBehaviorUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.DerivedBehaviorUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = DerivedBehavior;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -572,15 +462,6 @@
 			buildConfigurations = (
 				2A66053E265FEE2700FC3837 /* Debug */,
 				2A66053F265FEE2700FC3837 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		2A660540265FEE2700FC3837 /* Build configuration list for PBXNativeTarget "DerivedBehaviorUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				2A660541265FEE2700FC3837 /* Debug */,
-				2A660542265FEE2700FC3837 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
