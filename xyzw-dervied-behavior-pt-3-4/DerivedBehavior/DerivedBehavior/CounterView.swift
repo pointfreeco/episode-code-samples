@@ -84,7 +84,7 @@ struct CounterView: View {
   }
 }
 
-struct CounterRowState: Identifiable {
+struct CounterRowState: Equatable, Identifiable {
   var counter: CounterState
   let id: UUID
 }
@@ -114,11 +114,102 @@ struct CounterRowView: View {
         }
       }
     }
+    .buttonStyle(PlainButtonStyle())
   }
 }
 
+struct AppState: Equatable {
+  var counters: IdentifiedArrayOf<CounterRowState>
+}
+enum AppAction {
+  case addButtonTapped
+  case counterRow(id: UUID, action: CounterRowAction)
+}
+struct AppEnvironment {
+  var fact: FactClient
+  var mainQueue: AnySchedulerOf<DispatchQueue>
+  var uuid: () -> UUID
+}
+
+let appReducer: Reducer<AppState, AppAction, AppEnvironment> = .combine(
+
+  counterReducer
+    .pullback(
+      state: \CounterRowState.counter,
+      action: /CounterRowAction.counter,
+      environment: { $0 }
+    )
+    .forEach(
+      state: \AppState.counters,
+      action: /AppAction.counterRow(id:action:),
+      environment: {
+        CounterEnvironment(
+          fact: $0.fact,
+          mainQueue: $0.mainQueue
+        )
+      }
+    ),
+
+  .init { state, action, environment in
+    switch action {
+    case .addButtonTapped:
+      state.counters.append(
+        .init(counter: .init(), id: environment.uuid())
+      )
+      return .none
+
+    case let .counterRow(id: id, action: .removeButtonTapped):
+      state.counters.remove(id: id)
+      return .none
+
+    case .counterRow:
+      return .none
+    }
+  }
+)
+
+struct AppView: View {
+  let store: Store<AppState, AppAction>
+
+  var body: some View {
+    WithViewStore(self.store) { viewStore in
+      List {
+//        ForEach(viewStore.counters) { counter in
+        ForEachStore(
+          self.store.scope(
+            state: \.counters,
+            action: AppAction.counterRow(id:action:)
+          ),
+          content: CounterRowView.init(store:)
+        )
+      }
+      .navigationTitle("Counters")
+      .navigationBarItems(
+        trailing: Button("Add") {
+          viewStore.send(.addButtonTapped, animation: .default)
+        }
+      )
+    }
+  }
+}
+
+
 struct CounterView_Previews: PreviewProvider {
   static var previews: some View {
+    NavigationView {
+      AppView(
+        store: .init(
+          initialState: .init(counters: []),
+          reducer: appReducer,
+          environment: AppEnvironment(
+            fact: .live,
+            mainQueue: .main,
+            uuid: UUID.init
+          )
+        )
+      )
+    }
+
     CounterView(
       store: .init(
         initialState: .init(),

@@ -4,7 +4,11 @@ import SwiftUI
 struct DerivedBehaviorApp: App {
   var body: some Scene {
     WindowGroup {
-      CounterView_Previews.previews
+      NavigationView {
+      AppView(
+        store: .init(initialState: AppState.init(counters: []), reducer: appReducer, environment: AppEnvironment(fact: .live, mainQueue: .main, uuid: UUID.init))
+      )
+      }
     }
   }
 }
