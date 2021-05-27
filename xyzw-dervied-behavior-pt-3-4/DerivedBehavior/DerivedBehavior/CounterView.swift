@@ -84,6 +84,39 @@ struct CounterView: View {
   }
 }
 
+struct CounterRowState: Identifiable {
+  var counter: CounterState
+  let id: UUID
+}
+
+enum CounterRowAction {
+  case counter(CounterAction)
+  case removeButtonTapped
+}
+
+struct CounterRowView: View {
+  let store: Store<CounterRowState, CounterRowAction>
+  
+  var body: some View {
+    HStack {
+      CounterView(
+        store: self.store.scope(
+          state: \.counter,
+          action: CounterRowAction.counter
+        )
+      )
+      
+      Spacer()
+      
+      WithViewStore(self.store.stateless) { viewStore in
+        Button("Remove") {
+          viewStore.send(.removeButtonTapped, animation: .default)
+        }
+      }
+    }
+  }
+}
+
 struct CounterView_Previews: PreviewProvider {
   static var previews: some View {
     CounterView(
