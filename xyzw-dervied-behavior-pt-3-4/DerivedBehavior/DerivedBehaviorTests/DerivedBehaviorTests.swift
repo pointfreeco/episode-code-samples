@@ -1,33 +1,38 @@
-//
-//  DerivedBehaviorTests.swift
-//  DerivedBehaviorTests
-//
-//  Created by Point-Free on 5/27/21.
-//
-
+import ComposableArchitecture
 import XCTest
 @testable import DerivedBehavior
 
 class DerivedBehaviorTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+  func testBasics() {
+    let id = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+    let store = TestStore(
+      initialState: AppState(counters: []),
+      reducer: appReducer,
+      environment: AppEnvironment(
+        fact: FactClient(fetch: {
+          .init(value: "\($0) is a good number.")
+        }),
+        mainQueue: .immediate,
+        uuid: { id }
+      )
+    )
+    store.send(.addButtonTapped) {
+      $0.counters = [
+        .init(counter: .init(), id: id)
+      ]
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    store.send(.counterRow(id: id, action: .counter(.incrementButtonTapped))) {
+      $0.counters[id: id]?.counter.count = 1
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    store.send(.counterRow(id: id, action: .counter(.factButtonTapped)))
+    store.receive(.counterRow(id: id, action: .counter(.factResponse(.success("1 is a good number."))))) {
+      $0.counters[id: id]?.counter.alert = .init(message: "1 is a good number.", title: "Fact")
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    store.send(.counterRow(id: id, action: .counter(.dismissAlert))) {
+      $0.counters[id: id]?.counter.alert = nil
     }
-
+    store.send(.counterRow(id: id, action: .removeButtonTapped)) {
+      $0.counters = []
+    }
+  }
 }

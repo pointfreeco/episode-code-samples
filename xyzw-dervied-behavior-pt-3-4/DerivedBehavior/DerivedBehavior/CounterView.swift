@@ -89,7 +89,7 @@ struct CounterRowState: Equatable, Identifiable {
   let id: UUID
 }
 
-enum CounterRowAction {
+enum CounterRowAction: Equatable {
   case counter(CounterAction)
   case removeButtonTapped
 }
@@ -121,7 +121,7 @@ struct CounterRowView: View {
 struct AppState: Equatable {
   var counters: IdentifiedArrayOf<CounterRowState>
 }
-enum AppAction {
+enum AppAction: Equatable {
   case addButtonTapped
   case counterRow(id: UUID, action: CounterRowAction)
 }
