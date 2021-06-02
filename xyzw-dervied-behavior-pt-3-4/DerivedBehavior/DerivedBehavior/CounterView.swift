@@ -245,8 +245,23 @@ struct AppView: View {
             viewStore.send(.addButtonTapped, animation: .default)
           }
         )
+        
+        IfLetStore(
+          self.store.scope(
+            state: \.factPrompt,
+            action: AppAction.factPrompt
+          ),
+          then: FactPrompt.init(store:)
+        )
 
-//        FactPrompt()
+//        if let factPrompt = viewStore.factPrompt {
+//          FactPrompt(
+//            store: self.store.scope(
+//              state: { $0.factPrompt ?? factPrompt },
+//              action: AppAction.factPrompt
+//            )
+//          )
+//        }
       }
     }
   }

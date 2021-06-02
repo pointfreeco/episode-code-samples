@@ -26,10 +26,14 @@ class DerivedBehaviorTests: XCTestCase {
     }
     store.send(.counterRow(id: id, action: .counter(.factButtonTapped)))
     store.receive(.counterRow(id: id, action: .counter(.factResponse(.success("1 is a good number."))))) {
-      $0.counters[id: id]?.counter.alert = .init(message: "1 is a good number.", title: "Fact")
+//      $0.counters[id: id]?.counter.alert = .init(message: "1 is a good number.", title: "Fact")
+      $0.factPrompt = .init(count: 1, fact: "1 is a good number.")
     }
-    store.send(.counterRow(id: id, action: .counter(.dismissAlert))) {
-      $0.counters[id: id]?.counter.alert = nil
+//    store.send(.counterRow(id: id, action: .counter(.dismissAlert))) {
+//      $0.counters[id: id]?.counter.alert = nil
+//    }
+    store.send(.factPrompt(.dismissButtonTapped)) {
+      $0.factPrompt = nil
     }
     store.send(.counterRow(id: id, action: .removeButtonTapped)) {
       $0.counters = []
