@@ -108,6 +108,88 @@ struct VanillaCounterRowView: View {
   }
 }
 
+
+class FactPromptViewModel: ObservableObject {
+  let count: Int
+  @Published var fact: String
+  @Published var isLoading = false
+
+  let factClient: FactClient
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+
+  private var cancellables: Set<AnyCancellable> = []
+
+  init(
+    count: Int,
+    fact: String,
+    factClient: FactClient,
+    mainQueue: AnySchedulerOf<DispatchQueue>
+  ) {
+    self.count = count
+    self.fact = fact
+    self.factClient = factClient
+    self.mainQueue = mainQueue
+  }
+
+  func dismissButtonTapped() {
+
+  }
+  func getAnotherFactButtonTapped() {
+    self.isLoading = true
+
+    self.factClient.fetch(self.count)
+      .receive(on: self.mainQueue.animation())
+      .sink(
+        receiveCompletion: { [weak self] _ in
+          self?.isLoading = false
+        },
+        receiveValue: { [weak self] fact in
+          self?.fact = fact
+        }
+      )
+      .store(in: &self.cancellables)
+  }
+}
+
+struct VanillaFactPrompt: View {
+  @ObservedObject var viewModel: FactPromptViewModel
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 16) {
+      VStack(alignment: .leading, spacing: 12) {
+        HStack {
+          Image(systemName: "info.circle.fill")
+          Text("Fact")
+        }
+        .font(.title3.bold())
+
+        if self.viewModel.isLoading {
+          ProgressView()
+        } else {
+          Text(self.viewModel.fact)
+        }
+      }
+
+      HStack(spacing: 12) {
+        Button("Get another fact") {
+          self.viewModel.getAnotherFactButtonTapped()
+        }
+
+        Button("Dismiss") {
+          self.viewModel.dismissButtonTapped()
+        }
+      }
+    }
+    .padding()
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(Color.white)
+    .cornerRadius(8)
+    .shadow(color: .black.opacity(0.1), radius: 20)
+    .padding()
+  }
+}
+
+
 struct Vanilla_Previews: PreviewProvider {
   static var previews: some View {
     VanillaCounterView(
