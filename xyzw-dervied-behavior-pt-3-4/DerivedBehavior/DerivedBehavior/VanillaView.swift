@@ -106,7 +106,6 @@ struct VanillaCounterRowView: View {
       Button("Remove") {
         withAnimation {
           self.onRemoveTapped()
-          //self.viewModel.removeButtonTapped()
         }
       }
     }
@@ -204,6 +203,8 @@ class AppViewModel: ObservableObject {
   let fact: FactClient
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let uuid: () -> UUID
+
+  private var cancellables: Set<AnyCancellable> = []
   
   init(
     fact: FactClient,
@@ -214,27 +215,37 @@ class AppViewModel: ObservableObject {
     self.mainQueue = mainQueue
     self.uuid = uuid
   }
+
+  var sum: Int {
+    self.counters.reduce(0) { $0 + $1.counter.count }
+  }
   
   func addButtonTapped() {
+    let counterViewModel = CounterViewModel(
+      fact: self.fact,
+      mainQueue: self.mainQueue,
+      onFact: { [weak self] count, fact in
+        guard let self = self else { return }
+
+        self.factPrompt = .init(
+          count: count,
+          fact: fact,
+          factClient: self.fact,
+          mainQueue: self.mainQueue
+        )
+      }
+    )
+
     self.counters.append(
       .init(
-        counter: CounterViewModel(
-          fact: self.fact,
-          mainQueue: self.mainQueue,
-          onFact: { [weak self] count, fact in
-            guard let self = self else { return }
-
-            self.factPrompt = .init(
-              count: count,
-              fact: fact,
-              factClient: self.fact,
-              mainQueue: self.mainQueue
-            )
-          }
-        ),
+        counter: counterViewModel,
         id: self.uuid()
       )
     )
+
+    counterViewModel.$count
+      .sink { [weak self] _ in self?.objectWillChange.send() }
+      .store(in: &self.cancellables)
   }
 
   func removeButtonTapped(id: UUID) {
@@ -252,6 +263,8 @@ struct VanillaAppView: View {
   var body: some View {
     ZStack(alignment: .bottom) {
       List {
+        Text("Sum: \(self.viewModel.sum)")
+
         ForEach(self.viewModel.counters) { counterRow in
           VanillaCounterRowView(
             viewModel: counterRow,
@@ -285,13 +298,6 @@ struct VanillaAppView: View {
 
 struct Vanilla_Previews: PreviewProvider {
   static var previews: some View {
-//    VanillaCounterView(
-//      viewModel: .init(
-//        fact: .live,
-//        mainQueue: .main
-//      )
-//    )
-    
     NavigationView {
       VanillaAppView(
         viewModel: .init(

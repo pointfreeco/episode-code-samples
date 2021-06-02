@@ -51,7 +51,6 @@ let counterReducer = Reducer<CounterState, CounterAction, CounterEnvironment> {
       .map(CounterAction.factResponse)
 
   case let .factResponse(.success(fact)):
-//    state.alert = .init(message: fact, title: "Fact")
     return .none
 
   case .factResponse(.failure):
@@ -133,6 +132,10 @@ extension Reducer {
 struct AppState: Equatable {
   var counters: IdentifiedArrayOf<CounterRowState>
   var factPrompt: FactPromptState?
+
+  var sum: Int {
+    self.counters.reduce(0) { $0 + $1.counter.count }
+  }
 }
 enum AppAction: Equatable {
   case addButtonTapped
@@ -204,26 +207,9 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = .combine(
 
     case .factPrompt:
       return .none
-//      guard var factPrompt = state.factPrompt
-//      else { return .none }
-//
-//      let effects = factPromptReducer.run(
-//        &factPrompt,
-//        factPromptAction,
-//        FactPromptEnvironment(
-//          fact: environment.fact,
-//          mainQueue: environment.mainQueue
-//        )
-//      )
-//      .map(AppAction.factPrompt)
-//
-//      state.factPrompt = factPrompt
-//
-//      return effects
     }
   }
 )
-
 
 struct AppView: View {
   let store: Store<AppState, AppAction>
@@ -232,6 +218,8 @@ struct AppView: View {
     WithViewStore(self.store) { viewStore in
       ZStack(alignment: .bottom) {
         List {
+          Text("Sum: \(viewStore.sum)")
+
           ForEachStore(
             self.store.scope(
               state: \.counters,
@@ -254,15 +242,6 @@ struct AppView: View {
           ),
           then: FactPrompt.init(store:)
         )
-
-//        if let factPrompt = viewStore.factPrompt {
-//          FactPrompt(
-//            store: self.store.scope(
-//              state: { $0.factPrompt ?? factPrompt },
-//              action: AppAction.factPrompt
-//            )
-//          )
-//        }
       }
     }
   }
@@ -360,16 +339,5 @@ struct CounterView_Previews: PreviewProvider {
         )
       )
     }
-
-    CounterView(
-      store: .init(
-        initialState: .init(),
-        reducer: counterReducer,
-        environment: .init(
-          fact: .live,
-          mainQueue: .main
-        )
-      )
-    )
   }
 }
