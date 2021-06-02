@@ -51,7 +51,7 @@ let counterReducer = Reducer<CounterState, CounterAction, CounterEnvironment> {
       .map(CounterAction.factResponse)
 
   case let .factResponse(.success(fact)):
-    state.alert = .init(message: fact, title: "Fact")
+//    state.alert = .init(message: fact, title: "Fact")
     return .none
 
   case .factResponse(.failure):
@@ -120,10 +120,12 @@ struct CounterRowView: View {
 
 struct AppState: Equatable {
   var counters: IdentifiedArrayOf<CounterRowState>
+  var factPrompt: FactPromptState?
 }
 enum AppAction: Equatable {
   case addButtonTapped
   case counterRow(id: UUID, action: CounterRowAction)
+  case factPrompt(FactPromptAction)
 }
 struct AppEnvironment {
   var fact: FactClient
@@ -150,6 +152,19 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = .combine(
       }
     ),
 
+  factPromptReducer
+    .optional()
+    .pullback(
+      state: \AppState.factPrompt,
+      action: /AppAction.factPrompt,
+      environment: {
+        .init(
+          fact: $0.fact,
+          mainQueue: $0.mainQueue
+        )
+      }
+    ),
+
   .init { state, action, environment in
     switch action {
     case .addButtonTapped:
@@ -162,37 +177,157 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = .combine(
       state.counters.remove(id: id)
       return .none
 
+    case let .counterRow(id: id, action: .counter(.factResponse(.success(fact)))):
+      guard let count = state.counters[id: id]?.counter.count
+      else { return .none }
+      state.factPrompt = .init(count: count, fact: fact)
+      return .none
+
     case .counterRow:
       return .none
+
+    case .factPrompt(.dismissButtonTapped):
+      state.factPrompt = nil
+      return .none
+
+    case .factPrompt:
+      return .none
+//      guard var factPrompt = state.factPrompt
+//      else { return .none }
+//
+//      let effects = factPromptReducer.run(
+//        &factPrompt,
+//        factPromptAction,
+//        FactPromptEnvironment(
+//          fact: environment.fact,
+//          mainQueue: environment.mainQueue
+//        )
+//      )
+//      .map(AppAction.factPrompt)
+//
+//      state.factPrompt = factPrompt
+//
+//      return effects
     }
   }
 )
+
+
+extension Reducer {
+  func optional() -> Reducer<State?, Action, Environment> {
+    .init { state, action, environment in
+      guard var wrappedState = state
+      else { return .none }
+      defer { state = wrappedState }
+      return self.run(&wrappedState, action, environment)
+    }
+  }
+}
 
 struct AppView: View {
   let store: Store<AppState, AppAction>
 
   var body: some View {
     WithViewStore(self.store) { viewStore in
-      List {
-//        ForEach(viewStore.counters) { counter in
-        ForEachStore(
-          self.store.scope(
-            state: \.counters,
-            action: AppAction.counterRow(id:action:)
-          ),
-          content: CounterRowView.init(store:)
-        )
-      }
-      .navigationTitle("Counters")
-      .navigationBarItems(
-        trailing: Button("Add") {
-          viewStore.send(.addButtonTapped, animation: .default)
+      ZStack(alignment: .bottom) {
+        List {
+          ForEachStore(
+            self.store.scope(
+              state: \.counters,
+              action: AppAction.counterRow(id:action:)
+            ),
+            content: CounterRowView.init(store:)
+          )
         }
-      )
+        .navigationTitle("Counters")
+        .navigationBarItems(
+          trailing: Button("Add") {
+            viewStore.send(.addButtonTapped, animation: .default)
+          }
+        )
+
+//        FactPrompt()
+      }
     }
   }
 }
 
+struct FactPromptState: Equatable {
+  let count: Int
+  var fact: String
+  var isLoading = false
+}
+enum FactPromptAction: Equatable {
+  case dismissButtonTapped
+  case getAnotherFactButtonTapped
+  case factResponse(Result<String, FactClient.Error>)
+}
+struct FactPromptEnvironment {
+  var fact: FactClient
+  var mainQueue: AnySchedulerOf<DispatchQueue>
+}
+
+let factPromptReducer = Reducer<FactPromptState, FactPromptAction, FactPromptEnvironment> { state, action, environment in
+  switch action {
+  case .dismissButtonTapped:
+    return .none
+
+  case .getAnotherFactButtonTapped:
+    return environment.fact.fetch(state.count)
+      .receive(on: environment.mainQueue)
+      .catchToEffect()
+      .map(FactPromptAction.factResponse)
+
+  case let .factResponse(.success(fact)):
+    state.isLoading = false
+    state.fact = fact
+    return .none
+
+  case .factResponse(.failure):
+    state.isLoading = false
+    return .none
+  }
+}
+
+struct FactPrompt: View {
+  let store: Store<FactPromptState, FactPromptAction>
+
+  var body: some View {
+    WithViewStore(self.store) { viewStore in
+      VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 12) {
+          HStack {
+            Image(systemName: "info.circle.fill")
+            Text("Fact")
+          }
+          .font(.title3.bold())
+
+          if viewStore.isLoading {
+            ProgressView()
+          } else {
+            Text(viewStore.fact)
+          }
+        }
+
+        HStack(spacing: 12) {
+          Button("Get another fact") {
+            viewStore.send(.getAnotherFactButtonTapped)
+          }
+
+          Button("Dismiss") {
+            viewStore.send(.dismissButtonTapped)
+          }
+        }
+      }
+      .padding()
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .background(Color.white)
+      .cornerRadius(8)
+      .shadow(color: .black.opacity(0.1), radius: 20)
+      .padding()
+    }
+  }
+}
 
 struct CounterView_Previews: PreviewProvider {
   static var previews: some View {
