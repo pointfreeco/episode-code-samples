@@ -118,6 +118,18 @@ struct CounterRowView: View {
   }
 }
 
+
+extension Reducer {
+  func optional() -> Reducer<State?, Action, Environment> {
+    .init { state, action, environment in
+      guard var wrappedState = state
+      else { return .none }
+      defer { state = wrappedState }
+      return self.run(&wrappedState, action, environment)
+    }
+  }
+}
+
 struct AppState: Equatable {
   var counters: IdentifiedArrayOf<CounterRowState>
   var factPrompt: FactPromptState?
@@ -212,17 +224,6 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = .combine(
   }
 )
 
-
-extension Reducer {
-  func optional() -> Reducer<State?, Action, Environment> {
-    .init { state, action, environment in
-      guard var wrappedState = state
-      else { return .none }
-      defer { state = wrappedState }
-      return self.run(&wrappedState, action, environment)
-    }
-  }
-}
 
 struct AppView: View {
   let store: Store<AppState, AppAction>

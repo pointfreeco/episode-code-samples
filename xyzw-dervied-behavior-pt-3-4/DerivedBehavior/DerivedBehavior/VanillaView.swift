@@ -189,14 +189,81 @@ struct VanillaFactPrompt: View {
   }
 }
 
+class AppViewModel: ObservableObject {
+  @Published var counters: [CounterRowViewModel] = []
+  @Published var factPrompt: FactPromptViewModel?
+  
+  let fact: FactClient
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  let uuid: () -> UUID
+  
+  init(
+    fact: FactClient,
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    uuid: @escaping () -> UUID
+  ) {
+    self.fact = fact
+    self.mainQueue = mainQueue
+    self.uuid = uuid
+  }
+  
+  func addButtonTapped() {
+    self.counters.append(
+      .init(
+        counter: CounterViewModel(
+          fact: self.fact,
+          mainQueue: self.mainQueue
+        ),
+        id: self.uuid()
+      )
+    )
+  }
+}
+
+struct VanillaAppView: View {
+  @ObservedObject var viewModel: AppViewModel
+  
+  var body: some View {
+    ZStack(alignment: .bottom) {
+      List {
+        ForEach(self.viewModel.counters) { counterRow in
+          VanillaCounterRowView(viewModel: counterRow)
+        }
+      }
+      .navigationTitle("Counters")
+      .navigationBarItems(
+        trailing: Button("Add") {
+          withAnimation {
+            self.viewModel.addButtonTapped()
+          }
+        }
+      )
+      
+      if let factPrompt = self.viewModel.factPrompt {
+        VanillaFactPrompt(viewModel: factPrompt)
+      }
+    }
+  }
+}
+
 
 struct Vanilla_Previews: PreviewProvider {
   static var previews: some View {
-    VanillaCounterView(
-      viewModel: .init(
-        fact: .live,
-        mainQueue: .main
+//    VanillaCounterView(
+//      viewModel: .init(
+//        fact: .live,
+//        mainQueue: .main
+//      )
+//    )
+    
+    NavigationView {
+      VanillaAppView(
+        viewModel: .init(
+          fact: .live,
+          mainQueue: .main,
+          uuid: UUID.init
+        )
       )
-    )
+    }
   }
 }
