@@ -5,6 +5,7 @@ import SwiftUI
 class CounterViewModel: ObservableObject {
   @Published var alert: Alert?
   @Published var count = 0
+  let onFact: (Int, String) -> Void
 
   let fact: FactClient
   let mainQueue: AnySchedulerOf<DispatchQueue>
@@ -13,10 +14,12 @@ class CounterViewModel: ObservableObject {
 
   init(
     fact: FactClient,
-    mainQueue: AnySchedulerOf<DispatchQueue>
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    onFact: @escaping (Int, String) -> Void
   ) {
     self.fact = fact
     self.mainQueue = mainQueue
+    self.onFact = onFact
   }
 
   struct Alert: Equatable, Identifiable {
@@ -43,8 +46,9 @@ class CounterViewModel: ObservableObject {
             self?.alert = .init(message: "Couldn't load fact", title: "Error")
           }
         },
-        receiveValue: { fact in
-          // ???
+        receiveValue: { [weak self] fact in
+          guard let self = self else { return }
+          self.onFact(self.count, fact)
         }
       )
       .store(in: &self.cancellables)
@@ -89,6 +93,7 @@ class CounterRowViewModel: ObservableObject, Identifiable {
 
 struct VanillaCounterRowView: View {
   let viewModel: CounterRowViewModel
+  let onRemoveTapped: () -> Void
   
   var body: some View {
     HStack {
@@ -100,7 +105,8 @@ struct VanillaCounterRowView: View {
       
       Button("Remove") {
         withAnimation {
-          self.viewModel.removeButtonTapped()
+          self.onRemoveTapped()
+          //self.viewModel.removeButtonTapped()
         }
       }
     }
@@ -153,6 +159,7 @@ class FactPromptViewModel: ObservableObject {
 
 struct VanillaFactPrompt: View {
   @ObservedObject var viewModel: FactPromptViewModel
+  let onDismissTapped: () -> Void
 
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
@@ -176,7 +183,8 @@ struct VanillaFactPrompt: View {
         }
 
         Button("Dismiss") {
-          self.viewModel.dismissButtonTapped()
+          self.onDismissTapped()
+          //self.viewModel.dismissButtonTapped()
         }
       }
     }
@@ -212,11 +220,29 @@ class AppViewModel: ObservableObject {
       .init(
         counter: CounterViewModel(
           fact: self.fact,
-          mainQueue: self.mainQueue
+          mainQueue: self.mainQueue,
+          onFact: { [weak self] count, fact in
+            guard let self = self else { return }
+
+            self.factPrompt = .init(
+              count: count,
+              fact: fact,
+              factClient: self.fact,
+              mainQueue: self.mainQueue
+            )
+          }
         ),
         id: self.uuid()
       )
     )
+  }
+
+  func removeButtonTapped(id: UUID) {
+    self.counters.removeAll(where: { $0.id == id })
+  }
+
+  func dismissFactPrompt() {
+    self.factPrompt = nil
   }
 }
 
@@ -227,7 +253,12 @@ struct VanillaAppView: View {
     ZStack(alignment: .bottom) {
       List {
         ForEach(self.viewModel.counters) { counterRow in
-          VanillaCounterRowView(viewModel: counterRow)
+          VanillaCounterRowView(
+            viewModel: counterRow,
+            onRemoveTapped: {
+              self.viewModel.removeButtonTapped(id: counterRow.id)
+            }
+          )
         }
       }
       .navigationTitle("Counters")
@@ -240,7 +271,12 @@ struct VanillaAppView: View {
       )
       
       if let factPrompt = self.viewModel.factPrompt {
-        VanillaFactPrompt(viewModel: factPrompt)
+        VanillaFactPrompt(
+          viewModel: factPrompt,
+          onDismissTapped: {
+            self.viewModel.dismissFactPrompt()
+          }
+        )
       }
     }
   }
