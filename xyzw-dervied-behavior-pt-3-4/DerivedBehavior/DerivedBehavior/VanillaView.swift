@@ -73,6 +73,41 @@ struct VanillaCounterView: View {
   }
 }
 
+class CounterRowViewModel: ObservableObject, Identifiable {
+  @Published var counter: CounterViewModel
+  let id: UUID
+  
+  init(counter: CounterViewModel, id: UUID) {
+    self.counter = counter
+    self.id = id
+  }
+  
+  func removeButtonTapped() {
+    
+  }
+}
+
+struct VanillaCounterRowView: View {
+  let viewModel: CounterRowViewModel
+  
+  var body: some View {
+    HStack {
+      VanillaCounterView(
+        viewModel: self.viewModel.counter
+      )
+      
+      Spacer()
+      
+      Button("Remove") {
+        withAnimation {
+          self.viewModel.removeButtonTapped()
+        }
+      }
+    }
+    .buttonStyle(PlainButtonStyle())
+  }
+}
+
 struct Vanilla_Previews: PreviewProvider {
   static var previews: some View {
     VanillaCounterView(
