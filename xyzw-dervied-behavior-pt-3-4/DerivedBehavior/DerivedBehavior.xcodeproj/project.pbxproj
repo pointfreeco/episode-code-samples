@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A27EE31266806FF00CEB5B0 /* VanillaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A27EE30266806FF00CEB5B0 /* VanillaView.swift */; };
 		2A660519265FEE2600FC3837 /* DerivedBehaviorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A660518265FEE2600FC3837 /* DerivedBehaviorApp.swift */; };
 		2A66051B265FEE2600FC3837 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66051A265FEE2600FC3837 /* CounterView.swift */; };
 		2A66051D265FEE2600FC3837 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A66051C265FEE2600FC3837 /* Assets.xcassets */; };
@@ -27,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2A27EE30266806FF00CEB5B0 /* VanillaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VanillaView.swift; sourceTree = "<group>"; };
 		2A660515265FEE2600FC3837 /* DerivedBehavior.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DerivedBehavior.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A660518265FEE2600FC3837 /* DerivedBehaviorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivedBehaviorApp.swift; sourceTree = "<group>"; };
 		2A66051A265FEE2600FC3837 /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 			children = (
 				2A660518265FEE2600FC3837 /* DerivedBehaviorApp.swift */,
 				2A66051A265FEE2600FC3837 /* CounterView.swift */,
+				2A27EE30266806FF00CEB5B0 /* VanillaView.swift */,
 				2A660546265FEEEC00FC3837 /* FactClient.swift */,
 				2A66051C265FEE2600FC3837 /* Assets.xcassets */,
 				2A660521265FEE2600FC3837 /* Info.plist */,
@@ -213,6 +216,7 @@
 			files = (
 				2A66051B265FEE2600FC3837 /* CounterView.swift in Sources */,
 				2A660547265FEEEC00FC3837 /* FactClient.swift in Sources */,
+				2A27EE31266806FF00CEB5B0 /* VanillaView.swift in Sources */,
 				2A660519265FEE2600FC3837 /* DerivedBehaviorApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
