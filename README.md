@@ -151,3 +151,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Derived Behavior: Composable-Architecture](0147-derived-behavior-pt2)
 1. [Derived Behavior: Collections](0148-derived-behavior-pt3)
 1. [Derived Behavior: Optionals and Enums](0149-derived-behavior-pt4)
+1. [Derived Behavior: The Point](0150-derived-behavior-pt5)

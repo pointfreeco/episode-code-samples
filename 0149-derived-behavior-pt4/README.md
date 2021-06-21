@@ -1,6 +1,6 @@
 ## [Point-Free](https://www.pointfree.co)
 
-> #### This directory contains code from Point-Free Episode: [Derived Behavior: Collections](https://www.pointfree.co/episodes/ep149-derived-behavior-optionals-and-enums)
+> #### This directory contains code from Point-Free Episode: [Derived Behavior: Optionals and Enums](https://www.pointfree.co/episodes/ep149-derived-behavior-optionals-and-enums)
 >
 > We will explore two more domain transformations in the Composable Architecture. One comes with the library: the ability to embed a smaller domain, optionally, in a larger domain. Another we will build from scratch: the ability to embed smaller domains in the cases of an enum!
 
