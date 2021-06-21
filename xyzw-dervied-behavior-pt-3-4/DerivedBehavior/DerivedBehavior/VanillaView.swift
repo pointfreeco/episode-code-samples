@@ -87,7 +87,7 @@ class CounterRowViewModel: ObservableObject, Identifiable {
   }
   
   func removeButtonTapped() {
-    
+    // TODO: track analytics
   }
 }
 
@@ -106,6 +106,7 @@ struct VanillaCounterRowView: View {
       Button("Remove") {
         withAnimation {
           self.onRemoveTapped()
+          self.viewModel.removeButtonTapped()
         }
       }
     }

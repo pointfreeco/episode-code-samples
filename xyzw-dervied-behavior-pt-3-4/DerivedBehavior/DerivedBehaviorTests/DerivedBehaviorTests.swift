@@ -26,17 +26,47 @@ class DerivedBehaviorTests: XCTestCase {
     }
     store.send(.counterRow(id: id, action: .counter(.factButtonTapped)))
     store.receive(.counterRow(id: id, action: .counter(.factResponse(.success("1 is a good number."))))) {
-//      $0.counters[id: id]?.counter.alert = .init(message: "1 is a good number.", title: "Fact")
       $0.factPrompt = .init(count: 1, fact: "1 is a good number.")
     }
-//    store.send(.counterRow(id: id, action: .counter(.dismissAlert))) {
-//      $0.counters[id: id]?.counter.alert = nil
-//    }
     store.send(.factPrompt(.dismissButtonTapped)) {
       $0.factPrompt = nil
     }
     store.send(.counterRow(id: id, action: .removeButtonTapped)) {
       $0.counters = []
     }
+  }
+  
+  func testViewModel() {
+    let id = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+    let viewModel = AppViewModel(
+      fact: FactClient(fetch: {
+        .init(value: "\($0) is a good number.")
+      }),
+      mainQueue: .immediate,
+      uuid: { id }
+    )
+    
+    viewModel.addButtonTapped()
+    XCTAssertEqual(
+      viewModel.counters.count,
+      1
+    )
+    XCTAssertEqual(viewModel.counters[0].counter.count, 0)
+    
+    viewModel.counters[0].counter.incrementButtonTapped()
+    XCTAssertEqual(viewModel.counters[0].counter.count, 1)
+    
+    viewModel.counters[0].counter.factButtonTapped()
+    XCTAssertNotNil(viewModel.factPrompt)
+    XCTAssertEqual(viewModel.factPrompt?.count, 1)
+    XCTAssertEqual(viewModel.factPrompt?.fact, "1 is a good number.")
+    
+    viewModel.dismissFactPrompt()
+    XCTAssertNil(viewModel.factPrompt)
+    
+    viewModel.counters[0].removeButtonTapped()
+    // TODO: assert analytics tracked
+    viewModel.removeButtonTapped(id: id)
+    XCTAssertEqual(viewModel.counters.count, 0)
   }
 }
