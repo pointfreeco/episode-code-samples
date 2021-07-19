@@ -20,7 +20,7 @@ struct BindingAction<Root>: Equatable {
   static func set<Value>(
     _ keyPath: WritableKeyPath<Root, Value>,
     _ value: Value
-  ) -> Self where Value: Hashable {
+  ) -> Self where Value: Equatable {
     .init(keyPath, value)
   }
 
