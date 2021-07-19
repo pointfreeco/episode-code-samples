@@ -153,3 +153,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Derived Behavior: Optionals and Enums](0149-derived-behavior-pt4)
 1. [Derived Behavior: The Point](0150-derived-behavior-pt5)
 1. [Composable Architecture Performance: View Stores and Scoping](0151-tca-performance)
+1. [Composable Architecture Performance: Case Paths](0152-case-paths-performance)
+1. [Async Refreshable: SwiftUI](0153-refreshable-pt1)
