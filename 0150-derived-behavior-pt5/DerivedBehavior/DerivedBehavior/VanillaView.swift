@@ -80,21 +80,29 @@ struct VanillaCounterView: View {
 class CounterRowViewModel: ObservableObject, Identifiable {
   @Published var counter: CounterViewModel
   let id: UUID
+  let onRemove: () -> Void
   
-  init(counter: CounterViewModel, id: UUID) {
+  init(
+    counter: CounterViewModel,
+    id: UUID,
+    onRemove: @escaping () -> Void
+  ) {
     self.counter = counter
     self.id = id
+    self.onRemove = onRemove
   }
   
   func removeButtonTapped() {
     // TODO: track analytics
+    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+      self.onRemove()
+    }
   }
 }
 
 struct VanillaCounterRowView: View {
   let viewModel: CounterRowViewModel
-  let onRemoveTapped: () -> Void
-  
+
   var body: some View {
     HStack {
       VanillaCounterView(
@@ -105,7 +113,6 @@ struct VanillaCounterRowView: View {
       
       Button("Remove") {
         withAnimation {
-          self.onRemoveTapped()
           self.viewModel.removeButtonTapped()
         }
       }
@@ -197,6 +204,11 @@ struct VanillaFactPrompt: View {
   }
 }
 
+struct IdentifiedArray<Element: Identifiable> {
+  var ids: [Element.ID]
+  var lookup: [Element.ID: Element]
+}
+
 class AppViewModel: ObservableObject {
   @Published var counters: [CounterRowViewModel] = []
   @Published var factPrompt: FactPromptViewModel?
@@ -237,20 +249,34 @@ class AppViewModel: ObservableObject {
       }
     )
 
+    let id = self.uuid()
+//    let index = self.counters.endIndex
     self.counters.append(
       .init(
         counter: counterViewModel,
-        id: self.uuid()
+        id: id,
+        onRemove: { [weak self] in
+
+      // - quick lookup / in-place mutation
+      // - handles invariants for duplicate identities
+      // - simpler than ordered set (requires hashable elements)
+
+//          self?.counters.removeAll(where: { $0.id == id })
+      guard let self = self else { return }
+      for (index, counter) in zip(self.counters.indices, self.counters) {
+        if counter.id == id {
+          self.counters.remove(at: index)
+          return
+        }
+      }
+//      self?.counters.remove(at: index)
+        }
       )
     )
 
     counterViewModel.$count
       .sink { [weak self] _ in self?.objectWillChange.send() }
       .store(in: &self.cancellables)
-  }
-
-  func removeButtonTapped(id: UUID) {
-    self.counters.removeAll(where: { $0.id == id })
   }
 
   func dismissFactPrompt() {
@@ -268,10 +294,7 @@ struct VanillaAppView: View {
 
         ForEach(self.viewModel.counters) { counterRow in
           VanillaCounterRowView(
-            viewModel: counterRow,
-            onRemoveTapped: {
-              self.viewModel.removeButtonTapped(id: counterRow.id)
-            }
+            viewModel: counterRow
           )
         }
       }
