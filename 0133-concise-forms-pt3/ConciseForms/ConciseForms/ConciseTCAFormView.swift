@@ -1,51 +1,123 @@
 import ComposableArchitecture
 import SwiftUI
+import UserNotifications
 
-enum ConciseSettingsAction: Equatable {
-  case authorizationResponse(Result<Bool, NSError>)
-//  case digestChanged(Digest)
-//  case dismissAlert
-//  case displayNameChanged(String)
-  case notificationSettingsResponse(UserNotificationsClient.Settings)
-//  case protectMyPostsChanged(Bool)
-  case resetButtonTapped
-//  case sendNotificationsChanged(Bool)
-  
-//  case form((inout SettingsState) -> Void)
-  case form(FormAction<SettingsState>)
+struct UserNotificationsClient {
+  var getNotificationSettings: () -> Effect<Settings, Never>
+  var registerForRemoteNotifications: () -> Effect<Never, Never>
+  var requestAuthorization: (UNAuthorizationOptions) -> Effect<Bool, Error>
 
-//  ConciseSettingsAction.form(\.displayName, 1)
+  struct Settings: Equatable {
+    var authorizationStatus: UNAuthorizationStatus
+  }
 }
 
-struct FormAction<Root>: Equatable {
+extension UserNotificationsClient.Settings {
+  init(rawValue: UNNotificationSettings) {
+    self.authorizationStatus = rawValue.authorizationStatus
+  }
+}
+
+extension UserNotificationsClient {
+  static let live = Self(
+    getNotificationSettings: {
+      .future { callback in
+        UNUserNotificationCenter.current()
+          .getNotificationSettings { settings in
+            callback(.success(.init(rawValue: settings)))
+          }
+      }
+    },
+    registerForRemoteNotifications: {
+      .fireAndForget {
+        UIApplication.shared
+          .registerForRemoteNotifications()
+      }
+    },
+    requestAuthorization: { options in
+      .future { callback in
+        UNUserNotificationCenter.current()
+          .requestAuthorization(options: options) { granted, error in
+            if let error = error {
+              callback(.failure(error))
+            } else {
+              callback(.success(granted))
+            }
+          }
+      }
+    }
+  )
+}
+
+@propertyWrapper
+struct BindableState<Value> {
+  var wrappedValue: Value
+
+  var projectedValue: Self {
+    get { self }
+    set { self = newValue }
+  }
+}
+
+protocol BindableAction {
+  associatedtype State
+
+  static func binding(_ action: BindingAction<State>) -> Self
+}
+
+extension BindableState: Equatable where Value: Equatable {}
+
+struct SettingsState: Equatable {
+  @BindableState var alert: AlertState? = nil
+  @BindableState var digest = Digest.daily
+  @BindableState var displayName = ""
+  @BindableState var protectMyPosts = false
+  @BindableState var sendNotifications = false
+  @BindableState var sendMobileNotifications = false
+  @BindableState var sendEmailNotifications = false
+}
+
+enum ConciseSettingsAction: Equatable, BindableAction {
+  case authorizationResponse(Result<Bool, NSError>)
+  case notificationSettingsResponse(UserNotificationsClient.Settings)
+  case resetButtonTapped
+  case binding(BindingAction<SettingsState>)
+}
+
+struct BindingAction<Root>: Equatable {
   let keyPath: PartialKeyPath<Root>
   let value: AnyHashable
   let setter: (inout Root) -> Void
 
   init<Value>(
-    _ keyPath: WritableKeyPath<Root, Value>,
+    _ keyPath: WritableKeyPath<Root, BindableState<Value>>,
     _ value: Value
   ) where Value: Hashable {
     self.keyPath = keyPath
     self.value = AnyHashable(value)
-    self.setter = { $0[keyPath: keyPath] = value }
+    self.setter = { $0[keyPath: keyPath].wrappedValue = value }
   }
 
   static func set<Value>(
-    _ keyPath: WritableKeyPath<Root, Value>,
+    _ keyPath: WritableKeyPath<Root, BindableState<Value>>,
     _ value: Value
   ) -> Self where Value: Hashable {
     .init(keyPath, value)
   }
 
-  static func == (lhs: FormAction<Root>, rhs: FormAction<Root>) -> Bool {
+  static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.keyPath == rhs.keyPath && lhs.value == rhs.value
   }
 }
 
+struct SettingsEnvironment {
+  var mainQueue: AnySchedulerOf<DispatchQueue>
+  var userNotifications: UserNotificationsClient
+}
+
 let conciseSettingsReducer =
   Reducer<SettingsState, ConciseSettingsAction, SettingsEnvironment> { state, action, environment in
-    
+
     switch action {
     case .authorizationResponse(.failure):
       state.sendNotifications = false
@@ -62,11 +134,11 @@ let conciseSettingsReducer =
 //    case let .digestChanged(digest):
 //      state.digest = digest
 //      return .none
-      
+
 //    case .dismissAlert:
 //      state.alert = nil
 //      return .none
-      
+
 //    case let .displayNameChanged(displayName):
 //      state.displayName = String(displayName.prefix(16))
 //      return .none
@@ -90,39 +162,16 @@ let conciseSettingsReducer =
       @unknown default:
         return .none
       }
-      
-//    case let .protectMyPostsChanged(protectMyPosts):
-//      state.protectMyPosts = protectMyPosts
-//      return .none
-      
+
     case .resetButtonTapped:
       state = .init()
       return .none
-      
-//    case let .sendNotificationsChanged(sendNotifications):
-////      state.sendNotifications = sendNotifications
-//      guard sendNotifications
-//      else {
-//        state.sendNotifications = sendNotifications
-//        return .none
-//      }
-//
-//      return environment.userNotifications
-//        .getNotificationSettings()
-//        .receive(on: environment.mainQueue)
-//        .map(ConciseSettingsAction.notificationSettingsResponse)
-//        .eraseToEffect()
-      
-//    case let .form(update):
-//      update(&state)
-//      return .none
 
-
-    case .form(\.displayName):
+    case .binding(\.displayName):
       state.displayName = String(state.displayName.prefix(16))
       return .none
 
-    case .form(\.sendNotifications):
+    case .binding(\.sendNotifications):
       guard state.sendNotifications
       else {
         return .none
@@ -136,17 +185,17 @@ let conciseSettingsReducer =
         .map(ConciseSettingsAction.notificationSettingsResponse)
         .eraseToEffect()
 
-    case .form:
+    case .binding:
       return .none
     }
 }
-  .form(action: /ConciseSettingsAction.form)
+  .binding(action: /ConciseSettingsAction.binding)
 
 func ~= <Root, Value> (
   keyPath: WritableKeyPath<Root, Value>,
-  formAction: FormAction<Root>
+  action: BindingAction<Root>
 ) -> Bool {
-  formAction.keyPath == keyPath
+  action.keyPath == keyPath
 }
 //
 //func foo() {
@@ -161,16 +210,16 @@ func ~= <Root, Value> (
 //}
 
 extension Reducer {
-  func form(
-    action formAction: CasePath<Action, FormAction<State>>
+  func binding(
+    action toBindingAction: CasePath<Action, BindingAction<State>>
   ) -> Self {
     Self { state, action, environment in
-      guard let formAction = formAction.extract(from: action)
+      guard let bindingAction = toBindingAction.extract(from: action)
       else {
         return self.run(&state, action, environment)
       }
 
-      formAction.setter(&state)
+      bindingAction.setter(&state)
       return self.run(&state, action, environment)
     }
   }
@@ -178,108 +227,33 @@ extension Reducer {
 
 struct ConciseTCAFormView: View {
   let store: Store<SettingsState, ConciseSettingsAction>
-  
+
   var body: some View {
     WithViewStore(self.store) { viewStore in
       Form {
         Section(header: Text("Profile")) {
-          TextField(
-            "Display name",
-            text: viewStore.binding(
-              keyPath: \.displayName,
-              send: ConciseSettingsAction.form
-            )
-
-//              Binding(
-//              get: { viewStore.displayName },
-//              set: {
-////                viewStore.send(.form { $0.displayName = displayName })
-//                viewStore.send(.form(.init(\.displayName, $0)))
-//              }
-//            )
-//            text: viewStore.binding(
-//              get: \.displayName,
-//              send: ConciseSettingsAction.displayNameChanged
-//            )
-          )
-          Toggle(
-            "Protect my posts",
-            isOn: viewStore.binding(
-              keyPath: \.protectMyPosts,
-              send: ConciseSettingsAction.form
-            )
-
-//            viewStore.binding(
-//              get: \.protectMyPosts,
-//              send: ConciseSettingsAction.protectMyPostsChanged
-//            )
-          )
+          TextField("Display name", text: viewStore.$displayName)
+          Toggle("Protect my posts", isOn: viewStore.$protectMyPosts)
         }
         Section(header: Text("Communication")) {
-          Toggle(
-            "Send notifications",
-            isOn: viewStore.binding(
-              keyPath: \.sendNotifications,
-              send: ConciseSettingsAction.form
-            )
-
-//              viewStore.binding(
-//              get: \.sendNotifications,
-//              send: ConciseSettingsAction.sendNotificationsChanged
-//            )
-          )
+          Toggle("Send notifications", isOn: viewStore.$sendNotifications)
 
           if viewStore.sendNotifications {
-            Toggle(
-              "Mobile",
-              isOn: viewStore.binding(
-                keyPath: \.sendMobileNotifications,
-                send: ConciseSettingsAction.form
-              )
-            )
-
-            Toggle(
-              "Email",
-              isOn: viewStore.binding(
-                keyPath: \.sendEmailNotifications,
-                send: ConciseSettingsAction.form
-              )
-            )
-
-            Picker(
-              "Top posts digest",
-              selection: viewStore.binding(
-                keyPath: \.digest,
-                send: ConciseSettingsAction.form
-              )
-
-//                viewStore.binding(
-//                get: \.digest,
-//                send: ConciseSettingsAction.digestChanged
-//              )
-            ) {
+            Toggle("Mobile", isOn: viewStore.$sendMobileNotifications)
+            Toggle("Email", isOn: viewStore.$sendEmailNotifications)
+            Picker("Top posts digest", selection: viewStore.$digest) {
               ForEach(Digest.allCases, id: \.self) { digest in
                 Text(digest.rawValue)
               }
             }
           }
         }
-        
+
         Button("Reset") {
           viewStore.send(.resetButtonTapped)
         }
       }
-      .alert(
-        item: viewStore.binding(
-          keyPath: \.alert,
-          send: ConciseSettingsAction.form
-        )
-
-//          viewStore.binding(
-//          get: \.alert,
-//          send: ConciseSettingsAction.dismissAlert
-//        )
-      ) { alert in
+      .alert(item: viewStore.$alert) { alert in
         Alert(title: Text(alert.title))
       }
       .navigationTitle("Settings")
@@ -289,12 +263,22 @@ struct ConciseTCAFormView: View {
 
 extension ViewStore {
   func binding<Value>(
-    keyPath: WritableKeyPath<State, Value>,
-    send action: @escaping (FormAction<State>) -> Action
+    keyPath: WritableKeyPath<State, BindableState<Value>>,
+    send action: @escaping (BindingAction<State>) -> Action
   ) -> Binding<Value> where Value: Hashable {
     self.binding(
-      get: { $0[keyPath: keyPath] },
+      get: { $0[keyPath: keyPath].wrappedValue },
       send: { action(.init(keyPath, $0)) }
+    )
+  }
+
+  subscript<Value>(
+    dynamicMember keyPath: WritableKeyPath<State, BindableState<Value>>
+  ) -> Binding<Value>
+  where Action: BindableAction, Action.State == State, Value: Hashable {
+    self.binding(
+      get: { $0[keyPath: keyPath].wrappedValue },
+      send: { Action.binding(.init(keyPath, $0)) }
     )
   }
 }

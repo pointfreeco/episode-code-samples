@@ -19,6 +19,8 @@ class SettingsViewModel: ObservableObject {
   }
   @Published var protectMyPosts = false
   @Published var sendNotifications = false
+  @Published var sendMobileNotifications = false
+  @Published var sendEmailNotifications = false
 
   func attemptToggleSendNotifications(isOn: Bool) {
     guard isOn else {
@@ -80,14 +82,12 @@ struct VanillaSwiftUIFormView: View {
               self.viewModel.attemptToggleSendNotifications(isOn: isOn)
             }
           )
-            //self.$viewModel.sendNotifications
         )
 
         if self.viewModel.sendNotifications {
-          Picker(
-            "Top posts digest",
-            selection: self.$viewModel.digest
-          ) {
+          Toggle("Mobile", isOn: self.$viewModel.sendMobileNotifications)
+          Toggle("Email", isOn: self.$viewModel.sendEmailNotifications)
+          Picker("Top posts digest", selection: self.$viewModel.digest) {
             ForEach(Digest.allCases, id: \.self) { digest in
               Text(digest.rawValue)
             }

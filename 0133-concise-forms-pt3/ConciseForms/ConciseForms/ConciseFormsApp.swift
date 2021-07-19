@@ -19,16 +19,16 @@ struct ConciseFormsApp: App {
 //          )
 //        )
         
-        ConciseTCAFormView(
-          store: Store(
-            initialState: SettingsState(),
-            reducer: conciseSettingsReducer,
-            environment: SettingsEnvironment(
-              mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
-              userNotifications: .live
-            )
-          )
-        )
+//        ConciseTCAFormView(
+//          store: Store(
+//            initialState: SettingsState(),
+//            reducer: conciseSettingsReducer,
+//            environment: SettingsEnvironment(
+//              mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+//              userNotifications: .live
+//            )
+//          )
+//        )
       }
     }
   }
