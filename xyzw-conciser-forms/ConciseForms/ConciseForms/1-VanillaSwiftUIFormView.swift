@@ -34,7 +34,9 @@ class SettingsViewModel: ObservableObject {
         }
 
         DispatchQueue.main.async {
-          self.sendNotifications = true
+          withAnimation {
+            self.sendNotifications = true
+          }
         }
 
         UNUserNotificationCenter.current()
@@ -42,10 +44,14 @@ class SettingsViewModel: ObservableObject {
 
             if !granted || error != nil {
               DispatchQueue.main.async {
-                self.sendNotifications = false
+                withAnimation {
+                  self.sendNotifications = false
+                }
               }
             } else {
-              UIApplication.shared.registerForRemoteNotifications()
+              DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+              }
             }
           }
       }

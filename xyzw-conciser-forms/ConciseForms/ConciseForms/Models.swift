@@ -1,4 +1,4 @@
-struct AlertState: Equatable, Hashable, Identifiable {
+struct AlertState: Equatable, Identifiable {
   var title: String
   var id: String { self.title }
 }
