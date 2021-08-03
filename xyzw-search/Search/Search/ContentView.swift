@@ -2,7 +2,6 @@ import ComposableArchitecture
 import MapKit
 import SwiftUI
 
-
 struct CoordinateRegion: Equatable {
   var center = LocationCoordinate2D()
   var span = CoordinateSpan()

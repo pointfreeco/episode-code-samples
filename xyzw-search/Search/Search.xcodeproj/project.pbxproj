@@ -12,6 +12,7 @@
 		2A7640E726B987070003C3F4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A7640E626B987070003C3F4 /* Assets.xcassets */; };
 		2A7640EA26B987070003C3F4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A7640E926B987070003C3F4 /* Preview Assets.xcassets */; };
 		2A7640F426B987070003C3F4 /* SearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7640F326B987070003C3F4 /* SearchTests.swift */; };
+		2A926AE226B9970300BAA496 /* LocalSearchCompleter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A926AE126B9970300BAA496 /* LocalSearchCompleter.swift */; };
 		4B83F2D926B98F0A0045BB86 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 4B83F2D826B98F0A0045BB86 /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +34,8 @@
 		2A7640E926B987070003C3F4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2A7640EF26B987070003C3F4 /* SearchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SearchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A7640F326B987070003C3F4 /* SearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTests.swift; sourceTree = "<group>"; };
+		2A76410A26B994970003C3F4 /* Search.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Search.playground; path = ../../Search.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		2A926AE126B9970300BAA496 /* LocalSearchCompleter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSearchCompleter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,10 +78,12 @@
 		2A7640E126B987060003C3F4 /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				2A76410A26B994970003C3F4 /* Search.playground */,
 				2A7640E226B987060003C3F4 /* SearchApp.swift */,
 				2A7640E426B987060003C3F4 /* ContentView.swift */,
 				2A7640E626B987070003C3F4 /* Assets.xcassets */,
 				2A7640E826B987070003C3F4 /* Preview Content */,
+				2A926AE126B9970300BAA496 /* LocalSearchCompleter.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -206,6 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2A7640E526B987060003C3F4 /* ContentView.swift in Sources */,
+				2A926AE226B9970300BAA496 /* LocalSearchCompleter.swift in Sources */,
 				2A7640E326B987060003C3F4 /* SearchApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
