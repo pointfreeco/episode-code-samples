@@ -12,6 +12,7 @@
 		2A7640E726B987070003C3F4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A7640E626B987070003C3F4 /* Assets.xcassets */; };
 		2A7640EA26B987070003C3F4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A7640E926B987070003C3F4 /* Preview Assets.xcassets */; };
 		2A7640F426B987070003C3F4 /* SearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7640F326B987070003C3F4 /* SearchTests.swift */; };
+		4B83F2D926B98F0A0045BB86 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 4B83F2D826B98F0A0045BB86 /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B83F2D926B98F0A0045BB86 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +115,9 @@
 			dependencies = (
 			);
 			name = Search;
+			packageProductDependencies = (
+				4B83F2D826B98F0A0045BB86 /* ComposableArchitecture */,
+			);
 			productName = Search;
 			productReference = 2A7640DF26B987060003C3F4 /* Search.app */;
 			productType = "com.apple.product-type.application";
@@ -163,6 +168,9 @@
 				Base,
 			);
 			mainGroup = 2A7640D626B987060003C3F4;
+			packageReferences = (
+				4B83F2D726B98F0A0045BB86 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			productRefGroup = 2A7640E026B987060003C3F4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -401,7 +409,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -425,7 +432,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -472,6 +478,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4B83F2D726B98F0A0045BB86 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.23.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4B83F2D826B98F0A0045BB86 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B83F2D726B98F0A0045BB86 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2A7640D726B987060003C3F4 /* Project object */;
 }
