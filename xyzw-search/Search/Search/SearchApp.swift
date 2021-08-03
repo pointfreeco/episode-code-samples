@@ -10,7 +10,9 @@ struct SearchApp: App {
           store: .init(
             initialState: .init(),
             reducer: appReducer.debugActions(),
-            environment: .init()
+            environment: .init(
+              localSearchCompleter: .live
+            )
           )
         )
       }

@@ -52,6 +52,7 @@ extension CoordinateSpan {
 
 
 struct AppState: Equatable {
+  var completions: [MKLocalSearchCompletion] = []
   var query = ""
   var region = CoordinateRegion(
     center: .init(latitude: 40.7, longitude: -74),
@@ -60,11 +61,14 @@ struct AppState: Equatable {
 }
 
 enum AppAction {
+  case completionsUpdated(Result<[MKLocalSearchCompletion], Error>)
+  case onAppear
   case queryChanged(String)
   case regionChanged(CoordinateRegion)
 }
 
 struct AppEnvironment {
+  var localSearchCompleter: LocalSearchCompleter
 }
 
 let appReducer = Reducer<
@@ -73,14 +77,31 @@ let appReducer = Reducer<
   AppEnvironment
 > { state, action, environment in
   switch action {
+  case let .completionsUpdated(.success(completions)):
+    state.completions = completions
+    return .none
+    
+  case let .completionsUpdated(.failure(error)):
+    // TODO: error handling
+    return .none
+  
+  case .onAppear:
+    return environment.localSearchCompleter.completions()
+      .map(AppAction.completionsUpdated)
+    
   case let .queryChanged(query):
     state.query = query
-    return .none
+    return environment.localSearchCompleter.search(query)
+      .fireAndForget()
 
   case let .regionChanged(region):
     state.region = region
     return .none
   }
+}
+
+extension MKLocalSearchCompletion {
+  var id: [String] { [self.title, self.subtitle] }
 }
 
 struct ContentView: View {
@@ -108,13 +129,85 @@ struct ContentView: View {
           //        prompt: <#T##LocalizedStringKey#>,
           //        suggestions: <#T##() -> View#>
         ) {
-          Text("Apple Store")
-          Text("Cafe")
-          Text("Library")
+          if viewStore.query.isEmpty {
+            HStack {
+              Text("Recent Searches")
+              Spacer()
+              Button(action: {}) {
+                Text("See all")
+              }
+            }
+            .font(.callout)
+
+            HStack {
+              Image(systemName: "magnifyingglass")
+              Text("Apple • New York")
+              Spacer()
+            }
+            HStack {
+              Image(systemName: "magnifyingglass")
+              Text("Apple • New York")
+              Spacer()
+            }
+            HStack {
+              Image(systemName: "magnifyingglass")
+              Text("Apple • New York")
+              Spacer()
+            }
+
+            HStack {
+              Text("Find nearby")
+              Spacer()
+              Button(action: {}) {
+                Text("See all")
+              }
+            }
+            .padding(.top)
+            .font(.callout)
+
+            ScrollView(.horizontal) {
+              HStack {
+                ForEach(1...2, id: \.self) { _ in
+                  VStack {
+                    ForEach(1...2, id: \.self) { _ in
+                      HStack {
+                        Image(systemName: "bag.circle.fill")
+                          .foregroundStyle(Color.white, Color.red)
+                          .font(.title)
+                        Text("Shopping")
+                      }
+                      .padding([.top, .bottom, .trailing],  4)
+                    }
+                  }
+                }
+              }
+            }
+
+            HStack {
+              Text("Editors’ picks")
+              Spacer()
+              Button(action: {}) {
+                Text("See all")
+              }
+            }
+            .padding(.top)
+            .font(.callout)
+          } else {
+            ForEach(viewStore.completions, id: \.id) { completion in
+              VStack(alignment: .leading) {
+                Text(completion.title)
+                Text(completion.subtitle)
+                  .font(.caption)
+              }
+            }
+          }
         }
         .navigationTitle("Places")
         .navigationBarTitleDisplayMode(.inline)
         .ignoresSafeArea(edges: .bottom)
+        .onAppear {
+          viewStore.send(.onAppear)
+        }
     }
   }
 }
@@ -126,7 +219,9 @@ struct ContentView_Previews: PreviewProvider {
         store: .init(
           initialState: .init(),
           reducer: appReducer,
-          environment: .init()
+          environment: .init(
+            localSearchCompleter: .live
+          )
         )
       )
     }
