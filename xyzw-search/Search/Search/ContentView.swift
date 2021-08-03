@@ -53,6 +53,7 @@ extension CoordinateSpan {
 
 struct AppState: Equatable {
   var completions: [MKLocalSearchCompletion] = []
+  var mapItems: [MKMapItem] = []
   var query = ""
   var region = CoordinateRegion(
     center: .init(latitude: 40.7, longitude: -74),
@@ -65,10 +66,14 @@ enum AppAction {
   case onAppear
   case queryChanged(String)
   case regionChanged(CoordinateRegion)
+  case searchResponse(Result<MKLocalSearch.Response, Error>)
+  case tappedCompletion(MKLocalSearchCompletion)
 }
 
 struct AppEnvironment {
+  var localSearch: LocalSearchClient
   var localSearchCompleter: LocalSearchCompleter
+  var mainQueue: AnySchedulerOf<DispatchQueue>
 }
 
 let appReducer = Reducer<
@@ -97,12 +102,29 @@ let appReducer = Reducer<
   case let .regionChanged(region):
     state.region = region
     return .none
+
+  case let .searchResponse(.success(response)):
+    state.region = .init(rawValue: response.boundingRegion)
+    state.mapItems = response.mapItems
+    return .none
+    
+  case let .searchResponse(.failure(error)):
+    // TODO: error handling
+    return .none
+    
+  case let .tappedCompletion(completion):
+    return environment.localSearch.search(completion)
+      .receive(on: environment.mainQueue.animation())
+      .catchToEffect()
+      .map(AppAction.searchResponse)
   }
 }
 
 extension MKLocalSearchCompletion {
   var id: [String] { [self.title, self.subtitle] }
 }
+
+extension MKMapItem: Identifiable {}
 
 struct ContentView: View {
   let store: Store<AppState, AppAction>
@@ -113,12 +135,14 @@ struct ContentView: View {
         coordinateRegion: viewStore.binding(
           get: \.region.rawValue,
           send: { .regionChanged(.init(rawValue: $0)) }
-        )
+        ),
         //      interactionModes: <#T##MapInteractionModes#>,
         //      showsUserLocation: <#T##Bool#>,
         //      userTrackingMode: <#T##Binding<MapUserTrackingMode>?#>,
-        //      annotationItems: <#T##RandomAccessCollection#>,
-        //      annotationContent: <#T##(Identifiable) -> MapAnnotationProtocol#>
+        annotationItems: viewStore.mapItems,
+        annotationContent: { mapItem in
+          MapMarker(coordinate: mapItem.placemark.coordinate)
+        }
       )
         .searchable(
           text: viewStore.binding(
@@ -194,10 +218,12 @@ struct ContentView: View {
             .font(.callout)
           } else {
             ForEach(viewStore.completions, id: \.id) { completion in
-              VStack(alignment: .leading) {
-                Text(completion.title)
-                Text(completion.subtitle)
-                  .font(.caption)
+              Button(action: { viewStore.send(.tappedCompletion(completion)) }) {
+                VStack(alignment: .leading) {
+                  Text(completion.title)
+                  Text(completion.subtitle)
+                    .font(.caption)
+                }
               }
             }
           }
@@ -220,7 +246,9 @@ struct ContentView_Previews: PreviewProvider {
           initialState: .init(),
           reducer: appReducer,
           environment: .init(
-            localSearchCompleter: .live
+            localSearch: .live,
+            localSearchCompleter: .live,
+            mainQueue: .main
           )
         )
       )

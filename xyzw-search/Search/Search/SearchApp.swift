@@ -11,7 +11,9 @@ struct SearchApp: App {
             initialState: .init(),
             reducer: appReducer.debugActions(),
             environment: .init(
-              localSearchCompleter: .live
+              localSearch: .live,
+              localSearchCompleter: .live,
+              mainQueue: .main
             )
           )
         )
