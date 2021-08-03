@@ -2,15 +2,30 @@ import ComposableArchitecture
 import MapKit
 
 struct LocalSearchClient {
-  var search: (MKLocalSearchCompletion) -> Effect<MKLocalSearch.Response, Error>
+  var search: (LocalSearchCompletion) -> Effect<Response, Error>
+
+  struct Response: Equatable {
+    var boundingRegion = CoordinateRegion()
+    var mapItems: [MKMapItem] = []
+  }
+}
+
+extension LocalSearchClient.Response {
+  init(rawValue: MKLocalSearch.Response) {
+    self.boundingRegion = .init(rawValue: rawValue.boundingRegion)
+    self.mapItems = rawValue.mapItems
+  }
 }
 
 extension LocalSearchClient {
   static let live = Self(
     search: { completion in
         .task {
-          try await MKLocalSearch(request: .init(completion: completion))
-            .start()
+          .init(
+            rawValue:
+              try await MKLocalSearch(request: .init(completion: completion.rawValue!))
+              .start()
+          )
         }
     }
   )

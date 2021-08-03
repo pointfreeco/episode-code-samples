@@ -52,7 +52,7 @@ extension CoordinateSpan {
 
 
 struct AppState: Equatable {
-  var completions: [MKLocalSearchCompletion] = []
+  var completions: [LocalSearchCompletion] = []
   var mapItems: [MKMapItem] = []
   var query = ""
   var region = CoordinateRegion(
@@ -61,13 +61,13 @@ struct AppState: Equatable {
   )
 }
 
-enum AppAction {
-  case completionsUpdated(Result<[MKLocalSearchCompletion], Error>)
+enum AppAction: Equatable {
+  case completionsUpdated(Result<[LocalSearchCompletion], NSError>)
   case onAppear
   case queryChanged(String)
   case regionChanged(CoordinateRegion)
-  case searchResponse(Result<MKLocalSearch.Response, Error>)
-  case tappedCompletion(MKLocalSearchCompletion)
+  case searchResponse(Result<LocalSearchClient.Response, NSError>)
+  case tappedCompletion(LocalSearchCompletion)
 }
 
 struct AppEnvironment {
@@ -92,6 +92,7 @@ let appReducer = Reducer<
   
   case .onAppear:
     return environment.localSearchCompleter.completions()
+      .map { $0.mapError { $0 as NSError } }
       .map(AppAction.completionsUpdated)
     
   case let .queryChanged(query):
@@ -104,7 +105,7 @@ let appReducer = Reducer<
     return .none
 
   case let .searchResponse(.success(response)):
-    state.region = .init(rawValue: response.boundingRegion)
+    state.region = response.boundingRegion
     state.mapItems = response.mapItems
     return .none
     
@@ -113,14 +114,16 @@ let appReducer = Reducer<
     return .none
     
   case let .tappedCompletion(completion):
+    state.query = completion.title
     return environment.localSearch.search(completion)
+      .mapError { $0 as NSError }
       .receive(on: environment.mainQueue.animation())
       .catchToEffect()
       .map(AppAction.searchResponse)
   }
 }
 
-extension MKLocalSearchCompletion {
+extension LocalSearchCompletion: Identifiable {
   var id: [String] { [self.title, self.subtitle] }
 }
 
@@ -217,7 +220,7 @@ struct ContentView: View {
             .padding(.top)
             .font(.callout)
           } else {
-            ForEach(viewStore.completions, id: \.id) { completion in
+            ForEach(viewStore.completions) { completion in
               Button(action: { viewStore.send(.tappedCompletion(completion)) }) {
                 VStack(alignment: .leading) {
                   Text(completion.title)
