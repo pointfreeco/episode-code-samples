@@ -44,7 +44,7 @@ extension Int {
 
 precedencegroup ForwardComposition {
   higherThan: ForwardApplication
-  associativity: right
+  associativity: left
 }
 infix operator >>>: ForwardComposition
 
