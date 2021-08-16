@@ -158,3 +158,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Async Refreshable: Composable Architecture](0154-refreshable-pt2)
 1. [SwiftUI Focus State](0155-focus-state)
 1. [SwiftUI Searchable: Part 1](0156-searchable-pt1)
+1. [SwiftUI Searchable: Part 2](0157-searchable-pt2)
