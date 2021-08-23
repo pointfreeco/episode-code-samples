@@ -45,6 +45,20 @@ extension Reducer {
   }
 }
 
+extension Reducer where Action: BindableAction, Action.State == State {
+  func binding() -> Self {
+    Self { state, action, environment in
+      guard let bindingAction = (/Action.binding).extract(from: action)
+      else {
+        return self.run(&state, action, environment)
+      }
+
+      bindingAction.setter(&state)
+      return self.run(&state, action, environment)
+    }
+  }
+}
+
 extension ViewStore {
   func binding<Value>(
     keyPath: WritableKeyPath<State, BindableState<Value>>,
@@ -55,6 +69,38 @@ extension ViewStore {
       send: { action(.set(keyPath, $0)) }
     )
   }
+
+  func binding<Value>(
+    keyPath: WritableKeyPath<State, BindableState<Value>>
+  ) -> Binding<Value>
+  where
+    Value: Equatable,
+    Action: BindableAction,
+    Action.State == State
+  {
+    self.binding(
+      get: { $0[keyPath: keyPath].wrappedValue },
+      send: { .binding(.set(keyPath, $0)) }
+    )
+  }
+}
+
+extension ViewStore {
+  subscript<Value>(
+    dynamicMember keyPath: WritableKeyPath<State, BindableState<Value>>
+  ) -> Binding<Value>
+  where Action: BindableAction, Action.State == State, Value: Equatable
+  {
+    self.binding(
+      get: { $0[keyPath: keyPath].wrappedValue },
+      send: { .binding(.set(keyPath, $0)) }
+    )
+  }
+}
+
+protocol BindableAction {
+  associatedtype State
+  static func binding(_: BindingAction<State>) -> Self
 }
 
 func ~= <Root, Value> (

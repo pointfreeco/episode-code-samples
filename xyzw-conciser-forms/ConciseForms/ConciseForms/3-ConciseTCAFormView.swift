@@ -29,7 +29,7 @@ struct SettingsState: Equatable {
   }
 }
 
-enum SettingsAction: Equatable {
+enum SettingsAction: BindableAction, Equatable {
   case authorizationResponse(Result<Bool, NSError>)
   case binding(BindingAction<SettingsState>)
   case notificationSettingsResponse(UserNotificationsClient.Settings)
@@ -104,7 +104,7 @@ let settingsReducer = Reducer<
     return .none
   }
 }
-.binding(action: /SettingsAction.binding)
+.binding()
 
 struct TCAFormView: View {
   let store: Store<SettingsState, SettingsAction>
@@ -113,54 +113,18 @@ struct TCAFormView: View {
     WithViewStore(self.store) { viewStore in
       Form {
         Section(header: Text("Profile")) {
-          TextField(
-            "Display name",
-            text: viewStore.binding(
-              keyPath: \.$displayName,
-              send: SettingsAction.binding
-            )
-          )
-          Toggle(
-            "Protect my posts",
-            isOn: viewStore.binding(
-              keyPath: \.$protectMyPosts,
-              send: SettingsAction.binding
-            )
-          )
+          TextField("Display name", text: viewStore.$displayName)
+          Toggle("Protect my posts", isOn: viewStore.$protectMyPosts)
         }
         Section(header: Text("Communication")) {
-          Toggle(
-            "Send notifications",
-            isOn: viewStore.binding(
-              keyPath: \.$sendNotifications,
-              send: SettingsAction.binding
-            )
-          )
+          Toggle("Send notifications", isOn: viewStore.$sendNotifications)
 
           if viewStore.sendNotifications {
-            Toggle(
-              "Mobile",
-              isOn: viewStore.binding(
-                keyPath: \.$sendMobileNotifications,
-                send: SettingsAction.binding
-              )
-            )
+            Toggle("Mobile", isOn: viewStore.$sendMobileNotifications)
 
-            Toggle(
-              "Email",
-              isOn: viewStore.binding(
-                keyPath: \.$sendEmailNotifications,
-                send: SettingsAction.binding
-              )
-            )
+            Toggle("Email", isOn: viewStore.$sendEmailNotifications)
 
-            Picker(
-              "Top posts digest",
-              selection: viewStore.binding(
-                keyPath: \.$digest,
-                send: SettingsAction.binding
-              )
-            ) {
+            Picker("Top posts digest", selection: viewStore.$digest) {
               ForEach(Digest.allCases, id: \.self) { digest in
                 Text(digest.rawValue)
               }
@@ -173,12 +137,7 @@ struct TCAFormView: View {
           viewStore.send(.resetButtonTapped)
         }
       }
-      .alert(
-        item: viewStore.binding(
-          keyPath: \.$alert,
-          send: SettingsAction.binding
-        )
-      ) { alert in
+      .alert(item: viewStore.$alert) { alert in
         Alert(title: Text(alert.title))
       }
       .navigationTitle("Settings")
