@@ -13,6 +13,7 @@
 		4B4919C425AE076500C48B44 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B4919C325AE076500C48B44 /* Preview Assets.xcassets */; };
 		4B4919CF25AE076600C48B44 /* ConciseFormsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4919CE25AE076600C48B44 /* ConciseFormsTests.swift */; };
 		4B4919FB25AE22F200C48B44 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 4B4919FA25AE22F200C48B44 /* ComposableArchitecture */; };
+		4BCF9D4A26D4351B0001D417 /* FocusState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCF9D4926D4351B0001D417 /* FocusState.swift */; };
 		4BDB4F7125BF2368000D2BFB /* 3-ConciseTCAFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDB4F7025BF2368000D2BFB /* 3-ConciseTCAFormView.swift */; };
 		CA08C2D426A71E7D00AEE8B0 /* 2-InconciseTCAFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA08C2D326A71E7D00AEE8B0 /* 2-InconciseTCAFormView.swift */; };
 		CA379EF326A75D7000F3C0A6 /* BindingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA379EF226A75D7000F3C0A6 /* BindingAction.swift */; };
@@ -40,6 +41,7 @@
 		4B4919CA25AE076600C48B44 /* ConciseFormsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConciseFormsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B4919CE25AE076600C48B44 /* ConciseFormsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConciseFormsTests.swift; sourceTree = "<group>"; };
 		4B4919D025AE076600C48B44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4BCF9D4926D4351B0001D417 /* FocusState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusState.swift; sourceTree = "<group>"; };
 		4BDB4F7025BF2368000D2BFB /* 3-ConciseTCAFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "3-ConciseTCAFormView.swift"; sourceTree = "<group>"; };
 		CA08C2D326A71E7D00AEE8B0 /* 2-InconciseTCAFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "2-InconciseTCAFormView.swift"; sourceTree = "<group>"; };
 		CA379EF226A75D7000F3C0A6 /* BindingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindingAction.swift; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 				4B4919BC25AE076500C48B44 /* ConciseFormsApp.swift */,
 				DC5E76AB26A6241B007C401A /* Models.swift */,
 				DC5E76A926A621D0007C401A /* UserNotificationsClient.swift */,
+				4BCF9D4926D4351B0001D417 /* FocusState.swift */,
 				4B4919C025AE076500C48B44 /* Assets.xcassets */,
 				4B4919C225AE076500C48B44 /* Preview Content */,
 			);
@@ -227,6 +230,7 @@
 				2AA1916B25AE0C3200EF6A11 /* 1-VanillaSwiftUIFormView.swift in Sources */,
 				4B4919BD25AE076500C48B44 /* ConciseFormsApp.swift in Sources */,
 				4BDB4F7125BF2368000D2BFB /* 3-ConciseTCAFormView.swift in Sources */,
+				4BCF9D4A26D4351B0001D417 /* FocusState.swift in Sources */,
 				CA08C2D426A71E7D00AEE8B0 /* 2-InconciseTCAFormView.swift in Sources */,
 				CA379EF326A75D7000F3C0A6 /* BindingAction.swift in Sources */,
 				DC5E76AC26A6241B007C401A /* Models.swift in Sources */,
@@ -377,7 +381,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ConciseForms/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = ConciseForms/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -398,7 +402,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ConciseForms/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = ConciseForms/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

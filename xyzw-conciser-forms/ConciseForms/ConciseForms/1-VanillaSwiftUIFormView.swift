@@ -2,6 +2,7 @@ import SwiftUI
 import UserNotifications
 
 class SettingsViewModel: ObservableObject {
+  var nonPublishedState = ""
   @Published var alert: AlertState?
   @Published var digest = Digest.off
   @Published var displayName = "" {
@@ -65,13 +66,25 @@ class SettingsViewModel: ObservableObject {
   }
 }
 
+
+struct MyView: View {
+  @State var array = [1, 2, 3]
+  var body: some View {
+    ForEach(self.$array, id: \.self) { $number in
+      let _ = $number as Binding<Int>
+      let _ = number as Int
+    }
+  }
+}
+
+
 struct VanillaSwiftUIFormView: View {
   @ObservedObject var viewModel: SettingsViewModel
   
   var body: some View {
     Form {
       Section(header: Text("Profile")) {
-        TextField("Display name", text: self.$viewModel.displayName)
+        TextField("Display name", text: self.$viewModel.nonPublishedState)
         Toggle("Protect my posts", isOn: self.$viewModel.protectMyPosts)
       }
       Section(header: Text("Communication")) {
