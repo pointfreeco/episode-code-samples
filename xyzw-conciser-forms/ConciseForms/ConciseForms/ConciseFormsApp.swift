@@ -6,8 +6,6 @@ struct ConciseFormsApp: App {
   var body: some Scene {
     WindowGroup {
       NavigationView {
-//        VanillaSwiftUIFormView(viewModel: .init())
-
         TCAFormView(
           store: Store(
             initialState: .init(),

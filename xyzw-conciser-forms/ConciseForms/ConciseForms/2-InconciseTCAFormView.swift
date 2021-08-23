@@ -99,7 +99,7 @@ let InconciseSettingsReducer =
         .eraseToEffect()
 
     case let .sendEmailNotificationsChanged(isOn):
-      state.sendEmailNotifications = true
+      state.sendEmailNotifications = isOn
       return .none
 
     case let .sendMobileNotificationsChanged(isOn):
