@@ -1,14 +1,32 @@
 import ComposableArchitecture
 import SwiftUI
 
+@propertyWrapper
+struct BindableState<Value> {
+  var wrappedValue: Value
+  
+  var projectedValue: Self {
+    get { self }
+    set { self = newValue }
+  }
+}
+
+extension BindableState: Equatable where Value: Equatable {}
+
 struct SettingsState: Equatable {
-  var alert: AlertState? = nil
-  var digest = Digest.daily
-  var displayName = ""
-  var protectMyPosts = false
-  var sendNotifications = false
-  var sendMobileNotifications = false
-  var sendEmailNotifications = false
+  @BindableState var alert: AlertState? = nil
+  @BindableState var digest = Digest.daily
+  @BindableState var displayName = ""
+  var isLoading = false
+  @BindableState var protectMyPosts = false
+  @BindableState var sendNotifications = false
+  @BindableState var sendMobileNotifications = false
+  @BindableState var sendEmailNotifications = false
+  
+  func f() {
+    self._displayName as BindableState<String>
+    self.$displayName as BindableState<String>
+  }
 }
 
 enum SettingsAction: Equatable {
@@ -98,14 +116,14 @@ struct TCAFormView: View {
           TextField(
             "Display name",
             text: viewStore.binding(
-              keyPath: \.displayName,
+              keyPath: \.$displayName,
               send: SettingsAction.binding
             )
           )
           Toggle(
             "Protect my posts",
             isOn: viewStore.binding(
-              keyPath: \.protectMyPosts,
+              keyPath: \.$protectMyPosts,
               send: SettingsAction.binding
             )
           )
@@ -114,7 +132,7 @@ struct TCAFormView: View {
           Toggle(
             "Send notifications",
             isOn: viewStore.binding(
-              keyPath: \.sendNotifications,
+              keyPath: \.$sendNotifications,
               send: SettingsAction.binding
             )
           )
@@ -123,7 +141,7 @@ struct TCAFormView: View {
             Toggle(
               "Mobile",
               isOn: viewStore.binding(
-                keyPath: \.sendMobileNotifications,
+                keyPath: \.$sendMobileNotifications,
                 send: SettingsAction.binding
               )
             )
@@ -131,7 +149,7 @@ struct TCAFormView: View {
             Toggle(
               "Email",
               isOn: viewStore.binding(
-                keyPath: \.sendEmailNotifications,
+                keyPath: \.$sendEmailNotifications,
                 send: SettingsAction.binding
               )
             )
@@ -139,7 +157,7 @@ struct TCAFormView: View {
             Picker(
               "Top posts digest",
               selection: viewStore.binding(
-                keyPath: \.digest,
+                keyPath: \.$digest,
                 send: SettingsAction.binding
               )
             ) {
@@ -151,12 +169,13 @@ struct TCAFormView: View {
         }
         
         Button("Reset") {
+//          viewStore.send(.binding(.set(\.$isLoading, true)))
           viewStore.send(.resetButtonTapped)
         }
       }
       .alert(
         item: viewStore.binding(
-          keyPath: \.alert,
+          keyPath: \.$alert,
           send: SettingsAction.binding
         )
       ) { alert in

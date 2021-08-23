@@ -18,10 +18,10 @@ struct BindingAction<Root>: Equatable {
   }
 
   static func set<Value>(
-    _ keyPath: WritableKeyPath<Root, Value>,
+    _ keyPath: WritableKeyPath<Root, BindableState<Value>>,
     _ value: Value
   ) -> Self where Value: Equatable {
-    .init(keyPath, value)
+    .init(keyPath.appending(path: \.wrappedValue), value)
   }
 
   static func == (lhs: Self, rhs: Self) -> Bool {
@@ -47,11 +47,11 @@ extension Reducer {
 
 extension ViewStore {
   func binding<Value>(
-    keyPath: WritableKeyPath<State, Value>,
+    keyPath: WritableKeyPath<State, BindableState<Value>>,
     send action: @escaping (BindingAction<State>) -> Action
   ) -> Binding<Value> where Value: Equatable {
     self.binding(
-      get: { $0[keyPath: keyPath] },
+      get: { $0[keyPath: keyPath].wrappedValue },
       send: { action(.set(keyPath, $0)) }
     )
   }
