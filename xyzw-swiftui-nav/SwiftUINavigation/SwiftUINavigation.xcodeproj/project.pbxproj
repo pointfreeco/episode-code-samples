@@ -14,6 +14,7 @@
 		2A3A7B9C26EF940D00A37A4D /* SwiftUINavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3A7B9B26EF940D00A37A4D /* SwiftUINavigationTests.swift */; };
 		2A3A7BB626EFA73100A37A4D /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 2A3A7BB526EFA73100A37A4D /* IdentifiedCollections */; };
 		4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F326EF9CB00032CB71 /* Inventory.swift */; };
+		4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +36,7 @@
 		2A3A7B9726EF940D00A37A4D /* SwiftUINavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftUINavigationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A3A7B9B26EF940D00A37A4D /* SwiftUINavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUINavigationTests.swift; sourceTree = "<group>"; };
 		4BDDD1F326EF9CB00032CB71 /* Inventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inventory.swift; sourceTree = "<group>"; };
+		4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIHelpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				2A3A7B8A26EF940C00A37A4D /* SwiftUINavigationApp.swift */,
 				2A3A7B8C26EF940C00A37A4D /* ContentView.swift */,
 				4BDDD1F326EF9CB00032CB71 /* Inventory.swift */,
+				4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */,
 				2A3A7B8E26EF940D00A37A4D /* Assets.xcassets */,
 				2A3A7B9026EF940D00A37A4D /* Preview Content */,
 			);
@@ -209,6 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */,
+				4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */,
 				2A3A7B8D26EF940C00A37A4D /* ContentView.swift in Sources */,
 				2A3A7B8B26EF940C00A37A4D /* SwiftUINavigationApp.swift in Sources */,
 			);

@@ -14,8 +14,8 @@ struct SwiftUINavigationApp: App {
               Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20)),
               Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true)),
               Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false)),
-            ],
-            itemToDelete: keyboard
+            ]//,
+//            itemToDelete: keyboard
           ),
           selectedTab: .inventory
         )
