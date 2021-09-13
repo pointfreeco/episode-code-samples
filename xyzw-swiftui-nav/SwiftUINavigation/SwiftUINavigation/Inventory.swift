@@ -1,3 +1,4 @@
+import IdentifiedCollections
 import SwiftUI
 
 struct Item: Equatable, Identifiable {
@@ -47,23 +48,33 @@ struct Item: Equatable, Identifiable {
 }
 
 class InventoryViewModel: ObservableObject {
-  @Published var inventory: [Item]
+  @Published var inventory: IdentifiedArrayOf<Item>
+  @Published var itemToDelete: Item?
 
-  init(inventory: [Item] = []) {
+  init(
+    inventory: IdentifiedArrayOf<Item> = [],
+    itemToDelete: Item? = nil
+  ) {
+    self.itemToDelete = itemToDelete
     self.inventory = inventory
   }
   
   func delete(item: Item) {
     withAnimation {
-      self.inventory.removeAll(where: { $0.id == item.id })
+      _ = self.inventory.remove(id: item.id)
+      //self.inventory.removeAll(where: { $0.id == item.id })
     }
+  }
+
+  func deleteButtonTapped(item: Item) {
+    self.itemToDelete = item
   }
 }
 
 struct InventoryView: View {
   @ObservedObject var viewModel: InventoryViewModel
-  @State var deleteItemAlertIsPresented = false
-  @State var itemToDelete: Item?
+//  @State var deleteItemAlertIsPresented = false
+//  @State var itemToDelete: Item?
   
   var body: some View {
     List {
@@ -89,12 +100,7 @@ struct InventoryView: View {
               .border(Color.black, width: 1)
           }
 
-          Button(
-            action: {
-              self.deleteItemAlertIsPresented = true
-              self.itemToDelete = item
-            }
-          ) {
+          Button(action: { self.viewModel.deleteButtonTapped(item: item) }) {
             Image(systemName: "trash.fill")
           }
           .padding(.leading)
@@ -103,14 +109,12 @@ struct InventoryView: View {
         .foregroundColor(item.status.isInStock ? nil : Color.gray)
       }
     }
-    .alert(isPresented: self.$deleteItemAlertIsPresented) {
+    .alert(item: self.$viewModel.itemToDelete) { item in
       Alert(
-        title: Text(self.itemToDelete?.name ?? "Delete"),
+        title: Text(item.name),
         message: Text("Are you sure you want to delete this item?"),
         primaryButton: .destructive(Text("Delete")) {
-          if let item = self.itemToDelete {
-            self.viewModel.delete(item: item)
-          }
+          self.viewModel.delete(item: item)
         },
         secondaryButton: .cancel()
       )
@@ -120,14 +124,17 @@ struct InventoryView: View {
 
 struct InventoryView_Previews: PreviewProvider {
   static var previews: some View {
+    let keyboard = Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+
     InventoryView(
       viewModel: .init(
         inventory: [
-          Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100)),
+          keyboard,
           Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20)),
           Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true)),
           Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false)),
-        ]
+        ],
+        itemToDelete: keyboard
       )
     )
   }

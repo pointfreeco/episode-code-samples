@@ -29,7 +29,7 @@ struct ContentView: View {
         .tag(Tab.one)
 
       InventoryView(viewModel: self.viewModel.inventoryViewModel)
-        .tabItem { Text("Two") }
+        .tabItem { Text("Inventory") }
         .tag(Tab.inventory)
 
       Text("Three")
