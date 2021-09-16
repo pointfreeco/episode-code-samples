@@ -6,8 +6,6 @@ struct Item: Equatable, Identifiable {
   var name: String
   var color: Color?
   var status: Status
-//  var quantity: Int
-//  var isOnBackOrder: Bool
 
   enum Status: Equatable {
     case inStock(quantity: Int)
@@ -62,7 +60,6 @@ class InventoryViewModel: ObservableObject {
   func delete(item: Item) {
     withAnimation {
       _ = self.inventory.remove(id: item.id)
-      //self.inventory.removeAll(where: { $0.id == item.id })
     }
   }
 
@@ -73,8 +70,7 @@ class InventoryViewModel: ObservableObject {
 
 struct InventoryView: View {
   @ObservedObject var viewModel: InventoryViewModel
-//  @State var deleteItemAlertIsPresented = false
-//  @State var itemToDelete: Item?
+  @State var addItemIsPresented = false
   
   var body: some View {
     List {
@@ -121,33 +117,38 @@ struct InventoryView: View {
         Text("Are you sure you want to delete this item?")
       }
     )
-//    .alert(item: self.$viewModel.itemToDelete) { item in
-//      Alert(
-//        title: Text(item.name),
-//        message: Text("Are you sure you want to delete this item?"),
-//        primaryButton: .destructive(Text("Delete")) {
-//          self.viewModel.delete(item: item)
-//        },
-//        secondaryButton: .cancel()
-//      )
-//    }
+    .toolbar {
+      ToolbarItem(placement: .primaryAction) {
+        Button("Add") {
+          self.addItemIsPresented = true
+        }
+      }
+    }
+    .navigationTitle("Inventory")
+    .sheet(isPresented: self.$addItemIsPresented) {
+      NavigationView {
+        ItemView()
+      }
+    }
   }
 }
 
 struct InventoryView_Previews: PreviewProvider {
   static var previews: some View {
     let keyboard = Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-
-    InventoryView(
-      viewModel: .init(
-        inventory: [
-          keyboard,
-          Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20)),
-          Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true)),
-          Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false)),
-        ],
-        itemToDelete: keyboard
+    
+    NavigationView {
+      InventoryView(
+        viewModel: .init(
+          inventory: [
+            keyboard,
+            Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20)),
+            Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true)),
+            Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false)),
+          ],
+          itemToDelete: nil
+        )
       )
-    )
+    }
   }
 }
