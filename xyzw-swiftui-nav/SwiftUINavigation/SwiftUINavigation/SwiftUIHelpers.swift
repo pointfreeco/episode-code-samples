@@ -151,4 +151,17 @@ extension View {
       }
     }
   }
+
+  func popover<Value, Content>(
+    unwrap optionalValue: Binding<Value?>,
+    @ViewBuilder content: @escaping (Binding<Value>) -> Content
+  ) -> some View where Value: Identifiable, Content: View {
+    self.popover(
+      item: optionalValue
+    ) { _ in
+      if let value = Binding(unwrap: optionalValue) {
+        content(value)
+      }
+    }
+  }
 }

@@ -12,6 +12,7 @@ class ItemRowViewModel: Identifiable, ObservableObject {
   }
 
   var onDelete: () -> Void = {}
+  var onDuplicate: (Item) -> Void = { _ in }
 
   var id: Item.ID { self.item.id }
 
@@ -43,6 +44,21 @@ class ItemRowViewModel: Identifiable, ObservableObject {
   func cancelButtonTapped() {
     self.route = nil
   }
+
+  func duplicateButtonTapped() {
+    self.route = .duplicate(self.item.duplicate())
+  }
+
+  func duplicate(item: Item) {
+    self.onDuplicate(item)
+    self.route = nil
+  }
+}
+
+extension Item {
+  func duplicate() -> Self {
+    .init(name: self.name, color: self.color, status: self.status)
+  }
 }
 
 struct ItemRowView: View {
@@ -69,6 +85,11 @@ struct ItemRowView: View {
           .foregroundColor(color.swiftUIColor)
           .border(Color.black, width: 1)
       }
+
+      Button(action: { self.viewModel.duplicateButtonTapped() }) {
+        Image(systemName: "square.fill.on.square.fill")
+      }
+      .padding(.leading)
 
       Button(action: { self.viewModel.editButtonTapped() }) {
         Image(systemName: "pencil")
@@ -111,6 +132,25 @@ struct ItemRowView: View {
             }
           }
       }
+    }
+    .popover(unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate)) { $item in
+      NavigationView {
+        ItemView(item: $item)
+          .navigationBarTitle("Duplicate")
+          .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+              Button("Cancel") {
+                self.viewModel.cancelButtonTapped()
+              }
+            }
+            ToolbarItem(placement: .primaryAction) {
+              Button("Add") {
+                self.viewModel.duplicate(item: item)
+              }
+            }
+          }
+      }
+      .frame(minWidth: 300, minHeight: 500)
     }
   }
 }

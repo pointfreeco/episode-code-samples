@@ -67,6 +67,11 @@ class InventoryViewModel: ObservableObject {
         self?.delete(item: item)
       }
     }
+    itemRowViewModel.onDuplicate = { [weak self] item in
+      withAnimation {
+        self?.add(item: item)
+      }
+    }
     self.inventory.append(itemRowViewModel)
   }
 
