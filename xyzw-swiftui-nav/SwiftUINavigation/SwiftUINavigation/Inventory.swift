@@ -47,13 +47,16 @@ struct Item: Equatable, Identifiable {
 
 class InventoryViewModel: ObservableObject {
   @Published var inventory: IdentifiedArrayOf<Item>
+  @Published var itemToAdd: Item?
   @Published var itemToDelete: Item?
 
   init(
     inventory: IdentifiedArrayOf<Item> = [],
+    itemToAdd: Item? = nil,
     itemToDelete: Item? = nil
   ) {
     self.itemToDelete = itemToDelete
+    self.itemToAdd = itemToAdd
     self.inventory = inventory
   }
   
@@ -66,11 +69,30 @@ class InventoryViewModel: ObservableObject {
   func deleteButtonTapped(item: Item) {
     self.itemToDelete = item
   }
+
+  func add(item: Item) {
+    withAnimation {
+      self.inventory.append(item)
+      self.itemToAdd = nil
+    }
+  }
+
+  func addButtonTapped() {
+    self.itemToAdd = .init(name: "", color: nil, status: .inStock(quantity: 1))
+
+    Task { @MainActor in
+      try await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
+      self.itemToAdd?.name = "Bluetooth Keyboard"
+    }
+  }
+
+  func cancelButtonTapped() {
+    self.itemToAdd = nil
+  }
 }
 
 struct InventoryView: View {
   @ObservedObject var viewModel: InventoryViewModel
-  @State var addItemIsPresented = false
   
   var body: some View {
     List {
@@ -119,15 +141,18 @@ struct InventoryView: View {
     )
     .toolbar {
       ToolbarItem(placement: .primaryAction) {
-        Button("Add") {
-          self.addItemIsPresented = true
-        }
+        Button("Add") { self.viewModel.addButtonTapped() }
       }
     }
     .navigationTitle("Inventory")
-    .sheet(isPresented: self.$addItemIsPresented) {
+//    .sheet(isPresented: self.$addItemIsPresented) {
+    .sheet(item: self.$viewModel.itemToAdd) { itemToAdd in
       NavigationView {
-        ItemView()
+        ItemView(
+          item: itemToAdd,
+          onSave: { self.viewModel.add(item: $0) },
+          onCancel: { self.viewModel.cancelButtonTapped() }
+        )
       }
     }
   }
@@ -146,6 +171,7 @@ struct InventoryView_Previews: PreviewProvider {
             Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true)),
             Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false)),
           ],
+          itemToAdd: .init(name: "Mouse", color: .red, status: .inStock(quantity: 100)),
           itemToDelete: nil
         )
       )
