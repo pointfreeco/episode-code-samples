@@ -146,10 +146,10 @@ struct InventoryView: View {
     }
     .navigationTitle("Inventory")
 //    .sheet(isPresented: self.$addItemIsPresented) {
-    .sheet(item: self.$viewModel.itemToAdd) { itemToAdd in
+    .sheet(unwrap: self.$viewModel.itemToAdd) { $itemToAdd in
       NavigationView {
         ItemView(
-          item: itemToAdd,
+          item: $itemToAdd,
           onSave: { self.viewModel.add(item: $0) },
           onCancel: { self.viewModel.cancelButtonTapped() }
         )
@@ -171,7 +171,7 @@ struct InventoryView_Previews: PreviewProvider {
             Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true)),
             Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false)),
           ],
-          itemToAdd: .init(name: "Mouse", color: .red, status: .inStock(quantity: 100)),
+          itemToAdd: nil, // .init(name: "Mouse", color: .red, status: .inStock(quantity: 100)),
           itemToDelete: nil
         )
       )
