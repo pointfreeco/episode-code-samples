@@ -5,9 +5,6 @@ struct ItemView: View {
 //  @State var item = Item(name: "", color: nil, status: .inStock(quantity: 1))
   @Binding var item: Item
 
-  let onSave: (Item) -> Void
-  let onCancel: () -> Void
-
   var body: some View {
     Form {
       TextField("Name", text: self.$item.name)
@@ -39,18 +36,6 @@ struct ItemView: View {
         }
       }
     }
-    .toolbar {
-      ToolbarItem(placement: .cancellationAction) {
-        Button("Cancel") {
-          self.onCancel()
-        }
-      }
-      ToolbarItem(placement: .primaryAction) {
-        Button("Save") {
-          self.onSave(self.item)
-        }
-      }
-    }
   }
 }
 
@@ -59,7 +44,7 @@ struct ItemView_Previews: PreviewProvider {
     @State var item = Item(name: "", color: nil, status: .inStock(quantity: 1))
     
     var body: some View {
-      ItemView(item: self.$item, onSave: { _ in }, onCancel: { })
+      ItemView(item: self.$item)
     }
   }
   

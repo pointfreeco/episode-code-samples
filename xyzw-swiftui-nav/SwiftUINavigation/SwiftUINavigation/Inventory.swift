@@ -46,33 +46,39 @@ struct Item: Equatable, Identifiable {
 }
 
 class InventoryViewModel: ObservableObject {
-  @Published var inventory: IdentifiedArrayOf<Item>
+  @Published var inventory: IdentifiedArrayOf<ItemRowViewModel>
   @Published var itemToAdd: Item?
-  @Published var itemToDelete: Item?
 
   init(
-    inventory: IdentifiedArrayOf<Item> = [],
-    itemToAdd: Item? = nil,
-    itemToDelete: Item? = nil
+    inventory: IdentifiedArrayOf<ItemRowViewModel> = [],
+    itemToAdd: Item? = nil
   ) {
-    self.itemToDelete = itemToDelete
     self.itemToAdd = itemToAdd
-    self.inventory = inventory
+    self.inventory = []
+
+    for itemRowViewModel in inventory {
+      self.bind(itemRowViewModel: itemRowViewModel)
+    }
   }
-  
+
+  private func bind(itemRowViewModel: ItemRowViewModel) {
+    itemRowViewModel.onDelete = { [weak self, item = itemRowViewModel.item] in
+      withAnimation {
+        self?.delete(item: item)
+      }
+    }
+    self.inventory.append(itemRowViewModel)
+  }
+
   func delete(item: Item) {
     withAnimation {
       _ = self.inventory.remove(id: item.id)
     }
   }
 
-  func deleteButtonTapped(item: Item) {
-    self.itemToDelete = item
-  }
-
   func add(item: Item) {
     withAnimation {
-      self.inventory.append(item)
+      self.bind(itemRowViewModel: .init(item: item))
       self.itemToAdd = nil
     }
   }
@@ -96,49 +102,11 @@ struct InventoryView: View {
   
   var body: some View {
     List {
-      ForEach(self.viewModel.inventory) { item in
-        HStack {
-          VStack(alignment: .leading) {
-            Text(item.name)
-
-            switch item.status {
-            case let .inStock(quantity):
-              Text("In stock: \(quantity)")
-            case let .outOfStock(isOnBackOrder):
-              Text("Out of stock" + (isOnBackOrder ? ": on back order" : ""))
-            }
-          }
-
-          Spacer()
-
-          if let color = item.color {
-            Rectangle()
-              .frame(width: 30, height: 30)
-              .foregroundColor(color.swiftUIColor)
-              .border(Color.black, width: 1)
-          }
-
-          Button(action: { self.viewModel.deleteButtonTapped(item: item) }) {
-            Image(systemName: "trash.fill")
-          }
-          .padding(.leading)
-        }
-        .buttonStyle(.plain)
-        .foregroundColor(item.status.isInStock ? nil : Color.gray)
-      }
+      ForEach(
+        self.viewModel.inventory,
+        content: ItemRowView.init(viewModel:)
+      )
     }
-    .alert(
-      title: { Text($0.name) },
-      presenting: self.$viewModel.itemToDelete,
-      actions: { item in
-        Button("Delete", role: .destructive) {
-          self.viewModel.delete(item: item)
-        }
-      },
-      message: { _ in
-        Text("Are you sure you want to delete this item?")
-      }
-    )
     .toolbar {
       ToolbarItem(placement: .primaryAction) {
         Button("Add") { self.viewModel.addButtonTapped() }
@@ -148,15 +116,35 @@ struct InventoryView: View {
 //    .sheet(isPresented: self.$addItemIsPresented) {
     .sheet(unwrap: self.$viewModel.itemToAdd) { $itemToAdd in
       NavigationView {
-        ItemView(
-          item: $itemToAdd,
-          onSave: { self.viewModel.add(item: $0) },
-          onCancel: { self.viewModel.cancelButtonTapped() }
-        )
+        ItemView(item: $itemToAdd)
+          .navigationTitle("Add")
+          .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+              Button("Cancel") { self.viewModel.cancelButtonTapped() }
+            }
+            ToolbarItem(placement: .primaryAction) {
+              Button("Save") { self.viewModel.add(item: itemToAdd) }
+            }
+          }
       }
     }
   }
 }
+
+struct TestView: View {
+  @State var collection = [1, 2, 3]
+
+  var body: some View {
+    ForEach(self.$collection, id: \.self) { $element in
+
+    }
+  }
+}
+
+// ForEach.init:   (Binding<C>,  (Binding<C.Element>) -> some View) -> ForEach
+// sheet(unwrap:): (Binding<V?>, (Binding<V>)         -> some View) -> some View
+
+
 
 struct InventoryView_Previews: PreviewProvider {
   static var previews: some View {
@@ -166,13 +154,12 @@ struct InventoryView_Previews: PreviewProvider {
       InventoryView(
         viewModel: .init(
           inventory: [
-            keyboard,
-            Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20)),
-            Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true)),
-            Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false)),
+            .init(item: keyboard),
+            .init(item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))),
+            .init(item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))),
+            .init(item: Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false))),
           ],
-          itemToAdd: nil, // .init(name: "Mouse", color: .red, status: .inStock(quantity: 100)),
-          itemToDelete: nil
+          itemToAdd: nil // .init(name: "Mouse", color: .red, status: .inStock(quantity: 100)),
         )
       )
     }
