@@ -1,5 +1,5 @@
 ## [Point-Free](https://www.pointfree.co)
 
-> #### This directory contains code from Point-Free Episode: [Concise Forms: Bye Bye Boilerplate](https://www.pointfree.co/episodes/ep133-concise-forms-bye-bye-boilerplate)
+> #### This directory contains code from Point-Free Episode: [Safer, Conciser Forms: Part 2](https://www.pointfree.co/episodes/ep159-safer-conciser-forms-part-2)
 >
-> The Composable Architecture makes it easy to layer complexity onto a form, but it just can’t match the brevity of vanilla SwiftUI…or can it!? We will overcome a Swift language limitation using key paths and type erasure to finally say “bye!” to boilerplate.
+> We just made the Composable Architecture’s concise binding helpers safer, but can we make them even more concise? We’ll start with a suggestion that came from the community and employ even more Swift tricks, like dynamic member lookup, to get things even conciser than vanilla SwiftUI.

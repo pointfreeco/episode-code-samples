@@ -1,5 +1,5 @@
 ## [Point-Free](https://www.pointfree.co)
 
-> #### This directory contains code from Point-Free Episode: [Concise Forms: Bye Bye Boilerplate](https://www.pointfree.co/episodes/ep133-concise-forms-bye-bye-boilerplate)
+> #### This directory contains code from Point-Free Episode: [Safer, Conciser Forms: Part 1](https://www.pointfree.co/episodes/ep158-safer-conciser-forms-part-1)
 >
-> The Composable Architecture makes it easy to layer complexity onto a form, but it just can’t match the brevity of vanilla SwiftUI…or can it!? We will overcome a Swift language limitation using key paths and type erasure to finally say “bye!” to boilerplate.
+> Previously we explored how SwiftUI makes building forms a snap, and we contrasted it with the boilerplate introduced by the Composable Architecture. We employed a number of advanced tools to close the gap, but we can do better! We’ll start by using a property wrapper to make things much safer than before.

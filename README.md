@@ -159,3 +159,7 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [SwiftUI Focus State](0155-focus-state)
 1. [SwiftUI Searchable: Part 1](0156-searchable-pt1)
 1. [SwiftUI Searchable: Part 2](0157-searchable-pt2)
+1. [Safer, Conciser Forms: Part 1](0158-safer-conciser-forms-pt1)
+1. [Safer, Conciser Forms: Part 2](0159-safer-conciser-forms-pt2)
+1. [SwiftUI Navigation: Tabs & Alerts, Part 2](0161-navigation-pt2)
+1. [SwiftUI Navigation: Sheets & Popovers, Part 1](0162-navigation-pt3)
