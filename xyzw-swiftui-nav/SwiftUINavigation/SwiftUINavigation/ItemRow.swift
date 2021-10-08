@@ -4,6 +4,7 @@ import SwiftUI
 class ItemRowViewModel: Identifiable, ObservableObject {
   @Published var item: Item
   @Published var route: Route?
+  @Published var isSaving = false
   
   enum Route: Equatable {
     case deleteAlert
@@ -39,10 +40,17 @@ class ItemRowViewModel: Identifiable, ObservableObject {
   func setEditNavigation(isActive: Bool) {
     self.route = isActive ? .edit(self.item) : nil
   }
-  
+
   func edit(item: Item) {
-    self.item = item
-    self.route = nil
+    self.isSaving = true
+
+    Task { @MainActor in
+      try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+
+      self.isSaving = false
+      self.item = item
+      self.route = nil
+    }
   }
   
   func cancelButtonTapped() {
@@ -70,32 +78,30 @@ struct ItemRowView: View {
 
   var body: some View {
     NavigationLink(
-      isActive: .init(
-        get: {
-          guard case .edit = self.viewModel.route
-          else { return false }
-          return true
-        },
-        set: self.viewModel.setEditNavigation(isActive:)
-      ),
-      destination: {
-        if let $item = Binding(unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.edit)) {
-          ItemView(item: $item)
-            .navigationBarTitle("Edit")
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-              ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                  self.viewModel.cancelButtonTapped()
-                }
+      unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.edit),
+      onNavigate: self.viewModel.setEditNavigation(isActive:),
+      destination: { $item in
+        ItemView(item: $item)
+          .navigationBarTitle("Edit")
+          .navigationBarBackButtonHidden(true)
+          .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+              Button("Cancel") {
+                self.viewModel.cancelButtonTapped()
               }
-              ToolbarItem(placement: .primaryAction) {
+            }
+            ToolbarItem(placement: .primaryAction) {
+              HStack {
+                if self.viewModel.isSaving {
+                  ProgressView()
+                }
                 Button("Save") {
                   self.viewModel.edit(item: $item.wrappedValue)
                 }
               }
+              .disabled(self.viewModel.isSaving)
             }
-        }
+          }
       }
     ) {
       HStack {
