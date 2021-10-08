@@ -2,7 +2,6 @@ import CasePaths
 import SwiftUI
 
 struct ItemView: View {
-//  @State var item = Item(name: "", color: nil, status: .inStock(quantity: 1))
   @Binding var item: Item
 
   var body: some View {

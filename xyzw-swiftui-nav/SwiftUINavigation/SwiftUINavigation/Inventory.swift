@@ -118,7 +118,6 @@ struct InventoryView: View {
       }
     }
     .navigationTitle("Inventory")
-//    .sheet(isPresented: self.$addItemIsPresented) {
     .sheet(unwrap: self.$viewModel.itemToAdd) { $itemToAdd in
       NavigationView {
         ItemView(item: $itemToAdd)
@@ -146,11 +145,6 @@ struct TestView: View {
   }
 }
 
-// ForEach.init:   (Binding<C>,  (Binding<C.Element>) -> some View) -> ForEach
-// sheet(unwrap:): (Binding<V?>, (Binding<V>)         -> some View) -> some View
-
-
-
 struct InventoryView_Previews: PreviewProvider {
   static var previews: some View {
     let keyboard = Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
@@ -164,7 +158,7 @@ struct InventoryView_Previews: PreviewProvider {
             .init(item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))),
             .init(item: Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false))),
           ],
-          itemToAdd: nil // .init(name: "Mouse", color: .red, status: .inStock(quantity: 100)),
+          itemToAdd: nil
         )
       )
     }
