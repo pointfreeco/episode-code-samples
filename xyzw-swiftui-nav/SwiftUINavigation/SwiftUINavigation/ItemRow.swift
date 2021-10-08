@@ -32,8 +32,12 @@ class ItemRowViewModel: Identifiable, ObservableObject {
     self.onDelete()
   }
   
-  func editButtonTapped() {
-    self.route = .edit(self.item)
+//  func editButtonTapped() {
+//    self.route = .edit(self.item)
+//  }
+  
+  func setEditNavigation(isActive: Bool) {
+    self.route = isActive ? .edit(self.item) : nil
   }
   
   func edit(item: Item) {
@@ -66,7 +70,33 @@ struct ItemRowView: View {
 
   var body: some View {
     NavigationLink(
-      destination: { ItemView(item: self.$viewModel.item) }
+      isActive: .init(
+        get: {
+          guard case .edit = self.viewModel.route
+          else { return false }
+          return true
+        },
+        set: self.viewModel.setEditNavigation(isActive:)
+      ),
+      destination: {
+        if let $item = Binding(unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.edit)) {
+          ItemView(item: $item)
+            .navigationBarTitle("Edit")
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+              ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                  self.viewModel.cancelButtonTapped()
+                }
+              }
+              ToolbarItem(placement: .primaryAction) {
+                Button("Save") {
+                  self.viewModel.edit(item: $item.wrappedValue)
+                }
+              }
+            }
+        }
+      }
     ) {
       HStack {
         VStack(alignment: .leading) {
