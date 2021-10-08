@@ -1,3 +1,4 @@
+import CasePaths
 import IdentifiedCollections
 import SwiftUI
 
@@ -47,14 +48,19 @@ struct Item: Equatable, Identifiable {
 
 class InventoryViewModel: ObservableObject {
   @Published var inventory: IdentifiedArrayOf<ItemRowViewModel>
-  @Published var itemToAdd: Item?
+  @Published var route: Route?
+  
+  enum Route: Equatable {
+    case add(Item)
+    case row(id: ItemRowViewModel.ID, route: ItemRowViewModel.Route)
+  }
 
   init(
     inventory: IdentifiedArrayOf<ItemRowViewModel> = [],
-    itemToAdd: Item? = nil
+    route: Route? = nil
   ) {
-    self.itemToAdd = itemToAdd
     self.inventory = []
+    self.route = route
 
     for itemRowViewModel in inventory {
       self.bind(itemRowViewModel: itemRowViewModel)
@@ -72,6 +78,23 @@ class InventoryViewModel: ObservableObject {
         self?.add(item: item)
       }
     }
+    itemRowViewModel.$route
+      .map { [id = itemRowViewModel.id] route in
+        route.map { Route.row(id: id, route: $0) }
+      }
+      .removeDuplicates()
+      .dropFirst()
+      .assign(to: &self.$route)
+    self.$route
+      .map { [id = itemRowViewModel.id] route in
+        guard
+          case let .row(id: routeRowId, route: route) = route,
+          routeRowId == id
+        else { return nil }
+        return route
+      }
+      .removeDuplicates()
+      .assign(to: &itemRowViewModel.$route)
     self.inventory.append(itemRowViewModel)
   }
 
@@ -84,21 +107,23 @@ class InventoryViewModel: ObservableObject {
   func add(item: Item) {
     withAnimation {
       self.bind(itemRowViewModel: .init(item: item))
-      self.itemToAdd = nil
+      self.route = nil
     }
   }
 
   func addButtonTapped() {
-    self.itemToAdd = .init(name: "", color: nil, status: .inStock(quantity: 1))
+    self.route = .add(.init(name: "", color: nil, status: .inStock(quantity: 1)))
 
     Task { @MainActor in
       try await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
-      self.itemToAdd?.name = "Bluetooth Keyboard"
+      try (/Route.add).modify(&self.route) {
+        $0.name = "Bluetooth Keyboard"
+      }
     }
   }
 
   func cancelButtonTapped() {
-    self.itemToAdd = nil
+    self.route = nil
   }
 }
 
@@ -118,7 +143,7 @@ struct InventoryView: View {
       }
     }
     .navigationTitle("Inventory")
-    .sheet(unwrap: self.$viewModel.itemToAdd) { $itemToAdd in
+    .sheet(unwrap: self.$viewModel.route.case(/InventoryViewModel.Route.add)) { $itemToAdd in
       NavigationView {
         ItemView(item: $itemToAdd)
           .navigationTitle("Add")
@@ -158,7 +183,7 @@ struct InventoryView_Previews: PreviewProvider {
             .init(item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))),
             .init(item: Item(name: "Headphones", color: .green, status: .outOfStock(isOnBackOrder: false))),
           ],
-          itemToAdd: nil
+          route: nil
         )
       )
     }

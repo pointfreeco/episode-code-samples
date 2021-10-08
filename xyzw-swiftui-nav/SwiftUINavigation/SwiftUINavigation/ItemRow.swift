@@ -18,11 +18,9 @@ class ItemRowViewModel: Identifiable, ObservableObject {
   var id: Item.ID { self.item.id }
 
   init(
-    item: Item,
-    route: Route? = nil
+    item: Item
   ) {
     self.item = item
-    self.route = route
   }
 
   func deleteButtonTapped() {
@@ -77,6 +75,22 @@ struct ItemRowView: View {
   @ObservedObject var viewModel: ItemRowViewModel
 
   var body: some View {
+//    NavigationLink(
+//      unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate),
+//      onNavigate: { _ in },
+//      destination: { $item in }
+//    ) {
+//      Text("Duplicate")
+//    }
+//    
+//    NavigationLink(
+//      unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.deleteAlert),
+//      onNavigate: { _ in },
+//      destination: { _ in }
+//    ) {
+//      Text("Delete")
+//    }
+
     NavigationLink(
       unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.edit),
       onNavigate: self.viewModel.setEditNavigation(isActive:),
