@@ -51,8 +51,20 @@ class InventoryViewModel: ObservableObject {
   @Published var route: Route?
   
   enum Route: Equatable {
-    case add(Item)
+    case add(ItemViewModel)
     case row(id: ItemRowViewModel.ID, route: ItemRowViewModel.Route)
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+      switch (lhs, rhs) {
+      case let (.add(lhs), .add(rhs)):
+        return lhs === rhs
+      case let (.row(id: lhsId, route: lhsRoute), .row(id: rhsId, route: rhsRoute)):
+        return lhsId == rhsId && lhsRoute == rhsRoute
+
+      case (.add, .row), (.row, .add):
+        return false
+      }
+    }
   }
 
   init(
@@ -112,12 +124,12 @@ class InventoryViewModel: ObservableObject {
   }
 
   func addButtonTapped() {
-    self.route = .add(.init(name: "", color: nil, status: .inStock(quantity: 1)))
+    self.route = .add(.init(item: .init(name: "", color: nil, status: .inStock(quantity: 1))))
 
     Task { @MainActor in
       try await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
       try (/Route.add).modify(&self.route) {
-        $0.name = "Bluetooth Keyboard"
+        $0.item.name = "Bluetooth Keyboard"
       }
     }
   }
@@ -143,16 +155,16 @@ struct InventoryView: View {
       }
     }
     .navigationTitle("Inventory")
-    .sheet(unwrap: self.$viewModel.route.case(/InventoryViewModel.Route.add)) { $itemToAdd in
+    .sheet(item: self.$viewModel.route.case(/InventoryViewModel.Route.add)) { itemViewModel in
       NavigationView {
-        ItemView(item: $itemToAdd)
+        ItemView(viewModel: itemViewModel)
           .navigationTitle("Add")
           .toolbar {
             ToolbarItem(placement: .cancellationAction) {
               Button("Cancel") { self.viewModel.cancelButtonTapped() }
             }
             ToolbarItem(placement: .primaryAction) {
-              Button("Save") { self.viewModel.add(item: itemToAdd) }
+              Button("Save") { self.viewModel.add(item: itemViewModel.item) }
             }
           }
       }
