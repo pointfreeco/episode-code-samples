@@ -163,3 +163,6 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Safer, Conciser Forms: Part 2](0159-safer-conciser-forms-pt2)
 1. [SwiftUI Navigation: Tabs & Alerts, Part 2](0161-navigation-pt2)
 1. [SwiftUI Navigation: Sheets & Popovers, Part 1](0162-navigation-pt3)
+1. [SwiftUI Navigation: Sheets & Popovers, Part 2](0163-navigation-pt4)
+1. [SwiftUI Navigation: Sheets & Popovers, Part 3](0164-navigation-pt5)
+1. [SwiftUI Navigation: Links, Part 1](0165-navigation-pt6)
