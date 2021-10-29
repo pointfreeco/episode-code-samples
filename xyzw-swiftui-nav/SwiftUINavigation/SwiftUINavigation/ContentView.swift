@@ -20,18 +20,25 @@ extension DeepLinkRequest {
   }
 }
 
-struct PathComponent: Parser {
-  let component: String
-  init(_ component: String) {
+struct PathComponent<ComponentParser>: Parser
+where
+  ComponentParser: Parser,
+  ComponentParser.Input == Substring
+{
+  let component: ComponentParser
+  init(_ component: ComponentParser) {
     self.component = component
   }
 
-  func parse(_ input: inout DeepLinkRequest) -> Void? {
-    guard input.pathComponents.first == self.component[...]
+  func parse(_ input: inout DeepLinkRequest) -> ComponentParser.Output? {
+    guard
+      var firstComponent = input.pathComponents.first,
+      let output = self.component.parse(&firstComponent),
+      firstComponent.isEmpty
     else { return nil }
 
     input.pathComponents.removeFirst()
-    return ()
+    return output
   }
 }
 
@@ -81,6 +88,13 @@ enum AppRoute {
 
 enum InventoryRoute {
   case add(Item, ItemRoute? = nil)
+  case row(Item.ID, RowRoute)
+
+  enum RowRoute {
+    case delete
+    case duplicate
+    case edit
+  }
 }
 
 enum ItemRoute {
@@ -93,28 +107,40 @@ let item = QueryItem("name").orElse(Always(""))
     Item(name: String(name), status: .inStock(quantity: quantity))
   }
 
-let deepLinker = PathComponent("one")
-  .skip(PathEnd())
-  .map { AppRoute.one }
+let inventoryDeepLinker = PathEnd()
+  .map { AppRoute.inventory(nil) }
   .orElse(
-    PathComponent("inventory")
-      .skip(PathEnd())
-      .map { .inventory(nil) }
-  )
-  .orElse(
-    PathComponent("inventory")
-      .skip(PathComponent("add"))
+    PathComponent("add")
       .skip(PathEnd())
       .take(item)
       .map { .inventory(.add($0)) }
   )
   .orElse(
-    PathComponent("inventory")
-      .skip(PathComponent("add"))
+    PathComponent("add")
       .skip(PathComponent("colorPicker"))
       .skip(PathEnd())
       .take(item)
       .map { .inventory(.add($0, .colorPicker)) }
+  )
+  .orElse(
+    PathComponent(UUID.parser())
+      .skip(PathComponent("edit"))
+      .skip(PathEnd())
+      .map { id in .inventory(.row(id, .edit)) }
+  )
+  .orElse(
+    PathComponent(UUID.parser())
+      .skip(PathComponent("delete"))
+      .skip(PathEnd())
+      .map { id in .inventory(.row(id, .delete)) }
+  )
+
+let deepLinker = PathComponent("one")
+  .skip(PathEnd())
+  .map { AppRoute.one }
+  .orElse(
+    PathComponent("inventory")
+      .take(inventoryDeepLinker)
   )
   .orElse(
     PathComponent("three")
@@ -124,6 +150,10 @@ let deepLinker = PathComponent("one")
 
 // nav:///inventory/add/colorPicker
 // nav:///inventory/add?quantity=100&name=Keyboard
+
+// nav:///inventory/:uuid/edit
+// nav:///inventory/:uuid/delete
+// nav:///inventory/:uuid/duplicate
 
 enum Tab {
   case one, inventory, three
@@ -173,8 +203,26 @@ extension InventoryViewModel {
     case let .add(item, .colorPicker):
       self.route = .add(.init(item: item, route: .colorPicker))
 
+    case let .row(id, rowRoute):
+      guard let viewModel = self.inventory[id: id]
+      else { break }
+      viewModel.navigate(to: rowRoute)
+
     case .none:
       self.route = nil
+    }
+  }
+}
+
+extension ItemRowViewModel {
+  func navigate(to route: InventoryRoute.RowRoute) {
+    switch route {
+    case .delete:
+      self.route = .deleteAlert
+    case .duplicate:
+      self.route = .duplicate(.init(item: self.item))
+    case .edit:
+      self.route = .edit(.init(item: self.item))
     }
   }
 }

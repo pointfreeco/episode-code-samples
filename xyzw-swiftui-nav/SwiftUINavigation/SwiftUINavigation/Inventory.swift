@@ -79,6 +79,8 @@ class InventoryViewModel: ObservableObject {
   }
 
   private func bind(itemRowViewModel: ItemRowViewModel) {
+    print("bind id", itemRowViewModel.id)
+
     itemRowViewModel.onDelete = { [weak self, item = itemRowViewModel.item] in
       withAnimation {
         self?.delete(item: item)
