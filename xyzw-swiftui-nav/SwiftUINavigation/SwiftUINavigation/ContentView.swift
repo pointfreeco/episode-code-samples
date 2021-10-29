@@ -1,4 +1,18 @@
+import Parsing
 import SwiftUI
+
+let deepLinker = AnyParser<URL, Tab> { url in
+  switch url.path {
+  case "/one":
+    return .one
+  case "/inventory":
+    return .inventory
+  case "/three":
+    return .three
+  default:
+    return nil
+  }
+}
 
 enum Tab {
   case one, inventory, three
@@ -12,8 +26,20 @@ class AppViewModel: ObservableObject {
     inventoryViewModel: InventoryViewModel = .init(),
     selectedTab: Tab = .one
   ) {
+    
+    var input = "123 hello"[...]
+    let output = Int.parser().parse(&input) // 123
+    input // " hello"
+    
     self.inventoryViewModel = inventoryViewModel
     self.selectedTab = selectedTab
+  }
+  
+  func open(url: URL) {
+    var url = url
+    if let tab = deepLinker.parse(&url) {
+      self.selectedTab = tab
+    }
   }
 }
 
@@ -37,6 +63,9 @@ struct ContentView: View {
       Text("Three")
         .tabItem { Text("Three") }
         .tag(Tab.three)
+    }
+    .onOpenURL { url in
+      self.viewModel.open(url: url)
     }
   }
 }
