@@ -43,6 +43,36 @@ struct PathEnd: Parser {
   }
 }
 
+struct QueryItem<ValueParser>: Parser
+where
+  ValueParser: Parser,
+  ValueParser.Input == Substring
+{
+  let name: String
+  let valueParser: ValueParser
+  
+  init(_ name: String, _ valueParser: ValueParser) {
+    self.name = name
+    self.valueParser = valueParser
+  }
+  
+  init(_ name: String) where ValueParser == Rest<Substring> {
+    self.init(name, Rest())
+  }
+  
+  func parse(_ input: inout DeepLinkRequest) -> ValueParser.Output? {
+    guard
+      let wrapped = input.queryItems[self.name]?.first,
+      var value = wrapped,
+      let output = self.valueParser.parse(&value),
+      value.isEmpty
+    else { return nil }
+    
+    input.queryItems[self.name]?.removeFirst()
+    return output
+  }
+}
+
 enum AppRoute {
   case one
   case inventory(InventoryRoute?)
@@ -50,9 +80,18 @@ enum AppRoute {
 }
 
 enum InventoryRoute {
-  case add
+  case add(Item, ItemRoute? = nil)
+}
+
+enum ItemRoute {
   case colorPicker
 }
+
+let item = QueryItem("name").orElse(Always(""))
+  .take(QueryItem("quantity", Int.parser()).orElse(Always(1)))
+  .map { name, quantity in
+    Item(name: String(name), status: .inStock(quantity: quantity))
+  }
 
 let deepLinker = PathComponent("one")
   .skip(PathEnd())
@@ -66,14 +105,16 @@ let deepLinker = PathComponent("one")
     PathComponent("inventory")
       .skip(PathComponent("add"))
       .skip(PathEnd())
-      .map { .inventory(.add) }
+      .take(item)
+      .map { .inventory(.add($0)) }
   )
   .orElse(
     PathComponent("inventory")
       .skip(PathComponent("add"))
       .skip(PathComponent("colorPicker"))
       .skip(PathEnd())
-      .map { .inventory(.colorPicker) }
+      .take(item)
+      .map { .inventory(.add($0, .colorPicker)) }
   )
   .orElse(
     PathComponent("three")
@@ -82,6 +123,7 @@ let deepLinker = PathComponent("one")
   )
 
 // nav:///inventory/add/colorPicker
+// nav:///inventory/add?quantity=100&name=Keyboard
 
 enum Tab {
   case one, inventory, three
@@ -125,20 +167,11 @@ class AppViewModel: ObservableObject {
 extension InventoryViewModel {
   func navigate(to route: InventoryRoute?) {
     switch route {
-    case .add:
-      self.route = .add(
-        .init(
-          item: .init(name: "", color: nil, status: .inStock(quantity: 1))
-        )
-      )
+    case let .add(item, .none):
+      self.route = .add(.init(item: item))
 
-    case .colorPicker:
-      self.route = .add(
-        .init(
-          item: .init(name: "", color: nil, status: .inStock(quantity: 1)),
-          route: .colorPicker
-        )
-      )
+    case let .add(item, .colorPicker):
+      self.route = .add(.init(item: item, route: .colorPicker))
 
     case .none:
       self.route = nil
