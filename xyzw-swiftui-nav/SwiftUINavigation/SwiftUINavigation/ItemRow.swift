@@ -29,6 +29,7 @@ class ItemRowViewModel: Identifiable, ObservableObject {
 
   func deleteConfirmationButtonTapped() {
     self.onDelete()
+    self.route = nil
   }
   
 //  func editButtonTapped() {
@@ -47,7 +48,7 @@ class ItemRowViewModel: Identifiable, ObservableObject {
 
       self.isSaving = false
       self.item = item
-      self.route = nil
+//      self.route = nil
     }
   }
   
@@ -92,7 +93,8 @@ struct ItemRowView: View {
 //    }
 
     NavigationLink(
-      unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.edit),
+      unwrap: self.$viewModel.route,
+      case: /ItemRowViewModel.Route.edit,
       onNavigate: self.viewModel.setEditNavigation(isActive:),
       destination: { $item in
         ItemView(item: $item)
@@ -186,7 +188,10 @@ struct ItemRowView: View {
       //          }
       //      }
       //    }
-      .popover(unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate)) { $item in
+      .popover(
+        unwrap: self.$viewModel.route,
+        case: /ItemRowViewModel.Route.duplicate
+      ) { $item in
         NavigationView {
           ItemView(item: $item)
             .navigationBarTitle("Duplicate")
