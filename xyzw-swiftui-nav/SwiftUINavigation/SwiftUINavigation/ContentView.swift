@@ -1,18 +1,87 @@
 import Parsing
 import SwiftUI
 
-let deepLinker = AnyParser<URL, Tab> { url in
-  switch url.path {
-  case "/one":
-    return .one
-  case "/inventory":
-    return .inventory
-  case "/three":
-    return .three
-  default:
-    return nil
+struct DeepLinkRequest {
+  var pathComponents: ArraySlice<Substring>
+  var queryItems: [String: ArraySlice<Substring?>]
+  // ?name=Blob&name=BlobJr&isAdmin
+}
+
+extension DeepLinkRequest {
+  init(url: URL) {
+    let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+
+    self.init(
+      pathComponents: url.path.split(separator: "/")[...],
+      queryItems: queryItems.reduce(into: [:]) { dictionary, item in
+        dictionary[item.name, default: []].append(item.value?[...])
+      }
+    )
   }
 }
+
+struct PathComponent: Parser {
+  let component: String
+  init(_ component: String) {
+    self.component = component
+  }
+
+  func parse(_ input: inout DeepLinkRequest) -> Void? {
+    guard input.pathComponents.first == self.component[...]
+    else { return nil }
+
+    input.pathComponents.removeFirst()
+    return ()
+  }
+}
+
+struct PathEnd: Parser {
+  func parse(_ input: inout DeepLinkRequest) -> Void? {
+    guard input.pathComponents.isEmpty
+    else { return nil }
+    return ()
+  }
+}
+
+enum AppRoute {
+  case one
+  case inventory(InventoryRoute?)
+  case three
+}
+
+enum InventoryRoute {
+  case add
+  case colorPicker
+}
+
+let deepLinker = PathComponent("one")
+  .skip(PathEnd())
+  .map { AppRoute.one }
+  .orElse(
+    PathComponent("inventory")
+      .skip(PathEnd())
+      .map { .inventory(nil) }
+  )
+  .orElse(
+    PathComponent("inventory")
+      .skip(PathComponent("add"))
+      .skip(PathEnd())
+      .map { .inventory(.add) }
+  )
+  .orElse(
+    PathComponent("inventory")
+      .skip(PathComponent("add"))
+      .skip(PathComponent("colorPicker"))
+      .skip(PathEnd())
+      .map { .inventory(.colorPicker) }
+  )
+  .orElse(
+    PathComponent("three")
+      .skip(PathEnd())
+      .map { .three }
+  )
+
+// nav:///inventory/add/colorPicker
 
 enum Tab {
   case one, inventory, three
@@ -36,9 +105,43 @@ class AppViewModel: ObservableObject {
   }
   
   func open(url: URL) {
-    var url = url
-    if let tab = deepLinker.parse(&url) {
-      self.selectedTab = tab
+    var request = DeepLinkRequest(url: url)
+    if let route = deepLinker.parse(&request) {
+      switch route {
+      case .one:
+        self.selectedTab = .one
+
+      case let .inventory(inventoryRoute):
+        self.selectedTab = .inventory
+        self.inventoryViewModel.navigate(to: inventoryRoute)
+
+      case .three:
+        self.selectedTab = .three
+      }
+    }
+  }
+}
+
+extension InventoryViewModel {
+  func navigate(to route: InventoryRoute?) {
+    switch route {
+    case .add:
+      self.route = .add(
+        .init(
+          item: .init(name: "", color: nil, status: .inStock(quantity: 1))
+        )
+      )
+
+    case .colorPicker:
+      self.route = .add(
+        .init(
+          item: .init(name: "", color: nil, status: .inStock(quantity: 1)),
+          route: .colorPicker
+        )
+      )
+
+    case .none:
+      self.route = nil
     }
   }
 }
