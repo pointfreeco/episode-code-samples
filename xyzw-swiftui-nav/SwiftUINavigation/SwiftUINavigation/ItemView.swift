@@ -2,20 +2,21 @@ import CasePaths
 import SwiftUI
 
 struct ColorPickerView: View {
-  @Binding var color: Item.Color?
-  @State var newColors: [Item.Color] = []
+  @ObservedObject var viewModel: ItemViewModel
+//  @Binding var color: Item.Color?
+//  @State var newColors: [Item.Color] = []
   @Environment(\.dismiss) var dismiss
   
   var body: some View {
     Form {
       Button(action: {
-        self.color = nil
+        self.viewModel.item.color = nil
         self.dismiss()
       }) {
         HStack {
           Text("None")
           Spacer()
-          if self.color == nil {
+          if self.viewModel.item.color == nil {
             Image(systemName: "checkmark")
           }
         }
@@ -24,13 +25,13 @@ struct ColorPickerView: View {
       Section(header: Text("Default colors")) {
         ForEach(Item.Color.defaults, id: \.name) { color in
           Button(action: {
-            self.color = color
+            self.viewModel.item.color = color
             self.dismiss()
           }) {
             HStack {
               Text(color.name)
               Spacer()
-              if self.color == color {
+              if self.viewModel.item.color == color {
                 Image(systemName: "checkmark")
               }
             }
@@ -38,17 +39,17 @@ struct ColorPickerView: View {
         }
       }
       
-      if !self.newColors.isEmpty {
+      if !self.viewModel.newColors.isEmpty {
         Section(header: Text("New colors")) {
-          ForEach(self.newColors, id: \.name) { color in
+          ForEach(self.viewModel.newColors, id: \.name) { color in
             Button(action: {
-              self.color = color
+              self.viewModel.item.color = color
               self.dismiss()
             }) {
               HStack {
                 Text(color.name)
                 Spacer()
-                if self.color == color {
+                if self.viewModel.item.color == color {
                   Image(systemName: "checkmark")
                 }
               }
@@ -58,69 +59,98 @@ struct ColorPickerView: View {
       }
     }
     .task {
-      await Task.sleep(NSEC_PER_MSEC * 500)
-      self.newColors = [
-        .init(name: "Pink", red: 1, green: 0.7, blue: 0.7),
-      ]
+      await self.viewModel.loadColors()
     }
   }
 }
 
+class ItemViewModel: Identifiable, ObservableObject {
+  @Published var item: Item
+  @Published var nameIsDuplicate = false
+  @Published var newColors: [Item.Color] = []
+  @Published var route: Route?
+
+  var id: Item.ID { self.item.id }
+
+  enum Route {
+    case colorPicker
+  }
+
+  init(item: Item, route: Route? = nil) {
+    self.item = item
+    self.route = route
+
+    Task { @MainActor in
+      for await item in self.$item.values {
+        await Task.sleep(NSEC_PER_MSEC * 300)
+        self.nameIsDuplicate = item.name == "Keyboard"
+      }
+    }
+  }
+
+  @MainActor
+  func loadColors() async {
+    await Task.sleep(NSEC_PER_MSEC * 500)
+    self.newColors = [
+      .init(name: "Pink", red: 1, green: 0.7, blue: 0.7),
+    ]
+  }
+
+  func setColorPickerNavigation(isActive: Bool) {
+    self.route = isActive ? .colorPicker : nil
+  }
+}
+
 struct ItemView: View {
-  @Binding var item: Item
-  @State var nameIsDuplicate = false
+//  @Binding var item: Item
+  @ObservedObject var viewModel: ItemViewModel
+//  @State var nameIsDuplicate = false
 
   var body: some View {
     Form {
-      TextField("Name", text: self.$item.name)
-        .background(self.nameIsDuplicate ? Color.red.opacity(0.1) : Color.clear)
-        .onChange(of: self.item.name) { newName in
-          // TODO: Validation logic
-          Task { @MainActor in
-            await Task.sleep(NSEC_PER_MSEC * 300)
-            self.nameIsDuplicate = newName == "Keyboard"
-          }
-        }
-
-//      Picker(selection: self.$item.color, label: Text("Color")) {
-//        Text("None")
-//          .tag(Item.Color?.none)
-//
-//        ForEach(Item.Color.defaults, id: \.name) { color in
-//          Text(color.name)
-//            .tag(Optional(color))
+      TextField("Name", text: self.$viewModel.item.name)
+        .background(self.viewModel.nameIsDuplicate ? Color.red.opacity(0.1) : Color.clear)
+//        .onChange(of: self.viewModel.item.name) { newName in
+//          // TODO: Validation logic
+//          Task { @MainActor in
+//            await Task.sleep(NSEC_PER_MSEC * 300)
+//            self.nameIsDuplicate = newName == "Keyboard"
+//          }
 //        }
-//      }
+
       NavigationLink(
-        destination: ColorPickerView(color: self.$item.color)
+        unwrap: self.$viewModel.route,
+        case: /ItemViewModel.Route.colorPicker,
+        onNavigate: self.viewModel.setColorPickerNavigation(isActive:),
+        destination: { _ in ColorPickerView(viewModel: self.viewModel) }
       ) {
         HStack {
           Text("Color")
           Spacer()
-          if let color = self.item.color {
+          if let color = self.viewModel.item.color {
             Rectangle()
               .frame(width: 30, height: 30)
               .foregroundColor(color.swiftUIColor)
               .border(Color.black, width: 1)
           }
-          Text(self.item.color?.name ?? "None")
+          Text(self.viewModel.item.color?.name ?? "None")
             .foregroundColor(.gray)
         }
       }
-      
-      IfCaseLet(self.$item.status, pattern: /Item.Status.inStock) { $quantity in
+
+      IfCaseLet(self.$viewModel.item.status, pattern: /Item.Status.inStock) { $quantity in
         Section(header: Text("In stock")) {
           Stepper("Quantity: \(quantity)", value: $quantity)
           Button("Mark as sold out") {
-            self.item.status = .outOfStock(isOnBackOrder: false)
+            self.viewModel.item.status = .outOfStock(isOnBackOrder: false)
           }
         }
       }
-      IfCaseLet(self.$item.status, pattern: /Item.Status.outOfStock) { $isOnBackOrder in
+      IfCaseLet(self.$viewModel.item.status, pattern: /Item.Status.outOfStock) { $isOnBackOrder in
         Section(header: Text("Out of stock")) {
           Toggle("Is on back order?", isOn: $isOnBackOrder)
           Button("Is back in stock!") {
-            self.item.status = .inStock(quantity: 1)
+            self.viewModel.item.status = .inStock(quantity: 1)
           }
         }
       }
@@ -129,17 +159,13 @@ struct ItemView: View {
 }
 
 struct ItemView_Previews: PreviewProvider {
-  struct WrapperView: View {
-    @State var item = Item(name: "", color: nil, status: .inStock(quantity: 1))
-    
-    var body: some View {
-      ItemView(item: self.$item)
-    }
-  }
-  
   static var previews: some View {
     NavigationView {
-      WrapperView()
+      ItemView(
+        viewModel: .init(
+          item: Item(name: "", color: nil, status: .inStock(quantity: 1))
+        )
+      )
     }
   }
 }
