@@ -24,6 +24,8 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    // MARK: Layout
+
     self.view.backgroundColor = .white
 
     let nameTextField = UITextField()
@@ -90,6 +92,8 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       stackView.leadingAnchor.constraint(equalTo: self.view.readableContentGuide.leadingAnchor),
       stackView.trailingAnchor.constraint(equalTo: self.view.readableContentGuide.trailingAnchor),
     ])
+
+    // MARK: View Model Bindings
 
     self.viewModel.$item
       .map(\.name)
@@ -160,8 +164,8 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       .store(in: &self.cancellables)
 
     isOnBackOrderSwitch.addAction(
-      .init(handler: { [weak self] action in
-        guard let self = self, let isOnBackOrder = (action.sender as? UISwitch)?.isOn
+      .init(handler: { [weak self, weak isOnBackOrderSwitch] action in
+        guard let self = self, let isOnBackOrder = isOnBackOrderSwitch?.isOn
         else { return }
 
         self.viewModel.item.status = .outOfStock(isOnBackOrder: isOnBackOrder)
@@ -221,9 +225,8 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.navigationItem.rightBarButtonItem = .init(title: "Add", primaryAction: .init { _ in
-      self.viewModel.addButtonTapped()
-    })
+    let addButton = UIBarButtonItem(title: "Add")
+    self.navigationItem.rightBarButtonItem = addButton
 
     self.title = "Inventory"
 
@@ -283,6 +286,10 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
       collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
     ])
 
+    addButton.primaryAction = .init { _ in
+      self.viewModel.addButtonTapped()
+    }
+
     self.viewModel.$inventory
       .sink { inventory in
         var snapshot = NSDiffableDataSourceSnapshot<Section, ItemRowViewModel>()
@@ -315,13 +322,13 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
           vc.title = "Add"
           vc.navigationItem.leftBarButtonItem = .init(
             title: "Cancel",
-            primaryAction: .init { action in
+            primaryAction: .init { _ in
               self.viewModel.cancelButtonTapped()
             }
           )
           vc.navigationItem.rightBarButtonItem = .init(
             title: "Add",
-            primaryAction: .init { action in
+            primaryAction: .init { _ in
               self.viewModel.add(item: itemViewModel.item)
             }
           )
@@ -339,10 +346,10 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
               message: "Are you sure you want to delete this item?",
               preferredStyle: .alert
             )
-            alert.addAction(.init(title: "Cancel", style: .cancel) { action in
+            alert.addAction(.init(title: "Cancel", style: .cancel) { _ in
               itemRowViewModel.cancelButtonTapped()
             })
-            alert.addAction(.init(title: "Delete", style: .destructive) { action in
+            alert.addAction(.init(title: "Delete", style: .destructive) { _ in
               itemRowViewModel.deleteConfirmationButtonTapped()
             })
             self.present(alert, animated: true)
@@ -352,13 +359,13 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
             itemToDuplicate.title = "Duplicate"
             itemToDuplicate.navigationItem.leftBarButtonItem = .init(
               title: "Cancel",
-              primaryAction: .init { action in
+              primaryAction: .init { _ in
                 itemRowViewModel.cancelButtonTapped()
               }
             )
             itemToDuplicate.navigationItem.rightBarButtonItem = .init(
               title: "Add",
-              primaryAction: .init { action in
+              primaryAction: .init { _ in
                 itemRowViewModel.duplicate(item: itemViewModel.item)
               }
             )
@@ -375,13 +382,13 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
             itemToEdit.title = "Edit"
             itemToEdit.navigationItem.leftBarButtonItem = .init(
               title: "Cancel",
-              primaryAction: .init { action in
+              primaryAction: .init { _ in
                 itemRowViewModel.cancelButtonTapped()
               }
             )
             itemToEdit.navigationItem.rightBarButtonItem = .init(
               title: "Save",
-              primaryAction: .init { action in
+              primaryAction: .init { _ in
                 itemRowViewModel.edit(item: itemViewModel.item)
                 collectionView.reloadData()
               }
