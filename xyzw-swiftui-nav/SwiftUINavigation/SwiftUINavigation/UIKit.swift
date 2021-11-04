@@ -27,13 +27,6 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
     self.view.backgroundColor = .white
 
     let nameTextField = UITextField()
-    // TODO: maybe this goes with the view model bindings
-    nameTextField.addAction(
-      .init(handler: { [weak self] action in
-        self?.viewModel.item.name = (action.sender as? UITextField)?.text ?? ""
-      }),
-      for: .editingChanged
-    )
     nameTextField.placeholder = "Name"
     nameTextField.borderStyle = .roundedRect
 
@@ -44,19 +37,11 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
     let quantityLabel = UILabel()
 
     let quantityStepper = UIStepper()
-    quantityStepper.addAction(
-      .init { _ in
-        self.viewModel.item.status = .inStock(quantity: Int(quantityStepper.value))
-      },
-      for: .valueChanged
-    )
     quantityStepper.maximumValue = .infinity
 
     let quantityStackView = UIStackView(arrangedSubviews: [quantityLabel, quantityStepper])
 
-    let markAsSoldOutButton = UIButton(primaryAction: .init { [weak self] _ in
-      self?.viewModel.item.status = .outOfStock(isOnBackOrder: false)
-    })
+    let markAsSoldOutButton = UIButton()
     markAsSoldOutButton.setTitle("Mark as sold out", for: .normal)
 
     let inStockStackView = UIStackView(arrangedSubviews: [
@@ -68,24 +53,14 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
     let isOnBackOrderLabel = UILabel()
     isOnBackOrderLabel.text = "Is on back order?"
 
-    let isOnBackOrderSwitch = UISwitch(
-      frame: .zero,
-      primaryAction: .init { [weak self] action in
-        guard let self = self, let isOnBackOrder = (action.sender as? UISwitch)?.isOn
-        else { return }
-
-        self.viewModel.item.status = .outOfStock(isOnBackOrder: isOnBackOrder)
-      }
-    )
+    let isOnBackOrderSwitch = UISwitch()
 
     let isOnBackOrderStackView = UIStackView(arrangedSubviews: [
       isOnBackOrderLabel,
       isOnBackOrderSwitch,
     ])
 
-    let isBackInStockButton = UIButton(primaryAction: .init { [weak self] _ in
-      self?.viewModel.item.status = .inStock(quantity: 1)
-    })
+    let isBackInStockButton = UIButton()
     isBackInStockButton.setTitle("Is back in stock!", for: .normal)
 
     let outOfStockStackView = UIStackView(arrangedSubviews: [
@@ -122,6 +97,13 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       .sink { name in nameTextField.text = name }
       .store(in: &self.cancellables)
 
+    nameTextField.addAction(
+      .init(handler: { [weak self] action in
+        self?.viewModel.item.name = (action.sender as? UITextField)?.text ?? ""
+      }),
+      for: .editingChanged
+    )
+
     self.viewModel.$item
       .map(\.color)
       .removeDuplicates()
@@ -148,6 +130,20 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       }
       .store(in: &self.cancellables)
 
+    quantityStepper.addAction(
+      .init { _ in
+        self.viewModel.item.status = .inStock(quantity: Int(quantityStepper.value))
+      },
+      for: .valueChanged
+    )
+
+    markAsSoldOutButton.addAction(
+      .init { [weak self] _ in
+        self?.viewModel.item.status = .outOfStock(isOnBackOrder: false)
+      },
+      for: .touchUpInside
+    )
+
     self.viewModel.$item
       .map(\.status)
       .map(/Item.Status.outOfStock)
@@ -162,6 +158,23 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       .removeDuplicates()
       .sink { isOnBackOrder in isOnBackOrderSwitch.isOn = isOnBackOrder }
       .store(in: &self.cancellables)
+
+    isOnBackOrderSwitch.addAction(
+      .init(handler: { [weak self] action in
+        guard let self = self, let isOnBackOrder = (action.sender as? UISwitch)?.isOn
+        else { return }
+
+        self.viewModel.item.status = .outOfStock(isOnBackOrder: isOnBackOrder)
+      }),
+      for: .valueChanged
+    )
+
+    isBackInStockButton.addAction(
+      .init { [weak self] _ in
+        self?.viewModel.item.status = .inStock(quantity: 1)
+      },
+      for: .touchUpInside
+    )
   }
 
   func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
