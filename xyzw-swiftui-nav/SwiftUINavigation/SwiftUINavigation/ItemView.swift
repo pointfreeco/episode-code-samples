@@ -82,7 +82,7 @@ class ItemViewModel: Identifiable, ObservableObject {
 
     Task { @MainActor in
       for await item in self.$item.values {
-        await Task.sleep(NSEC_PER_MSEC * 300)
+        try await Task.sleep(nanoseconds: NSEC_PER_MSEC * 300)
         self.nameIsDuplicate = item.name == "Keyboard"
       }
     }
@@ -90,7 +90,7 @@ class ItemViewModel: Identifiable, ObservableObject {
 
   @MainActor
   func loadColors() async {
-    await Task.sleep(NSEC_PER_MSEC * 500)
+    try? await Task.sleep(nanoseconds: NSEC_PER_MSEC * 500)
     self.newColors = [
       .init(name: "Pink", red: 1, green: 0.7, blue: 0.7),
     ]

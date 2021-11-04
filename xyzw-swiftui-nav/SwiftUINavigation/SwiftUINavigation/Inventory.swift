@@ -2,13 +2,13 @@ import CasePaths
 import IdentifiedCollections
 import SwiftUI
 
-struct Item: Equatable, Identifiable {
+struct Item: Equatable, Hashable, Identifiable {
   let id = UUID()
   var name: String
   var color: Color?
   var status: Status
 
-  enum Status: Equatable {
+  enum Status: Equatable, Hashable {
     case inStock(quantity: Int)
     case outOfStock(isOnBackOrder: Bool)
 

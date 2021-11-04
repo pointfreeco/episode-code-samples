@@ -19,6 +19,7 @@
 		4BCC55AC272C572F0032BF7A /* Parsing in Frameworks */ = {isa = PBXBuildFile; productRef = 4BCC55AB272C572F0032BF7A /* Parsing */; };
 		4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F326EF9CB00032CB71 /* Inventory.swift */; };
 		4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */; };
+		DC7A25EA27345472006284C9 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7A25E927345472006284C9 /* UIKit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		4BCC55A9272C53D80032BF7A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4BDDD1F326EF9CB00032CB71 /* Inventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inventory.swift; sourceTree = "<group>"; };
 		4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIHelpers.swift; sourceTree = "<group>"; };
+		DC7A25E927345472006284C9 /* UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 				2AF10F1D26F3D4A000796207 /* ItemRow.swift */,
 				2AF10F1B26F3B56B00796207 /* ItemView.swift */,
 				4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */,
+				DC7A25E927345472006284C9 /* UIKit.swift */,
 				2A3A7B8E26EF940D00A37A4D /* Assets.xcassets */,
 				2A3A7B9026EF940D00A37A4D /* Preview Content */,
 			);
@@ -231,6 +234,7 @@
 				4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */,
 				2A3A7B8D26EF940C00A37A4D /* ContentView.swift in Sources */,
 				2AF10F1E26F3D4A000796207 /* ItemRow.swift in Sources */,
+				DC7A25EA27345472006284C9 /* UIKit.swift in Sources */,
 				2AF10F1C26F3B56B00796207 /* ItemView.swift in Sources */,
 				2A3A7B8B26EF940C00A37A4D /* SwiftUINavigationApp.swift in Sources */,
 			);

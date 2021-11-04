@@ -168,9 +168,9 @@ class AppViewModel: ObservableObject {
     selectedTab: Tab = .one
   ) {
     
-    var input = "123 hello"[...]
-    let output = Int.parser().parse(&input) // 123
-    input // " hello"
+//    var input = "123 hello"[...]
+//    let output = Int.parser().parse(&input) // 123
+//    input // " hello"
     
     self.inventoryViewModel = inventoryViewModel
     self.selectedTab = selectedTab
