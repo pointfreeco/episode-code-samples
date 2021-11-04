@@ -7,6 +7,89 @@ extension Item.Color {
   static let all: [Self?] = [nil] + Self.defaults
 }
 
+class _ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+  let viewModel: ItemViewModel
+  private var cancellables: Set<AnyCancellable> = []
+
+  init(viewModel: ItemViewModel) {
+    self.viewModel = viewModel
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+
+    let nameTextField = UITextField()
+    nameTextField.placeholder = "Name"
+    nameTextField.borderStyle = .roundedRect
+
+
+    let colorPicker = UIPickerView()
+    colorPicker.dataSource = self
+    colorPicker.delegate = self
+
+
+
+    self.viewModel.$item
+      .map(\.name)
+      .removeDuplicates()
+      .sink { name in nameTextField.text = name }
+      .store(in: &self.cancellables)
+
+    let stackView = UIStackView(arrangedSubviews: [
+      nameTextField,
+      colorPicker,
+    ])
+    stackView.axis = .vertical
+    stackView.spacing = UIStackView.spacingUseSystem
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    self.view.addSubview(stackView)
+
+    NSLayoutConstraint.activate([
+      stackView.topAnchor.constraint(equalTo: self.view.readableContentGuide.topAnchor),
+      stackView.leadingAnchor.constraint(equalTo: self.view.readableContentGuide.leadingAnchor),
+      stackView.trailingAnchor.constraint(equalTo: self.view.readableContentGuide.trailingAnchor),
+    ])
+
+  }
+
+  func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    1
+  }
+
+  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    Item.Color.all.count
+  }
+
+  func pickerView(
+    _ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int
+  ) -> String? {
+    Item.Color.all[row]?.name ?? "None"
+  }
+}
+
+
+struct ItemViewController_Previews: PreviewProvider {
+  static var previews: some View {
+    Representable(
+      viewController: _ItemViewController(
+        viewModel: .init(
+          item: .init(name: "Keyboard", color: nil, status: .inStock(quantity: 1)),
+          route: nil
+        )
+      )
+    )
+  }
+}
+
+
+
+
+
 class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
   let viewModel: ItemViewModel
 
