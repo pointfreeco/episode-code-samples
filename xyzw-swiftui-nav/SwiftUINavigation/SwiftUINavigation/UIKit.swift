@@ -208,7 +208,6 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
   let viewModel: InventoryViewModel
 
   private var cancellables: Set<AnyCancellable> = []
-  private var rowCancellables: [ItemRowViewModel.ID: AnyCancellable] = [:]
 
   init(viewModel: InventoryViewModel) {
     self.viewModel = viewModel
