@@ -23,10 +23,10 @@ struct SwiftUINavigationApp: App {
     )
 
     return WindowGroup {
-      UIKitContentView(
-//      ContentView(
-        viewModel: viewModel
+      Representable(
+        viewController: ContentViewController(viewModel: viewModel)
       )
+//      ContentView(viewModel: viewModel)
       .onOpenURL(perform: viewModel.open(url:))
     }
   }

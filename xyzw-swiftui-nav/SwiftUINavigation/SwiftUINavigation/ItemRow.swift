@@ -110,7 +110,10 @@ struct ItemRowView: View {
       case: /ItemRowViewModel.Route.edit,
       onNavigate: self.viewModel.setEditNavigation(isActive:),
       destination: { $itemViewModel in
-        ItemView(viewModel: itemViewModel)
+//        ItemView(viewModel: itemViewModel)
+        Representable(
+          viewController: _ItemViewController(viewModel: itemViewModel)
+        )
           .navigationBarTitle("Edit")
           .navigationBarBackButtonHidden(true)
           .toolbar {
@@ -183,29 +186,14 @@ struct ItemRowView: View {
           Text("Are you sure you want to delete this item?")
         }
       )
-      //    .sheet(unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.edit)) { $item in
-      //      NavigationView {
-      //        ItemView(item: $item)
-      //          .navigationBarTitle("Edit")
-      //          .toolbar {
-      //            ToolbarItem(placement: .cancellationAction) {
-      //              Button("Cancel") {
-      //                self.viewModel.cancelButtonTapped()
-      //              }
-      //            }
-      //            ToolbarItem(placement: .primaryAction) {
-      //              Button("Save") {
-      //                self.viewModel.edit(item: item)
-      //              }
-      //            }
-      //          }
-      //      }
-      //    }
       .popover(
         item: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate)
       ) { itemViewModel in
         NavigationView {
-          ItemView(viewModel: itemViewModel)
+          // ItemView(viewModel: itemViewModel)
+          Representable(
+            viewController: _ItemViewController(viewModel: itemViewModel)
+          )
             .navigationBarTitle("Duplicate")
             .toolbar {
               ToolbarItem(placement: .cancellationAction) {

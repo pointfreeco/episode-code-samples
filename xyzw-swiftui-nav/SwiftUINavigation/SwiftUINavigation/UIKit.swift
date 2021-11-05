@@ -27,94 +27,6 @@ class _ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
     nameTextField.placeholder = "Name"
     nameTextField.borderStyle = .roundedRect
 
-
-    let colorPicker = UIPickerView()
-    colorPicker.dataSource = self
-    colorPicker.delegate = self
-
-
-
-    self.viewModel.$item
-      .map(\.name)
-      .removeDuplicates()
-      .sink { name in nameTextField.text = name }
-      .store(in: &self.cancellables)
-
-    let stackView = UIStackView(arrangedSubviews: [
-      nameTextField,
-      colorPicker,
-    ])
-    stackView.axis = .vertical
-    stackView.spacing = UIStackView.spacingUseSystem
-    stackView.translatesAutoresizingMaskIntoConstraints = false
-    self.view.addSubview(stackView)
-
-    NSLayoutConstraint.activate([
-      stackView.topAnchor.constraint(equalTo: self.view.readableContentGuide.topAnchor),
-      stackView.leadingAnchor.constraint(equalTo: self.view.readableContentGuide.leadingAnchor),
-      stackView.trailingAnchor.constraint(equalTo: self.view.readableContentGuide.trailingAnchor),
-    ])
-
-  }
-
-  func numberOfComponents(in pickerView: UIPickerView) -> Int {
-    1
-  }
-
-  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-    Item.Color.all.count
-  }
-
-  func pickerView(
-    _ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int
-  ) -> String? {
-    Item.Color.all[row]?.name ?? "None"
-  }
-}
-
-
-struct ItemViewController_Previews: PreviewProvider {
-  static var previews: some View {
-    Representable(
-      viewController: _ItemViewController(
-        viewModel: .init(
-          item: .init(name: "Keyboard", color: nil, status: .inStock(quantity: 1)),
-          route: nil
-        )
-      )
-    )
-  }
-}
-
-
-
-
-
-class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
-  let viewModel: ItemViewModel
-
-  private var cancellables: Set<AnyCancellable> = []
-
-  init(viewModel: ItemViewModel) {
-    self.viewModel = viewModel
-    super.init(nibName: nil, bundle: nil)
-  }
-
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    // MARK: Layout
-
-    self.view.backgroundColor = .white
-
-    let nameTextField = UITextField()
-    nameTextField.placeholder = "Name"
-    nameTextField.borderStyle = .roundedRect
-
     let colorPicker = UIPickerView()
     colorPicker.dataSource = self
     colorPicker.delegate = self
@@ -124,9 +36,12 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
     let quantityStepper = UIStepper()
     quantityStepper.maximumValue = .infinity
 
-    let quantityStackView = UIStackView(arrangedSubviews: [quantityLabel, quantityStepper])
+    let quantityStackView = UIStackView(arrangedSubviews: [
+      quantityLabel,
+      quantityStepper
+    ])
 
-    let markAsSoldOutButton = UIButton()
+    let markAsSoldOutButton = UIButton(type: .system)
     markAsSoldOutButton.setTitle("Mark as sold out", for: .normal)
 
     let inStockStackView = UIStackView(arrangedSubviews: [
@@ -145,7 +60,7 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       isOnBackOrderSwitch,
     ])
 
-    let isBackInStockButton = UIButton()
+    let isBackInStockButton = UIButton(type: .system)
     isBackInStockButton.setTitle("Is back in stock!", for: .normal)
 
     let outOfStockStackView = UIStackView(arrangedSubviews: [
@@ -176,7 +91,7 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       stackView.trailingAnchor.constraint(equalTo: self.view.readableContentGuide.trailingAnchor),
     ])
 
-    // MARK: View Model Bindings
+    // MARK: - View model bindings
 
     self.viewModel.$item
       .map(\.name)
@@ -184,27 +99,11 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       .sink { name in nameTextField.text = name }
       .store(in: &self.cancellables)
 
-    nameTextField.addAction(
-      .init(handler: { [weak self] action in
-        self?.viewModel.item.name = (action.sender as? UITextField)?.text ?? ""
-      }),
-      for: .editingChanged
-    )
-
     self.viewModel.$item
       .map(\.color)
       .removeDuplicates()
       .compactMap { color in color.flatMap(Item.Color.all.firstIndex(of:)) }
       .sink { row in colorPicker.selectRow(row, inComponent: 0, animated: false ) }
-      .store(in: &self.cancellables)
-
-    self.viewModel.$item
-//      .map(\.status)
-//      .map(/Item.Status.inStock)
-//      .map { $0 == nil }
-      .map { !(/Item.Status.inStock ~= $0.status) }
-      .removeDuplicates()
-      .sink { isHidden in inStockStackView.isHidden = isHidden }
       .store(in: &self.cancellables)
 
     self.viewModel.$item
@@ -217,8 +116,30 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       }
       .store(in: &self.cancellables)
 
+    self.viewModel.$item
+      .map { /Item.Status.inStock ~= $0.status }
+      .removeDuplicates()
+      .sink { isInStock in inStockStackView.isHidden = !isInStock }
+      .store(in: &self.cancellables)
+
+    self.viewModel.$item
+      .map { /Item.Status.outOfStock ~= $0.status }
+      .removeDuplicates()
+      .sink { isOutOfStock in
+        outOfStockStackView.isHidden = !isOutOfStock }
+      .store(in: &self.cancellables)
+
+    self.viewModel.$item
+      .map(\.status)
+      .compactMap(/Item.Status.outOfStock)
+      .removeDuplicates()
+      .sink { isOnBackOrder in isOnBackOrderSwitch.isOn = isOnBackOrder }
+      .store(in: &self.cancellables)
+
+    // MARK: - UI actions
+
     quantityStepper.addAction(
-      .init { _ in
+      .init { [unowned quantityStepper] _ in
         self.viewModel.item.status = .inStock(quantity: Int(quantityStepper.value))
       },
       for: .valueChanged
@@ -231,20 +152,19 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       for: .touchUpInside
     )
 
-    self.viewModel.$item
-      .map(\.status)
-      .map(/Item.Status.outOfStock)
-      .map { $0 == nil }
-      .removeDuplicates()
-      .sink { isHidden in outOfStockStackView.isHidden = isHidden }
-      .store(in: &self.cancellables)
+    isBackInStockButton.addAction(
+      .init { [weak self] _ in
+        self?.viewModel.item.status = .inStock(quantity: 1)
+      },
+      for: .touchUpInside
+    )
 
-    self.viewModel.$item
-      .map(\.status)
-      .compactMap(/Item.Status.outOfStock)
-      .removeDuplicates()
-      .sink { isOnBackOrder in isOnBackOrderSwitch.isOn = isOnBackOrder }
-      .store(in: &self.cancellables)
+    nameTextField.addAction(
+      .init(handler: { [weak self] action in
+        self?.viewModel.item.name = (action.sender as? UITextField)?.text ?? ""
+      }),
+      for: .editingChanged
+    )
 
     isOnBackOrderSwitch.addAction(
       .init(handler: { [weak self, weak isOnBackOrderSwitch] action in
@@ -255,16 +175,11 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
       }),
       for: .valueChanged
     )
-
-    isBackInStockButton.addAction(
-      .init { [weak self] _ in
-        self?.viewModel.item.status = .inStock(quantity: 1)
-      },
-      for: .touchUpInside
-    )
   }
 
-  func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
+  func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    1
+  }
 
   func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
     Item.Color.all.count
@@ -275,11 +190,63 @@ class ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerView
   ) -> String? {
     Item.Color.all[row]?.name ?? "None"
   }
-
+  
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
     self.viewModel.item.color = Item.Color.all[row]
   }
 }
+
+struct ItemViewController_Previews: PreviewProvider {
+  static var previews: some View {
+    Representable(
+      viewController: _ItemViewController(
+        viewModel: .init(
+          item: .init(name: "Keyboard", color: .blue, status: .outOfStock(isOnBackOrder: true)),
+          route: nil
+        )
+      )
+    )
+  }
+}
+
+
+class _InventoryViewController: UIViewController {
+  let viewModel: InventoryViewModel
+
+  init(viewModel: InventoryViewModel) {
+    self.viewModel = viewModel
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+
+    let addButton = UIBarButtonItem(title: "Add")
+    self.navigationItem.rightBarButtonItem = addButton
+
+    self.title = "Inventory"
+    self.view.backgroundColor = .white
+  }
+}
+
+
+struct InventoryViewController_Previews: PreviewProvider {
+  static var previews: some View {
+    NavigationView {
+      Representable(
+        viewController: InventoryViewController(viewModel: .init())
+      )
+    }
+  }
+}
+
+
+
+
 
 extension ItemRowViewModel: Hashable {
   static func == (lhs: ItemRowViewModel, rhs: ItemRowViewModel) -> Bool {
@@ -312,7 +279,6 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
     self.navigationItem.rightBarButtonItem = addButton
 
     self.title = "Inventory"
-
     self.view.backgroundColor = .white
 
     enum Section { case inventory }
@@ -384,6 +350,7 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
 
     self.viewModel.$route
       .removeDuplicates()
+      .print("!!!!!!!!!!!!!!!!!!!!!")
       .receive(on: DispatchQueue.main)
       .sink { [weak self] route in
         guard let self = self else { return }
@@ -544,12 +511,13 @@ class ContentViewController: UITabBarController {
   }
 }
 
-struct UIKitContentView: UIViewControllerRepresentable {
-  let viewModel: AppViewModel
+struct Representable: UIViewControllerRepresentable {
+  let viewController: UIViewController
 
-  func makeUIViewController(context: Context) -> ContentViewController {
-    .init(viewModel: self.viewModel)
+  func makeUIViewController(context: Context) -> some UIViewController {
+    self.viewController
   }
 
-  func updateUIViewController(_ uiViewController: ContentViewController, context: Context) {}
+  func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+  }
 }
