@@ -23,6 +23,8 @@ class _ItemViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    self.view.backgroundColor = .white
+
     let nameTextField = UITextField()
     nameTextField.placeholder = "Name"
     nameTextField.borderStyle = .roundedRect
@@ -210,8 +212,9 @@ struct ItemViewController_Previews: PreviewProvider {
 }
 
 
-class _InventoryViewController: UIViewController {
+class _InventoryViewController: UIViewController, UICollectionViewDelegate {
   let viewModel: InventoryViewModel
+  private var cancellables: Set<AnyCancellable> = []
 
   init(viewModel: InventoryViewModel) {
     self.viewModel = viewModel
@@ -225,38 +228,179 @@ class _InventoryViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    let addButton = UIBarButtonItem(title: "Add")
-    self.navigationItem.rightBarButtonItem = addButton
+    // MARK: - View creation
+
+    enum Section { case inventory }
+
+
+    let layoutConfig = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+
+    let collectionView = UICollectionView(
+      frame: .zero,
+      collectionViewLayout: UICollectionViewCompositionalLayout.list(using: layoutConfig)
+    )
+    collectionView.translatesAutoresizingMaskIntoConstraints = false
+
+    let cellRegistration = UICollectionView.CellRegistration<
+      UICollectionViewListCell, ItemRowViewModel
+    > { cell, indexPath, itemRowViewModel in
+      var content = cell.defaultContentConfiguration()
+      content.text = itemRowViewModel.item.name
+      cell.contentConfiguration = content
+    }
+
+    let dataSource = UICollectionViewDiffableDataSource<Section, ItemRowViewModel>(
+      collectionView: collectionView
+    ) { collectionView, indexPath, itemRowViewModel in
+      let cell = collectionView.dequeueConfiguredReusableCell(
+        using: cellRegistration,
+        for: indexPath,
+        item: itemRowViewModel
+      )
+      cell.accessories = [.disclosureIndicator()]
+      return cell
+    }
+
+    collectionView.dataSource = dataSource
+    collectionView.delegate = self
+
+    self.view.addSubview(collectionView)
+
+    NSLayoutConstraint.activate([
+      collectionView.topAnchor.constraint(equalTo: self.view.topAnchor),
+      collectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+      collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+      collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+    ])
+
+
+
+
+    // TODO: do this in UI action binding section since it must be done all at once?
+    self.navigationItem.rightBarButtonItem = .init(
+      title: "Add",
+      primaryAction: .init { _ in
+        self.viewModel.addButtonTapped()
+      }
+    )
 
     self.title = "Inventory"
     self.view.backgroundColor = .white
+
+    // MARK: - View model bindings
+
+    self.viewModel.$route
+      .removeDuplicates()
+      .sink { [weak self] route in
+        guard let self = self else { return }
+
+        switch route {
+        case .none:
+          self.presentedViewController?.dismiss(animated: true)
+          guard
+            let nav = self.navigationController,
+            let index = nav.viewControllers.firstIndex(of: self)
+          else { return }
+          nav.setViewControllers(
+            Array(nav.viewControllers[...index]),
+            animated: true
+          )
+          
+        case let .add(itemViewModel):
+          let vc = _ItemViewController(viewModel: itemViewModel)
+          vc.title = "Add"
+          vc.navigationItem.leftBarButtonItem = .init(
+            title: "Cancel",
+            primaryAction: .init { _ in
+              self.viewModel.cancelButtonTapped()
+            }
+          )
+          vc.navigationItem.rightBarButtonItem = .init(
+            title: "Add",
+            primaryAction: .init { _ in
+              self.viewModel.add(item: itemViewModel.item)
+            }
+          )
+          self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+
+        case let .row(id, route):
+          guard let itemRowViewModel = self.viewModel.inventory[id: id]
+          else { return }
+
+          switch route {
+          case .deleteAlert:
+            break
+          case .duplicate(_):
+            break
+
+          case let .edit(itemViewModel):
+            let itemToEdit = ItemViewController(viewModel: itemViewModel)
+            itemToEdit.title = "Edit"
+            itemToEdit.navigationItem.leftBarButtonItem = .init(
+              title: "Cancel",
+              primaryAction: .init { _ in
+                itemRowViewModel.cancelButtonTapped()
+              }
+            )
+            itemToEdit.navigationItem.rightBarButtonItem = .init(
+              title: "Save",
+              primaryAction: .init { _ in
+                itemRowViewModel.edit(item: itemViewModel.item)
+                collectionView.reloadData()
+              }
+            )
+            self.show(itemToEdit, sender: nil)
+
+          }
+        }
+      }
+      .store(in: &self.cancellables)
+
+
+
+    self.viewModel.$inventory
+      .sink { inventory in
+        var snapshot = NSDiffableDataSourceSnapshot<Section, ItemRowViewModel>()
+        snapshot.appendSections([.inventory])
+        snapshot.appendItems(inventory.elements, toSection: .inventory)
+        dataSource.apply(snapshot, animatingDifferences: true)
+      }
+      .store(in: &self.cancellables)
+
+
+
+    // MARK: - UI action bindings
+
+    // TODO: why can't i define this here? button disappears
+//    addButton.primaryAction = .init { _ in
+//      self.viewModel.addButtonTapped()
+//    }
+  }
+
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    self.viewModel.inventory[indexPath.row].setEditNavigation(isActive: true)
   }
 }
 
 
 struct InventoryViewController_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
-      Representable(
-        viewController: InventoryViewController(viewModel: .init())
+    Representable(
+      viewController: UINavigationController(
+        rootViewController: _InventoryViewController(
+          viewModel: .init(
+            inventory: [
+              .init(item: .init(name: "Keyboard", color: .red, status: .inStock(quantity: 100)))
+            ]
+          )
+        )
       )
-    }
+    )
   }
 }
 
 
-
-
-
-extension ItemRowViewModel: Hashable {
-  static func == (lhs: ItemRowViewModel, rhs: ItemRowViewModel) -> Bool {
-    lhs === rhs
-  }
-
-  func hash(into hasher: inout Hasher) {
-    self.item.hash(into: &hasher)
-  }
-}
+// -------------------
 
 class InventoryViewController: UIViewController, UICollectionViewDelegate {
   let viewModel: InventoryViewModel
@@ -308,6 +452,7 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
       collectionViewLayout: UICollectionViewCompositionalLayout.list(using: layoutConfig)
     )
     collectionView.translatesAutoresizingMaskIntoConstraints = false
+
     let cellRegistration = UICollectionView.CellRegistration<
       UICollectionViewListCell, ItemRowViewModel
     > { cell, indexPath, itemRowViewModel in
@@ -315,11 +460,15 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
       content.text = itemRowViewModel.item.name
       cell.contentConfiguration = content
     }
+
     dataSource = UICollectionViewDiffableDataSource<Section, ItemRowViewModel>(
       collectionView: collectionView
     ) { collectionView, indexPath, itemRowViewModel in
-      let cell = collectionView
-        .dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemRowViewModel)
+      let cell = collectionView.dequeueConfiguredReusableCell(
+        using: cellRegistration,
+        for: indexPath,
+        item: itemRowViewModel
+      )
       cell.accessories = [.disclosureIndicator()]
       return cell
     }
@@ -350,8 +499,6 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
 
     self.viewModel.$route
       .removeDuplicates()
-      .print("!!!!!!!!!!!!!!!!!!!!!")
-      .receive(on: DispatchQueue.main)
       .sink { [weak self] route in
         guard let self = self else { return }
 
@@ -519,5 +666,16 @@ struct Representable: UIViewControllerRepresentable {
   }
 
   func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+  }
+}
+
+
+extension ItemRowViewModel: Hashable {
+  static func == (lhs: ItemRowViewModel, rhs: ItemRowViewModel) -> Bool {
+    lhs === rhs
+  }
+
+  func hash(into hasher: inout Hasher) {
+    self.item.hash(into: &hasher)
   }
 }
