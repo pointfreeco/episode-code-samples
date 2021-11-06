@@ -232,8 +232,26 @@ class _InventoryViewController: UIViewController, UICollectionViewDelegate {
 
     enum Section { case inventory }
 
+    var dataSource: UICollectionViewDiffableDataSource<Section, ItemRowViewModel>!
 
-    let layoutConfig = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+    var layoutConfig = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+    layoutConfig.trailingSwipeActionsConfigurationProvider = { indexPath in
+      guard let viewModel = dataSource.itemIdentifier(for: indexPath) else { return nil }
+
+      let duplicate = UIContextualAction(style: .normal, title: "Duplicate") { _, _, completion in
+        viewModel.duplicateButtonTapped()
+        completion(true)
+      }
+      duplicate.backgroundColor = .darkGray
+
+      let delete = UIContextualAction(style: .normal, title: "Delete") { _, _, completion in
+        viewModel.deleteButtonTapped()
+        completion(true)
+      }
+      delete.backgroundColor = .red
+
+      return UISwipeActionsConfiguration(actions: [delete, duplicate])
+    }
 
     let collectionView = UICollectionView(
       frame: .zero,
@@ -242,14 +260,14 @@ class _InventoryViewController: UIViewController, UICollectionViewDelegate {
     collectionView.translatesAutoresizingMaskIntoConstraints = false
 
     let cellRegistration = UICollectionView.CellRegistration<
-      UICollectionViewListCell, ItemRowViewModel
-    > { cell, indexPath, itemRowViewModel in
-      var content = cell.defaultContentConfiguration()
-      content.text = itemRowViewModel.item.name
-      cell.contentConfiguration = content
+      ItemRowCellView, ItemRowViewModel
+    > { [weak self] cell, indexPath, itemRowViewModel in
+      guard let self = self
+      else { return }
+      cell.bind(viewModel: itemRowViewModel, viewController: self)
     }
 
-    let dataSource = UICollectionViewDiffableDataSource<Section, ItemRowViewModel>(
+    dataSource = UICollectionViewDiffableDataSource<Section, ItemRowViewModel>(
       collectionView: collectionView
     ) { collectionView, indexPath, itemRowViewModel in
       let cell = collectionView.dequeueConfiguredReusableCell(
@@ -379,6 +397,91 @@ class _InventoryViewController: UIViewController, UICollectionViewDelegate {
 
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     self.viewModel.inventory[indexPath.row].setEditNavigation(isActive: true)
+  }
+}
+
+
+class ItemRowCellView: UICollectionViewListCell {
+//  var viewModel: ItemRowViewModel!
+//  var viewController: UIViewController!
+  var cancellables: Set<AnyCancellable> = []
+
+  func bind(viewModel: ItemRowViewModel, viewController: UIViewController) {
+    self.cancellables = []
+
+    var content = self.defaultContentConfiguration()
+    content.text = viewModel.item.name
+    self.contentConfiguration = content
+
+    viewModel.$route
+      .removeDuplicates()
+      .sink { route in
+        switch route {
+        case .none:
+          break
+
+        case .deleteAlert:
+          let alert = UIAlertController(
+            title: viewModel.item.name,
+            message: "Are you sure you want to delete this item?",
+            preferredStyle: .alert
+          )
+          alert.addAction(.init(title: "Cancel", style: .cancel) { _ in
+            viewModel.cancelButtonTapped()
+          })
+          alert.addAction(.init(title: "Delete", style: .destructive) { _ in
+            viewModel.deleteConfirmationButtonTapped()
+          })
+          viewController.present(alert, animated: true)
+
+        case let .duplicate(itemViewModel):
+          let itemToDuplicate = ItemViewController(viewModel: itemViewModel)
+          itemToDuplicate.title = "Duplicate"
+          itemToDuplicate.navigationItem.leftBarButtonItem = .init(
+            title: "Cancel",
+            primaryAction: .init { _ in
+              viewModel.cancelButtonTapped()
+            }
+          )
+          itemToDuplicate.navigationItem.rightBarButtonItem = .init(
+            title: "Add",
+            primaryAction: .init { _ in
+              viewModel.duplicate(item: itemViewModel.item)
+            }
+          )
+          let vc = UINavigationController(rootViewController: itemToDuplicate)
+          vc.modalPresentationStyle = .popover
+//          let row = viewModel.inventory.index(id: id)
+          vc.popoverPresentationController?.sourceView = self
+//          row.flatMap {
+////            collectionView.cellForItem(at: .init(row: $0, section: 0))
+//          }
+          viewController.present(vc, animated: true)
+
+
+        case let .edit(itemViewModel):
+          let itemToEdit = ItemViewController(viewModel: itemViewModel)
+          itemToEdit.title = "Edit"
+          itemToEdit.navigationItem.leftBarButtonItem = .init(
+            title: "Cancel",
+            primaryAction: .init { _ in
+              viewModel.cancelButtonTapped()
+            }
+          )
+          itemToEdit.navigationItem.rightBarButtonItem = .init(
+            title: "Save",
+            primaryAction: .init { _ in
+              viewModel.edit(item: itemViewModel.item)
+              // TODO: was this needed
+//              collectionView.reloadData()
+            }
+          )
+          // TODO: double drill down happens in playgrounds but doesnt seem to happen in simatulor. bug?
+          viewController.show(itemToEdit, sender: nil)
+
+        }
+      }
+      .store(in: &self.cancellables)
   }
 }
 
@@ -666,6 +769,17 @@ struct Representable: UIViewControllerRepresentable {
   }
 
   func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+  }
+}
+
+struct RepresentableView: UIViewRepresentable {
+  let view: UIView
+
+  func makeUIView(context: Context) -> some UIView {
+    self.view
+  }
+
+  func updateUIView(_ uiView: UIViewType, context: Context) {
   }
 }
 

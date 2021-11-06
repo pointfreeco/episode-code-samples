@@ -239,11 +239,15 @@ struct ContentView: View {
         .tag(Tab.one)
 
       NavigationView {
-        InventoryView(viewModel: self.viewModel.inventoryViewModel)
+        Representable(
+          viewController: _InventoryViewController(
+            viewModel: self.viewModel.inventoryViewModel
+          )
+        )
       }
-        .tabItem { Text("Inventory") }
-        .tag(Tab.inventory)
-
+      .tabItem { Text("Inventory") }
+      .tag(Tab.inventory)
+      
       Text("Three")
         .tabItem { Text("Three") }
         .tag(Tab.three)
