@@ -177,16 +177,6 @@ struct InventoryView: View {
   }
 }
 
-struct TestView: View {
-  @State var collection = [1, 2, 3]
-
-  var body: some View {
-    ForEach(self.$collection, id: \.self) { $element in
-
-    }
-  }
-}
-
 struct InventoryView_Previews: PreviewProvider {
   static var previews: some View {
     let keyboard = Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))

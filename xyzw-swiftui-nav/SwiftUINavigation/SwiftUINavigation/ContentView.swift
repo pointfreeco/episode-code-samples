@@ -4,7 +4,6 @@ import SwiftUI
 struct DeepLinkRequest {
   var pathComponents: ArraySlice<Substring>
   var queryItems: [String: ArraySlice<Substring?>]
-  // ?name=Blob&name=BlobJr&isAdmin
 }
 
 extension DeepLinkRequest {
@@ -148,13 +147,6 @@ let deepLinker = PathComponent("one")
       .map { .three }
   )
 
-// nav:///inventory/add/colorPicker
-// nav:///inventory/add?quantity=100&name=Keyboard
-
-// nav:///inventory/:uuid/edit
-// nav:///inventory/:uuid/delete
-// nav:///inventory/:uuid/duplicate
-
 enum Tab {
   case one, inventory, three
 }
@@ -167,11 +159,6 @@ class AppViewModel: ObservableObject {
     inventoryViewModel: InventoryViewModel = .init(),
     selectedTab: Tab = .one
   ) {
-    
-    var input = "123 hello"[...]
-    let output = Int.parser().parse(&input) // 123
-    input // " hello"
-    
     self.inventoryViewModel = inventoryViewModel
     self.selectedTab = selectedTab
   }

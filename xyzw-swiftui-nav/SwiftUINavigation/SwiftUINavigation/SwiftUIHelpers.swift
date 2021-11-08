@@ -252,7 +252,6 @@ extension NavigationLink {
   }
 }
 
-
 // .sheet:         (Binding<E?>, CasePath<E, C>, (Binding<C>) -> some View) -> some View
 // .popover:       (Binding<E?>, CasePath<E, C>, (Binding<C>) -> some View) -> some View
 // .alert:         (Binding<E?>, CasePath<E, C>, (Binding<C>) -> some View) -> some View

@@ -45,10 +45,6 @@ class ItemRowViewModel: Identifiable, ObservableObject {
     self.route = nil
   }
   
-//  func editButtonTapped() {
-//    self.route = .edit(self.item)
-//  }
-  
   func setEditNavigation(isActive: Bool) {
     self.route = isActive ? .edit(.init(item: self.item)) : nil
   }
@@ -89,22 +85,6 @@ struct ItemRowView: View {
   @ObservedObject var viewModel: ItemRowViewModel
 
   var body: some View {
-//    NavigationLink(
-//      unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate),
-//      onNavigate: { _ in },
-//      destination: { $item in }
-//    ) {
-//      Text("Duplicate")
-//    }
-//    
-//    NavigationLink(
-//      unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.deleteAlert),
-//      onNavigate: { _ in },
-//      destination: { _ in }
-//    ) {
-//      Text("Delete")
-//    }
-
     NavigationLink(
       unwrap: self.$viewModel.route,
       case: /ItemRowViewModel.Route.edit,
@@ -159,11 +139,6 @@ struct ItemRowView: View {
         }
         .padding(.leading)
 
-        //      Button(action: { self.viewModel.editButtonTapped() }) {
-        //        Image(systemName: "pencil")
-        //      }
-        //      .padding(.leading)
-
         Button(action: { self.viewModel.deleteButtonTapped() }) {
           Image(systemName: "trash.fill")
         }
@@ -183,24 +158,6 @@ struct ItemRowView: View {
           Text("Are you sure you want to delete this item?")
         }
       )
-      //    .sheet(unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.edit)) { $item in
-      //      NavigationView {
-      //        ItemView(item: $item)
-      //          .navigationBarTitle("Edit")
-      //          .toolbar {
-      //            ToolbarItem(placement: .cancellationAction) {
-      //              Button("Cancel") {
-      //                self.viewModel.cancelButtonTapped()
-      //              }
-      //            }
-      //            ToolbarItem(placement: .primaryAction) {
-      //              Button("Save") {
-      //                self.viewModel.edit(item: item)
-      //              }
-      //            }
-      //          }
-      //      }
-      //    }
       .popover(
         item: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate)
       ) { itemViewModel in

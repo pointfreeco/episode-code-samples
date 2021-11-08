@@ -3,8 +3,6 @@ import SwiftUI
 
 struct ColorPickerView: View {
   @ObservedObject var viewModel: ItemViewModel
-//  @Binding var color: Item.Color?
-//  @State var newColors: [Item.Color] = []
   @Environment(\.dismiss) var dismiss
   
   var body: some View {
@@ -82,7 +80,7 @@ class ItemViewModel: Identifiable, ObservableObject {
 
     Task { @MainActor in
       for await item in self.$item.values {
-        await Task.sleep(NSEC_PER_MSEC * 300)
+        try await Task.sleep(nanoseconds: NSEC_PER_MSEC * 300)
         self.nameIsDuplicate = item.name == "Keyboard"
       }
     }
@@ -90,7 +88,7 @@ class ItemViewModel: Identifiable, ObservableObject {
 
   @MainActor
   func loadColors() async {
-    await Task.sleep(NSEC_PER_MSEC * 500)
+    try? await Task.sleep(nanoseconds: NSEC_PER_MSEC * 500)
     self.newColors = [
       .init(name: "Pink", red: 1, green: 0.7, blue: 0.7),
     ]
@@ -102,21 +100,12 @@ class ItemViewModel: Identifiable, ObservableObject {
 }
 
 struct ItemView: View {
-//  @Binding var item: Item
   @ObservedObject var viewModel: ItemViewModel
-//  @State var nameIsDuplicate = false
 
   var body: some View {
     Form {
       TextField("Name", text: self.$viewModel.item.name)
         .background(self.viewModel.nameIsDuplicate ? Color.red.opacity(0.1) : Color.clear)
-//        .onChange(of: self.viewModel.item.name) { newName in
-//          // TODO: Validation logic
-//          Task { @MainActor in
-//            await Task.sleep(NSEC_PER_MSEC * 300)
-//            self.nameIsDuplicate = newName == "Keyboard"
-//          }
-//        }
 
       NavigationLink(
         unwrap: self.$viewModel.route,
