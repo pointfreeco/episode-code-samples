@@ -236,11 +236,16 @@ class _InventoryViewController: UIViewController, UICollectionViewDelegate {
 
     var layoutConfig = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
     layoutConfig.trailingSwipeActionsConfigurationProvider = { indexPath in
-      guard let viewModel = dataSource.itemIdentifier(for: indexPath) else { return nil }
+      guard let viewModel = dataSource.itemIdentifier(for: indexPath)
+      else { return nil }
 
       let duplicate = UIContextualAction(style: .normal, title: "Duplicate") { _, _, completion in
         viewModel.duplicateButtonTapped()
         completion(true)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+          viewModel.route = nil
+        }
       }
       duplicate.backgroundColor = .darkGray
 
@@ -264,7 +269,7 @@ class _InventoryViewController: UIViewController, UICollectionViewDelegate {
     > { [weak self] cell, indexPath, itemRowViewModel in
       guard let self = self
       else { return }
-      cell.bind(viewModel: itemRowViewModel, viewController: self)
+      cell.bind(viewModel: itemRowViewModel, context: self)
     }
 
     dataSource = UICollectionViewDiffableDataSource<Section, ItemRowViewModel>(
@@ -307,6 +312,8 @@ class _InventoryViewController: UIViewController, UICollectionViewDelegate {
 
     // MARK: - View model bindings
 
+    var presentedViewController: UIViewController?
+
     self.viewModel.$route
       .removeDuplicates()
       .sink { [weak self] route in
@@ -314,16 +321,9 @@ class _InventoryViewController: UIViewController, UICollectionViewDelegate {
 
         switch route {
         case .none:
-          self.presentedViewController?.dismiss(animated: true)
-          guard
-            let nav = self.navigationController,
-            let index = nav.viewControllers.firstIndex(of: self)
-          else { return }
-          nav.setViewControllers(
-            Array(nav.viewControllers[...index]),
-            animated: true
-          )
-          
+          presentedViewController?.dismiss(animated: true)
+          break
+
         case let .add(itemViewModel):
           let vc = _ItemViewController(viewModel: itemViewModel)
           vc.title = "Add"
@@ -340,36 +340,10 @@ class _InventoryViewController: UIViewController, UICollectionViewDelegate {
             }
           )
           self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+          presentedViewController = vc
 
-        case let .row(id, route):
-          guard let itemRowViewModel = self.viewModel.inventory[id: id]
-          else { return }
-
-          switch route {
-          case .deleteAlert:
-            break
-          case .duplicate(_):
-            break
-
-          case let .edit(itemViewModel):
-            let itemToEdit = ItemViewController(viewModel: itemViewModel)
-            itemToEdit.title = "Edit"
-            itemToEdit.navigationItem.leftBarButtonItem = .init(
-              title: "Cancel",
-              primaryAction: .init { _ in
-                itemRowViewModel.cancelButtonTapped()
-              }
-            )
-            itemToEdit.navigationItem.rightBarButtonItem = .init(
-              title: "Save",
-              primaryAction: .init { _ in
-                itemRowViewModel.edit(item: itemViewModel.item)
-                collectionView.reloadData()
-              }
-            )
-            self.show(itemToEdit, sender: nil)
-
-          }
+        case .row:
+          break
         }
       }
       .store(in: &self.cancellables)
@@ -402,22 +376,41 @@ class _InventoryViewController: UIViewController, UICollectionViewDelegate {
 
 
 class ItemRowCellView: UICollectionViewListCell {
-//  var viewModel: ItemRowViewModel!
-//  var viewController: UIViewController!
   var cancellables: Set<AnyCancellable> = []
 
-  func bind(viewModel: ItemRowViewModel, viewController: UIViewController) {
+  override func prepareForReuse() {
+    super.prepareForReuse()
     self.cancellables = []
+  }
 
-    var content = self.defaultContentConfiguration()
-    content.text = viewModel.item.name
-    self.contentConfiguration = content
+  func bind(viewModel: ItemRowViewModel, context: UIViewController) {
+
+    viewModel.$item
+      .map(\.name)
+      .removeDuplicates()
+      .sink { [weak self] name in
+        guard let self = self
+        else { return }
+        var content = self.defaultContentConfiguration()
+        content.text = name
+        self.contentConfiguration = content
+      }
+      .store(in: &self.cancellables)
+
+    var presentedViewController: UIViewController?
 
     viewModel.$route
       .removeDuplicates()
-      .sink { route in
+      .sink { [weak viewModel] route in
+        guard let viewModel = viewModel
+        else { return }
+
         switch route {
         case .none:
+          presentedViewController?.dismiss(animated: true)
+          if context.navigationController?.viewControllers.contains(presentedViewController ?? .init()) == true {
+            context.pop(to: context)
+          }
           break
 
         case .deleteAlert:
@@ -432,59 +425,66 @@ class ItemRowCellView: UICollectionViewListCell {
           alert.addAction(.init(title: "Delete", style: .destructive) { _ in
             viewModel.deleteConfirmationButtonTapped()
           })
-          viewController.present(alert, animated: true)
+          context.present(alert, animated: true)
+          presentedViewController = alert
 
         case let .duplicate(itemViewModel):
-          let itemToDuplicate = ItemViewController(viewModel: itemViewModel)
-          itemToDuplicate.title = "Duplicate"
-          itemToDuplicate.navigationItem.leftBarButtonItem = .init(
+          let vc = ItemViewController(viewModel: itemViewModel)
+          vc.title = "Duplicate"
+          vc.navigationItem.leftBarButtonItem = .init(
             title: "Cancel",
             primaryAction: .init { _ in
               viewModel.cancelButtonTapped()
             }
           )
-          itemToDuplicate.navigationItem.rightBarButtonItem = .init(
+          vc.navigationItem.rightBarButtonItem = .init(
             title: "Add",
             primaryAction: .init { _ in
               viewModel.duplicate(item: itemViewModel.item)
             }
           )
-          let vc = UINavigationController(rootViewController: itemToDuplicate)
-          vc.modalPresentationStyle = .popover
-//          let row = viewModel.inventory.index(id: id)
-          vc.popoverPresentationController?.sourceView = self
-//          row.flatMap {
-////            collectionView.cellForItem(at: .init(row: $0, section: 0))
-//          }
-          viewController.present(vc, animated: true)
-
+          let nav = UINavigationController(rootViewController: vc)
+          nav.modalPresentationStyle = .popover
+          nav.popoverPresentationController?.sourceView = self
+          context.present(nav, animated: true)
+          presentedViewController = nav
 
         case let .edit(itemViewModel):
-          let itemToEdit = ItemViewController(viewModel: itemViewModel)
-          itemToEdit.title = "Edit"
-          itemToEdit.navigationItem.leftBarButtonItem = .init(
+          let vc = ItemViewController(viewModel: itemViewModel)
+          vc.title = "Edit"
+          vc.navigationItem.leftBarButtonItem = .init(
             title: "Cancel",
             primaryAction: .init { _ in
               viewModel.cancelButtonTapped()
             }
           )
-          itemToEdit.navigationItem.rightBarButtonItem = .init(
+          vc.navigationItem.rightBarButtonItem = .init(
             title: "Save",
             primaryAction: .init { _ in
               viewModel.edit(item: itemViewModel.item)
-              // TODO: was this needed
-//              collectionView.reloadData()
             }
           )
-          // TODO: double drill down happens in playgrounds but doesnt seem to happen in simatulor. bug?
-          viewController.show(itemToEdit, sender: nil)
-
+          // TODO: double drill down happens in playgrounds but doesnt seem to happen in simulator. bug?
+          context.show(vc, sender: nil)
+          presentedViewController = vc
         }
       }
       .store(in: &self.cancellables)
   }
 }
 
+extension UIViewController {
+  func pop(to viewController: UIViewController) {
+    guard
+      let nav = self.navigationController,
+      let index = nav.viewControllers.firstIndex(of: viewController)
+    else { return }
+    nav.setViewControllers(
+      Array(nav.viewControllers[...index]),
+      animated: true
+    )
+  }
+}
 
 struct InventoryViewController_Previews: PreviewProvider {
   static var previews: some View {
@@ -607,7 +607,7 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
 
         switch route {
         case .none:
-          self.presentedViewController?.dismiss(animated: true, completion: nil)
+//          self.presentedViewController?.dismiss(animated: true, completion: nil)
           guard
             let nav = self.navigationController,
             let index = nav.viewControllers.firstIndex(of: self)
@@ -705,7 +705,7 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
   }
 }
 
-class ContentViewController: UITabBarController {
+class ContentViewController: UITabBarController, UITabBarControllerDelegate {
   let viewModel: AppViewModel
   private var cancellables: Set<AnyCancellable> = []
 
@@ -717,6 +717,8 @@ class ContentViewController: UITabBarController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    self.delegate = self
+
     let oneLabel = UILabel()
     oneLabel.text = "One"
     oneLabel.sizeToFit()
@@ -727,7 +729,7 @@ class ContentViewController: UITabBarController {
     oneLabel.center = one.view.center
 
     let inventory = UINavigationController(
-      rootViewController: InventoryViewController(viewModel: self.viewModel.inventoryViewModel)
+      rootViewController: _InventoryViewController(viewModel: self.viewModel.inventoryViewModel)
     )
     inventory.tabBarItem.title = "Inventory"
 
@@ -758,6 +760,24 @@ class ContentViewController: UITabBarController {
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  func tabBarController(
+    _ tabBarController: UITabBarController,
+    didSelect viewController: UIViewController
+  ) {
+    switch self.viewControllers?.firstIndex(of: viewController) {
+    case .none:
+      break
+    case 0:
+      self.viewModel.selectedTab = .one
+    case 1:
+      self.viewModel.selectedTab = .inventory
+    case 2:
+      self.viewModel.selectedTab = .three
+    default:
+      break
+    }
   }
 }
 

@@ -162,9 +162,7 @@ struct InventoryView: View {
     .navigationTitle("Inventory")
     .sheet(item: self.$viewModel.route.case(/InventoryViewModel.Route.add)) { itemToAdd in
       NavigationView {
-        Representable(
-          viewController: _ItemViewController(viewModel: itemToAdd)
-        )
+        ItemView(viewModel: itemToAdd)
           .navigationTitle("Add")
           .toolbar {
             ToolbarItem(placement: .cancellationAction) {
