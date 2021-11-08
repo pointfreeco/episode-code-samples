@@ -167,3 +167,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [SwiftUI Navigation: Sheets & Popovers, Part 3](0164-navigation-pt5)
 1. [SwiftUI Navigation: Links, Part 1](0165-navigation-pt6)
 1. [SwiftUI Navigation: Links, Part 2](0166-navigation-pt7)
+1. [SwiftUI Navigation: Links, Part 3](0167-navigation-pt8)
