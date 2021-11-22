@@ -17,6 +17,7 @@
 		2AF10F1E26F3D4A000796207 /* ItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF10F1D26F3D4A000796207 /* ItemRow.swift */; };
 		4B3057AD26F3BD7900A5C737 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3057AC26F3BD7900A5C737 /* CasePaths */; };
 		4B781C62274C096B00779F2E /* ItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B781C61274C096B00779F2E /* ItemViewController.swift */; };
+		4B781C64274C191000779F2E /* ItemRowCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B781C63274C191000779F2E /* ItemRowCellView.swift */; };
 		4BCC55AC272C572F0032BF7A /* Parsing in Frameworks */ = {isa = PBXBuildFile; productRef = 4BCC55AB272C572F0032BF7A /* Parsing */; };
 		4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F326EF9CB00032CB71 /* Inventory.swift */; };
 		4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */; };
@@ -43,6 +44,7 @@
 		2AF10F1B26F3B56B00796207 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		2AF10F1D26F3D4A000796207 /* ItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRow.swift; sourceTree = "<group>"; };
 		4B781C61274C096B00779F2E /* ItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewController.swift; sourceTree = "<group>"; };
+		4B781C63274C191000779F2E /* ItemRowCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRowCellView.swift; sourceTree = "<group>"; };
 		4BCC55A9272C53D80032BF7A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4BDDD1F326EF9CB00032CB71 /* Inventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inventory.swift; sourceTree = "<group>"; };
 		4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIHelpers.swift; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 				2A3A7B8C26EF940C00A37A4D /* ContentView.swift */,
 				4BDDD1F326EF9CB00032CB71 /* Inventory.swift */,
 				2AF10F1D26F3D4A000796207 /* ItemRow.swift */,
+				4B781C63274C191000779F2E /* ItemRowCellView.swift */,
 				4B781C61274C096B00779F2E /* ItemViewController.swift */,
 				2AF10F1B26F3B56B00796207 /* ItemView.swift */,
 				4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */,
@@ -232,6 +235,7 @@
 			files = (
 				4B781C62274C096B00779F2E /* ItemViewController.swift in Sources */,
 				4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */,
+				4B781C64274C191000779F2E /* ItemRowCellView.swift in Sources */,
 				4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */,
 				2A3A7B8D26EF940C00A37A4D /* ContentView.swift in Sources */,
 				2AF10F1E26F3D4A000796207 /* ItemRow.swift in Sources */,
