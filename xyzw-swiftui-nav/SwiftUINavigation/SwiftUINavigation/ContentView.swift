@@ -225,15 +225,8 @@ struct ContentView: View {
         .tabItem { Text("One") }
         .tag(Tab.one)
 
-//      NavigationView {
-//        InventoryView(viewModel: self.viewModel.inventoryViewModel)
-//      }
-      ToSwiftUI {
-        UINavigationController(
-          rootViewController: InventoryViewController(
-            viewModel: self.viewModel.inventoryViewModel
-          )
-        )
+      NavigationView {
+        InventoryView(viewModel: self.viewModel.inventoryViewModel)
       }
         .tabItem { Text("Inventory") }
         .tag(Tab.inventory)

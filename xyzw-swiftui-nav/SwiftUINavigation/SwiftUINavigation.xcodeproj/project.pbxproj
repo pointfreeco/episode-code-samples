@@ -14,6 +14,7 @@
 		2A3A7B9C26EF940D00A37A4D /* SwiftUINavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3A7B9B26EF940D00A37A4D /* SwiftUINavigationTests.swift */; };
 		2A3A7BB626EFA73100A37A4D /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 2A3A7BB526EFA73100A37A4D /* IdentifiedCollections */; };
 		2AA3AFB4274C215500171289 /* InventoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA3AFB3274C215500171289 /* InventoryViewController.swift */; };
+		2AA3AFB6274C35AF00171289 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA3AFB5274C35AF00171289 /* ContentViewController.swift */; };
 		2AF10F1C26F3B56B00796207 /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF10F1B26F3B56B00796207 /* ItemView.swift */; };
 		2AF10F1E26F3D4A000796207 /* ItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF10F1D26F3D4A000796207 /* ItemRow.swift */; };
 		4B3057AD26F3BD7900A5C737 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3057AC26F3BD7900A5C737 /* CasePaths */; };
@@ -43,6 +44,7 @@
 		2A3A7B9726EF940D00A37A4D /* SwiftUINavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftUINavigationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A3A7B9B26EF940D00A37A4D /* SwiftUINavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUINavigationTests.swift; sourceTree = "<group>"; };
 		2AA3AFB3274C215500171289 /* InventoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryViewController.swift; sourceTree = "<group>"; };
+		2AA3AFB5274C35AF00171289 /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		2AF10F1B26F3B56B00796207 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		2AF10F1D26F3D4A000796207 /* ItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRow.swift; sourceTree = "<group>"; };
 		4B781C61274C096B00779F2E /* ItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewController.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			children = (
 				4BCC55A9272C53D80032BF7A /* Info.plist */,
 				2A3A7B8C26EF940C00A37A4D /* ContentView.swift */,
+				2AA3AFB5274C35AF00171289 /* ContentViewController.swift */,
 				4BDDD1F326EF9CB00032CB71 /* Inventory.swift */,
 				2AA3AFB3274C215500171289 /* InventoryViewController.swift */,
 				2AF10F1D26F3D4A000796207 /* ItemRow.swift */,
@@ -236,6 +239,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AA3AFB6274C35AF00171289 /* ContentViewController.swift in Sources */,
 				4B781C62274C096B00779F2E /* ItemViewController.swift in Sources */,
 				2AA3AFB4274C215500171289 /* InventoryViewController.swift in Sources */,
 				4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */,
