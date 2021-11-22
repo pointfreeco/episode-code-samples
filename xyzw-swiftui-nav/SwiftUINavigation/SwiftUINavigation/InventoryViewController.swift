@@ -1,7 +1,7 @@
 import Combine
 import UIKit
 
-class InventoryViewController: UIViewController {
+class InventoryViewController: UIViewController, UICollectionViewDelegate {
   let viewModel: InventoryViewModel
   private var cancellables: Set<AnyCancellable> = []
 
@@ -35,16 +35,41 @@ class InventoryViewController: UIViewController {
     > { [unowned self] cell, indexPath, itemRowViewModel in
       cell.bind(viewModel: itemRowViewModel, context: self)
     }
+    
+    var dataSource: UICollectionViewDiffableDataSource<
+      Section,
+      ItemRowViewModel
+    >!
 
-    let layoutConfig = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+    var layoutConfig = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+    layoutConfig.trailingSwipeActionsConfigurationProvider = { indexPath in
+      guard let viewModel = dataSource.itemIdentifier(for: indexPath)
+      else { return nil }
+      let duplicate = UIContextualAction(
+        style: .normal,
+        title: "Duplicate"
+      ) { _, _, completion in
+        viewModel.duplicateButtonTapped()
+        completion(true)
+      }
+      let delete = UIContextualAction(
+        style: .destructive,
+        title: "Delete"
+      ) { _, _, completion in
+        viewModel.deleteButtonTapped()
+        completion(true)
+      }
+      return UISwipeActionsConfiguration(actions: [duplicate, delete])
+    }
 
     let collectionView = UICollectionView(
       frame: .zero,
       collectionViewLayout: UICollectionViewCompositionalLayout.list(using: layoutConfig)
     )
+    collectionView.delegate = self
     collectionView.translatesAutoresizingMaskIntoConstraints = false
 
-    let dataSource = UICollectionViewDiffableDataSource<
+    dataSource = UICollectionViewDiffableDataSource<
       Section,
       ItemRowViewModel
     >(
@@ -119,6 +144,10 @@ class InventoryViewController: UIViewController {
 
     // MARK: UI actions
 
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    self.viewModel.inventory[indexPath.row].setEditNavigation(isActive: true)
   }
 }
 
