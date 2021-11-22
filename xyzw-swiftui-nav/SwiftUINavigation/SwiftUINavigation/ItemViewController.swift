@@ -111,12 +111,65 @@ class ItemViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         quantityStepper.value = Double(quantity)
       }
       .store(in: &self.cancellables)
-    
+
+    self.viewModel.$item
+      .map { /Item.Status.inStock ~= $0.status }
+      .removeDuplicates()
+      .sink { isInStock in
+        inStockStackView.isHidden = !isInStock
+      }
+      .store(in: &self.cancellables)
+
+    self.viewModel.$item
+      .map { /Item.Status.outOfStock ~= $0.status }
+      .removeDuplicates()
+      .sink { isOutOfStock in
+        outOfStockStackView.isHidden = !isOutOfStock
+      }
+      .store(in: &self.cancellables)
+
+    self.viewModel.$item
+      .map(\.status)
+      .compactMap(/Item.Status.outOfStock)
+      .removeDuplicates()
+      .sink { isOnBackOrder in
+        isOnBackOrderSwitch.isOn = isOnBackOrder
+      }
+      .store(in: &self.cancellables)
+
     // MARK: UI actions
     
     quantityStepper.addAction(.init { [unowned self, unowned quantityStepper] _ in
       self.viewModel.item.status = .inStock(quantity: Int(quantityStepper.value))
     }, for: .valueChanged)
+
+    markAsSoldOutButton.addAction(
+      .init { [unowned self] _ in
+        self.viewModel.item.status = .outOfStock(isOnBackOrder: false)
+      },
+      for: .touchUpInside
+    )
+
+    isBackInStockButton.addAction(
+      .init { [unowned self] _ in
+        self.viewModel.item.status = .inStock(quantity: 1)
+      },
+      for: .touchUpInside
+    )
+
+    nameTextField.addAction(
+      .init { [unowned self, unowned nameTextField] _ in
+        self.viewModel.item.name = nameTextField.text ?? ""
+      },
+      for: .editingChanged
+    )
+
+    isOnBackOrderSwitch.addAction(
+      .init { [unowned self, unowned isOnBackOrderSwitch] _ in
+        self.viewModel.item.status = .outOfStock(isOnBackOrder: isOnBackOrderSwitch.isOn)
+      },
+      for: .valueChanged
+    )
   }
   
   func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -130,6 +183,14 @@ class ItemViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
   func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
     Item.Color.all[row]?.name ?? "None"
   }
+
+  func pickerView(
+    _ pickerView: UIPickerView,
+    didSelectRow row: Int,
+    inComponent component: Int
+  ) {
+    self.viewModel.item.color = Item.Color.all[row]
+  }
 }
 
 extension Item.Color {
@@ -141,7 +202,11 @@ struct ItemViewController_Previews: PreviewProvider {
     ToSwiftUI {
       ItemViewController(
         viewModel: ItemViewModel(
-          item: .init(name: "Keyboard", color: .blue, status: .inStock(quantity: 1)),
+          item: .init(
+            name: "Keyboard",
+            color: .blue,
+            status: .outOfStock(isOnBackOrder: true)
+          ),
           route: nil
         )
       )
