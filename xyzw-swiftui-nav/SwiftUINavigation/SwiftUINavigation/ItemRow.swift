@@ -1,10 +1,18 @@
 import CasePaths
 import SwiftUI
 
-class ItemRowViewModel: Identifiable, ObservableObject {
+class ItemRowViewModel: Hashable, Identifiable, ObservableObject {
   @Published var item: Item
   @Published var route: Route?
   @Published var isSaving = false
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(self.item.id)
+  }
+
+  static func == (lhs: ItemRowViewModel, rhs: ItemRowViewModel) -> Bool {
+    lhs.item.id == rhs.item.id
+  }
   
   enum Route: Equatable {
     case deleteAlert
