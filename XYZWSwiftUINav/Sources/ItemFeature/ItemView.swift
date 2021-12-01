@@ -1,11 +1,17 @@
 import CasePaths
+import Models
 import SwiftUI
+import SwiftUIHelpers
 
-struct ColorPickerView: View {
+public struct ColorPickerView: View {
   @ObservedObject var viewModel: ItemViewModel
   @Environment(\.dismiss) var dismiss
   
-  var body: some View {
+  public init(viewModel: ItemViewModel) {
+    self.viewModel = viewModel
+  }
+  
+  public var body: some View {
     Form {
       Button(action: {
         self.viewModel.item.color = nil
@@ -62,19 +68,19 @@ struct ColorPickerView: View {
   }
 }
 
-class ItemViewModel: Identifiable, ObservableObject {
-  @Published var item: Item
-  @Published var nameIsDuplicate = false
-  @Published var newColors: [Item.Color] = []
-  @Published var route: Route?
+public class ItemViewModel: Identifiable, ObservableObject {
+  @Published public var item: Item
+  @Published public var nameIsDuplicate = false
+  @Published public var newColors: [Item.Color] = []
+  @Published public var route: Route?
 
-  var id: Item.ID { self.item.id }
+  public var id: Item.ID { self.item.id }
 
-  enum Route {
+  public enum Route {
     case colorPicker
   }
 
-  init(item: Item, route: Route? = nil) {
+  public init(item: Item, route: Route? = nil) {
     self.item = item
     self.route = route
 
@@ -99,10 +105,14 @@ class ItemViewModel: Identifiable, ObservableObject {
   }
 }
 
-struct ItemView: View {
+public struct ItemView: View {
   @ObservedObject var viewModel: ItemViewModel
+  
+  public init(viewModel: ItemViewModel) {
+    self.viewModel = viewModel
+  }
 
-  var body: some View {
+  public var body: some View {
     Form {
       TextField("Name", text: self.$viewModel.item.name)
         .background(self.viewModel.nameIsDuplicate ? Color.red.opacity(0.1) : Color.clear)

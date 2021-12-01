@@ -1,20 +1,21 @@
 import Combine
+import InventoryFeature
 import UIKit
 
-class ContentViewController: UITabBarController {
+public class ContentViewController: UITabBarController {
   let viewModel: AppViewModel
   private var cancellables: Set<AnyCancellable> = []
 
-  init(viewModel: AppViewModel) {
+  public init(viewModel: AppViewModel) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
   }
 
-  required init?(coder: NSCoder) {
+  public required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 
-  override func viewDidLoad() {
+  public override func viewDidLoad() {
     super.viewDidLoad()
 
     let oneLabel = UILabel()
@@ -58,7 +59,7 @@ class ContentViewController: UITabBarController {
       .store(in: &self.cancellables)
   }
 
-  override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+  public override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
     guard let index = tabBar.items?.firstIndex(of: item)
     else { return }
 

@@ -1,60 +1,19 @@
 import CasePaths
 import IdentifiedCollections
+import ItemFeature
+import ItemRowFeature
+import Models
 import SwiftUI
 
-struct Item: Equatable, Identifiable {
-  let id = UUID()
-  var name: String
-  var color: Color?
-  var status: Status
-
-  enum Status: Equatable {
-    case inStock(quantity: Int)
-    case outOfStock(isOnBackOrder: Bool)
-
-    var isInStock: Bool {
-      guard case .inStock = self else { return false }
-      return true
-    }
-  }
-
-  struct Color: Equatable, Hashable {
-    var name: String
-    var red: CGFloat = 0
-    var green: CGFloat = 0
-    var blue: CGFloat = 0
-
-    static var defaults: [Self] = [
-      .red,
-      .green,
-      .blue,
-      .black,
-      .yellow,
-      .white,
-    ]
-
-    static let red = Self(name: "Red", red: 1)
-    static let green = Self(name: "Green", green: 1)
-    static let blue = Self(name: "Blue", blue: 1)
-    static let black = Self(name: "Black")
-    static let yellow = Self(name: "Yellow", red: 1, green: 1)
-    static let white = Self(name: "White", red: 1, green: 1, blue: 1)
-
-    var swiftUIColor: SwiftUI.Color {
-      .init(red: self.red, green: self.green, blue: self.blue)
-    }
-  }
-}
-
-class InventoryViewModel: ObservableObject {
-  @Published var inventory: IdentifiedArrayOf<ItemRowViewModel>
-  @Published var route: Route?
+public class InventoryViewModel: ObservableObject {
+  @Published public var inventory: IdentifiedArrayOf<ItemRowViewModel>
+  @Published public var route: Route?
   
-  enum Route: Equatable {
+  public enum Route: Equatable {
     case add(ItemViewModel)
     case row(id: ItemRowViewModel.ID, route: ItemRowViewModel.Route)
 
-    static func == (lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
       switch (lhs, rhs) {
       case let (.add(lhs), .add(rhs)):
         return lhs === rhs
@@ -66,7 +25,7 @@ class InventoryViewModel: ObservableObject {
     }
   }
 
-  init(
+  public init(
     inventory: IdentifiedArrayOf<ItemRowViewModel> = [],
     route: Route? = nil
   ) {
@@ -144,10 +103,14 @@ class InventoryViewModel: ObservableObject {
   }
 }
 
-struct InventoryView: View {
-  @ObservedObject var viewModel: InventoryViewModel
+public struct InventoryView: View {
+  @ObservedObject public var viewModel: InventoryViewModel
+
+  public init(viewModel: InventoryViewModel) {
+    self.viewModel = viewModel
+  }
   
-  var body: some View {
+  public var body: some View {
     List {
       ForEach(
         self.viewModel.inventory,
