@@ -2,6 +2,16 @@ import CasePaths
 import SwiftUI
 
 extension Binding {
+  init?(unwrap binding: Binding<Value?>) {
+    guard let wrappedValue = binding.wrappedValue
+    else { return nil }
+
+    self.init(
+      get: { wrappedValue },
+      set: { binding.wrappedValue = $0 }
+    )
+  }
+
   func isPresent<Wrapped>() -> Binding<Bool>
   where Value == Wrapped? {
     .init(
@@ -51,9 +61,34 @@ extension Binding {
       }
     )
   }
+
+  func didSet(_ callback: @escaping (Value) -> Void) -> Self {
+    .init(
+      get: { self.wrappedValue },
+      set: {
+        self.wrappedValue = $0
+        callback($0)
+      }
+    )
+  }
 }
 
 extension View {
+  func alert<A: View, M: View, T>(
+    title: (T) -> Text,
+    presenting data: Binding<T?>,
+    @ViewBuilder actions: @escaping (T) -> A,
+    @ViewBuilder message: @escaping (T) -> M
+  ) -> some View {
+    self.alert(
+      data.wrappedValue.map(title) ?? Text(""),
+      isPresented: data.isPresent(),
+      presenting: data.wrappedValue,
+      actions: actions,
+      message: message
+    )
+  }
+
   func alert<A: View, M: View, Enum, Case>(
     title: (Case) -> Text,
     unwrap data: Binding<Enum?>,
@@ -64,6 +99,23 @@ extension View {
     self.alert(
       title: title,
       presenting: data.case(casePath),
+      actions: actions,
+      message: message
+    )
+  }
+
+  func confirmationDialog<A: View, M: View, T>(
+    title: (T) -> Text,
+    titleVisibility: Visibility = .automatic,
+    presenting data: Binding<T?>,
+    @ViewBuilder actions: @escaping (T) -> A,
+    @ViewBuilder message: @escaping (T) -> M
+  ) -> some View {
+    self.confirmationDialog(
+      data.wrappedValue.map(title) ?? Text(""),
+      isPresented: data.isPresent(),
+      titleVisibility: titleVisibility,
+      presenting: data.wrappedValue,
       actions: actions,
       message: message
     )
@@ -84,35 +136,83 @@ extension View {
     )
   }
 
-  func alert<A: View, M: View, T>(
-    title: (T) -> Text,
-    presenting data: Binding<T?>,
-    @ViewBuilder actions: @escaping (T) -> A,
-    @ViewBuilder message: @escaping (T) -> M
-  ) -> some View {
-    self.alert(
-      data.wrappedValue.map(title) ?? Text(""),
-      isPresented: data.isPresent(),
-      presenting: data.wrappedValue,
-      actions: actions,
-      message: message
+  func sheet<Value, Content>(
+    unwrap optionalValue: Binding<Value?>,
+    @ViewBuilder content: @escaping (Binding<Value>) -> Content
+  ) -> some View where Value: Identifiable, Content: View {
+    self.sheet(
+      item: optionalValue
+    ) { _ in
+      if let value = Binding(unwrap: optionalValue) {
+        content(value)
+      }
+    }
+  }
+
+  func sheet<Enum, Case, Content>(
+    unwrap optionalValue: Binding<Enum?>,
+    case casePath: CasePath<Enum, Case>,
+    @ViewBuilder content: @escaping (Binding<Case>) -> Content
+  ) -> some View where Case: Identifiable, Content: View {
+    self.sheet(unwrap: optionalValue.case(casePath), content: content)
+  }
+
+  func popover<Value, Content>(
+    unwrap optionalValue: Binding<Value?>,
+    @ViewBuilder content: @escaping (Binding<Value>) -> Content
+  ) -> some View where Value: Identifiable, Content: View {
+    self.popover(
+      item: optionalValue
+    ) { _ in
+      if let value = Binding(unwrap: optionalValue) {
+        content(value)
+      }
+    }
+  }
+
+  func popover<Enum, Case, Content>(
+    unwrap optionalValue: Binding<Enum?>,
+    case casePath: CasePath<Enum, Case>,
+    @ViewBuilder content: @escaping (Binding<Case>) -> Content
+  ) -> some View where Case: Identifiable, Content: View {
+    self.popover(unwrap: optionalValue.case(casePath), content: content)
+  }
+}
+
+extension NavigationLink {
+  init<Value, WrappedDestination>(
+    unwrap optionalValue: Binding<Value?>,
+    onNavigate: @escaping (Bool) -> Void,
+    @ViewBuilder destination: @escaping (Binding<Value>) -> WrappedDestination,
+    @ViewBuilder label: @escaping () -> Label
+  )
+  where Destination == WrappedDestination?
+  {
+    self.init(
+      isActive: optionalValue.isPresent().didSet(onNavigate),
+      destination: {
+        if let value = Binding(unwrap: optionalValue) {
+          destination(value)
+        }
+      },
+      label: label
     )
   }
-  
-  func confirmationDialog<A: View, M: View, T>(
-    title: (T) -> Text,
-    titleVisibility: Visibility = .automatic,
-    presenting data: Binding<T?>,
-    @ViewBuilder actions: @escaping (T) -> A,
-    @ViewBuilder message: @escaping (T) -> M
-  ) -> some View {
-    self.confirmationDialog(
-      data.wrappedValue.map(title) ?? Text(""),
-      isPresented: data.isPresent(),
-      titleVisibility: titleVisibility,
-      presenting: data.wrappedValue,
-      actions: actions,
-      message: message
+
+  init<Enum, Case, WrappedDestination>(
+    unwrap optionalValue: Binding<Enum?>,
+    case casePath: CasePath<Enum, Case>,
+    onNavigate: @escaping (Bool) -> Void,
+    @ViewBuilder destination: @escaping (Binding<Case>) -> WrappedDestination,
+    @ViewBuilder label: @escaping () -> Label
+  )
+  where Destination == WrappedDestination?
+  {
+    self.init(
+      unwrap: optionalValue.case(casePath),
+      onNavigate: onNavigate,
+      destination: destination,
+      label: label
     )
   }
 }
@@ -141,114 +241,6 @@ struct IfCaseLet<Enum, Case, Content>: View where Content: View {
         )
       )
     }
-  }
-}
-
-extension Binding {
-  init?(unwrap binding: Binding<Value?>) {
-    guard let wrappedValue = binding.wrappedValue
-    else { return nil }
-    
-    self.init(
-      get: { wrappedValue },
-      set: { binding.wrappedValue = $0 }
-    )
-  }
-}
-
-extension View {
-  func sheet<Enum, Case, Content>(
-    unwrap optionalValue: Binding<Enum?>,
-    case casePath: CasePath<Enum, Case>,
-    @ViewBuilder content: @escaping (Binding<Case>) -> Content
-  ) -> some View where Case: Identifiable, Content: View {
-    self.sheet(unwrap: optionalValue.case(casePath), content: content)
-  }
-
-  func sheet<Value, Content>(
-    unwrap optionalValue: Binding<Value?>,
-    @ViewBuilder content: @escaping (Binding<Value>) -> Content
-  ) -> some View where Value: Identifiable, Content: View {
-    self.sheet(
-      item: optionalValue
-    ) { _ in
-      if let value = Binding(unwrap: optionalValue) {
-        content(value)
-      }
-    }
-  }
-
-  func popover<Enum, Case, Content>(
-    unwrap optionalValue: Binding<Enum?>,
-    case casePath: CasePath<Enum, Case>,
-    @ViewBuilder content: @escaping (Binding<Case>) -> Content
-  ) -> some View where Case: Identifiable, Content: View {
-    self.popover(unwrap: optionalValue.case(casePath), content: content)
-  }
-
-  func popover<Value, Content>(
-    unwrap optionalValue: Binding<Value?>,
-    @ViewBuilder content: @escaping (Binding<Value>) -> Content
-  ) -> some View where Value: Identifiable, Content: View {
-    self.popover(
-      item: optionalValue
-    ) { _ in
-      if let value = Binding(unwrap: optionalValue) {
-        content(value)
-      }
-    }
-  }
-}
-
-extension NavigationLink {
-  init<Value, WrappedDestination>(
-    unwrap optionalValue: Binding<Value?>,
-    onNavigate: @escaping (Bool) -> Void,
-    @ViewBuilder destination: @escaping (Binding<Value>) -> WrappedDestination,
-    @ViewBuilder label: @escaping () -> Label
-  )
-  where Destination == WrappedDestination?
-  {
-    self.init(
-      isActive: optionalValue.isPresent().didSet(onNavigate),
-      destination: {
-        if let value = Binding(unwrap: optionalValue) {
-          destination(value)
-        }
-      },
-      label: label
-    )
-  }
-}
-
-extension Binding {
-  func didSet(_ callback: @escaping (Value) -> Void) -> Self {
-    .init(
-      get: { self.wrappedValue },
-      set: {
-        self.wrappedValue = $0
-        callback($0)
-      }
-    )
-  }
-}
-
-extension NavigationLink {
-  init<Enum, Case, WrappedDestination>(
-    unwrap optionalValue: Binding<Enum?>,
-    case casePath: CasePath<Enum, Case>,
-    onNavigate: @escaping (Bool) -> Void,
-    @ViewBuilder destination: @escaping (Binding<Case>) -> WrappedDestination,
-    @ViewBuilder label: @escaping () -> Label
-  )
-  where Destination == WrappedDestination?
-  {
-    self.init(
-      unwrap: optionalValue.case(casePath),
-      onNavigate: onNavigate,
-      destination: destination,
-      label: label
-    )
   }
 }
 
