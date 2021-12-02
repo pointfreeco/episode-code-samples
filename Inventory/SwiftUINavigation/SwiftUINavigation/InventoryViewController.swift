@@ -143,7 +143,6 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
       .store(in: &self.cancellables)
 
     // MARK: UI actions
-
   }
   
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
