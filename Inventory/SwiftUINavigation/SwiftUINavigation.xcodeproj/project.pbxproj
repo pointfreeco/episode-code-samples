@@ -15,6 +15,9 @@
 		2A3A7BB626EFA73100A37A4D /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 2A3A7BB526EFA73100A37A4D /* IdentifiedCollections */; };
 		2AA3AFB4274C215500171289 /* InventoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA3AFB3274C215500171289 /* InventoryViewController.swift */; };
 		2AA3AFB6274C35AF00171289 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA3AFB5274C35AF00171289 /* ContentViewController.swift */; };
+		2AA90864275A74E9003DB9FC /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 2AA90863275A74E9003DB9FC /* Models */; };
+		2AA90866275A77A1003DB9FC /* SwiftUIHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 2AA90865275A77A1003DB9FC /* SwiftUIHelpers */; };
+		2AA90868275A78DD003DB9FC /* ParsingHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 2AA90867275A78DD003DB9FC /* ParsingHelpers */; };
 		2AF10F1C26F3B56B00796207 /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF10F1B26F3B56B00796207 /* ItemView.swift */; };
 		2AF10F1E26F3D4A000796207 /* ItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF10F1D26F3D4A000796207 /* ItemRow.swift */; };
 		4B3057AD26F3BD7900A5C737 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3057AC26F3BD7900A5C737 /* CasePaths */; };
@@ -22,7 +25,6 @@
 		4B781C64274C191000779F2E /* ItemRowCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B781C63274C191000779F2E /* ItemRowCellView.swift */; };
 		4BCC55AC272C572F0032BF7A /* Parsing in Frameworks */ = {isa = PBXBuildFile; productRef = 4BCC55AB272C572F0032BF7A /* Parsing */; };
 		4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F326EF9CB00032CB71 /* Inventory.swift */; };
-		4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,13 +47,13 @@
 		2A3A7B9B26EF940D00A37A4D /* SwiftUINavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUINavigationTests.swift; sourceTree = "<group>"; };
 		2AA3AFB3274C215500171289 /* InventoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryViewController.swift; sourceTree = "<group>"; };
 		2AA3AFB5274C35AF00171289 /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
+		2AA90861275A7279003DB9FC /* Inventory */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Inventory; path = ..; sourceTree = "<group>"; };
 		2AF10F1B26F3B56B00796207 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		2AF10F1D26F3D4A000796207 /* ItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRow.swift; sourceTree = "<group>"; };
 		4B781C61274C096B00779F2E /* ItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewController.swift; sourceTree = "<group>"; };
 		4B781C63274C191000779F2E /* ItemRowCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRowCellView.swift; sourceTree = "<group>"; };
 		4BCC55A9272C53D80032BF7A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4BDDD1F326EF9CB00032CB71 /* Inventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inventory.swift; sourceTree = "<group>"; };
-		4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIHelpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,9 +61,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AA90866275A77A1003DB9FC /* SwiftUIHelpers in Frameworks */,
 				4BCC55AC272C572F0032BF7A /* Parsing in Frameworks */,
 				2A3A7BB626EFA73100A37A4D /* IdentifiedCollections in Frameworks */,
+				2AA90864275A74E9003DB9FC /* Models in Frameworks */,
 				4B3057AD26F3BD7900A5C737 /* CasePaths in Frameworks */,
+				2AA90868275A78DD003DB9FC /* ParsingHelpers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,9 +83,11 @@
 		2A3A7B7E26EF940C00A37A4D = {
 			isa = PBXGroup;
 			children = (
+				2AA90861275A7279003DB9FC /* Inventory */,
 				2A3A7B8926EF940C00A37A4D /* SwiftUINavigation */,
 				2A3A7B9A26EF940D00A37A4D /* SwiftUINavigationTests */,
 				2A3A7B8826EF940C00A37A4D /* Products */,
+				2AA90862275A74E9003DB9FC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -105,7 +112,6 @@
 				4B781C63274C191000779F2E /* ItemRowCellView.swift */,
 				2AF10F1B26F3B56B00796207 /* ItemView.swift */,
 				4B781C61274C096B00779F2E /* ItemViewController.swift */,
-				4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */,
 				2A3A7B8A26EF940C00A37A4D /* SwiftUINavigationApp.swift */,
 				2A3A7B8E26EF940D00A37A4D /* Assets.xcassets */,
 				2A3A7B9026EF940D00A37A4D /* Preview Content */,
@@ -129,6 +135,13 @@
 			path = SwiftUINavigationTests;
 			sourceTree = "<group>";
 		};
+		2AA90862275A74E9003DB9FC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -149,6 +162,9 @@
 				2A3A7BB526EFA73100A37A4D /* IdentifiedCollections */,
 				4B3057AC26F3BD7900A5C737 /* CasePaths */,
 				4BCC55AB272C572F0032BF7A /* Parsing */,
+				2AA90863275A74E9003DB9FC /* Models */,
+				2AA90865275A77A1003DB9FC /* SwiftUIHelpers */,
+				2AA90867275A78DD003DB9FC /* ParsingHelpers */,
 			);
 			productName = SwiftUINavigation;
 			productReference = 2A3A7B8726EF940C00A37A4D /* SwiftUINavigation.app */;
@@ -244,7 +260,6 @@
 				2AA3AFB4274C215500171289 /* InventoryViewController.swift in Sources */,
 				4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */,
 				4B781C64274C191000779F2E /* ItemRowCellView.swift in Sources */,
-				4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */,
 				2A3A7B8D26EF940C00A37A4D /* ContentView.swift in Sources */,
 				2AF10F1E26F3D4A000796207 /* ItemRow.swift in Sources */,
 				2AF10F1C26F3B56B00796207 /* ItemView.swift in Sources */,
@@ -555,6 +570,18 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2A3A7BB426EFA73100A37A4D /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
 			productName = IdentifiedCollections;
+		};
+		2AA90863275A74E9003DB9FC /* Models */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Models;
+		};
+		2AA90865275A77A1003DB9FC /* SwiftUIHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftUIHelpers;
+		};
+		2AA90867275A78DD003DB9FC /* ParsingHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ParsingHelpers;
 		};
 		4B3057AC26F3BD7900A5C737 /* CasePaths */ = {
 			isa = XCSwiftPackageProductDependency;

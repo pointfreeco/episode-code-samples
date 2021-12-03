@@ -1,4 +1,5 @@
 import Combine
+import Models
 import UIKit
 
 class ItemRowCellView: UICollectionViewListCell {
