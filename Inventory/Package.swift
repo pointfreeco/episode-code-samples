@@ -34,9 +34,11 @@ let package = Package(
       dependencies: [
         "ItemRowFeature",
         "Models",
+        "ParsingHelpers",
         "SwiftUIHelpers",
         .product(name: "CasePaths", package: "swift-case-paths"),
         .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
+        .product(name: "Parsing", package: "swift-parsing"),
       ]
     ),
     .target(
@@ -52,8 +54,10 @@ let package = Package(
       dependencies: [
         "ItemFeature",
         "Models",
+        "ParsingHelpers",
         "SwiftUIHelpers",
         .product(name: "CasePaths", package: "swift-case-paths"),
+        .product(name: "Parsing", package: "swift-parsing"),
       ]
     ),
     .target(name: "Models", dependencies: []),
