@@ -13,32 +13,45 @@ public enum ItemRoute {
   case colorPicker
 }
 
-let item = QueryItem("name").orElse(Always(""))
-  .take(QueryItem("quantity", Int.parser()).orElse(Always(1)))
-  .map { name, quantity in
-    Item(name: String(name), status: .inStock(quantity: quantity))
+let item = Routing({ Item(name: $0, status: $1) }) {
+  QueryItem("name")
+    .orElse(Always(""))
+    .map(String.init)
+
+  QueryItem("quantity", Int.parser())
+    .orElse(Always(1))
+    .map(Item.Status.inStock)
+}
+
+let _inventoryDeepLinker = OneOf {
+  Parse {
+    PathComponent("add")
+
+    OneOf {
+      Routing({ InventoryRoute.add($0) }) {
+        item
+      }
+
+      Routing({ InventoryRoute.add($0, .colorPicker) }) {
+        PathComponent("colorPicker")
+        item
+      }
+    }
   }
 
-public let inventoryDeepLinker = PathEnd()
-  .map { InventoryRoute?.none }
-  .orElse(
-    PathComponent("add")
-      .skip(PathEnd())
-      .take(item)
-      .map { .add($0) }
-  )
-  .orElse(
-    PathComponent("add")
-      .skip(PathComponent("colorPicker"))
-      .skip(PathEnd())
-      .take(item)
-      .map { .add($0, .colorPicker) }
-  )
-  .orElse(
+  Routing(InventoryRoute.row) {
     PathComponent(UUID.parser())
-      .take(itemRowDeepLinker)
-      .map(InventoryRoute.row)
-  )
+    itemRowDeepLinker
+  }
+}
+
+public let inventoryDeepLinker = OneOf {
+  PathEnd().map { InventoryRoute?.none }
+
+  Routing(InventoryRoute?.some) {
+    _inventoryDeepLinker
+  }
+}
 
 extension InventoryViewModel {
   public func navigate(to route: InventoryRoute?) {

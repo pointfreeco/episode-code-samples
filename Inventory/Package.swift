@@ -17,7 +17,7 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-case-paths", from: "0.7.0"),
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", from: "0.3.2"),
-    .package(url: "https://github.com/pointfreeco/swift-parsing", from: "0.3.1"),
+    .package(url: "https://github.com/pointfreeco/swift-parsing", .branch("pb-pp")),
   ],
   targets: [
     .target(

@@ -8,19 +8,19 @@ public enum ItemRowRoute {
   case edit
 }
 
-public let itemRowDeepLinker = PathComponent("edit")
-  .skip(PathEnd())
-  .map { ItemRowRoute.edit }
-  .orElse(
+public let itemRowDeepLinker = OneOf {
+  Routing({ ItemRowRoute.edit }) {
+    PathComponent("edit")
+  }
+
+  Routing({ ItemRowRoute.delete }) {
     PathComponent("delete")
-      .skip(PathEnd())
-      .map { .delete }
-  )
-  .orElse(
+  }
+
+  Routing({ ItemRowRoute.duplicate }) {
     PathComponent("duplicate")
-      .skip(PathEnd())
-      .map { .duplicate }
-  )
+  }
+}
 
 extension ItemRowViewModel {
   public func navigate(to route: ItemRowRoute) {

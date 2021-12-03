@@ -19,6 +19,21 @@ extension DeepLinkRequest {
   }
 }
 
+public struct Routing<Route, P>: Parser where P: Parser, P.Input == DeepLinkRequest {
+  let parser: Parsers.Map<Parsers.SkipSecond<P, PathEnd>, Route>
+
+  public init(
+    _ transform: @escaping (P.Output) -> Route,
+    @ParserBuilder _ build: () -> P
+  ) {
+    self.parser = build().skip(PathEnd()).map(transform)
+  }
+
+  public func parse(_ input: inout P.Input) -> Route? {
+    self.parser.parse(&input)
+  }
+}
+
 public struct PathComponent<ComponentParser>: Parser
 where
   ComponentParser: Parser,
