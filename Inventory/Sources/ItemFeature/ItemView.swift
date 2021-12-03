@@ -6,7 +6,7 @@ import SwiftUIHelpers
 struct ColorPickerView: View {
   @ObservedObject var viewModel: ItemViewModel
   @Environment(\.dismiss) var dismiss
-  
+
   var body: some View {
     Form {
       Button(action: {
@@ -21,7 +21,7 @@ struct ColorPickerView: View {
           }
         }
       }
-      
+
       Section(header: Text("Default colors")) {
         ForEach(Item.Color.defaults, id: \.name) { color in
           Button(action: {
@@ -38,7 +38,7 @@ struct ColorPickerView: View {
           }
         }
       }
-      
+
       if !self.viewModel.newColors.isEmpty {
         Section(header: Text("New colors")) {
           ForEach(self.viewModel.newColors, id: \.name) { color in
@@ -64,19 +64,19 @@ struct ColorPickerView: View {
   }
 }
 
-class ItemViewModel: Identifiable, ObservableObject {
-  @Published var item: Item
-  @Published var nameIsDuplicate = false
-  @Published var newColors: [Item.Color] = []
-  @Published var route: Route?
+public class ItemViewModel: Identifiable, ObservableObject {
+  @Published public var item: Item
+  @Published public var nameIsDuplicate = false
+  @Published public var newColors: [Item.Color] = []
+  @Published public var route: Route?
 
-  var id: Item.ID { self.item.id }
+  public var id: Item.ID { self.item.id }
 
-  enum Route {
+  public enum Route {
     case colorPicker
   }
 
-  init(item: Item, route: Route? = nil) {
+  public init(item: Item, route: Route? = nil) {
     self.item = item
     self.route = route
 
@@ -101,10 +101,16 @@ class ItemViewModel: Identifiable, ObservableObject {
   }
 }
 
-struct ItemView: View {
+public struct ItemView: View {
   @ObservedObject var viewModel: ItemViewModel
+  
+  public init(
+    viewModel: ItemViewModel
+  ) {
+    self.viewModel = viewModel
+  }
 
-  var body: some View {
+  public var body: some View {
     Form {
       TextField("Name", text: self.$viewModel.item.name)
         .background(self.viewModel.nameIsDuplicate ? Color.red.opacity(0.1) : Color.clear)
