@@ -1,13 +1,15 @@
 import Combine
+import ItemFeature
+import ItemRowFeature
 import Models
 import SwiftUIHelpers
 import UIKit
 
-class InventoryViewController: UIViewController, UICollectionViewDelegate {
+public class InventoryViewController: UIViewController, UICollectionViewDelegate {
   let viewModel: InventoryViewModel
   private var cancellables: Set<AnyCancellable> = []
 
-  init(viewModel: InventoryViewModel) {
+  public init(viewModel: InventoryViewModel) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
   }
@@ -16,7 +18,7 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
     fatalError("init(coder:) has not been implemented")
   }
 
-  override func viewDidLoad() {
+  override public func viewDidLoad() {
     super.viewDidLoad()
 
     // MARK: view creation
@@ -147,7 +149,7 @@ class InventoryViewController: UIViewController, UICollectionViewDelegate {
     // MARK: UI actions
   }
   
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+  public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     self.viewModel.inventory[indexPath.row].setEditNavigation(isActive: true)
   }
 }

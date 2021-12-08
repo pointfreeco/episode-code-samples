@@ -1,15 +1,16 @@
 import Combine
+import ItemFeature
 import UIKit
 
-class ItemRowCellView: UICollectionViewListCell {
+public class ItemRowCellView: UICollectionViewListCell {
   var cancellables: Set<AnyCancellable> = []
   
-  override func prepareForReuse() {
+  override public func prepareForReuse() {
     super.prepareForReuse()
     self.cancellables = []
   }
   
-  func bind(viewModel: ItemRowViewModel, context: UIViewController) {
+  public func bind(viewModel: ItemRowViewModel, context: UIViewController) {
     viewModel.$item
       .map(\.name)
       .removeDuplicates()
