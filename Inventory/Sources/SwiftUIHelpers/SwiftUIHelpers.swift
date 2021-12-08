@@ -2,7 +2,7 @@ import CasePaths
 import SwiftUI
 
 extension Binding {
-  init?(unwrap binding: Binding<Value?>) {
+  public init?(unwrap binding: Binding<Value?>) {
     guard let wrappedValue = binding.wrappedValue
     else { return nil }
 
@@ -12,7 +12,7 @@ extension Binding {
     )
   }
 
-  func isPresent<Wrapped>() -> Binding<Bool>
+  public func isPresent<Wrapped>() -> Binding<Bool>
   where Value == Wrapped? {
     .init(
       get: { self.wrappedValue != nil },
@@ -24,7 +24,7 @@ extension Binding {
     )
   }
   
-  func isPresent<Enum, Case>(_ casePath: CasePath<Enum, Case>) -> Binding<Bool>
+  public func isPresent<Enum, Case>(_ casePath: CasePath<Enum, Case>) -> Binding<Bool>
   where Value == Enum? {
     Binding<Bool>(
       get: {
@@ -42,7 +42,7 @@ extension Binding {
     )
   }
   
-  func `case`<Enum, Case>(_ casePath: CasePath<Enum, Case>) -> Binding<Case?>
+  public func `case`<Enum, Case>(_ casePath: CasePath<Enum, Case>) -> Binding<Case?>
   where Value == Enum? {
     Binding<Case?>(
       get: {
@@ -62,7 +62,7 @@ extension Binding {
     )
   }
 
-  func didSet(_ callback: @escaping (Value) -> Void) -> Self {
+  public func didSet(_ callback: @escaping (Value) -> Void) -> Self {
     .init(
       get: { self.wrappedValue },
       set: {
@@ -74,7 +74,7 @@ extension Binding {
 }
 
 extension View {
-  func alert<A: View, M: View, T>(
+  public func alert<A: View, M: View, T>(
     title: (T) -> Text,
     presenting data: Binding<T?>,
     @ViewBuilder actions: @escaping (T) -> A,
@@ -89,7 +89,7 @@ extension View {
     )
   }
 
-  func alert<A: View, M: View, Enum, Case>(
+  public func alert<A: View, M: View, Enum, Case>(
     title: (Case) -> Text,
     unwrap data: Binding<Enum?>,
     case casePath: CasePath<Enum, Case>,
@@ -104,7 +104,7 @@ extension View {
     )
   }
 
-  func confirmationDialog<A: View, M: View, T>(
+  public func confirmationDialog<A: View, M: View, T>(
     title: (T) -> Text,
     titleVisibility: Visibility = .automatic,
     presenting data: Binding<T?>,
@@ -121,7 +121,7 @@ extension View {
     )
   }
 
-  func confirmationDialog<A: View, M: View, Enum, Case>(
+  public func confirmationDialog<A: View, M: View, Enum, Case>(
     title: (Case) -> Text,
     unwrap data: Binding<Enum?>,
     case casePath: CasePath<Enum, Case>,
@@ -136,7 +136,7 @@ extension View {
     )
   }
 
-  func sheet<Value, Content>(
+  public func sheet<Value, Content>(
     unwrap optionalValue: Binding<Value?>,
     @ViewBuilder content: @escaping (Binding<Value>) -> Content
   ) -> some View where Value: Identifiable, Content: View {
@@ -149,7 +149,7 @@ extension View {
     }
   }
 
-  func sheet<Enum, Case, Content>(
+  public func sheet<Enum, Case, Content>(
     unwrap optionalValue: Binding<Enum?>,
     case casePath: CasePath<Enum, Case>,
     @ViewBuilder content: @escaping (Binding<Case>) -> Content
@@ -157,7 +157,7 @@ extension View {
     self.sheet(unwrap: optionalValue.case(casePath), content: content)
   }
 
-  func popover<Value, Content>(
+  public func popover<Value, Content>(
     unwrap optionalValue: Binding<Value?>,
     @ViewBuilder content: @escaping (Binding<Value>) -> Content
   ) -> some View where Value: Identifiable, Content: View {
@@ -170,7 +170,7 @@ extension View {
     }
   }
 
-  func popover<Enum, Case, Content>(
+  public func popover<Enum, Case, Content>(
     unwrap optionalValue: Binding<Enum?>,
     case casePath: CasePath<Enum, Case>,
     @ViewBuilder content: @escaping (Binding<Case>) -> Content
@@ -180,7 +180,7 @@ extension View {
 }
 
 extension NavigationLink {
-  init<Value, WrappedDestination>(
+  public init<Value, WrappedDestination>(
     unwrap optionalValue: Binding<Value?>,
     onNavigate: @escaping (Bool) -> Void,
     @ViewBuilder destination: @escaping (Binding<Value>) -> WrappedDestination,
@@ -199,7 +199,7 @@ extension NavigationLink {
     )
   }
 
-  init<Enum, Case, WrappedDestination>(
+  public init<Enum, Case, WrappedDestination>(
     unwrap optionalValue: Binding<Enum?>,
     case casePath: CasePath<Enum, Case>,
     onNavigate: @escaping (Bool) -> Void,
@@ -217,12 +217,12 @@ extension NavigationLink {
   }
 }
 
-struct IfCaseLet<Enum, Case, Content>: View where Content: View {
+public struct IfCaseLet<Enum, Case, Content>: View where Content: View {
   let binding: Binding<Enum>
   let casePath: CasePath<Enum, Case>
   let content: (Binding<Case>) -> Content
   
-  init(
+  public init(
     _ binding: Binding<Enum>,
     pattern casePath: CasePath<Enum, Case>,
     @ViewBuilder content: @escaping (Binding<Case>) -> Content
@@ -232,7 +232,7 @@ struct IfCaseLet<Enum, Case, Content>: View where Content: View {
     self.content = content
   }
   
-  var body: some View {
+  public var body: some View {
     if let `case` = self.casePath.extract(from: self.binding.wrappedValue) {
       self.content(
         Binding(
@@ -244,13 +244,19 @@ struct IfCaseLet<Enum, Case, Content>: View where Content: View {
   }
 }
 
-struct ToSwiftUI: UIViewControllerRepresentable {
+public struct ToSwiftUI: UIViewControllerRepresentable {
   let viewController: () -> UIViewController
+
+  public init(
+    viewController: @escaping () -> UIViewController
+  ) {
+    self.viewController = viewController
+  }
   
-  func makeUIViewController(context: Context) -> UIViewController {
+  public func makeUIViewController(context: Context) -> UIViewController {
     self.viewController()
   }
   
-  func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+  public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
   }
 }

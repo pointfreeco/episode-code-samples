@@ -12,17 +12,19 @@
 		2A3A7B8F26EF940D00A37A4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A3A7B8E26EF940D00A37A4D /* Assets.xcassets */; };
 		2A3A7B9226EF940D00A37A4D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A3A7B9126EF940D00A37A4D /* Preview Assets.xcassets */; };
 		2A3A7B9C26EF940D00A37A4D /* SwiftUINavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3A7B9B26EF940D00A37A4D /* SwiftUINavigationTests.swift */; };
-		2A3A7BB626EFA73100A37A4D /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 2A3A7BB526EFA73100A37A4D /* IdentifiedCollections */; };
 		2AA3AFB4274C215500171289 /* InventoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA3AFB3274C215500171289 /* InventoryViewController.swift */; };
 		2AA3AFB6274C35AF00171289 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA3AFB5274C35AF00171289 /* ContentViewController.swift */; };
 		2AF10F1C26F3B56B00796207 /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF10F1B26F3B56B00796207 /* ItemView.swift */; };
 		2AF10F1E26F3D4A000796207 /* ItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF10F1D26F3D4A000796207 /* ItemRow.swift */; };
-		4B3057AD26F3BD7900A5C737 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3057AC26F3BD7900A5C737 /* CasePaths */; };
+		2AF90B8A27611308002BEEF8 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 2AF90B8927611308002BEEF8 /* Models */; };
+		2AF90B8C2761155E002BEEF8 /* SwiftUIHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 2AF90B8B2761155E002BEEF8 /* SwiftUIHelpers */; };
+		2AF90B8E27611670002BEEF8 /* ParsingHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 2AF90B8D27611670002BEEF8 /* ParsingHelpers */; };
+		2AF90B91276116A6002BEEF8 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 2AF90B90276116A6002BEEF8 /* CasePaths */; };
+		2AF90B94276116B8002BEEF8 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 2AF90B93276116B8002BEEF8 /* IdentifiedCollections */; };
+		2AF90B97276116C2002BEEF8 /* Parsing in Frameworks */ = {isa = PBXBuildFile; productRef = 2AF90B96276116C2002BEEF8 /* Parsing */; };
 		4B781C62274C096B00779F2E /* ItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B781C61274C096B00779F2E /* ItemViewController.swift */; };
 		4B781C64274C191000779F2E /* ItemRowCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B781C63274C191000779F2E /* ItemRowCellView.swift */; };
-		4BCC55AC272C572F0032BF7A /* Parsing in Frameworks */ = {isa = PBXBuildFile; productRef = 4BCC55AB272C572F0032BF7A /* Parsing */; };
 		4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F326EF9CB00032CB71 /* Inventory.swift */; };
-		4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,11 +49,11 @@
 		2AA3AFB5274C35AF00171289 /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		2AF10F1B26F3B56B00796207 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		2AF10F1D26F3D4A000796207 /* ItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRow.swift; sourceTree = "<group>"; };
+		2AF90B8727611158002BEEF8 /* Inventory */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Inventory; path = ..; sourceTree = "<group>"; };
 		4B781C61274C096B00779F2E /* ItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewController.swift; sourceTree = "<group>"; };
 		4B781C63274C191000779F2E /* ItemRowCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRowCellView.swift; sourceTree = "<group>"; };
 		4BCC55A9272C53D80032BF7A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4BDDD1F326EF9CB00032CB71 /* Inventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inventory.swift; sourceTree = "<group>"; };
-		4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIHelpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,9 +61,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4BCC55AC272C572F0032BF7A /* Parsing in Frameworks */,
-				2A3A7BB626EFA73100A37A4D /* IdentifiedCollections in Frameworks */,
-				4B3057AD26F3BD7900A5C737 /* CasePaths in Frameworks */,
+				2AF90B94276116B8002BEEF8 /* IdentifiedCollections in Frameworks */,
+				2AF90B8C2761155E002BEEF8 /* SwiftUIHelpers in Frameworks */,
+				2AF90B91276116A6002BEEF8 /* CasePaths in Frameworks */,
+				2AF90B97276116C2002BEEF8 /* Parsing in Frameworks */,
+				2AF90B8A27611308002BEEF8 /* Models in Frameworks */,
+				2AF90B8E27611670002BEEF8 /* ParsingHelpers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,9 +83,11 @@
 		2A3A7B7E26EF940C00A37A4D = {
 			isa = PBXGroup;
 			children = (
+				2AF90B8727611158002BEEF8 /* Inventory */,
 				2A3A7B8926EF940C00A37A4D /* SwiftUINavigation */,
 				2A3A7B9A26EF940D00A37A4D /* SwiftUINavigationTests */,
 				2A3A7B8826EF940C00A37A4D /* Products */,
+				2AF90B8827611308002BEEF8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -105,7 +112,6 @@
 				4B781C63274C191000779F2E /* ItemRowCellView.swift */,
 				2AF10F1B26F3B56B00796207 /* ItemView.swift */,
 				4B781C61274C096B00779F2E /* ItemViewController.swift */,
-				4BDDD1F526EFB0D00032CB71 /* SwiftUIHelpers.swift */,
 				2A3A7B8A26EF940C00A37A4D /* SwiftUINavigationApp.swift */,
 				2A3A7B8E26EF940D00A37A4D /* Assets.xcassets */,
 				2A3A7B9026EF940D00A37A4D /* Preview Content */,
@@ -129,6 +135,13 @@
 			path = SwiftUINavigationTests;
 			sourceTree = "<group>";
 		};
+		2AF90B8827611308002BEEF8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -146,9 +159,12 @@
 			);
 			name = SwiftUINavigation;
 			packageProductDependencies = (
-				2A3A7BB526EFA73100A37A4D /* IdentifiedCollections */,
-				4B3057AC26F3BD7900A5C737 /* CasePaths */,
-				4BCC55AB272C572F0032BF7A /* Parsing */,
+				2AF90B8927611308002BEEF8 /* Models */,
+				2AF90B8B2761155E002BEEF8 /* SwiftUIHelpers */,
+				2AF90B8D27611670002BEEF8 /* ParsingHelpers */,
+				2AF90B90276116A6002BEEF8 /* CasePaths */,
+				2AF90B93276116B8002BEEF8 /* IdentifiedCollections */,
+				2AF90B96276116C2002BEEF8 /* Parsing */,
 			);
 			productName = SwiftUINavigation;
 			productReference = 2A3A7B8726EF940C00A37A4D /* SwiftUINavigation.app */;
@@ -201,9 +217,9 @@
 			);
 			mainGroup = 2A3A7B7E26EF940C00A37A4D;
 			packageReferences = (
-				2A3A7BB426EFA73100A37A4D /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
-				4B3057AB26F3BD7900A5C737 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
-				4BCC55AA272C572F0032BF7A /* XCRemoteSwiftPackageReference "swift-parsing" */,
+				2AF90B8F276116A6002BEEF8 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
+				2AF90B92276116B8002BEEF8 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
+				2AF90B95276116C2002BEEF8 /* XCRemoteSwiftPackageReference "swift-parsing" */,
 			);
 			productRefGroup = 2A3A7B8826EF940C00A37A4D /* Products */;
 			projectDirPath = "";
@@ -244,7 +260,6 @@
 				2AA3AFB4274C215500171289 /* InventoryViewController.swift in Sources */,
 				4BDDD1F426EF9CB00032CB71 /* Inventory.swift in Sources */,
 				4B781C64274C191000779F2E /* ItemRowCellView.swift in Sources */,
-				4BDDD1F626EFB0D00032CB71 /* SwiftUIHelpers.swift in Sources */,
 				2A3A7B8D26EF940C00A37A4D /* ContentView.swift in Sources */,
 				2AF10F1E26F3D4A000796207 /* ItemRow.swift in Sources */,
 				2AF10F1C26F3B56B00796207 /* ItemView.swift in Sources */,
@@ -524,15 +539,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		2A3A7BB426EFA73100A37A4D /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.0;
-			};
-		};
-		4B3057AB26F3BD7900A5C737 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
+		2AF90B8F276116A6002BEEF8 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-case-paths.git";
 			requirement = {
@@ -540,7 +547,15 @@
 				minimumVersion = 0.7.0;
 			};
 		};
-		4BCC55AA272C572F0032BF7A /* XCRemoteSwiftPackageReference "swift-parsing" */ = {
+		2AF90B92276116B8002BEEF8 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
+			};
+		};
+		2AF90B95276116C2002BEEF8 /* XCRemoteSwiftPackageReference "swift-parsing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-parsing.git";
 			requirement = {
@@ -551,19 +566,31 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2A3A7BB526EFA73100A37A4D /* IdentifiedCollections */ = {
+		2AF90B8927611308002BEEF8 /* Models */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2A3A7BB426EFA73100A37A4D /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
-			productName = IdentifiedCollections;
+			productName = Models;
 		};
-		4B3057AC26F3BD7900A5C737 /* CasePaths */ = {
+		2AF90B8B2761155E002BEEF8 /* SwiftUIHelpers */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4B3057AB26F3BD7900A5C737 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
+			productName = SwiftUIHelpers;
+		};
+		2AF90B8D27611670002BEEF8 /* ParsingHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ParsingHelpers;
+		};
+		2AF90B90276116A6002BEEF8 /* CasePaths */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2AF90B8F276116A6002BEEF8 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
 			productName = CasePaths;
 		};
-		4BCC55AB272C572F0032BF7A /* Parsing */ = {
+		2AF90B93276116B8002BEEF8 /* IdentifiedCollections */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4BCC55AA272C572F0032BF7A /* XCRemoteSwiftPackageReference "swift-parsing" */;
+			package = 2AF90B92276116B8002BEEF8 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
+			productName = IdentifiedCollections;
+		};
+		2AF90B96276116C2002BEEF8 /* Parsing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2AF90B95276116C2002BEEF8 /* XCRemoteSwiftPackageReference "swift-parsing" */;
 			productName = Parsing;
 		};
 /* End XCSwiftPackageProductDependency section */
