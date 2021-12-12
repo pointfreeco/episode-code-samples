@@ -29,9 +29,13 @@ class ItemRowCellView: UICollectionViewListCell {
         case .none:
           guard let vc = presentedViewController
           else { return }
-          vc.dismiss(animated: true)
-          context.navigationController?.popToViewController(vc, animated: true)
-          context.navigationController?.popViewController(animated: true)
+          
+          if context.navigationController?.viewControllers.contains(vc) == true {
+            context.navigationController?.popToViewController(vc, animated: true)
+            context.navigationController?.popViewController(animated: true)
+          } else {
+            vc.dismiss(animated: true)
+          }
           presentedViewController = nil
           
         case .deleteAlert:
