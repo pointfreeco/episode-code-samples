@@ -4,12 +4,12 @@ import Foundation
 
 /// A client for accessing weather data for locations.
 public struct WeatherClient {
-  public var weather: (Int) -> AnyPublisher<WeatherResponse, Error>
-  public var searchLocations: (CLLocationCoordinate2D) -> AnyPublisher<[Location], Error>
+  public var weather: (Int) async throws -> WeatherResponse
+  public var searchLocations: (CLLocationCoordinate2D) async throws -> [Location]
 
   public init(
-    weather: @escaping (Int) -> AnyPublisher<WeatherResponse, Error>,
-    searchLocations: @escaping (CLLocationCoordinate2D) -> AnyPublisher<[Location], Error>
+    weather: @escaping (Int) async throws -> WeatherResponse,
+    searchLocations: @escaping (CLLocationCoordinate2D) async throws -> [Location]
   ) {
     self.weather = weather
     self.searchLocations = searchLocations

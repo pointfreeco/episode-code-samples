@@ -1,6 +1,10 @@
 extension AsyncStream {
-  public init(_ build: @escaping (Continuation) async -> Void) {
-    self.init { continuation in
+  public init(
+    _ elementType: Element.Type = Element.self,
+    bufferingPolicy: Continuation.BufferingPolicy = .unbounded,
+    _ build: @escaping (Continuation) async -> Void
+  ) {
+    self.init(elementType, bufferingPolicy: bufferingPolicy) { continuation in
       Task {
         await build(continuation)
         continuation.finish()
@@ -38,8 +42,12 @@ extension AsyncStream {
 }
 
 extension AsyncThrowingStream where Failure == Error {
-  public init(_ build: @escaping (Continuation) async throws -> Void) {
-    self.init { continuation in
+  public init(
+    _ elementType: Element.Type = Element.self,
+    bufferingPolicy: Continuation.BufferingPolicy = .unbounded,
+    _ build: @escaping (Continuation) async throws -> Void
+  ) {
+    self.init(elementType, bufferingPolicy: bufferingPolicy) { continuation in
       Task {
         do {
           try await build(continuation)

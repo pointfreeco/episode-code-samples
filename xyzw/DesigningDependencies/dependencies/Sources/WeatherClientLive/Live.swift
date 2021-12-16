@@ -5,19 +5,16 @@ import WeatherClient
 extension WeatherClient {
   public static let live = Self(
     weather: { id in
-      URLSession.shared.dataTaskPublisher(for: URL(string: "https://www.metaweather.com/api/location/\(id)")!)
-        .map { data, _ in data }
-        .decode(type: WeatherResponse.self, decoder: weatherJsonDecoder)
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
-  },
+      let (data, _) = try await URLSession.shared
+        .data(from: URL(string: "https://www.metaweather.com/api/location/\(id)")!)
+      return try weatherJsonDecoder.decode(WeatherResponse.self, from: data)
+    },
     searchLocations: { coordinate in
-      URLSession.shared.dataTaskPublisher(for: URL(string: "https://www.metaweather.com/api/location/search?lattlong=\(coordinate.latitude),\(coordinate.longitude)")!)
-        .map { data, _ in data }
-        .decode(type: [Location].self, decoder: weatherJsonDecoder)
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
-  })
+      let (data, _) = try await URLSession.shared
+        .data(from: URL(string: "https://www.metaweather.com/api/location/search?lattlong=\(coordinate.latitude),\(coordinate.longitude)")!)
+      return try weatherJsonDecoder.decode([Location].self, from: data)
+    }
+  )
 }
 
 private let weatherJsonDecoder: JSONDecoder = {

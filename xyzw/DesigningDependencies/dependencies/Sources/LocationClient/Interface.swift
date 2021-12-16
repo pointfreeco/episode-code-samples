@@ -5,13 +5,13 @@ public struct LocationClient {
   public var authorizationStatus: () -> CLAuthorizationStatus
   public var requestWhenInUseAuthorization: () -> Void
   public var requestLocation: () -> Void
-  public var delegate: AnyPublisher<DelegateEvent, Never>
+  public var delegate: AsyncStream<DelegateEvent>
   
   public init(
     authorizationStatus: @escaping () -> CLAuthorizationStatus,
     requestWhenInUseAuthorization: @escaping () -> Void,
     requestLocation: @escaping () -> Void,
-    delegate: AnyPublisher<DelegateEvent, Never>
+    delegate: AsyncStream<DelegateEvent>
   ) {
     self.authorizationStatus = authorizationStatus
     self.requestWhenInUseAuthorization = requestWhenInUseAuthorization

@@ -1,25 +1,35 @@
-import Combine
+import ConcurrencyExtensions
 import Foundation
 import Network
 
 extension PathMonitorClient {
   public static let satisfied = Self(
-    networkPathPublisher: Just(NetworkPath(status: .satisfied))
-      .eraseToAnyPublisher()
+    networkPathUpdates: .yielding(NetworkPath(status: .satisfied))
   )
 
   public static let unsatisfied = Self(
-    networkPathPublisher: Just(NetworkPath(status: .unsatisfied))
-      .eraseToAnyPublisher()
+    networkPathUpdates: .yielding(NetworkPath(status: .unsatisfied))
   )
 
-  public static let flakey = Self(
-    networkPathPublisher: Timer.publish(every: 2, on: .main, in: .default)
-      .autoconnect()
-      .scan(.satisfied) { status, _ in
-        status == .satisfied ? .unsatisfied : .satisfied
+  public static var flakey: Self {
+    Self(
+      networkPathUpdates: .init { continuation in
+//        var status = NWPath.Status.unsatisfied
+//        let timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+//          status = status == .satisfied ? .unsatisfied : .satisfied
+//          continuation.yield(NetworkPath(status: status))
+//        }
+//        continuation.onTermination = { @Sendable _ in
+//          timer.invalidate()
+//        }
+        var status = NWPath.Status.unsatisfied
+        while !Task.isCancelled {
+          try? await Task.sleep(nanoseconds: 2 * NSEC_PER_SEC)
+          if Task.isCancelled { break }
+          status = status == .satisfied ? .unsatisfied : .satisfied
+          continuation.yield(NetworkPath(status: status))
+        }
       }
-      .map { NetworkPath(status: $0) }
-      .eraseToAnyPublisher()
-  )
+    )
+  }
 }

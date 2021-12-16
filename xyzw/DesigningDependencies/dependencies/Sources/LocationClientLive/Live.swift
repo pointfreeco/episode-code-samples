@@ -5,39 +5,38 @@ import LocationClient
 extension LocationClient {
   public static var live: Self {
     class Delegate: NSObject, CLLocationManagerDelegate {
-      let subject: PassthroughSubject<DelegateEvent, Never>
+      let continuation: AsyncStream<DelegateEvent>.Continuation
       
-      init(subject: PassthroughSubject<DelegateEvent, Never>) {
-        self.subject = subject
+      init(continuation: AsyncStream<DelegateEvent>.Continuation) {
+        self.continuation = continuation
       }
       
       func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        self.subject.send(.didChangeAuthorization(status))
+        self.continuation.yield(.didChangeAuthorization(status))
       }
       
       func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.subject.send(.didUpdateLocations(locations))
+        self.continuation.yield(.didUpdateLocations(locations))
       }
       
       func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        self.subject.send(.didFailWithError(error))
+        self.continuation.yield(.didFailWithError(error))
       }
     }
-    
-    let locationManager = CLLocationManager()
-    let subject = PassthroughSubject<DelegateEvent, Never>()
-    var delegate: Delegate? = Delegate(subject: subject)
-    locationManager.delegate = delegate
 
-    locationManager.requestLocation()
-    
+    let locationManager = CLLocationManager()
     return Self(
       authorizationStatus: CLLocationManager.authorizationStatus,
       requestWhenInUseAuthorization: locationManager.requestWhenInUseAuthorization,
       requestLocation: locationManager.requestLocation,
-      delegate: subject
-        .handleEvents(receiveCancel: { delegate = nil })
-        .eraseToAnyPublisher()
+      delegate: .init { continuation in
+        let delegate = Delegate(continuation: continuation)
+        locationManager.delegate = delegate
+        locationManager.requestLocation()
+        continuation.onTermination = { @Sendable termination in
+          _ = delegate
+        }
+      }
     )
   }
 }

@@ -1,4 +1,3 @@
-import Combine
 import Network
 
 public struct NetworkPath {
@@ -16,11 +15,11 @@ extension NetworkPath {
 }
 
 public struct PathMonitorClient {
-  public var networkPathPublisher: AnyPublisher<NetworkPath, Never>
+  public var networkPathUpdates: AsyncStream<NetworkPath>
 
   public init(
-    networkPathPublisher: AnyPublisher<NetworkPath, Never>
+    networkPathUpdates: AsyncStream<NetworkPath>
   ) {
-    self.networkPathPublisher = networkPathPublisher
+    self.networkPathUpdates = networkPathUpdates
   }
 }

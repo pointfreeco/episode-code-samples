@@ -1,34 +1,34 @@
-import Combine
+import ConcurrencyExtensions
 import CoreLocation
 
 extension LocationClient {
   public static var authorizedWhenInUse: Self {
-    let subject = PassthroughSubject<DelegateEvent, Never>()
+    let (continuation, stream) = AsyncStream<DelegateEvent>.passthrough()
 
     return Self(
       authorizationStatus: { .authorizedWhenInUse },
       requestWhenInUseAuthorization: { },
       requestLocation: {
-        subject.send(.didUpdateLocations([CLLocation()]))
+        continuation.yield(.didUpdateLocations([CLLocation()]))
       },
-      delegate: subject.eraseToAnyPublisher()
+      delegate: stream
     )
   }
 
   public static var notDetermined: Self {
     var status = CLAuthorizationStatus.notDetermined
-    let subject = PassthroughSubject<DelegateEvent, Never>()
+    let (continuation, stream) = AsyncStream<DelegateEvent>.passthrough()
 
     return Self(
       authorizationStatus: { status },
       requestWhenInUseAuthorization: {
         status = .authorizedWhenInUse
-        subject.send(.didChangeAuthorization(status))
+        continuation.yield(.didChangeAuthorization(status))
       },
       requestLocation: {
-        subject.send(.didUpdateLocations([CLLocation()]))
+        continuation.yield(.didUpdateLocations([CLLocation()]))
       },
-      delegate: subject.eraseToAnyPublisher()
+      delegate: stream
     )
   }
 }
