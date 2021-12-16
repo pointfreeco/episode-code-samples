@@ -1,4 +1,5 @@
 import Combine
+import ConcurrencyExtensions
 import CoreLocation
 import SwiftUI
 import Network
@@ -6,45 +7,7 @@ import PathMonitorClient
 import WeatherClient
 import LocationClient
 
-struct AsyncRemoveDuplicatesSequence<Base>: AsyncSequence
-where
-  Base: AsyncSequence,
-  Base.Element: Equatable
-{
-  typealias Element = Base.Element
-
-  let base: Base
-
-  __consuming func makeAsyncIterator() -> AsyncIterator {
-    .init(base: self.base.makeAsyncIterator())
-  }
-
-  struct AsyncIterator: AsyncIteratorProtocol {
-    var base: Base.AsyncIterator
-    var previous: Base.Element?
-
-    init(base: Base.AsyncIterator) {
-      self.base = base
-    }
-
-    mutating func next() async rethrows -> Base.Element? {
-      while let element = try await self.base.next() {
-        guard element != self.previous
-        else { continue }
-        defer { self.previous = element }
-        return element
-      }
-      return nil
-    }
-  }
-}
-
-extension AsyncSequence where Element: Equatable {
-  func removeDuplicates() -> AsyncRemoveDuplicatesSequence<Self> {
-    .init(base: self)
-  }
-}
-
+@MainActor
 public class AppViewModel: ObservableObject {
   @Published var currentLocation: Location?
   @Published var isConnected = true

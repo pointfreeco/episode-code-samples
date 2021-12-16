@@ -142,3 +142,42 @@ extension AsyncThrowingStream where Failure == Error {
     }
   }
 #endif
+
+public struct AsyncRemoveDuplicatesSequence<Base>: AsyncSequence
+where
+  Base: AsyncSequence,
+  Base.Element: Equatable
+{
+  public typealias Element = Base.Element
+
+  let base: Base
+
+  public __consuming func makeAsyncIterator() -> AsyncIterator {
+    .init(base: self.base.makeAsyncIterator())
+  }
+
+  public struct AsyncIterator: AsyncIteratorProtocol {
+    var base: Base.AsyncIterator
+    var previous: Element?
+
+    init(base: Base.AsyncIterator) {
+      self.base = base
+    }
+
+    public mutating func next() async rethrows -> Element? {
+      while let element = try await self.base.next() {
+        guard element != self.previous
+        else { continue }
+        defer { self.previous = element }
+        return element
+      }
+      return nil
+    }
+  }
+}
+
+extension AsyncSequence where Element: Equatable {
+  public func removeDuplicates() -> AsyncRemoveDuplicatesSequence<Self> {
+    .init(base: self)
+  }
+}
