@@ -24,11 +24,11 @@ extension Location {
   static let brooklyn = Location(title: "Brooklyn", woeid: 1)
 }
 
-extension AnyPublisher {
-  init(_ value: Output) {
-    self = Just(value).setFailureType(to: Failure.self).eraseToAnyPublisher()
-  }
-}
+//extension AnyPublisher {
+//  init(_ value: Output) {
+//    self = Just(value).setFailureType(to: Failure.self).eraseToAnyPublisher()
+//  }
+//}
 
 extension WeatherClient {
   static let unimplemented = Self(
@@ -37,95 +37,103 @@ extension WeatherClient {
   )
 }
 
+@MainActor
 class WeatherFeatureTests: XCTestCase {
-
-  func testBasics() {
+  func testBasics() async {
     let viewModel = AppViewModel(
       locationClient: .authorizedWhenInUse,
       pathMonitorClient: .satisfied,
       weatherClient: WeatherClient(
-        weather: { _ in .init(.moderateWeather) },
-        searchLocations: { _ in .init([.brooklyn]) }
+        weather: { _ in .moderateWeather },
+        searchLocations: { _ in [.brooklyn] }
       )
     )
+    Task { await viewModel.task() }
+    await Task.yield()
 
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
     XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
   }
   
-  func testDisconnected() {
+  func testDisconnected() async {
     let viewModel = AppViewModel(
       locationClient: .authorizedWhenInUse,
       pathMonitorClient: .unsatisfied,
       weatherClient: .unimplemented
     )
-    
+    Task { await viewModel.task() }
+    await Task.yield()
+
     XCTAssertEqual(viewModel.currentLocation, nil)
     XCTAssertEqual(viewModel.isConnected, false)
     XCTAssertEqual(viewModel.weatherResults, [])
   }
   
-  func testPathUpdates() {
-    let pathUpdateSubject = PassthroughSubject<NetworkPath, Never>()
+  func testPathUpdates() async {
+    let pathUpdates = AsyncStream<NetworkPath>.passthrough()
     let viewModel = AppViewModel(
       locationClient: .authorizedWhenInUse,
-      pathMonitorClient: PathMonitorClient(
-        networkPathPublisher: pathUpdateSubject
-          .eraseToAnyPublisher()
-      ),
+      pathMonitorClient: PathMonitorClient(networkPathUpdates: pathUpdates.stream),
       weatherClient: WeatherClient(
-        weather: { _ in .init(.moderateWeather) },
-        searchLocations: { _ in .init([.brooklyn]) }
+        weather: { _ in .moderateWeather },
+        searchLocations: { _ in [.brooklyn] }
       )
     )
-    pathUpdateSubject.send(.init(status: .satisfied))
-    
+    Task { await viewModel.task() }
+    pathUpdates.continuation.yield(.init(status: .satisfied))
+    await Task.yield()
+
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
     XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
     
-    pathUpdateSubject.send(.init(status: .unsatisfied))
-    
+    pathUpdates.continuation.yield(.init(status: .unsatisfied))
+    await Task.yield()
+
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, false)
     XCTAssertEqual(viewModel.weatherResults, [])
     
-    pathUpdateSubject.send(.init(status: .satisfied))
-    
+    pathUpdates.continuation.yield(.init(status: .satisfied))
+    await Task.yield()
+
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
     XCTAssertEqual(viewModel.weatherResults, WeatherResponse.moderateWeather.consolidatedWeather)
   }
 
-  func testLocationAuthorization() {
+  func testLocationAuthorization() async {
     var authorizationStatus = CLAuthorizationStatus.notDetermined
-    let locationDelegateSubject = PassthroughSubject<LocationClient.DelegateEvent, Never>()
+    let locationDelegate = AsyncStream<LocationClient.DelegateEvent>.passthrough()
 
     let viewModel = AppViewModel(
       locationClient: LocationClient(
         authorizationStatus: { authorizationStatus },
         requestWhenInUseAuthorization: {
           authorizationStatus = .authorizedWhenInUse
-          locationDelegateSubject.send(.didChangeAuthorization(authorizationStatus))
+          locationDelegate.continuation.yield(.didChangeAuthorization(authorizationStatus))
         },
         requestLocation: {
-          locationDelegateSubject.send(.didUpdateLocations([CLLocation()]))
+          locationDelegate.continuation.yield(.didUpdateLocations([CLLocation()]))
         },
-        delegate: locationDelegateSubject.eraseToAnyPublisher()
+        delegate: locationDelegate.stream
       ),
       pathMonitorClient: .satisfied,
       weatherClient: WeatherClient(
-        weather: { _ in .init(.moderateWeather) },
-        searchLocations: { _ in .init([.brooklyn]) }
+        weather: { _ in .moderateWeather },
+        searchLocations: { _ in [.brooklyn] }
       )
     )
+    Task { await viewModel.task() }
+    await Task.yield()
 
     XCTAssertEqual(viewModel.currentLocation, nil)
     XCTAssertEqual(viewModel.isConnected, true)
     XCTAssertEqual(viewModel.weatherResults, [])
 
     viewModel.locationButtonTapped()
+    await Task.yield()
 
     XCTAssertEqual(viewModel.currentLocation, .brooklyn)
     XCTAssertEqual(viewModel.isConnected, true)
@@ -134,22 +142,22 @@ class WeatherFeatureTests: XCTestCase {
 
   func testLocationAuthorizationDenied() {
     var authorizationStatus = CLAuthorizationStatus.notDetermined
-    let locationDelegateSubject = PassthroughSubject<LocationClient.DelegateEvent, Never>()
+    let locationDelegate = AsyncStream<LocationClient.DelegateEvent>.passthrough()
 
     let viewModel = AppViewModel(
       locationClient: LocationClient(
         authorizationStatus: { authorizationStatus },
         requestWhenInUseAuthorization: {
           authorizationStatus = .denied
-          locationDelegateSubject.send(.didChangeAuthorization(authorizationStatus))
+          locationDelegate.continuation.yield(.didChangeAuthorization(authorizationStatus))
         },
         requestLocation: { fatalError() },
-        delegate: locationDelegateSubject.eraseToAnyPublisher()
+        delegate: locationDelegate.stream
       ),
       pathMonitorClient: .satisfied,
       weatherClient: WeatherClient(
-        weather: { _ in .init(.moderateWeather) },
-        searchLocations: { _ in .init([.brooklyn]) }
+        weather: { _ in .moderateWeather },
+        searchLocations: { _ in [.brooklyn] }
       )
     )
 
