@@ -10,8 +10,8 @@ extension PathMonitorClient {
         monitor.pathUpdateHandler = { path in
           continuation.yield(NetworkPath(rawValue: path))
         }
-        continuation.onTermination = { @Sendable _ in
-          monitor.cancel()
+        continuation.onTermination = { @Sendable [cancel = monitor.cancel] _ in
+          cancel()
         }
       }
     )

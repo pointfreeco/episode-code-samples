@@ -4,7 +4,7 @@ import LocationClient
 
 extension LocationClient {
   public static var live: Self {
-    class Delegate: NSObject, CLLocationManagerDelegate {
+    final class Delegate: NSObject, CLLocationManagerDelegate, Sendable {
       let continuation: AsyncStream<DelegateEvent>.Continuation
       
       init(continuation: AsyncStream<DelegateEvent>.Continuation) {
@@ -26,7 +26,7 @@ extension LocationClient {
 
     let locationManager = CLLocationManager()
     return Self(
-      authorizationStatus: CLLocationManager.authorizationStatus,
+      authorizationStatus: { locationManager.authorizationStatus },
       requestWhenInUseAuthorization: locationManager.requestWhenInUseAuthorization,
       requestLocation: locationManager.requestLocation,
       delegate: .init { continuation in

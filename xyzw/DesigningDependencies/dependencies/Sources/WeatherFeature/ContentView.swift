@@ -114,7 +114,7 @@ public class AppViewModel: ObservableObject {
   }
 }
 
-public struct ContentView: View {
+public struct ContentView: View, Sendable {
   @ObservedObject var viewModel: AppViewModel
 
   public init(viewModel: AppViewModel) {

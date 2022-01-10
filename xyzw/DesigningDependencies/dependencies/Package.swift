@@ -8,62 +8,133 @@ let package = Package(
   products: [
     .library(
       name: "ConcurrencyExtensions",
-      targets: ["ConcurrencyExtensions"]),
+      targets: ["ConcurrencyExtensions"]
+    ),
     .library(
       name: "LocationClient",
-      targets: ["LocationClient"]),
+      targets: ["LocationClient"]
+    ),
     .library(
       name: "LocationClientLive",
-      targets: ["LocationClientLive"]),
+      targets: ["LocationClientLive"]
+    ),
     .library(
       name: "PathMonitorClient",
-      targets: ["PathMonitorClient"]),
+      targets: ["PathMonitorClient"]
+    ),
     .library(
       name: "PathMonitorClientLive",
-      targets: ["PathMonitorClientLive"]),
+      targets: ["PathMonitorClientLive"]
+    ),
     .library(
       name: "WeatherClient",
-      targets: ["WeatherClient"]),
+      targets: ["WeatherClient"]
+    ),
     .library(
       name: "WeatherClientLive",
-      targets: ["WeatherClientLive"]),
+      targets: ["WeatherClientLive"]
+    ),
     .library(
       name: "WeatherFeature",
-      targets: ["WeatherFeature"]),
+      targets: ["WeatherFeature"]
+    ),
   ],
   dependencies: [
   ],
   targets: [
     .target(
       name: "ConcurrencyExtensions",
-      dependencies: []),
+      dependencies: [],
+      swiftSettings: [
+        .unsafeFlags([
+          "-Xfrontend", "-warn-concurrency",
+          "-Xfrontend", "-enable-actor-data-race-checks",
+        ]),
+      ]
+    ),
     .target(
       name: "LocationClient",
-      dependencies: ["ConcurrencyExtensions"]),
+      dependencies: ["ConcurrencyExtensions"],
+      swiftSettings: [
+        .unsafeFlags([
+          "-Xfrontend", "-warn-concurrency",
+          "-Xfrontend", "-enable-actor-data-race-checks",
+        ]),
+      ]
+    ),
     .target(
       name: "LocationClientLive",
-      dependencies: ["LocationClient"]),
+      dependencies: ["LocationClient"],
+      swiftSettings: [
+        .unsafeFlags([
+          "-Xfrontend", "-warn-concurrency",
+          "-Xfrontend", "-enable-actor-data-race-checks",
+        ]),
+      ]
+    ),
     .target(
       name: "PathMonitorClient",
-      dependencies: ["ConcurrencyExtensions"]),
+      dependencies: ["ConcurrencyExtensions"],
+      swiftSettings: [
+        .unsafeFlags([
+          "-Xfrontend", "-warn-concurrency",
+          "-Xfrontend", "-enable-actor-data-race-checks",
+        ]),
+      ]
+    ),
     .target(
       name: "PathMonitorClientLive",
-      dependencies: ["PathMonitorClient"]),
+      dependencies: ["PathMonitorClient"],
+      swiftSettings: [
+        .unsafeFlags([
+          "-Xfrontend", "-warn-concurrency",
+          "-Xfrontend", "-enable-actor-data-race-checks",
+        ]),
+      ]
+    ),
     .target(
       name: "WeatherClient",
-      dependencies: ["ConcurrencyExtensions"]),
+      dependencies: ["ConcurrencyExtensions"],
+      swiftSettings: [
+        .unsafeFlags([
+          "-Xfrontend", "-warn-concurrency",
+          "-Xfrontend", "-enable-actor-data-race-checks",
+        ]),
+      ]
+    ),
     .target(
       name: "WeatherClientLive",
-      dependencies: ["WeatherClient"]),
+      dependencies: ["WeatherClient"],
+      swiftSettings: [
+        .unsafeFlags([
+          "-Xfrontend", "-warn-concurrency",
+          "-Xfrontend", "-enable-actor-data-race-checks",
+        ]),
+      ]
+    ),
     .target(
       name: "WeatherFeature",
       dependencies: [
         "LocationClient",
         "PathMonitorClient",
         "WeatherClient"
-      ]),
+      ],
+      swiftSettings: [
+        .unsafeFlags([
+          "-Xfrontend", "-warn-concurrency",
+          "-Xfrontend", "-enable-actor-data-race-checks",
+        ]),
+      ]
+    ),
     .testTarget(
       name: "WeatherFeatureTests",
-      dependencies: ["WeatherFeature"]),
+      dependencies: ["WeatherFeature"],
+      swiftSettings: [
+        .unsafeFlags([
+          "-Xfrontend", "-warn-concurrency",
+          "-Xfrontend", "-enable-actor-data-race-checks",
+        ]),
+      ]
+    ),
   ]
 )
