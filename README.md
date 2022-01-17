@@ -175,3 +175,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Modularization: Part 1](0171-modularization-pt1)
 1. [Modularization: Part 2](0172-modularization-pt2)
 1. [Parser Builders: Part 1](0173-parser-builders-pt1)
+1. [Parser Builders: Part 2](0174-parser-builders-pt2)
