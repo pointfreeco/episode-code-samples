@@ -174,5 +174,6 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [UIKit Navigation: Part 2](0170-uikit-navigation-pt2)
 1. [Modularization: Part 1](0171-modularization-pt1)
 1. [Modularization: Part 2](0172-modularization-pt2)
-1. [Parser Builders: Part 1](0173-parser-builders-pt1)
-1. [Parser Builders: Part 2](0174-parser-builders-pt2)
+1. [Parser Builders: The Problem](0173-parser-builders-pt1)
+1. [Parser Builders: The Solution](0174-parser-builders-pt2)
+1. [Parser Builders: The Point](0175-parser-builders-pt3)

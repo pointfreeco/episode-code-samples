@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  macos_tests:
+    runs-on: macos-11
+    strategy:
+      matrix:
+        xcode:
+          - "12.4"   # Swift 5.3
+          - "12.5.1" # Swift 5.4
+          - "13.0"   # Swift 5.5
+        command:
+          - test
+          - benchmarks
+    steps:
+      - uses: actions/checkout@v2
+      - name: Select Xcode ${{ matrix.xcode }}
+        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
+      - name: System
+        run: system_profiler SPHardwareDataType
+      - name: Run ${{ matrix.command }}
+        run: make ${{ matrix.command }}
+
+  ubuntu_tests:
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: swift build
+      - name: Run tests
+        run: swift test
+
+  windows_tests:
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: MaxDesiatov/swift-windows-action@v1
