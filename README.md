@@ -178,3 +178,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Parser Builders: The Solution](0174-parser-builders-pt2)
 1. [Parser Builders: The Point](0175-parser-builders-pt3)
 1. [Parser Errors: from Nil to Throws](0176-parser-errors-pt1)
+1. [Parser Errors: Context and Ergonomics](0177-parser-errors-pt2)
