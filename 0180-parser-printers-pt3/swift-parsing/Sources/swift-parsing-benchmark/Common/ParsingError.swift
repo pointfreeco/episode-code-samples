@@ -1,0 +1,1 @@
+struct ParsingError: Error {}
