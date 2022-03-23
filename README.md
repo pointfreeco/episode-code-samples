@@ -183,3 +183,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Parser Printers: The Solution, Part 1](0179-parser-printers-pt2)
 1. [Parser Printers: The Solution, Part 2](0180-parser-printers-pt3)
 1. [Parser Printers: Generalization](0181-parser-printers-pt4)
+1. [Parser Printers: Map](0182-parser-printers-pt5)
