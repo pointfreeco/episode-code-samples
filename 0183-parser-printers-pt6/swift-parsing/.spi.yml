@@ -1,0 +1,9 @@
+version: 1
+builder:
+  configs:
+  - platform: ios
+    scheme: Parsing
+  - platform: tvos
+    scheme: Parsing
+  - platform: watchos
+    scheme: Parsing_watchOS
