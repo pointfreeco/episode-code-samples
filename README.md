@@ -185,3 +185,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Parser Printers: Generalization](0181-parser-printers-pt4)
 1. [Parser Printers: Map](0182-parser-printers-pt5)
 1. [Parser Printers: Bizarro Printing](0183-parser-printers-pt6)
+1. [Parser Printers: The Point](0184-parser-printers-pt7)
