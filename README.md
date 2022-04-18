@@ -187,3 +187,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Parser Printers: Bizarro Printing](0183-parser-printers-pt6)
 1. [Parser Printers: The Point](0184-parser-printers-pt7)
 1. [Tour of Parser-Printers: Introduction](0185-parser-printers-tour-pt1)
+1. [Tour of Parser-Printers: vs. Swift's Regex DSL](0186-parser-printers-tour-pt2)
