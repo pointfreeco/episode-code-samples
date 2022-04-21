@@ -89,3 +89,93 @@ func routes(_ app: Application) throws {
     )
   }
 }
+
+func siteHandler(
+  request: Request,
+  route: SiteRoute
+) async throws -> AsyncResponseEncodable {
+  switch route {
+  case .aboutUs:
+    return [String: String]()
+  case .contactUs:
+    return [String: String]()
+  case .home:
+    return [String: String]()
+  case let .users(route):
+    return try await usersHandler(request: request, route: route)
+  }
+}
+
+func usersHandler(
+  request: Request,
+  route: UsersRoute
+) async throws -> AsyncResponseEncodable {
+  switch route {
+  case .create(_):
+    return [String: String]()
+  case let .user(userId, route):
+    return try await userHandler(request: request, userId: userId, route: route)
+  }
+}
+
+func userHandler(
+  request: Request,
+  userId: Int,
+  route: UserRoute
+) async throws -> AsyncResponseEncodable {
+  switch route {
+  case let .books(route):
+    return try await booksHandler(request: request, userId: userId, route: route)
+  case .fetch:
+    return UserResponse(
+      id: userId,
+      name: "Blob \(userId)",
+      booksURL: request.application.router
+        .url(for: .users(.user(userId, .books())))
+    )
+  }
+}
+
+func booksHandler(
+  request: Request,
+  userId: Int,
+  route: BooksRoute
+) async throws -> AsyncResponseEncodable {
+  switch route {
+  case let .book(bookId, route):
+    return try await bookHandler(request: request, userId: userId, bookId: bookId, route: route)
+  case let .search(options):
+    return BooksResponse(
+      books: (1...options.count).map { n in
+        let bookId = UUID()
+        return .init(
+          id: bookId,
+          title: "Blobbed around the world \(n)",
+          bookURL: request.application.router
+            .url(for: .users(.user(userId, .books(.book(bookId)))))
+        )
+      }
+        .sorted {
+          options.direction == .asc
+          ? $0.title < $1.title
+          : $0.title > $1.title
+        }
+    )
+  }
+}
+
+func bookHandler(
+  request: Request,
+  userId: Int,
+  bookId: UUID,
+  route: BookRoute
+) async throws -> AsyncResponseEncodable {
+  switch route {
+  case .fetch:
+    return BookResponse(
+      id: bookId,
+      userId: userId,
+      title: "Blobbed around the world \(bookId)"
+    )
+  }
+}
