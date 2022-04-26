@@ -8,11 +8,9 @@ struct ContentView: View {
   @State var books: [BooksResponse.Book] = []
 
   var body: some View {
-    VStack {
-      List {
-        ForEach(self.books, id: \.id) { book in
-          Text(book.title)
-        }
+    List {
+      ForEach(self.books, id: \.id) { book in
+        Text(book.title)
       }
     }
     .task {
