@@ -1,30 +1,21 @@
+//
+//  ClientTests.swift
+//  ClientTests
+//
+//  Created by Point-Free on 4/21/22.
+//
+
 import XCTest
 @testable import Client
-import SiteRouter
 
 class ClientTests: XCTestCase {
-  func testBasics() async throws {
-    let viewModel = ViewModel(
-      apiClient: .failing
-        .override(
-          .users(.user(42, .books(.search(.init(direction: .asc))))),
-          with: { try .ok(BooksResponse.mock) }
-        )
-    )
 
-    await viewModel.fetch()
+    override func setUpWithError() throws {
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+    }
 
-    XCTAssertEqual(viewModel.books, BooksResponse.mock.books)
-  }
-}
+    override func tearDownWithError() throws {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
 
-extension BooksResponse {
-  static let mock = Self(
-    books: [
-      .init(
-        id: .init(uuidString: "deadbeef-dead-beef-dead-beefdeadbeef")!,
-        title: "Blobbed around the world",
-        bookURL: .init(string: "/books/deadbeef-dead-beef-dead-beefdeadbeef")!)
-    ]
-  )
 }

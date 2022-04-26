@@ -1,17 +1,17 @@
+//
+//  ClientApp.swift
+//  Client
+//
+//  Created by Point-Free on 4/21/22.
+//
+
 import SwiftUI
-import SiteRouter
 
 @main
 struct ClientApp: App {
-  var body: some Scene {
-    WindowGroup {
-      ContentView(
-        viewModel: .init(
-          apiClient: .live(
-            router: router.baseURL("http://127.0.0.1:8080")
-          )
-        )
-      )
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
     }
-  }
 }
