@@ -1,35 +1,10 @@
 import Vapor
+import SiteRouter
 
-struct UserResponse: Content {
-  let id: Int
-  let name: String
-  let booksURL: URL
-}
-struct BookResponse: Content {
-  let id: UUID
-  let userId: Int
-  let title: String
-}
-struct BooksResponse: Content {
-  let books: [Book]
-  struct Book: Content {
-    let id: UUID
-    let title: String
-    let bookURL: URL
-  }
-}
-struct SearchOptions: Decodable {
-  var sort: Sort = .title
-  var direction: Direction = .asc
-  var count = 10
-
-  enum Direction: String, CaseIterable, Decodable {
-    case asc, desc
-  }
-  enum Sort: String, CaseIterable, Decodable {
-    case title, category
-  }
-}
+extension UserResponse: Content {}
+extension BookResponse: Content {}
+extension BooksResponse: Content {}
+extension BooksResponse.Book: Content {}
 
 func routes(_ app: Application) throws {
   // /users/:userId

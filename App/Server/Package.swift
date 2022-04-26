@@ -6,15 +6,26 @@ let package = Package(
   platforms: [
     .macOS(.v12)
   ],
+  products: [
+    .library(name: "SiteRouter", targets: ["SiteRouter"])
+  ],
   dependencies: [
     // 💧 A server-side Swift web framework.
     .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-    .package(url: "https://github.com/pointfreeco/vapor-routing", from: "0.1.0")
+    .package(url: "https://github.com/pointfreeco/vapor-routing", from: "0.1.0"),
+    .package(url: "https://github.com/pointfreeco/swift-parsing", from: "0.9.1"),
   ],
   targets: [
     .target(
+      name: "SiteRouter",
+      dependencies: [
+        .product(name: "_URLRouting", package: "swift-parsing")
+      ]
+    ),
+    .target(
       name: "App",
       dependencies: [
+        "SiteRouter",
         .product(name: "Vapor", package: "vapor"),
         .product(name: "VaporRouting", package: "vapor-routing")
       ],
