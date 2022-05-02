@@ -189,3 +189,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Tour of Parser-Printers: Introduction](0185-parser-printers-tour-pt1)
 1. [Tour of Parser-Printers: vs. Swift's Regex DSL](0186-parser-printers-tour-pt2)
 1. [Tour of Parser-Printers: URL Routing](0187-parser-printers-tour-pt3)
+1. [Tour of Parser-Printers: Vapor Routing](0188-parser-printers-tour-pt4)
