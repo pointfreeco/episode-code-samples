@@ -1,6 +1,6 @@
 import SwiftUI
 import SiteRouter
-import _URLRouting
+import URLRouting
 
 class ViewModel: ObservableObject {
   @Published var books: [BooksResponse.Book] = []

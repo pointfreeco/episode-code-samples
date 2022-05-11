@@ -1,5 +1,5 @@
 import Foundation
-import _URLRouting
+import URLRouting
 
 public struct UserResponse: Codable {
   public let id: Int
