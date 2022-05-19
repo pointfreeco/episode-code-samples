@@ -1,91 +1,50 @@
 import Foundation
 
-func operationQueueBasics() {
-  let queue = OperationQueue()
+func dispatchBasics() {
+  let queue = DispatchQueue(label: "my.queue", attributes: .concurrent)
 
-  queue.addOperation {
-    print(Thread.current)
+  //queue.async {
+  //  print(Thread.current)
+  //}
+  //
+  //queue.async { print("1", Thread.current) }
+  //queue.async { print("2", Thread.current) }
+  //queue.async { print("3", Thread.current) }
+  //queue.async { print("4", Thread.current) }
+  //queue.async { print("5", Thread.current) }
+
+  //for n in 0..<workCount {
+  //  queue.async {
+  //    print(n, Thread.current)
+  //  }
+  //}
+
+  print("before scheduling")
+  queue.asyncAfter(deadline: .now() + 1) {
+    print("1 second passed")
   }
-  queue.addOperation { print("1", Thread.current) }
-  queue.addOperation { print("2", Thread.current) }
-  queue.addOperation { print("3", Thread.current) }
-  queue.addOperation { print("4", Thread.current) }
-  queue.addOperation { print("5", Thread.current) }
+  print("after scheduling")
 }
 
-func operationPriorityAndCancellation() {
-  let queue = OperationQueue()
+let queue = DispatchQueue(label: "my.queue", qos: .background)
 
-  let operation = BlockOperation()
-  operation.addExecutionBlock { [unowned operation] in
-    let start = Date()
-    defer { print("Finished in", Date().timeIntervalSince(start)) }
-
-    Thread.sleep(forTimeInterval: 1)
-    guard !operation.isCancelled
-    else {
-      print("Cancelled!")
-      return
-    }
-    print(Thread.current)
+var item: DispatchWorkItem!
+item = DispatchWorkItem {
+  defer { item = nil }
+  let start = Date()
+  defer { print("Finished in", Date().timeIntervalSince(start)) }
+  Thread.sleep(forTimeInterval: 1)
+  guard !item.isCancelled
+  else {
+    print("Cancelled!")
+    return
   }
-  operation.qualityOfService = .background
-  queue.addOperation(operation)
-
-  Thread.sleep(forTimeInterval: 0.1)
-  operation.cancel()
+  print(Thread.current)
 }
 
-func operationQueueCoordination() {
-  let queue = OperationQueue()
+queue.async(execute: item)
 
-  let operationA = BlockOperation {
-    print("A")
-    Thread.sleep(forTimeInterval: 1)
-  }
-  let operationB = BlockOperation {
-    print("B")
-  }
-  let operationC = BlockOperation {
-    print("C")
-  }
-  let operationD = BlockOperation {
-    print("D")
-  }
-  operationB.addDependency(operationA)
-  operationC.addDependency(operationA)
-  operationD.addDependency(operationB)
-  operationD.addDependency(operationC)
-  queue.addOperation(operationA)
-  queue.addOperation(operationB)
-  queue.addOperation(operationC)
-  queue.addOperation(operationD)
-
-  operationA.cancel()
-
-  /*
-    A ➡️ B
-   ⬇️    ⬇️
-    C ➡️ D
-   */
-}
-
-func operationPerformance() {
-  let queue = OperationQueue()
-
-  for n in 0..<workCount {
-    queue.addOperation {
-      print(n, Thread.current)
-      while true {}
-    }
-  }
-
-  queue.addOperation {
-    print("Starting the prime operation")
-    nthPrime(50_000)
-  }
-}
-
-operationQueueCoordination()
+Thread.sleep(forTimeInterval: 0.5)
+item.cancel()
 
 Thread.sleep(forTimeInterval: 5)
