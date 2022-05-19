@@ -82,6 +82,54 @@ func threadStorageAndCoordination() {
   //}
 }
 
-threadPriorityAndCancellation()
 
-Thread.sleep(forTimeInterval: 1.1)
+let workCount = 1_000
+
+func isPrime(_ p: Int) -> Bool {
+  if p <= 1 { return false }
+  if p <= 3 { return true }
+  for i in 2...Int(sqrtf(Float(p))) {
+    if p % i == 0 { return false }
+  }
+  return true
+}
+func nthPrime(_ n: Int) {
+  let start = Date()
+  var primeCount = 0
+  var prime = 2
+  while primeCount < n {
+    defer { prime += 1 }
+    if isPrime(prime) {
+      primeCount += 1
+    }
+  }
+  print(
+    "\(n)th prime", prime-1,
+    "time", Date().timeIntervalSince(start)
+  )
+}
+
+for n in 0..<workCount {
+  Thread.detachNewThread {
+    while true {}
+  }
+}
+
+Thread.detachNewThread {
+  print("Starting the prime thread")
+  nthPrime(50_000)
+}
+
+
+
+Thread.sleep(forTimeInterval: 5)
+while true {
+  Thread.sleep(forTimeInterval: 5)
+  // TODO: do work
+}
+//let data = apiClient.request()
+
+let threadPool = ThreadPool(size: 10)
+threadPool.requestThread { thread in
+
+}
