@@ -1,157 +1,106 @@
+import Combine
 import Foundation
 
-func dispatchBasics() {
-  let queue = DispatchQueue(label: "my.queue", attributes: .concurrent)
-
-  //queue.async {
-  //  print(Thread.current)
-  //}
-  //
-  //queue.async { print("1", Thread.current) }
-  //queue.async { print("2", Thread.current) }
-  //queue.async { print("3", Thread.current) }
-  //queue.async { print("4", Thread.current) }
-  //queue.async { print("5", Thread.current) }
-
-  //for n in 0..<workCount {
-  //  queue.async {
-  //    print(n, Thread.current)
-  //  }
-  //}
-
-  print("before scheduling")
-  queue.asyncAfter(deadline: .now() + 1) {
-    print("1 second passed")
-  }
-  print("after scheduling")
-}
-
-func dispatchPriorityAndCancellation() {
-  let queue = DispatchQueue(label: "my.queue", qos: .background)
-
-  var item: DispatchWorkItem!
-  item = DispatchWorkItem {
-    defer { item = nil }
-    let start = Date()
-    defer { print("Finished in", Date().timeIntervalSince(start)) }
-    Thread.sleep(forTimeInterval: 1)
-    guard !item.isCancelled
-    else {
-      print("Cancelled!")
-      return
-    }
+let publisher1 = Deferred {
+  Future<Int, Never> { callback in
     print(Thread.current)
+    callback(.success(42))
   }
+}
+  .subscribe(on: DispatchQueue(label: "queue1"))
 
-  queue.async(execute: item)
+let publisher2 = Deferred {
+  Future<String, Never> { callback in
+    print(Thread.current)
+    callback(.success("Hello world"))
+  }
+}
+  .subscribe(on: DispatchQueue(label: "queue2"))
 
-  Thread.sleep(forTimeInterval: 0.5)
-  item.cancel()
+let cancellable = publisher1
+  .flatMap { integer in
+    Deferred {
+      Future<String, Never> { callback in
+        print(Thread.current)
+        callback(.success("\(integer)"))
+      }
+    }
+    .subscribe(on: DispatchQueue(label: "queue3"))
+  }
+  .zip(publisher2)
+  .sink {
+  print("sink", $0, Thread.current)
 }
 
-func dispatchStorageAndCoordination() {
-  func makeDatabaseQuery() {
-    let requestId = DispatchQueue.getSpecific(key: requestIdKey)!
-    print(requestId, "Making database query")
-    Thread.sleep(forTimeInterval: 0.5)
-    print(requestId, "Finished database query")
+_ = cancellable
+
+
+func operationQueueCoordination() {
+  let queue = OperationQueue()
+
+  let operationA = BlockOperation {
+    print("A")
+    Thread.sleep(forTimeInterval: 1)
   }
-
-  func makeNetworkRequest() {
-    let requestId = DispatchQueue.getSpecific(key: requestIdKey)!
-    print(requestId, "Making network request")
-    Thread.sleep(forTimeInterval: 0.5)
-    print(requestId, "Finished network request")
+  let operationB = BlockOperation {
+    print("B")
   }
+  let operationC = BlockOperation {
+    print("C")
+  }
+  let operationD = BlockOperation {
+    print("D")
+  }
+  operationB.addDependency(operationA)
+  operationC.addDependency(operationA)
+  operationD.addDependency(operationB)
+  operationD.addDependency(operationC)
+  queue.addOperation(operationA)
+  queue.addOperation(operationB)
+  queue.addOperation(operationC)
+  queue.addOperation(operationD)
+
+  operationA.cancel()
+
+  /*
+    A ➡️ B
+   ⬇️    ⬇️
+    C ➡️ D
+   */
+}
+
+//a
+//  .handleEvents(...)
+//  .compactMap { $0 }
+//  .flatMap { a in zip(b(a), c(a)) }
+//  .flatMap { b, c in d(b, c) }
+//  .handleEvents(receiveCompletion: { _ in print("Finished") })
+
+// defer { print("Finished") }
+// guard let a = await f()
+// else { return }
+// async let b = g(a)
+// async let c = h(a)
+// let d = await i(b, c)
 
 
-  func response(for request: URLRequest, queue: DispatchQueue) -> HTTPURLResponse {
-    let requestId = DispatchQueue.getSpecific(key: requestIdKey)!
-
-    let start = Date()
-    defer { print(requestId, "Finished in", Date().timeIntervalSince(start)) }
+func dispatchDiamondDependency() {
+  let queue = DispatchQueue(label: "queue", attributes: .concurrent)
+  queue.async {
+    print("A")
 
     let group = DispatchGroup()
-
-    let databaseQueue = DispatchQueue(label: "database-query", target: queue)
-    databaseQueue.async(group: group) {
-      makeDatabaseQuery()
+    queue.async(group: group) {
+      print("B")
+    }
+    queue.async(group: group) {
+      print("C")
     }
 
-    let networkQueue = DispatchQueue(label: "network-request", target: queue)
-    networkQueue.async(group: group) {
-      makeNetworkRequest()
-    }
-
-    group.wait()
-
-    // TODO: return real response
-    return .init()
-  }
-
-  let serverQueue = DispatchQueue(label: "server-queue", attributes: .concurrent)
-
-
-  let requestIdKey = DispatchSpecificKey<UUID>()
-  let requestId = UUID()
-  let requestQueue = DispatchQueue(label: "request-\(requestId)", attributes: .concurrent, target: serverQueue)
-  requestQueue.setSpecific(key: requestIdKey, value: requestId)
-
-  let item = DispatchWorkItem {
-    response(for: .init(url: .init(string: "http://pointfree.co")!), queue: requestQueue)
-  }
-  requestQueue.async(execute: item)
-
-
-  let queue1 = DispatchQueue(label: "queue1")
-  let idKey = DispatchSpecificKey<Int>()
-  let dateKey = DispatchSpecificKey<Date>()
-  queue1.setSpecific(key: idKey, value: 42)
-  queue1.setSpecific(key: dateKey, value: Date())
-
-  queue1.async {
-    print("queue1", "id", DispatchQueue.getSpecific(key: idKey))
-    print("queue1", "date", DispatchQueue.getSpecific(key: dateKey))
-
-    let queue2 = DispatchQueue(label: "queue2", target: queue1)
-  //  queue2.setSpecific(key: idKey, value: 1729)
-    queue2.async {
-      print("queue2", "id", DispatchQueue.getSpecific(key: idKey))
-      print("queue2", "date", DispatchQueue.getSpecific(key: dateKey))
+    group.notify(queue: queue) {
+      print("D")
     }
   }
 }
-
-
-//let queue = DispatchQueue(label: "concurrent-queue", attributes: .concurrent)
-//for n in 0..<workCount {
-//  queue.async {
-//    print(Thread.current)
-//    while true {}
-//  }
-//}
-
-
-class Counter {
-  let queue = DispatchQueue(label: "counter", attributes: .concurrent)
-  var count = 0
-  func increment() {
-    self.queue.sync(flags: .barrier) {
-      self.count += 1
-    }
-  }
-}
-let counter = Counter()
-
-let queue = DispatchQueue(label: "concurrent-queue", attributes: .concurrent)
-
-for _ in 0..<workCount {
-  queue.async {
-    counter.increment()
-  }
-}
-
-Thread.sleep(forTimeInterval: 1)
-print("counter.count", counter.count)
 
 Thread.sleep(forTimeInterval: 5)

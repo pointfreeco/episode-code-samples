@@ -35,40 +35,40 @@ func operationPriorityAndCancellation() {
   Thread.sleep(forTimeInterval: 0.1)
   operation.cancel()
 }
-
-func operationQueueCoordination() {
-  let queue = OperationQueue()
-
-  let operationA = BlockOperation {
-    print("A")
-    Thread.sleep(forTimeInterval: 1)
-  }
-  let operationB = BlockOperation {
-    print("B")
-  }
-  let operationC = BlockOperation {
-    print("C")
-  }
-  let operationD = BlockOperation {
-    print("D")
-  }
-  operationB.addDependency(operationA)
-  operationC.addDependency(operationA)
-  operationD.addDependency(operationB)
-  operationD.addDependency(operationC)
-  queue.addOperation(operationA)
-  queue.addOperation(operationB)
-  queue.addOperation(operationC)
-  queue.addOperation(operationD)
-
-  operationA.cancel()
-
-  /*
-    A ➡️ B
-   ⬇️    ⬇️
-    C ➡️ D
-   */
-}
+//
+//func operationQueueCoordination() {
+//  let queue = OperationQueue()
+//
+//  let operationA = BlockOperation {
+//    print("A")
+//    Thread.sleep(forTimeInterval: 1)
+//  }
+//  let operationB = BlockOperation {
+//    print("B")
+//  }
+//  let operationC = BlockOperation {
+//    print("C")
+//  }
+//  let operationD = BlockOperation {
+//    print("D")
+//  }
+//  operationB.addDependency(operationA)
+//  operationC.addDependency(operationA)
+//  operationD.addDependency(operationB)
+//  operationD.addDependency(operationC)
+//  queue.addOperation(operationA)
+//  queue.addOperation(operationB)
+//  queue.addOperation(operationC)
+//  queue.addOperation(operationD)
+//
+//  operationA.cancel()
+//
+//  /*
+//    A ➡️ B
+//   ⬇️    ⬇️
+//    C ➡️ D
+//   */
+//}
 
 func operationPerformance() {
   let queue = OperationQueue()
