@@ -82,54 +82,108 @@ func threadStorageAndCoordination() {
   //}
 }
 
-
 let workCount = 1_000
 
-func isPrime(_ p: Int) -> Bool {
-  if p <= 1 { return false }
-  if p <= 3 { return true }
-  for i in 2...Int(sqrtf(Float(p))) {
-    if p % i == 0 { return false }
+func threadPerformance() {
+  func isPrime(_ p: Int) -> Bool {
+    if p <= 1 { return false }
+    if p <= 3 { return true }
+    for i in 2...Int(sqrtf(Float(p))) {
+      if p % i == 0 { return false }
+    }
+    return true
   }
-  return true
-}
-func nthPrime(_ n: Int) {
-  let start = Date()
-  var primeCount = 0
-  var prime = 2
-  while primeCount < n {
-    defer { prime += 1 }
-    if isPrime(prime) {
-      primeCount += 1
+  func nthPrime(_ n: Int) {
+    let start = Date()
+    var primeCount = 0
+    var prime = 2
+    while primeCount < n {
+      defer { prime += 1 }
+      if isPrime(prime) {
+        primeCount += 1
+      }
+    }
+    print(
+      "\(n)th prime", prime-1,
+      "time", Date().timeIntervalSince(start)
+    )
+  }
+
+  for n in 0..<workCount {
+    Thread.detachNewThread {
+      while true {}
     }
   }
-  print(
-    "\(n)th prime", prime-1,
-    "time", Date().timeIntervalSince(start)
-  )
-}
 
-for n in 0..<workCount {
   Thread.detachNewThread {
-    while true {}
+    print("Starting the prime thread")
+    nthPrime(50_000)
   }
 }
 
-Thread.detachNewThread {
-  print("Starting the prime thread")
-  nthPrime(50_000)
+class Counter {
+  let lock = NSLock()
+  var count = 0
+//  var count: Int {
+//    get {
+//      self.lock.lock()
+//      defer { self.lock.unlock() }
+//      return self._count
+//    }
+//    set {
+//      self.lock.lock()
+//      defer { self.lock.unlock() }
+//      self._count = newValue
+//    }
+//    _read {
+//      self.lock.lock()
+//      defer { self.lock.unlock() }
+//      yield self._count
+//    }
+//    _modify {
+//      self.lock.lock()
+//      defer { self.lock.unlock() }
+//      yield &self._count
+//    }
+//  }
+
+  func increment() {
+    self.lock.lock()
+    defer { self.lock.unlock() }
+    self.count += 1
+  }
+  func modify(work: (Counter) -> Void) {
+    self.lock.lock()
+    defer { self.lock.unlock() }
+    work(self)
+  }
 }
+let counter = Counter()
 
 
+for _ in 0..<1_000 {
+  Thread.detachNewThread {
+    Thread.sleep(forTimeInterval: 0.01)
+    counter.modify { $0.count += 1 + $0.count/100 }
+
+//    lock.lock()
+//    let count = counter.count
+//    lock.unlock()
+//    lock.lock()
+//    counter.count += 1 + count/100
+//    lock.unlock()
+
+//    var count1 = counter.count
+//    var count2 = counter.count
+//    count1 += 1
+//    count2 += 1
+//    counter.count = count1
+//    counter.count = count2
+//    counter.increment()
+//    counter.modify { $0.count += 1 }
+  }
+}
+Thread.sleep(forTimeInterval: 2)
+print("count", counter.count)
 
 Thread.sleep(forTimeInterval: 5)
-while true {
-  Thread.sleep(forTimeInterval: 5)
-  // TODO: do work
-}
-//let data = apiClient.request()
-
-let threadPool = ThreadPool(size: 10)
-threadPool.requestThread { thread in
-
-}
