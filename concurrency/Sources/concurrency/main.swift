@@ -121,13 +121,13 @@ func response(for request: URLRequest) async throws -> HTTPURLResponse {
 }
 
 
-RequestData.$requestId.withValue(UUID()) {
-  RequestData.$startDate.withValue(Date()) {
-    Task {
-      _ = try await response(for: .init(url: .init(string: "https://www.pointfree.co")!))
-    }
-  }
-}
+//RequestData.$requestId.withValue(UUID()) {
+//  RequestData.$startDate.withValue(Date()) {
+//    Task {
+//      _ = try await response(for: .init(url: .init(string: "https://www.pointfree.co")!))
+//    }
+//  }
+//}
 
 
 //enum MyLocals {
@@ -161,5 +161,17 @@ RequestData.$requestId.withValue(UUID()) {
 //}
 //print("after:", MyLocals.id)
 
+
+for _ in 0..<workCount {
+  Task {
+    while true {
+      await Task.yield()
+    }
+  }
+}
+Task {
+  print("Starting prime thread")
+  nthPrime(50_000)
+}
 
 Thread.sleep(forTimeInterval: 5)
