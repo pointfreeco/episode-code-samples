@@ -162,16 +162,51 @@ func response(for request: URLRequest) async throws -> HTTPURLResponse {
 //print("after:", MyLocals.id)
 
 
-for _ in 0..<workCount {
-  Task {
-    while true {
-      await Task.yield()
-    }
+//for _ in 0..<workCount {
+//  Task {
+//    while true {
+//      await Task.yield()
+//    }
+//  }
+//}
+//Task {
+//  print("Starting prime thread")
+//  nthPrime(50_000)
+//}
+
+
+class Counter: @unchecked Sendable {
+  let lock = NSLock()
+  var count = 0
+  func increment() {
+    self.lock.lock()
+    defer { self.lock.unlock() }
+    self.count += 1
   }
 }
-Task {
-  print("Starting prime thread")
-  nthPrime(50_000)
+
+
+
+
+func doSomething() {
+
+  final class User: Sendable {
+    let id: Int
+    let name: String
+    init(id: Int, name: String) {
+      self.id = id
+      self.name = name
+    }
+  }
+  let user = User(id: 42, name: "Blob")
+  Task {
+    print(user)
+  }
+
 }
+
+
+doSomething()
+
 
 Thread.sleep(forTimeInterval: 5)
