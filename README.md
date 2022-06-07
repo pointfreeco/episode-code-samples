@@ -192,3 +192,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Tour of Parser-Printers: Vapor Routing](0188-parser-printers-tour-pt4)
 1. [Tour of Parser-Printers: API Clients for Free](0189-parser-printers-tour-pt5)
 1. [Concurrency's Past: Threads](0190-concurrency-pt1)
+1. [Concurrency's Present: Queues and Combine](0191-concurrency-pt2)
