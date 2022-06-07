@@ -174,8 +174,7 @@ func response(for request: URLRequest) async throws -> HTTPURLResponse {
 //  nthPrime(50_000)
 //}
 
-
-class Counter: @unchecked Sendable {
+class Counter /*: @unchecked Sendable*/ {
   let lock = NSLock()
   var count = 0
   func increment() {
@@ -185,28 +184,54 @@ class Counter: @unchecked Sendable {
   }
 }
 
-
-
-
 func doSomething() {
-
-  final class User: Sendable {
-    let id: Int
-    let name: String
-    init(id: Int, name: String) {
-      self.id = id
-      self.name = name
-    }
-  }
-  let user = User(id: 42, name: "Blob")
+  let counter = Counter()
   Task {
-    print(user)
+    counter.increment()
   }
+}
+doSomething()
 
+func perform(client: DatabaseClient, work: @escaping @Sendable () -> Void) {
+  Task {
+    _ = try await client.fetchUsers()
+    try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+    work()
+  }
+  Task {
+    _ = try await client.fetchUsers()
+    try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+    work()
+  }
+  Task {
+    _ = try await client.fetchUsers()
+    try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+    work()
+  }
 }
 
+struct User {}
+struct DatabaseClient {
+  var fetchUsers: @Sendable () async throws -> [User]
+  var createUser: @Sendable (User) async throws -> Void
+}
+extension DatabaseClient {
+  static let live = Self(
+    fetchUsers: { fatalError() },
+    createUser: { _ in fatalError() }
+  )
+}
 
-doSomething()
+Task {
+  var count = 0
+  for _ in 0..<workCount {
+    perform(client: .live) {
+      print("Hello")
+    }
+  }
+  try await Task.sleep(nanoseconds: NSEC_PER_SEC * 2)
+  print(count)
+}
 
 
 Thread.sleep(forTimeInterval: 5)
