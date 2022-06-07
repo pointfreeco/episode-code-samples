@@ -1,106 +1,58 @@
-import Combine
 import Foundation
 
-let publisher1 = Deferred {
-  Future<Int, Never> { callback in
-    print(Thread.current)
-    callback(.success(42))
-  }
-}
-  .subscribe(on: DispatchQueue(label: "queue1"))
-
-let publisher2 = Deferred {
-  Future<String, Never> { callback in
-    print(Thread.current)
-    callback(.success("Hello world"))
-  }
-}
-  .subscribe(on: DispatchQueue(label: "queue2"))
-
-let cancellable = publisher1
-  .flatMap { integer in
-    Deferred {
-      Future<String, Never> { callback in
-        print(Thread.current)
-        callback(.success("\(integer)"))
-      }
-    }
-    .subscribe(on: DispatchQueue(label: "queue3"))
-  }
-  .zip(publisher2)
-  .sink {
-  print("sink", $0, Thread.current)
+let task = Task<Int, Error>.init {
+  struct SomeError: Error {}
+  throw SomeError()
+  return 42
 }
 
-_ = cancellable
+func doSomethingAsync() async {}
 
-
-func operationQueueCoordination() {
-  let queue = OperationQueue()
-
-  let operationA = BlockOperation {
-    print("A")
-    Thread.sleep(forTimeInterval: 1)
-  }
-  let operationB = BlockOperation {
-    print("B")
-  }
-  let operationC = BlockOperation {
-    print("C")
-  }
-  let operationD = BlockOperation {
-    print("D")
-  }
-  operationB.addDependency(operationA)
-  operationC.addDependency(operationA)
-  operationD.addDependency(operationB)
-  operationD.addDependency(operationC)
-  queue.addOperation(operationA)
-  queue.addOperation(operationB)
-  queue.addOperation(operationC)
-  queue.addOperation(operationD)
-
-  operationA.cancel()
-
-  /*
-    A ➡️ B
-   ⬇️    ⬇️
-    C ➡️ D
-   */
+Task {
+  await doSomethingAsync()
 }
 
-//a
-//  .handleEvents(...)
-//  .compactMap { $0 }
-//  .flatMap { a in zip(b(a), c(a)) }
-//  .flatMap { b, c in d(b, c) }
-//  .handleEvents(receiveCompletion: { _ in print("Finished") })
+func doSomethingElseAsync() async {
+  await doSomethingAsync()
+}
 
-// defer { print("Finished") }
-// guard let a = await f()
-// else { return }
-// async let b = g(a)
-// async let c = h(a)
-// let d = await i(b, c)
+func doSomethingThatCanFail() throws {}
+
+try doSomethingThatCanFail()
+
+func doSomething() /*throws*/ {
+  do {
+    try doSomethingThatCanFail()
+  } catch let error {
+//    TODO: Handle error
+  }
+}
+
+// (A) throws -> B
+// (A) -> Result<B, Error>
+
+// (inout A) -> B
+// (A) -> (B, A)
+
+// (A) async -> B
+// (A) -> Task<B, Never>
+// (A) -> ((B) -> Void) -> Void
+// (A, (B) -> Void) -> Void
+
+// dataTask: (URL, completionHandler: (Data?, Response?, Error?) -> Void) -> Void
+// start: ((MKLocalSearch.Response?, Error?) -> Void) -> Void
 
 
-func dispatchDiamondDependency() {
-  let queue = DispatchQueue(label: "queue", attributes: .concurrent)
-  queue.async {
-    print("A")
 
-    let group = DispatchGroup()
-    queue.async(group: group) {
-      print("B")
-    }
-    queue.async(group: group) {
-      print("C")
-    }
-
-    group.notify(queue: queue) {
-      print("D")
+for n in 0..<workCount {
+  Task {
+    let current = Thread.current
+    try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+    if current != Thread.current {
+      print(n, "Thread changed from", current, "to", Thread.current)
     }
   }
 }
+
 
 Thread.sleep(forTimeInterval: 5)
