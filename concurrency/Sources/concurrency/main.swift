@@ -1,4 +1,4 @@
-import Foundation
+@preconcurrency import Foundation
 
 //var x = 0
 //outer: var y = 0
@@ -45,18 +45,78 @@ import Foundation
 //    self.lock.unlock()
 //  }
 //}
+//
+//func thread() {
+//  let lock = NSLock()
+//  lock.lock()
+//  defer { print("Finished") }
+//  print("Before")
+//  Thread.detachNewThread {
+//    print(Thread.current)
+//  }
+//  print("After")
+//  lock.unlock()
+//}
+//thread()
 
-func thread() {
-  let lock = NSLock()
-  lock.lock()
-  defer { print("Finished") }
-  print("Before")
-  Thread.detachNewThread {
-    print(Thread.current)
-  }
-  print("After")
-  lock.unlock()
+
+enum RequestData {
+  @TaskLocal static var requestId: UUID!
+  @TaskLocal static var startDate: Date!
 }
-thread()
+
+struct Response: Encodable {
+  let user: User
+  let subscription: StripeSubscription
+}
+
+struct User: Encodable { var id: Int }
+func fetchUser() async throws -> User {
+  let requestId = RequestData.requestId!
+  defer { print(requestId, "databaseQuery", "isCancelled", Task.isCancelled) }
+  print(requestId, "Making database query")
+  try await Task.sleep(nanoseconds: 500_000_000)
+  print(requestId, "Finished database query")
+  return User(id: 42)
+}
+
+struct StripeSubscription: Encodable { var id: Int }
+func fetchSubscription() async throws -> StripeSubscription {
+  let requestId = RequestData.requestId!
+  defer { print(requestId,"networkRequest", "isCancelled", Task.isCancelled) }
+  print(requestId, "Making network request")
+  try await Task.sleep(nanoseconds: 500_000_000)
+  print(requestId, "Finished network request")
+  return StripeSubscription(id: 1729)
+}
+
+func response(for request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+  let requestId = RequestData.requestId!
+  let start = RequestData.startDate!
+
+  defer { print(requestId, "Request finished in", Date().timeIntervalSince(start)) }
+
+  Task {
+    print(RequestData.requestId!, "Track analytics")
+  }
+  async let user = fetchUser()
+  async let subscription = fetchSubscription()
+
+  let jsonData = try await JSONEncoder().encode(Response(user: user, subscription: subscription))
+
+  return (jsonData, .init())
+}
+
+RequestData.$requestId.withValue(UUID()) {
+  RequestData.$startDate.withValue(Date()) {
+    let task = Task {
+      _ = try await response(for: .init(url: .init(string: "https://www.pointfree.co")!))
+    }
+    Thread.sleep(forTimeInterval: 0.1)
+    task.cancel()
+  }
+}
+
+
 
 Thread.sleep(forTimeInterval: 5)
