@@ -54,15 +54,15 @@ actor Counter {
 }
 
 
-Task {
-  let counter = Counter()
-  for _ in 0..<workCount {
-    Task {
-      await counter.decrement()
-    }
-  }
-  Thread.sleep(forTimeInterval: 1)
-  print(await counter.count)
-}
+//Task {
+//  let counter = Counter()
+//  for _ in 0..<workCount {
+//    Task {
+//      await counter.decrement()
+//    }
+//  }
+//  Thread.sleep(forTimeInterval: 1)
+//  print(await counter.count)
+//}
 
-Thread.sleep(forTimeInterval: 5)
+//Thread.sleep(forTimeInterval: 5)
