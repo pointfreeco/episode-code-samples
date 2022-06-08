@@ -1,12 +1,12 @@
 import Foundation
 
-@main
-struct Main {
-  static func main() async throws {
-    try await Task.sleep(nanoseconds: NSEC_PER_SEC)
-    print("done!")
-  }
-}
+//@main
+//struct Main {
+//  static func main() async throws {
+//    try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+//    print("done!")
+//  }
+//}
 
 
 //@preconcurrency import Foundation
