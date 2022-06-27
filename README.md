@@ -195,3 +195,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Concurrency's Present: Queues and Combine](0191-concurrency-pt2)
 1. [Concurrency's Future: Tasks and Cooperation](0192-concurrency-pt3)
 1. [Concurrency's Future: Sendable and Actors](0193-concurrency-pt4)
+1. [Concurrency's Future: Structured and Unstructured](0194-concurrency-pt5)
