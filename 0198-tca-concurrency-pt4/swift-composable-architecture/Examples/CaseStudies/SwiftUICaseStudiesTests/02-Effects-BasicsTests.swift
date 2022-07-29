@@ -161,7 +161,7 @@ class EffectsBasicsTests: XCTestCase {
     await store.receive(.nthPrimeProgress(0.84)) {
       $0.nthPrimeProgress = 0.84
     }
-    await store.receive(.nthPrimeResponse(1_223)) {
+    await store.receive(.nthPrimeResponse(for: 200, is: 1_223)) {
       $0.numberFact = "The 200th prime is 1223."
       $0.nthPrimeProgress = nil
     }

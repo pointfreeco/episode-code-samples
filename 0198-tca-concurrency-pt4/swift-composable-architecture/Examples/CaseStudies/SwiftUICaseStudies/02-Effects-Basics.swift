@@ -35,7 +35,7 @@ enum EffectsBasicsAction: Equatable {
   case incrementButtonTapped
   case nthPrimeButtonTapped
   case nthPrimeProgress(Double)
-  case nthPrimeResponse(Int)
+  case nthPrimeResponse(for: Int, is: Int)
   case numberFactButtonTapped
   case numberFactResponse(TaskResult<String>)
   case startTimerButtonTapped
@@ -147,7 +147,7 @@ let effectsBasicsReducer = Reducer<
         }
       }
 
-      await send(.nthPrimeResponse(prime - 1), animation: .default)
+      await send(.nthPrimeResponse(for: count, is: prime - 1), animation: .default)
 
       // viewStore.send(action, animation: .default)
     }
@@ -156,8 +156,8 @@ let effectsBasicsReducer = Reducer<
     state.nthPrimeProgress = progress
     return .none
 
-  case let .nthPrimeResponse(prime):
-    state.numberFact = "The \(state.count)th prime is \(prime)."
+  case let .nthPrimeResponse(count, prime):
+    state.numberFact = "The \(count)th prime is \(prime)."
     state.nthPrimeProgress = nil
     return .none
 
