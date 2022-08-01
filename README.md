@@ -200,3 +200,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Async Composable Architecture: Tasks](0196-tca-concurrency-pt2)
 1. [Async Composable Architecture: Schedulers](0197-tca-concurrency-pt3)
 1. [Async Composable Architecture: Streams](0198-tca-concurrency-pt4)
+1. [Async Composable Architecture: Effect Lifetimes](0199-tca-concurrency-pt5)
