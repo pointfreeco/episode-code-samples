@@ -203,3 +203,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Async Composable Architecture: Effect Lifetimes](0199-tca-concurrency-pt5)
 1. [Async Composable Architecture in Practive](0200-tca-concurrency-pt6)
 1. [Reducer Protocol: The Problem](0201-reducer-protocol-pt1)
+1. [Reducer Protocol: The Solution](0202-reducer-protocol-pt2)
