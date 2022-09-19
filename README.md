@@ -204,4 +204,6 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Async Composable Architecture in Practice](0200-tca-concurrency-pt6)
 1. [Reducer Protocol: The Problem](0201-reducer-protocol-pt1)
 1. [Reducer Protocol: The Solution](0202-reducer-protocol-pt2)
-1. [Reducer Protocol: Composition Part 1](0203-reducer-protocol-pt3)
+1. [Reducer Protocol: Composition, Part 1](0203-reducer-protocol-pt3)
+1. [Reducer Protocol: Composition, Part 2](0204-reducer-protocol-pt4)
+1. [Reducer Protocol: Dependencies, Part 1](0205-reducer-protocol-pt5)
