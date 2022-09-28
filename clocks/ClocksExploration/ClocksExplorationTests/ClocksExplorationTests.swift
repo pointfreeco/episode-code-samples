@@ -50,13 +50,26 @@ final class ClocksExplorationTests: XCTestCase {
   }
 
   func testTimer() async throws {
-    let model = FeatureModel(clock: ContinuousClock())
+    let clock = TestClock()
+    let model = FeatureModel(clock: clock)
 
     model.startTimerButtonTapped()
-    try await Task.sleep(for: .seconds(2) + .milliseconds(100))
-    model.stopTimerButtonTapped()
+    XCTAssertNotNil(model.timerTask)
 
-    XCTAssertNil(model.timerTask)
+    await clock.advance(by: .seconds(1))
+    XCTAssertEqual(model.count, 1)
+
+    await clock.advance(by: .seconds(1))
     XCTAssertEqual(model.count, 2)
+
+    await clock.advance(by: .seconds(8))
+    XCTAssertEqual(model.count, 10)
+
+    model.stopTimerButtonTapped()
+    XCTAssertNil(model.timerTask)
+    XCTAssertEqual(model.count, 10)
+
+    await clock.run()
+    XCTAssertEqual(model.count, 10)
   }
 }

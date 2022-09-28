@@ -2,17 +2,19 @@ import SwiftUI
 
 public class TestClock: Clock, @unchecked Sendable {
   private let lock = NSRecursiveLock()
-  private var scheduled: [(deadline: Instant, continuation: UnsafeContinuation<(), Never>)] = []
+  private var scheduled: [(deadline: Instant, continuation: AsyncStream<Never>.Continuation)] = []
 
   public func sleep(until deadline: Instant, tolerance: Duration?) async throws {
     guard self.lock.sync(operation: { deadline > self.now })
     else { return }
 
-    await withUnsafeContinuation { continuation in
+    let stream = AsyncStream<Never> { continuation in
       self.lock.sync {
         self.scheduled.append((deadline: deadline, continuation: continuation))
       }
     }
+    for await _ in stream {}
+    try Task.checkCancellation()
   }
 
   public func advance(by duration: Duration) async {
@@ -38,13 +40,19 @@ public class TestClock: Clock, @unchecked Sendable {
         self.now = next.deadline
         self.scheduled.removeFirst()
         self.lock.unlock()
-        next.continuation.resume()
+        next.continuation.finish()
         return false
       }()
 
       if `return` {
         return
       }
+    }
+  }
+
+  public func run() async {
+    while let deadline = self.lock.sync(operation: { self.scheduled.first?.deadline }) {
+      await self.advance(to: deadline)
     }
   }
 
