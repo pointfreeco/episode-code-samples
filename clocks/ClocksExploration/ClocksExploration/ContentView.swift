@@ -1,5 +1,78 @@
 import SwiftUI
 
+public class TestClock: Clock, @unchecked Sendable {
+  private let lock = NSRecursiveLock()
+  private var scheduled: [(deadline: Instant, continuation: UnsafeContinuation<(), Never>)] = []
+
+  public func sleep(until deadline: Instant, tolerance: Duration?) async throws {
+    guard self.lock.sync(operation: { deadline > self.now })
+    else { return }
+
+    await withUnsafeContinuation { continuation in
+      self.lock.sync {
+        self.scheduled.append((deadline: deadline, continuation: continuation))
+      }
+    }
+  }
+
+  public func advance(by duration: Duration) async {
+    await self.advance(to: self.now.advanced(by: duration))
+  }
+
+  public func advance(to deadline: Instant) async {
+    while self.lock.sync(operation: { self.now }) <= deadline {
+      await Task.megaYield()
+      let `return` = { () -> Bool in
+        self.lock.lock()
+        self.scheduled.sort { $0.deadline < $1.deadline }
+
+        guard
+          let next = self.scheduled.first,
+          deadline >= next.deadline
+        else {
+          self.now = deadline
+          self.lock.unlock()
+          return true
+        }
+
+        self.now = next.deadline
+        self.scheduled.removeFirst()
+        self.lock.unlock()
+        next.continuation.resume()
+        return false
+      }()
+
+      if `return` {
+        return
+      }
+    }
+  }
+
+  public var now = Instant()
+  public var minimumResolution = Duration.zero
+
+  public typealias Duration = Swift.Duration
+  public struct Instant: InstantProtocol {
+    private var offset: Duration = .zero
+
+    public func advanced(by duration: Duration) -> Self {
+      .init(offset: self.offset + duration)
+    }
+
+    public func duration(to other: Self) -> Duration {
+      other.offset - self.offset
+    }
+
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      lhs.offset < rhs.offset
+    }
+
+    public typealias Duration = Swift.Duration
+  }
+
+
+}
+
 public struct ImmediateClock: Clock {
   public func sleep(until deadline: Instant, tolerance: Duration?) async throws {
     try Task.checkCancellation()
@@ -193,5 +266,22 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     ContentView(model: FeatureModel(clock: ImmediateClock()))
+  }
+}
+
+extension NSRecursiveLock {
+  @inlinable @discardableResult
+  func sync<R>(operation: () -> R) -> R {
+    self.lock()
+    defer { self.unlock() }
+    return operation()
+  }
+}
+
+extension Task where Success == Failure, Failure == Never {
+  static func megaYield(count: Int = 10) async {
+    for _ in 1...count {
+      await Task<Void, Never>.detached(priority: .background) { await Task.yield() }.value
+    }
   }
 }

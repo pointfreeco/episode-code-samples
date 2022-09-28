@@ -5,19 +5,31 @@ import XCTest
 final class ClocksExplorationTests: XCTestCase {
   func testWelcome_FirstTimer() async {
     UserDefaults.standard.set(false, forKey: "hasSeenViewBefore")
-    let model = FeatureModel(clock: ImmediateClock())
+
+    let clock = TestClock()
+    let model = FeatureModel(clock: clock)
 
     XCTAssertEqual(model.message, "")
-    await model.task()
+    let task = Task {
+      await model.task()
+    }
+    await clock.advance(by: .seconds(5))
+    await task.value
     XCTAssertEqual(model.message, "Welcome!")
   }
 
   func testWelcome_RepeatVisitor() async {
     UserDefaults.standard.set(true, forKey: "hasSeenViewBefore")
-    let model = FeatureModel(clock: ImmediateClock())
+
+    let clock = TestClock()
+    let model = FeatureModel(clock: clock)
 
     XCTAssertEqual(model.message, "")
-    await model.task()
+    let task = Task {
+      await model.task()
+    }
+    await clock.advance(by: .seconds(1))
+    await task.value
     XCTAssertEqual(model.message, "Welcome!")
   }
 
