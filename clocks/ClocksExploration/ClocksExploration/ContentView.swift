@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct ImmediateClock: Clock {
   public func sleep(until deadline: Instant, tolerance: Duration?) async throws {
+    try Task.checkCancellation()
   }
 
   public var now = Instant()
@@ -77,6 +78,7 @@ extension Clock {
 class FeatureModel: ObservableObject {
   @Published var message = ""
   @Published var count = 0
+  var timerTask: Task<Never, Error>?
 
   let clock: any Clock<Duration>
 
@@ -91,11 +93,28 @@ class FeatureModel: ObservableObject {
   func task() async {
     do {
 //      try await Task.sleep(for: .seconds(5))
-      try await self.clock.sleep(for: .seconds(5))
+      defer { UserDefaults.standard.set(true, forKey: "hasSeenViewBefore") }
+      try await self.clock.sleep(
+        for: UserDefaults.standard.bool(forKey: "hasSeenViewBefore") ? .seconds(1) : .seconds(5)
+      )
       withAnimation {
         self.message = "Welcome!"
       }
     } catch {}
+  }
+
+  func startTimerButtonTapped() {
+    self.timerTask = Task {
+      while true {
+        try await self.clock.sleep(for: .seconds(1))
+        self.count += 1
+      }
+    }
+  }
+
+  func stopTimerButtonTapped() {
+    self.timerTask?.cancel()
+    self.timerTask = nil
   }
 
   func incrementButtonTapped() {
@@ -154,6 +173,15 @@ struct ContentView: View {
       }
       Button("\(self.model.count)th prime") {
         Task { await self.model.nthPrimeButtonTapped() }
+      }
+      if self.model.timerTask == nil {
+        Button("Start timer") {
+          self.model.startTimerButtonTapped()
+        }
+      } else {
+        Button("Stop timer") {
+          self.model.stopTimerButtonTapped()
+        }
       }
     }
     .task {
