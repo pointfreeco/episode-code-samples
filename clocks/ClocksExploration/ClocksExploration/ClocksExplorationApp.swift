@@ -4,7 +4,7 @@ import SwiftUI
 struct ClocksExplorationApp: App {
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(model: FeatureModel(clock: ContinuousClock()))
     }
   }
 }
