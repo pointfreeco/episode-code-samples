@@ -12,6 +12,7 @@
 		2AD3474028E4B39F0000F9BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2AD3473F28E4B39F0000F9BB /* Assets.xcassets */; };
 		2AD3474328E4B39F0000F9BB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2AD3474228E4B39F0000F9BB /* Preview Assets.xcassets */; };
 		2AD3474D28E4B39F0000F9BB /* ClocksExplorationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD3474C28E4B39F0000F9BB /* ClocksExplorationTests.swift */; };
+		2AD3476828E4C9140000F9BB /* XCTestDynamicOverlay in Frameworks */ = {isa = PBXBuildFile; productRef = 2AD3476728E4C9140000F9BB /* XCTestDynamicOverlay */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AD3476828E4C9140000F9BB /* XCTestDynamicOverlay in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +117,9 @@
 			dependencies = (
 			);
 			name = ClocksExploration;
+			packageProductDependencies = (
+				2AD3476728E4C9140000F9BB /* XCTestDynamicOverlay */,
+			);
 			productName = ClocksExploration;
 			productReference = 2AD3473828E4B39E0000F9BB /* ClocksExploration.app */;
 			productType = "com.apple.product-type.application";
@@ -165,6 +170,9 @@
 				Base,
 			);
 			mainGroup = 2AD3472F28E4B39E0000F9BB;
+			packageReferences = (
+				2AD3476628E4C9140000F9BB /* XCRemoteSwiftPackageReference "xctest-dynamic-overlay" */,
+			);
 			productRefGroup = 2AD3473928E4B39E0000F9BB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -462,6 +470,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2AD3476628E4C9140000F9BB /* XCRemoteSwiftPackageReference "xctest-dynamic-overlay" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/xctest-dynamic-overlay.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2AD3476728E4C9140000F9BB /* XCTestDynamicOverlay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2AD3476628E4C9140000F9BB /* XCRemoteSwiftPackageReference "xctest-dynamic-overlay" */;
+			productName = XCTestDynamicOverlay;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2AD3473028E4B39E0000F9BB /* Project object */;
 }
