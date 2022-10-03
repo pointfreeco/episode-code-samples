@@ -207,3 +207,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Reducer Protocol: Composition, Part 1](0203-reducer-protocol-pt3)
 1. [Reducer Protocol: Composition, Part 2](0204-reducer-protocol-pt4)
 1. [Reducer Protocol: Dependencies, Part 1](0205-reducer-protocol-pt5)
+1. [Reducer Protocol: Dependencies, Part 2](0206-reducer-protocol-pt6)
+1. [Reducer Protocol: Testing](0207-reducer-protocol-pt7)
