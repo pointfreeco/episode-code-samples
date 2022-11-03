@@ -21,8 +21,8 @@ public final class ItemModel: Equatable, Identifiable, ObservableObject {
     self.item = item
   }
 
-  func setColorPickerNavigation(isActive: Bool) {
-    self.destination = isActive ? .colorPicker : nil
+  func colorPickerButtonTapped() {
+    self.destination = .colorPicker
   }
 
   public static func == (lhs: ItemModel, rhs: ItemModel) -> Bool {
@@ -41,13 +41,8 @@ public struct ItemView: View {
     Form {
       TextField("Name", text: self.$model.item.name)
 
-      NavigationLink(
-        unwrapping: self.$model.destination,
-        case: /ItemModel.Destination.colorPicker
-      ) { isActive in
-        self.model.setColorPickerNavigation(isActive: isActive)
-      } destination: { _ in 
-        ColorPickerView(color: self.$model.item.color)
+      Button {
+        self.model.colorPickerButtonTapped()
       } label: {
         HStack {
           Text("Color")
@@ -86,6 +81,12 @@ public struct ItemView: View {
         }
       }
     }
+    .navigationDestination(
+      unwrapping: self.$model.destination,
+      case: /ItemModel.Destination.colorPicker
+    ) { _ in
+      ColorPickerView(color: self.$model.item.color)
+    }
   }
 }
 
@@ -98,5 +99,26 @@ struct ItemView_Previews: PreviewProvider {
         )
       )
     }
+  }
+}
+
+extension View {
+  public func navigationDestination<Value, Content>(
+    unwrapping value: Binding<Value?>,
+    @ViewBuilder content: @escaping (Binding<Value>) -> Content
+  ) -> some View
+  where Content: View {
+    self.navigationDestination(isPresented: value.isPresent()) {
+      Binding(unwrapping: value).map(content)
+    }
+  }
+
+  public func navigationDestination<Enum, Case, Content>(
+    unwrapping enum: Binding<Enum?>,
+    case casePath: CasePath<Enum, Case>,
+    @ViewBuilder content: @escaping (Binding<Case>) -> Content
+  ) -> some View
+  where Content: View {
+    self.navigationDestination(unwrapping: `enum`.case(casePath), content: content)
   }
 }

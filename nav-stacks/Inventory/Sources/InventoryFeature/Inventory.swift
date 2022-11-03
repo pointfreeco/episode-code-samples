@@ -102,7 +102,7 @@ public struct InventoryView: View {
   }
 
   public var body: some View {
-    NavigationView {
+    NavigationStack {
       List {
         ForEach(
           self.model.inventory,
@@ -117,40 +117,66 @@ public struct InventoryView: View {
           Button("Help") { self.model.helpButtonTapped() }
         }
       }
-      .background {
-        NavigationLink(
-          unwrapping: self.$model.destination,
-          case: /InventoryModel.Destination.edit
-        ) { isActive in
-          self.model.deactivateEdit()
-        } destination: { $itemModel in
-          ItemView(model: itemModel)
-            .navigationBarTitle("Edit")
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-              ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                  self.model.cancelEditButtonTapped()
-                }
-              }
-              ToolbarItem(placement: .primaryAction) {
-                HStack {
-                  if self.model.isSaving {
-                    ProgressView()
-                  }
-                  Button("Save") {
-                    Task { await self.model.commitEdit() }
-                  }
-                }
-                .disabled(self.model.isSaving)
+      .navigationDestination(
+        unwrapping: self.$model.destination,
+        case: /InventoryModel.Destination.edit
+      ) { $itemModel in
+        ItemView(model: itemModel)
+          .navigationBarTitle("Edit")
+          .navigationBarBackButtonHidden(true)
+          .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+              Button("Cancel") {
+                self.model.cancelEditButtonTapped()
               }
             }
-        } label: {
-          EmptyView()
-        }
-//        .hidden()
-//        .accessibility(hidden: true)
+            ToolbarItem(placement: .primaryAction) {
+              HStack {
+                if self.model.isSaving {
+                  ProgressView()
+                }
+                Button("Save") {
+                  Task { await self.model.commitEdit() }
+                }
+              }
+              .disabled(self.model.isSaving)
+            }
+          }
       }
+//      .background {
+//        NavigationLink(
+//          unwrapping: self.$model.destination,
+//          case: /InventoryModel.Destination.edit
+//        ) { isActive in
+//          self.model.deactivateEdit()
+//        } destination: { $itemModel in
+//          ItemView(model: itemModel)
+//            .navigationBarTitle("Edit")
+//            .navigationBarBackButtonHidden(true)
+//            .toolbar {
+//              ToolbarItem(placement: .cancellationAction) {
+//                Button("Cancel") {
+//                  self.model.cancelEditButtonTapped()
+//                }
+//              }
+//              ToolbarItem(placement: .primaryAction) {
+//                HStack {
+//                  if self.model.isSaving {
+//                    ProgressView()
+//                  }
+//                  Button("Save") {
+//                    Task { await self.model.commitEdit() }
+//                  }
+//                }
+//                .disabled(self.model.isSaving)
+//              }
+//            }
+//        } label: {
+//          EmptyView()
+//        }
+////        .hidden()
+////        .accessibility(hidden: true)
+//      }
       .navigationTitle("Inventory")
       .sheet(
         unwrapping: self.$model.destination,
@@ -200,3 +226,4 @@ struct InventoryView_Previews: PreviewProvider {
     }
   }
 }
+

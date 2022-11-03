@@ -62,17 +62,17 @@ class InventoryFeatureTests: XCTestCase {
       ]
     )
 
-    model.inventory[0].setEditNavigation(isActive: true)
+    model.inventory[0].rowTapped()
 
     let editItemModel = try XCTUnwrap(
-      (/ItemRowModel.Destination.edit).extract(from: XCTUnwrap(model.inventory[0].destination))
+      (/InventoryModel.Destination.edit).extract(from: XCTUnwrap(model.destination))
     )
 
     XCTAssertEqual(editItemModel.item.id, headphones.id)
 
     editItemModel.item.name = "Bluetooth \(editItemModel.item.name)"
 
-    await model.inventory[0].commitEdit()
+    await model.commitEdit()
 
     XCTAssertEqual(model.inventory.count, 1)
     XCTAssertEqual(model.inventory[0].item, editItemModel.item)
