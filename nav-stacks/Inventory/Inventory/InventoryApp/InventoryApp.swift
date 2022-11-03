@@ -9,6 +9,15 @@ import SwiftUI
 struct InventoryApp: App {
   let model = AppModel(
     inventoryModel: InventoryModel(
+      destination: .add(
+        ItemModel(
+          destination: .colorPicker,
+          item: Item(
+            name: "Ergnomic Keyboard",
+            status: .inStock(quantity: 100)
+          )
+        )
+      ),
       inventory: [
         ItemRowModel(
           item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
@@ -23,7 +32,8 @@ struct InventoryApp: App {
           item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
         ),
       ]
-    )
+    ),
+    selectedTab: .inventory
   )
 
   var body: some Scene {
