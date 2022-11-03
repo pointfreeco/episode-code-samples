@@ -14,6 +14,7 @@ public final class InventoryModel: ObservableObject {
 
   public enum Destination: Equatable {
     case add(ItemModel)
+    case edit(ItemModel)
     case help
   }
 
@@ -35,6 +36,9 @@ public final class InventoryModel: ObservableObject {
       }
       itemRowModel.commitDuplication = { [weak self] item in
         self?.confirmAdd(item: item)
+      }
+      itemRowModel.onTap = {
+        
       }
     }
   }

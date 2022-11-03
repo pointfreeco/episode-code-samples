@@ -6,13 +6,13 @@ import URLRouting
 public enum ItemRowRoute {
   case delete
   case duplicate
-  case edit
+//  case edit
 }
 
 public let itemRowRouter = OneOf {
-  Route(ItemRowRoute.edit) {
-    Path { "edit" }
-  }
+//  Route(ItemRowRoute.edit) {
+//    Path { "edit" }
+//  }
 
   Route(ItemRowRoute.delete) {
     Path { "delete" }
@@ -30,8 +30,8 @@ extension ItemRowModel {
       self.destination = .deleteConfirmationAlert
     case .duplicate:
       self.destination = .duplicate(ItemModel(item: self.item))
-    case .edit:
-      self.destination = .edit(ItemModel(item: self.item))
+//    case .edit:
+//      self.destination = .edit(ItemModel(item: self.item))
     }
   }
 }
