@@ -42,6 +42,7 @@ let lastItem = Item(
 struct InventoryApp: App {
   let model = AppModel(
     inventoryModel: InventoryModel(
+//      destination: .edit(ItemModel(item: lastItem)),
 //      destination: .add(
 //        ItemModel(
 //          destination: .colorPicker,
@@ -52,12 +53,120 @@ struct InventoryApp: App {
 //        )
 //      ),
       inventory: [
-        ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
+//        ),
+//        ItemRowModel(
+//          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
+//        ),
         ItemRowModel(
           item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
         ),
@@ -65,115 +174,6 @@ struct InventoryApp: App {
           item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
         ),
         ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
-        ItemRowModel(
-          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
-        ),
-        ItemRowModel(
-          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
-        ),
-        ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
-        ItemRowModel(
-          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
-        ),
-        ItemRowModel(
-          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
-        ),
-        ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
-        ItemRowModel(
-          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
-        ),
-        ItemRowModel(
-          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
-        ),
-        ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
-        ItemRowModel(
-          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
-        ),
-        ItemRowModel(
-          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
-        ),
-        ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
-        ItemRowModel(
-          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
-        ),
-        ItemRowModel(
-          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
-        ),
-        ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
-        ItemRowModel(
-          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
-        ),
-        ItemRowModel(
-          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
-        ),
-        ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
-        ItemRowModel(
-          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
-        ),
-        ItemRowModel(
-          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
-        ),
-        ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
-        ItemRowModel(
-          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
-        ),
-        ItemRowModel(
-          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
-        ),
-        ItemRowModel(
-          item: Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
-        ),
-        ItemRowModel(
-          item: Item(name: "Charger", color: .yellow, status: .inStock(quantity: 20))
-        ),
-        ItemRowModel(
-          item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
-        ),
-        ItemRowModel(
-          item: Item(name: "Headphones", color: .red, status: .outOfStock(isOnBackOrder: false))
-        ),
-        ItemRowModel(
-          destination: .edit(ItemModel(item: lastItem)),
           item: lastItem
         )
       ]

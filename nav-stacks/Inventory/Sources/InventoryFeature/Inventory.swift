@@ -11,6 +11,7 @@ public final class InventoryModel: ObservableObject {
   @Published public var inventory: IdentifiedArrayOf<ItemRowModel> {
     didSet { self.bind() }
   }
+  @Published public var isSaving = false
 
   public enum Destination: Equatable {
     case add(ItemModel)
@@ -37,8 +38,9 @@ public final class InventoryModel: ObservableObject {
       itemRowModel.commitDuplication = { [weak self] item in
         self?.confirmAdd(item: item)
       }
-      itemRowModel.onTap = {
-        
+      itemRowModel.onTap = { [weak self, weak itemRowModel] in
+        guard let self, let itemRowModel else { return }
+        self.destination = .edit(ItemModel(item: itemRowModel.item))
       }
     }
   }
@@ -65,6 +67,31 @@ public final class InventoryModel: ObservableObject {
   func helpButtonTapped() {
     self.destination = .help
   }
+
+  func deactivateEdit() {
+    self.destination = nil
+  }
+
+  func cancelEditButtonTapped() {
+    self.destination = nil
+  }
+
+  @MainActor
+  func commitEdit() async {
+    guard case let .some(.edit(itemModel)) = self.destination
+    else { return } // TODO: precondition?
+
+    self.isSaving = true
+    defer { self.isSaving = false }
+
+    do {
+      // NB: Emulate an API request
+      try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+    } catch {}
+
+    self.inventory[id: itemModel.id]?.item = itemModel.item
+    self.destination = nil
+  }
 }
 
 public struct InventoryView: View {
@@ -89,6 +116,40 @@ public struct InventoryView: View {
         ToolbarItem(placement: .secondaryAction) {
           Button("Help") { self.model.helpButtonTapped() }
         }
+      }
+      .background {
+        NavigationLink(
+          unwrapping: self.$model.destination,
+          case: /InventoryModel.Destination.edit
+        ) { isActive in
+          self.model.deactivateEdit()
+        } destination: { $itemModel in
+          ItemView(model: itemModel)
+            .navigationBarTitle("Edit")
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+              ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                  self.model.cancelEditButtonTapped()
+                }
+              }
+              ToolbarItem(placement: .primaryAction) {
+                HStack {
+                  if self.model.isSaving {
+                    ProgressView()
+                  }
+                  Button("Save") {
+                    Task { await self.model.commitEdit() }
+                  }
+                }
+                .disabled(self.model.isSaving)
+              }
+            }
+        } label: {
+          EmptyView()
+        }
+//        .hidden()
+//        .accessibility(hidden: true)
       }
       .navigationTitle("Inventory")
       .sheet(
