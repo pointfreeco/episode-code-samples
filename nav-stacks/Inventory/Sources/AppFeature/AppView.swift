@@ -60,9 +60,6 @@ public struct AppView: View {
         .tabItem { Text("Three") }
         .tag(AppModel.Tab.three)
     }
-    .onOpenURL { url in
-      self.model.open(url: url)
-    }
   }
 }
 

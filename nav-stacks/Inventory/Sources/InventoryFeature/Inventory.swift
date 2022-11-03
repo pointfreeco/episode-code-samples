@@ -14,6 +14,7 @@ public final class InventoryModel: ObservableObject {
 
   public enum Destination: Equatable {
     case add(ItemModel)
+    case help
   }
 
   public init(
@@ -56,6 +57,10 @@ public final class InventoryModel: ObservableObject {
   func cancelAddButtonTapped() {
     self.destination = nil
   }
+
+  func helpButtonTapped() {
+    self.destination = .help
+  }
 }
 
 public struct InventoryView: View {
@@ -77,11 +82,20 @@ public struct InventoryView: View {
         ToolbarItem(placement: .primaryAction) {
           Button("Add") { self.model.addButtonTapped() }
         }
+        ToolbarItem(placement: .secondaryAction) {
+          Button("Help") { self.model.helpButtonTapped() }
+        }
       }
       .navigationTitle("Inventory")
       .sheet(
         unwrapping: self.$model.destination,
-        case: /InventoryModel.Destination.add
+        case: /InventoryModel.Destination.help
+      ) { _ in
+        Text("Help!")
+      }
+      .sheet(
+        unwrapping: self.$model.destination,
+        case: CasePath(InventoryModel.Destination.add)
       ) { $itemToAdd in
         NavigationView {
           ItemView(model: itemToAdd)

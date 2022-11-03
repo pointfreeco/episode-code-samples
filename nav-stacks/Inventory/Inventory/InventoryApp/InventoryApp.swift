@@ -31,6 +31,9 @@ struct InventoryApp: App {
     let _ = print(model.inventoryModel.inventory.map(\.id.uuidString).joined(separator: "\n"))
     WindowGroup {
       AppView(model: self.model)
+        .onOpenURL { url in
+          self.model.open(url: url)
+        }
     }
   }
 }
