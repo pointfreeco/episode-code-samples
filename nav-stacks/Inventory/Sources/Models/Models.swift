@@ -7,6 +7,9 @@ public struct Item: Equatable, Identifiable {
   public var color: Color?
   public var status: Status
 
+//  var quantity: Int
+//  var isOnBackOrder: Bool
+
   public init(
     name: String,
     color: Color? = nil,

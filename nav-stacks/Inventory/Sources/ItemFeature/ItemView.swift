@@ -74,16 +74,16 @@ public struct ItemView: View {
             }
           }
         }
-        CaseLet(/Item.Status.outOfStock) { $isOnBackOrder in
-          Section(header: Text("Out of stock")) {
-            Toggle("Is on back order?", isOn: $isOnBackOrder)
-            Button("Is back in stock!") {
-              withAnimation {
-                self.model.item.status = .inStock(quantity: 1)
-              }
-            }
-          }
-        }
+//        CaseLet(/Item.Status.outOfStock) { $isOnBackOrder in
+//          Section(header: Text("Out of stock")) {
+//            Toggle("Is on back order?", isOn: $isOnBackOrder)
+//            Button("Is back in stock!") {
+//              withAnimation {
+//                self.model.item.status = .inStock(quantity: 1)
+//              }
+//            }
+//          }
+//        }
       }
     }
   }
