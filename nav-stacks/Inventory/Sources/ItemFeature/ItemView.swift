@@ -108,9 +108,12 @@ extension View {
     @ViewBuilder content: @escaping (Binding<Value>) -> Content
   ) -> some View
   where Content: View {
-    self.navigationDestination(isPresented: value.isPresent()) {
-      Binding(unwrapping: value).map(content)
-    }
+    self.modifier(
+      _NavigationDestination(value: value, destination: content)
+    )
+//    self.navigationDestination(isPresented: value.isPresent()) {
+//      Binding(unwrapping: value).map(content)
+//    }
   }
 
   public func navigationDestination<Enum, Case, Content>(
@@ -120,5 +123,29 @@ extension View {
   ) -> some View
   where Content: View {
     self.navigationDestination(unwrapping: `enum`.case(casePath), content: content)
+  }
+}
+
+private struct _NavigationDestination<Value, Destination: View>: ViewModifier {
+  @Binding var value: Value?
+  @ViewBuilder let destination: (Binding<Value>) -> Destination
+
+  @State var isPresented = false
+
+  func body(content: Content) -> some View {
+    content.navigationDestination(isPresented: self.$isPresented) {
+      Binding(unwrapping: self.$value).map(destination)
+    }
+    .onAppear {
+      self.isPresented = self.value != nil
+    }
+    .onChange(of: self.isPresented) { isPresented in
+      if !self.isPresented {
+        self.value = nil
+      }
+    }
+    .onChange(of: self.value != nil) { isActive in
+      self.isPresented = isActive
+    }
   }
 }
