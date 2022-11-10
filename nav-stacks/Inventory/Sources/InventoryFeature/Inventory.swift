@@ -102,7 +102,7 @@ public struct InventoryView: View {
   }
 
   public var body: some View {
-    NavigationStack {
+    NavigationStack.i {
       List {
         ForEach(
           self.model.inventory,

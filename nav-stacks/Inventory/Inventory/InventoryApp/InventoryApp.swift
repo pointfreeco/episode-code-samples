@@ -50,12 +50,16 @@ let lastItem = Item(
 struct InventoryApp: App {
   let model = AppModel(
     inventoryModel: InventoryModel(
-      destination: .edit(
-        ItemModel(
-          destination: .colorPicker,
-          item: lastItem
-        )
-      ),
+      path: [
+        .colorPicker,
+        .edit,
+      ],
+//      destination: .edit(
+//        ItemModel(
+//          destination: .colorPicker,
+//          item: <#T##Item#>
+//        )
+//      ),
       inventory: [
         ItemRowModel(
           item: Item(name: "Phone", color: .green, status: .outOfStock(isOnBackOrder: true))
