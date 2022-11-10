@@ -18,15 +18,23 @@ struct NestedView: View {
   @ObservedObject var model: NestedModel
 
   var body: some View {
-    NavigationLink(
-      unwrapping: self.$model.child
-    ) { isActive in
-      self.model.child = isActive ? NestedModel() : nil
-    } destination: { $child in
-      NestedView(model: child)
+    Button {
+      self.model.child = NestedModel()
     } label: {
       Text("Go to child feature")
     }
+    .navigationDestination(unwrapping: self.$model.child) { $child in
+      NestedView(model: child)
+    }
+//    NavigationLink(
+//      unwrapping: self.$model.child
+//    ) { isActive in
+//      self.model.child = isActive ? NestedModel() : nil
+//    } destination: { $child in
+//      NestedView(model: child)
+//    } label: {
+//      Text("Go to child feature")
+//    }
   }
 }
 
@@ -67,29 +75,28 @@ struct InventoryApp: App {
     let _ = print("Default item ids:")
     let _ = print(model.inventoryModel.inventory.map(\.id.uuidString).joined(separator: "\n"))
     WindowGroup {
-      AppView(model: self.model)
-        .onOpenURL { url in
-          self.model.open(url: url)
-        }
+//      AppView(model: self.model)
+//        .onOpenURL { url in
+//          self.model.open(url: url)
+//        }
 
-//      NavigationView {
-//        NestedView(
-//          model: NestedModel(
-//            child: NestedModel(
-//              child: NestedModel(
-//                child: NestedModel(
-//                  child: NestedModel(
-//                    child: NestedModel(
-//                      child: .init()
-//                    )
-//                  )
-//                )
-//              )
-//            )
-//          )
-//        )
-//      }
-//      .navigationViewStyle(.stack)
+      NavigationStack {
+        NestedView(
+          model: NestedModel(
+            child: NestedModel(
+              child: NestedModel(
+                child: NestedModel(
+                  child: NestedModel(
+                    child: NestedModel(
+                      child: .init()
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      }
     }
   }
 }
