@@ -5,19 +5,45 @@ import SwiftUI
 //  var fact: FactSheetState?
 //}
 
-struct ContentView: View {
+class AppModel: ObservableObject {
+  @Published var path: [Destination] {
+    didSet {
+      self.bind()
+    }
+  }
+
+  init(path: [Destination] = []) {
+    self.path = path
+    self.bind()
+  }
+
   enum Destination: Hashable {
     case counter(CounterModel)
     case letter(String)
   }
 
-  @State var path: [Destination] = [
-    .letter("A"),
-    .letter("B"),
-    .letter("C"),
-    .counter(CounterModel(count: 42)),
-    .counter(CounterModel(count: 1729, fact: FactSheetState(message: "1,729 is a good number."))),
-  ]
+  func bind() {
+    for destination in self.path {
+      switch destination {
+      case let .counter(model):
+        model.onTapLetter = { [weak self] letter in
+          guard let self else { return }
+          self.path.append(.letter(letter))
+        }
+        model.onTapNumber = { [weak self] number in
+          guard let self else { return }
+          self.path.append(.counter(CounterModel(count: number)))
+        }
+
+      case .letter:
+        break
+      }
+    }
+  }
+}
+
+struct ContentView: View {
+  @ObservedObject var model: AppModel
 //  {
 //    var path = NavigationPath()
 //    path.append("A")
@@ -42,7 +68,7 @@ struct ContentView: View {
       }
       Button {
         var count = 0
-        for destination in self.path {
+        for destination in self.model.path {
           guard case let .counter(counter) = destination
           else { continue }
           count += counter.count
@@ -51,9 +77,9 @@ struct ContentView: View {
       } label: {
         Text("Sum the counts")
       }
-      NavigationStack(path: self.$path) {
+      NavigationStack(path: self.$model.path) {
         ListView()
-          .navigationDestination(for: Destination.self) { destination in
+          .navigationDestination(for: AppModel.Destination.self) { destination in
             switch destination {
             case let .counter(model):
               CounterView(model: model)
@@ -73,19 +99,19 @@ struct ContentView: View {
 //          }
           .navigationTitle("Root")
       }
-      .onChange(of: self.path) { path in
+      .onChange(of: self.model.path) { path in
         dump(path)
       }
     }
   }
 
   func randomStackButtonTapped() {
-    self.path = []
+    self.model.path = []
     for _ in 0...Int.random(in: 3...6) {
       if Bool.random() {
-        self.path.append(.counter(CounterModel(count: Int.random(in: 1...1_000))))
+        self.model.path.append(.counter(CounterModel(count: Int.random(in: 1...1_000))))
       } else {
-        self.path.append(
+        self.model.path.append(
           .letter(
             String(
               Character(
@@ -107,12 +133,23 @@ class CounterModel: ObservableObject, Hashable {
   @Published var count = 0
   @Published var fact: FactSheetState?
 
+  var onTapNumber: (Int) -> Void = { _ in }
+  var onTapLetter: (String) -> Void = { _ in }
+
   init(
     count: Int = 0,
     fact: FactSheetState? = nil
   ) {
     self.count = count
     self.fact = fact
+  }
+
+  func numberButtonTapped(number: Int) {
+    self.onTapNumber(number)
+  }
+
+  func letterButtonTapped(letter: String) {
+    self.onTapLetter(letter)
   }
 
   func decrementButtonTapped() {
@@ -161,18 +198,40 @@ struct CounterView: View {
       .buttonStyle(.borderless)
 
       Section {
-        NavigationLink(value: ContentView.Destination.letter("A")) {
+        Button {
+          self.model.letterButtonTapped(letter: "A")
+        } label: {
           Text("Go to screen A")
         }
-        NavigationLink(value: ContentView.Destination.letter("B")) {
+        Button {
+          self.model.letterButtonTapped(letter: "B")
+        } label: {
           Text("Go to screen B")
         }
-        NavigationLink(value: ContentView.Destination.letter("C")) {
+        Button {
+          self.model.letterButtonTapped(letter: "C")
+        } label: {
           Text("Go to screen C")
         }
-        NavigationLink(value: ContentView.Destination.counter(CounterModel(count: self.model.count))) {
+        Button {
+          self.model.numberButtonTapped(number: self.model.count)
+        } label: {
           Text("Go to screen \(self.model.count)")
         }
+//        .buttonStyle(.navigationLink)
+
+//        NavigationLink(value: ContentView.Destination.letter("A")) {
+//          Text("Go to screen A")
+//        }
+//        NavigationLink(value: ContentView.Destination.letter("B")) {
+//          Text("Go to screen B")
+//        }
+//        NavigationLink(value: ContentView.Destination.letter("C")) {
+//          Text("Go to screen C")
+//        }
+//        NavigationLink(value: ContentView.Destination.counter(CounterModel(count: self.model.count))) {
+//          Text("Go to screen \(self.model.count)")
+//        }
       }
     }
     .sheet(item: self.$model.fact) { fact in
@@ -188,23 +247,23 @@ struct FactSheetState: Identifiable, Hashable {
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView()
+    ContentView(model: AppModel())
   }
 }
 
 struct ListView: View {
   var body: some View {
     List {
-      NavigationLink(value: ContentView.Destination.letter("A")) {
+      NavigationLink(value: AppModel.Destination.letter("A")) {
         Text("Go to screen A")
       }
-      NavigationLink(value: ContentView.Destination.letter("B")) {
+      NavigationLink(value: AppModel.Destination.letter("B")) {
         Text("Go to screen B")
       }
-      NavigationLink(value: ContentView.Destination.letter("C")) {
+      NavigationLink(value: AppModel.Destination.letter("C")) {
         Text("Go to screen C")
       }
-      NavigationLink(value: ContentView.Destination.counter(CounterModel(count: 42))) {
+      NavigationLink(value: AppModel.Destination.counter(CounterModel(count: 42))) {
         Text("Go to screen 42")
       }
     }

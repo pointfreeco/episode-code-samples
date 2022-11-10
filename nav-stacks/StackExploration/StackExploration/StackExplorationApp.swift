@@ -4,7 +4,13 @@ import SwiftUI
 struct StackExplorationApp: App {
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(
+        model: AppModel(
+          path: [
+            .counter(CounterModel())
+          ]
+        )
+      )
     }
   }
 }
