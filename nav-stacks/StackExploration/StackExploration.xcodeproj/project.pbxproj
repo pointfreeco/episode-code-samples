@@ -25,6 +25,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2AA08C5B291DA2CE00564320 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4B4D9344291D9C340038F569 /* StackExploration.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StackExploration.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B4D9347291D9C340038F569 /* StackExplorationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackExplorationApp.swift; sourceTree = "<group>"; };
 		4B4D9349291D9C340038F569 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -73,6 +74,7 @@
 		4B4D9346291D9C340038F569 /* StackExploration */ = {
 			isa = PBXGroup;
 			children = (
+				2AA08C5B291DA2CE00564320 /* Info.plist */,
 				4B4D9347291D9C340038F569 /* StackExplorationApp.swift */,
 				4B4D9349291D9C340038F569 /* ContentView.swift */,
 				4B4D934B291D9C340038F569 /* Assets.xcassets */,
@@ -345,6 +347,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"StackExploration/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StackExploration/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -373,6 +376,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"StackExploration/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StackExploration/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
