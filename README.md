@@ -216,3 +216,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [SwiftUI Navigation: Decoupling](0212-navigation-stacks-pt2)
 1. [SwiftUI Navigation: Stacks](0213-navigation-stacks-pt3)
 1. [Modern SwiftUI: Introduction](0214-modern-swiftui-pt1)
+1. [Modern SwiftUI: Navigation, Part 1](0215-modern-swiftui-pt2)
