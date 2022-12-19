@@ -218,3 +218,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Modern SwiftUI: Introduction](0214-modern-swiftui-pt1)
 1. [Modern SwiftUI: Navigation, Part 1](0215-modern-swiftui-pt2)
 1. [Modern SwiftUI: Navigation, Part 2](0216-modern-swiftui-pt3)
+1. [Modern SwiftUI: Effects, Part 1](0217-modern-swiftui-pt4)
