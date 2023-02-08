@@ -3,16 +3,40 @@ import SwiftUI
 
 struct AppFeature: Reducer {
   struct State {
+    var firstTab = FirstTabFeature.State()
+    var inventory = InventoryFeature.State()
     var selectedTab: Tab = .one
+    var thirdTab = ThirdTabFeature.State()
   }
   enum Action {
+    case firstTab(FirstTabFeature.Action)
+    case inventory(InventoryFeature.Action)
     case selectedTabChanged(Tab)
+    case thirdTab(ThirdTabFeature.Action)
   }
-  func reduce(into state: inout State, action: Action) -> Effect<Action> {
-    switch action {
-    case let .selectedTabChanged(tab):
-      state.selectedTab = tab
-      return .none
+  var body: some ReducerOf<Self> {
+    Reduce<State, Action> { state, action in
+      switch action {
+      case .firstTab(.goToInventoryButtonTapped):
+        state.selectedTab = .inventory
+        return .none
+
+      case let .selectedTabChanged(tab):
+        state.selectedTab = tab
+        return .none
+
+      case .firstTab, .inventory, .thirdTab:
+        return .none
+      }
+    }
+    Scope(state: \.firstTab, action: /Action.firstTab) {
+      FirstTabFeature()
+    }
+    Scope(state: \.inventory, action: /Action.inventory) {
+      InventoryFeature()
+    }
+    Scope(state: \.thirdTab, action: /Action.thirdTab) {
+      ThirdTabFeature()
     }
   }
 }
@@ -29,21 +53,32 @@ struct ContentView: View {
   var body: some View {
     WithViewStore(self.store, observe: \.selectedTab) { viewStore in
       TabView(selection: viewStore.binding(send: AppFeature.Action.selectedTabChanged)) {
-        Button {
-          viewStore.send(.selectedTabChanged(.inventory))
-        } label: {
-          Text("Go to inventory")
-        }
+        FirstTabView(
+          store: self.store.scope(
+            state: \.firstTab,
+            action: AppFeature.Action.firstTab
+          )
+        )
         .tabItem { Text("One") }
         .tag(Tab.one)
 
-        Text("Inventory")
-          .tabItem { Text("Inventory") }
-          .tag(Tab.inventory)
+        InventoryView(
+          store: self.store.scope(
+            state: \.inventory,
+            action: AppFeature.Action.inventory
+          )
+        )
+        .tabItem { Text("Inventory") }
+        .tag(Tab.inventory)
 
-        Text("Three")
-          .tabItem { Text("Three") }
-          .tag(Tab.three)
+        ThirdTabView(
+          store: self.store.scope(
+            state: \.thirdTab,
+            action: AppFeature.Action.thirdTab
+          )
+        )
+        .tabItem { Text("Three") }
+        .tag(Tab.three)
       }
     }
   }
