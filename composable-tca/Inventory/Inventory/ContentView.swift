@@ -8,7 +8,7 @@ struct AppFeature: Reducer {
     var selectedTab: Tab = .one
     var thirdTab = ThirdTabFeature.State()
   }
-  enum Action {
+  enum Action: Equatable {
     case firstTab(FirstTabFeature.Action)
     case inventory(InventoryFeature.Action)
     case selectedTabChanged(Tab)
@@ -17,9 +17,12 @@ struct AppFeature: Reducer {
   var body: some ReducerOf<Self> {
     Reduce<State, Action> { state, action in
       switch action {
-      case .firstTab(.goToInventoryButtonTapped):
-        state.selectedTab = .inventory
-        return .none
+      case let .firstTab(.delegate(action)):
+        switch action {
+        case .switchToInventoryTab:
+          state.selectedTab = .inventory
+          return .none
+        }
 
       case let .selectedTabChanged(tab):
         state.selectedTab = tab

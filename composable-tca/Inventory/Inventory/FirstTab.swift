@@ -3,14 +3,22 @@ import SwiftUI
 
 struct FirstTabFeature: Reducer {
   struct State: Equatable {}
-  enum Action {
+  enum Action: Equatable {
     case goToInventoryButtonTapped
+    case delegate(Delegate)
+
+    enum Delegate: Equatable {
+      case switchToInventoryTab
+    }
   }
 
   func reduce(into state: inout State, action: Action) -> Effect<Action> {
     switch action {
-    case .goToInventoryButtonTapped:
+    case .delegate:
       return .none
+
+    case .goToInventoryButtonTapped:
+      return .send(.delegate(.switchToInventoryTab))
     }
   }
 }

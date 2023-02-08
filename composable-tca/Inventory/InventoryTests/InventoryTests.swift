@@ -10,7 +10,8 @@ final class InventoryTests: XCTestCase {
       reducer: AppFeature()
     )
 
-    await store.send(.firstTab(.goToInventoryButtonTapped)) {
+    await store.send(.firstTab(.goToInventoryButtonTapped))
+    await store.receive(.firstTab(.delegate(.switchToInventoryTab))) {
       $0.selectedTab = .inventory
     }
   }
