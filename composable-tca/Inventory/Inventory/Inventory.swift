@@ -30,16 +30,22 @@ struct InventoryFeature: Reducer {
       guard let item = state.items[id: id]
       else { return .none }
 
-      state.alert = AlertState {
-        TextState(#"Delete "\#(item.name)""#)
-      } actions: {
-        ButtonState(role: .destructive, action: .send(.confirmDeletion(id: item.id), animation: .default)) {
-          TextState("Delete")
-        }
-      } message: {
-        TextState("Are you sure you want to delete this item?")
-      }
+      state.alert = .delete(item: item)
       return .none
+    }
+  }
+}
+
+extension AlertState where Action == InventoryFeature.Action.Alert {
+  static func delete(item: Item) -> Self {
+    AlertState {
+      TextState(#"Delete "\#(item.name)""#)
+    } actions: {
+      ButtonState(role: .destructive, action: .send(.confirmDeletion(id: item.id), animation: .default)) {
+        TextState("Delete")
+      }
+    } message: {
+      TextState("Are you sure you want to delete this item?")
     }
   }
 }

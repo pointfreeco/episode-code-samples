@@ -7,8 +7,18 @@ struct InventoryApp: App {
     WindowGroup {
       ContentView(
         store: Store(
-          initialState: AppFeature.State(),
+          initialState: AppFeature.State(
+            inventory: InventoryFeature.State(
+              items: [
+                .monitor,
+                .mouse,
+                .keyboard,
+                .headphones
+              ]
+            )
+          ),
           reducer: AppFeature()
+            ._printChanges()
         )
       )
     }
