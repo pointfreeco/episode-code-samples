@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 struct InventoryFeature: Reducer {
-  struct State {}
+  struct State: Equatable {}
   enum Action {}
 
   func reduce(into state: inout State, action: Action) -> Effect<Action> {

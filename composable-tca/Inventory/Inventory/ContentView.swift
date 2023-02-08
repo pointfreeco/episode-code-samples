@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 struct AppFeature: Reducer {
-  struct State {
+  struct State: Equatable {
     var firstTab = FirstTabFeature.State()
     var inventory = InventoryFeature.State()
     var selectedTab: Tab = .one
