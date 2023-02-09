@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 import SwiftUI
 
@@ -13,7 +14,8 @@ public struct Item: Equatable, Identifiable {
     color: Color? = nil,
     status: Status
   ) {
-    self.id = id ?? UUID()
+    @Dependency(\.uuid) var uuid
+    self.id = id ?? uuid()
     self.name = name
     self.color = color
     self.status = status
