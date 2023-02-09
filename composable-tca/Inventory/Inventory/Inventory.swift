@@ -7,32 +7,37 @@ struct InventoryFeature: Reducer {
     var items: IdentifiedArrayOf<Item> = []
   }
   enum Action: Equatable {
-    case alert(Alert)
+    case alert(AlertAction<Alert>)
     case deleteButtonTapped(id: Item.ID)
 
     enum Alert: Equatable {
       case confirmDeletion(id: Item.ID)
-      case dismiss
     }
   }
 
-  func reduce(into state: inout State, action: Action) -> Effect<Action> {
-    switch action {
-    case let .alert(.confirmDeletion(id)):
-      state.items.remove(id: id)
-      return .none
+  var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case let .alert(.presented(.confirmDeletion(id))):
+        state.items.remove(id: id)
+        return .none
 
-    case .alert(.dismiss):
-      state.alert = nil
-      return .none
+//      case .alert(.dismiss):
+//        state.alert = nil
+//        return .none
+        
+      case .alert:
+        return .none
 
-    case let .deleteButtonTapped(id):
-      guard let item = state.items[id: id]
-      else { return .none }
+      case let .deleteButtonTapped(id):
+        guard let item = state.items[id: id]
+        else { return .none }
 
-      state.alert = .delete(item: item)
-      return .none
+        state.alert = .delete(item: item)
+        return .none
+      }
     }
+    .alert(state: \.alert, action: /Action.alert)
   }
 }
 
@@ -90,8 +95,7 @@ struct InventoryView: View {
         }
       }
       .alert(
-        self.store.scope(state: \.alert, action: InventoryFeature.Action.alert),
-        dismiss: .dismiss
+        store: self.store.scope(state: \.alert, action: InventoryFeature.Action.alert)
       )
     }
   }

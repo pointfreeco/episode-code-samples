@@ -27,11 +27,9 @@ final class InventoryTests: XCTestCase {
     await store.send(.deleteButtonTapped(id: item.id)) {
       $0.alert = .delete(item: item)
     }
-    await store.send(.alert(.confirmDeletion(id: item.id))) {
-      $0.items = []
-    }
-    await store.send(.alert(.dismiss)) {
+    await store.send(.alert(.presented(.confirmDeletion(id: item.id)))) {
       $0.alert = nil
+      $0.items = []
     }
   }
 }

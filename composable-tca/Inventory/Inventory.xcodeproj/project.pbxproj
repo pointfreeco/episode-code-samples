@@ -19,6 +19,8 @@
 		4B0E65B929944F4800DFB522 /* Inventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65B829944F4800DFB522 /* Inventory.swift */; };
 		4B0E65BB29944F6500DFB522 /* ThirdTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65BA29944F6500DFB522 /* ThirdTab.swift */; };
 		4B0E65BD2994626900DFB522 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65BC2994626900DFB522 /* Models.swift */; };
+		4B0E65BF29946B1100DFB522 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65BE29946B1100DFB522 /* Navigation.swift */; };
+		4B0E65C229946FD700DFB522 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 4B0E65C129946FD700DFB522 /* SwiftUINavigation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,7 @@
 		4B0E65B829944F4800DFB522 /* Inventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inventory.swift; sourceTree = "<group>"; };
 		4B0E65BA29944F6500DFB522 /* ThirdTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdTab.swift; sourceTree = "<group>"; };
 		4B0E65BC2994626900DFB522 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		4B0E65BE29946B1100DFB522 /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B0E65C229946FD700DFB522 /* SwiftUINavigation in Frameworks */,
 				2A3BEA2229944BA700351060 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,6 +96,7 @@
 				4B0E65B829944F4800DFB522 /* Inventory.swift */,
 				2A3BE9F62994469500351060 /* InventoryApp.swift */,
 				4B0E65BC2994626900DFB522 /* Models.swift */,
+				4B0E65BE29946B1100DFB522 /* Navigation.swift */,
 				4B0E65BA29944F6500DFB522 /* ThirdTab.swift */,
 				2A3BEA2329945D4000351060 /* Vanilla.swift */,
 				2A3BE9FA2994469600351060 /* Assets.xcassets */,
@@ -135,6 +140,7 @@
 			name = Inventory;
 			packageProductDependencies = (
 				2A3BEA2129944BA700351060 /* ComposableArchitecture */,
+				4B0E65C129946FD700DFB522 /* SwiftUINavigation */,
 			);
 			productName = Inventory;
 			productReference = 2A3BE9F32994469500351060 /* Inventory.app */;
@@ -188,6 +194,7 @@
 			mainGroup = 2A3BE9EA2994469500351060;
 			packageReferences = (
 				2A3BEA2029944BA700351060 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				4B0E65C029946FD700DFB522 /* XCRemoteSwiftPackageReference "swiftui-navigation" */,
 			);
 			productRefGroup = 2A3BE9F42994469500351060 /* Products */;
 			projectDirPath = "";
@@ -226,6 +233,7 @@
 				4B0E65BB29944F6500DFB522 /* ThirdTab.swift in Sources */,
 				4B0E65B929944F4800DFB522 /* Inventory.swift in Sources */,
 				4B0E65B729944EFC00DFB522 /* FirstTab.swift in Sources */,
+				4B0E65BF29946B1100DFB522 /* Navigation.swift in Sources */,
 				2A3BE9F92994469500351060 /* ContentView.swift in Sources */,
 				2A3BE9F72994469500351060 /* InventoryApp.swift in Sources */,
 				2A3BEA2429945D4000351060 /* Vanilla.swift in Sources */,
@@ -502,6 +510,14 @@
 				kind = branch;
 			};
 		};
+		4B0E65C029946FD700DFB522 /* XCRemoteSwiftPackageReference "swiftui-navigation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swiftui-navigation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.6.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -509,6 +525,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2A3BEA2029944BA700351060 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		4B0E65C129946FD700DFB522 /* SwiftUINavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B0E65C029946FD700DFB522 /* XCRemoteSwiftPackageReference "swiftui-navigation" */;
+			productName = SwiftUINavigation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
