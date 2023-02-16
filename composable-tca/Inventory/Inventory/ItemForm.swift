@@ -4,17 +4,47 @@ import SwiftUINavigation
 
 struct ItemFormFeature: Reducer {
   struct State: Equatable, Identifiable {
+    @BindingState var isTimerOn = false
     @BindingState var item: Item
 
     var id: Item.ID { self.item.id }
   }
   enum Action: BindableAction, Equatable {
     case binding(BindingAction<State>)
+    case timerTick
   }
+  @Dependency(\.continuousClock) var clock
 
   var body: some ReducerOf<Self> {
     BindingReducer()
-    EmptyReducer()
+    Reduce<State, Action> { state, action in
+      switch action {
+      case .binding(\.$isTimerOn):
+        if state.isTimerOn {
+          return .run { send in
+            for await _ in self.clock.timer(interval: .seconds(1)) {
+              await send(.timerTick)
+            }
+          }
+          .cancellable(id: CancelID.timer)
+        } else {
+          return .cancel(id: CancelID.timer)
+        }
+
+      case .binding:
+        return .none
+
+      case .timerTick:
+        guard case let .inStock(quantity) = state.item.status
+        else { return .none }
+        state.item.status = .inStock(quantity: quantity + 1)
+        return .none
+      }
+    }
+  }
+
+  private enum CancelID {
+    case timer
   }
 }
 
@@ -74,6 +104,8 @@ struct ItemFormView: View {
             }
           }
         }
+
+        Toggle("Timer", isOn: viewStore.binding(\.$isTimerOn))
       }
     }
   }

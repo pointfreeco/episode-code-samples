@@ -93,4 +93,50 @@ final class InventoryTests: XCTestCase {
       ]
     }
   }
+
+  func testAddItem_Timer() async {
+    let clock = TestClock()
+    let store = TestStore(
+      initialState: InventoryFeature.State(),
+      reducer: InventoryFeature()
+    ) {
+      $0.continuousClock = clock
+      $0.uuid = .incrementing
+    }
+
+    await store.send(.addButtonTapped) {
+      $0.addItem = ItemFormFeature.State(
+        item: Item(
+          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+          name: "",
+          status: .inStock(quantity: 1)
+        )
+      )
+    }
+
+    await store.send(.addItem(.presented(.set(\.$item.name, "Headphones")))) {
+      $0.addItem?.item.name = "Headphones"
+    }
+
+    /*let toggleTask = */await store.send(.addItem(.presented(.set(\.$isTimerOn, true)))) {
+      $0.addItem?.isTimerOn = true
+    }
+
+//    await store.send(.addItem(.presented(.set(\.$isTimerOn, false)))) {
+//      $0.addItem?.isTimerOn = false
+//    }
+
+    await store.send(.confirmAddItemButtonTapped) {
+      $0.addItem = nil
+      $0.items = [
+        Item(
+          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+          name: "Headphones",
+          status: .inStock(quantity: 1)
+        )
+      ]
+    }
+
+//    await toggleTask.cancel()
+  }
 }

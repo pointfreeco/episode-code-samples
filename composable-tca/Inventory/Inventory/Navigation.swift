@@ -21,7 +21,7 @@ enum SheetAction<Action> {
 extension SheetAction: Equatable where Action: Equatable {}
 
 extension Reducer {
-  func sheet<ChildState, ChildAction>(
+  func sheet<ChildState: Identifiable, ChildAction>(
     state stateKeyPath: WritableKeyPath<State, ChildState?>,
     action actionCasePath: CasePath<Action, SheetAction<ChildAction>>,
     @ReducerBuilder<ChildState, ChildAction> child: () -> some Reducer<ChildState, ChildAction>
@@ -31,7 +31,19 @@ extension Reducer {
       switch (state[keyPath: stateKeyPath], actionCasePath.extract(from: action)) {
 
       case (_, .none):
-        return self.reduce(into: &state, action: action)
+        let childStateBefore = state[keyPath: stateKeyPath]
+        let effects = self.reduce(into: &state, action: action)
+        let childStateAfter = state[keyPath: stateKeyPath]
+        let cancelEffect: Effect<Action>
+        if let childStateBefore, childStateBefore.id != childStateAfter?.id {
+          cancelEffect = .cancel(id: childStateBefore.id)
+        } else {
+          cancelEffect = .none
+        }
+        return .merge(
+          effects,
+          cancelEffect
+        )
 
       case (.none, .some(.presented)), (.none, .some(.dismiss)):
         XCTFail("A sheet action was sent while child state was nil.")
@@ -42,14 +54,19 @@ extension Reducer {
         state[keyPath: stateKeyPath] = childState
         let effects = self.reduce(into: &state, action: action)
         return .merge(
-          childEffects.map { actionCasePath.embed(.presented($0)) },
+          childEffects
+            .map { actionCasePath.embed(.presented($0)) }
+            .cancellable(id: childState.id),
           effects
         )
 
-      case (.some, .some(.dismiss)):
+      case let (.some(childState), .some(.dismiss)):
         let effects = self.reduce(into: &state, action: action)
         state[keyPath: stateKeyPath] = nil
-        return effects
+        return .merge(
+          effects,
+          .cancel(id: childState.id)
+        )
       }
     }
   }
