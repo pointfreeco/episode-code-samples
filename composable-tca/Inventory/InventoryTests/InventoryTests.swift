@@ -59,4 +59,38 @@ final class InventoryTests: XCTestCase {
       ]
     }
   }
+
+  func testAddItem() async {
+    let store = TestStore(
+      initialState: InventoryFeature.State(),
+      reducer: InventoryFeature()
+    ) {
+      $0.uuid = .incrementing
+    }
+
+    await store.send(.addButtonTapped) {
+      $0.addItem = ItemFormFeature.State(
+        item: Item(
+          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+          name: "",
+          status: .inStock(quantity: 1)
+        )
+      )
+    }
+
+    await store.send(.addItem(.set(\.$item.name, "Headphones"))) {
+      $0.addItem?.item.name = "Headphones"
+    }
+
+    await store.send(.confirmAddItemButtonTapped) {
+      $0.addItem = nil
+      $0.items = [
+        Item(
+          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+          name: "Headphones",
+          status: .inStock(quantity: 1)
+        )
+      ]
+    }
+  }
 }
