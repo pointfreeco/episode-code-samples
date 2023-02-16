@@ -139,4 +139,43 @@ final class InventoryTests: XCTestCase {
 
 //    await toggleTask.cancel()
   }
+
+
+  func testAddItem_Timer_Dismissal() async {
+    let clock = TestClock()
+    let store = TestStore(
+      initialState: InventoryFeature.State(),
+      reducer: InventoryFeature()
+    ) {
+      $0.continuousClock = clock
+      $0.uuid = .incrementing
+    }
+
+    await store.send(.addButtonTapped) {
+      $0.addItem = ItemFormFeature.State(
+        item: Item(
+          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+          name: "",
+          status: .inStock(quantity: 1)
+        )
+      )
+    }
+
+    await store.send(.addItem(.presented(.set(\.$isTimerOn, true)))) {
+      $0.addItem?.isTimerOn = true
+    }
+    await clock.advance(by: .seconds(3))
+    await store.receive(.addItem(.presented(.timerTick))) {
+      $0.addItem?.item.status = .inStock(quantity: 2)
+    }
+    await store.receive(.addItem(.presented(.timerTick))) {
+      $0.addItem?.item.status = .inStock(quantity: 3)
+    }
+    await store.receive(.addItem(.presented(.timerTick))) {
+      $0.addItem?.item.status = .inStock(quantity: 4)
+    }
+    await store.receive(.addItem(.dismiss)) {
+      $0.addItem = nil
+    }
+  }
 }

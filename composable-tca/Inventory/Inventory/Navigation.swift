@@ -40,9 +40,25 @@ extension Reducer {
         } else {
           cancelEffect = .none
         }
+        let onFirstAppearEffect: Effect<Action>
+        if let childStateAfter, childStateAfter.id != childStateBefore?.id {
+          onFirstAppearEffect = .run { send in
+            do {
+              try await withTaskCancellation(id:  DismissID(id: childStateAfter.id)) {
+                try await Task.never()
+              }
+            } catch is CancellationError {
+              await send(actionCasePath.embed(.dismiss))
+            }
+          }
+          .cancellable(id: childStateAfter.id)
+        } else {
+          onFirstAppearEffect = .none
+        }
         return .merge(
           effects,
-          cancelEffect
+          cancelEffect,
+          onFirstAppearEffect
         )
 
       case (.none, .some(.presented)), (.none, .some(.dismiss)):
@@ -50,7 +66,11 @@ extension Reducer {
         return self.reduce(into: &state, action: action)
 
       case (.some(var childState), .some(.presented(let childAction))):
-        let childEffects = child.reduce(into: &childState, action: childAction)
+        let childEffects = child
+          .dependency(\.dismiss, DismissEffect { [id = childState.id] in
+            Task.cancel(id:  DismissID(id: id))
+          })
+          .reduce(into: &childState, action: childAction)
         state[keyPath: stateKeyPath] = childState
         let effects = self.reduce(into: &state, action: action)
         return .merge(
@@ -71,6 +91,32 @@ extension Reducer {
     }
   }
 }
+
+private struct DismissID: Hashable { let id: AnyHashable }
+
+struct DismissEffect: Sendable {
+  private var dismiss: @Sendable () async -> Void
+  func callAsFunction() async {
+    await self.dismiss()
+  }
+}
+extension DismissEffect {
+  init(_ dismiss: @escaping @Sendable () async -> Void) {
+    self.dismiss = dismiss
+  }
+}
+extension DismissEffect: DependencyKey {
+  static var liveValue = DismissEffect(dismiss: {})
+  static var testValue = DismissEffect(dismiss: {})
+}
+extension DependencyValues {
+  var dismiss: DismissEffect {
+    get { self[DismissEffect.self] }
+    set { self[DismissEffect.self] = newValue }
+  }
+}
+// self.dismiss.dismiss()
+// self.dismiss()
 
 extension View {
   func sheet<ChildState: Identifiable, ChildAction>(

@@ -14,6 +14,7 @@ struct ItemFormFeature: Reducer {
     case timerTick
   }
   @Dependency(\.continuousClock) var clock
+  @Dependency(\.dismiss) var dismiss
 
   var body: some ReducerOf<Self> {
     BindingReducer()
@@ -22,8 +23,13 @@ struct ItemFormFeature: Reducer {
       case .binding(\.$isTimerOn):
         if state.isTimerOn {
           return .run { send in
+            var tickCount = 0
             for await _ in self.clock.timer(interval: .seconds(1)) {
               await send(.timerTick)
+              tickCount += 1
+              if tickCount == 3 {
+                await self.dismiss()
+              }
             }
           }
           .cancellable(id: CancelID.timer)
@@ -38,7 +44,16 @@ struct ItemFormFeature: Reducer {
         guard case let .inStock(quantity) = state.item.status
         else { return .none }
         state.item.status = .inStock(quantity: quantity + 1)
+//        if quantity == 3 {
+//          self.dismiss()
+//        }
+//        URLSession.shared.dataTask(with: ...) { data, _, _ in
+//
+//        }.resume()
         return .none
+//        return quantity == 3
+//        ? .fireAndForget { await self.dismiss() }
+//        : .none
       }
     }
   }
@@ -49,12 +64,20 @@ struct ItemFormFeature: Reducer {
 }
 
 struct ItemFormView: View {
+  @Environment(\.dismiss) var dismiss
   let store: StoreOf<ItemFormFeature>
+
+//  init() {
+//    //        _ = URLSession...
+//  }
 
   var body: some View {
     WithViewStore(self.store, observe: { $0 }) { viewStore in
       Form {
         TextField("Name", text: viewStore.binding(\.$item.name))
+
+//        _ = URLSession...
+//        _ = self.dismiss()
 
         HStack {
           Picker("Color", selection: viewStore.binding(\.$item.color)) {
@@ -106,6 +129,8 @@ struct ItemFormView: View {
         }
 
         Toggle("Timer", isOn: viewStore.binding(\.$isTimerOn))
+
+        Button("Dismiss") { self.dismiss() }
       }
     }
   }
