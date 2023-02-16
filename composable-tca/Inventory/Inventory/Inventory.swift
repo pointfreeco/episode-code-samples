@@ -3,14 +3,20 @@ import SwiftUI
 
 struct InventoryFeature: Reducer {
   struct State: Equatable {
+    var addItem: ItemFormFeature.State?
     var alert: AlertState<Action.Alert>?
     var confirmationDialog: ConfirmationDialogState<Action.Dialog>?
     var items: IdentifiedArrayOf<Item> = []
   }
   enum Action: Equatable {
+    case addButtonTapped
+    case addItem(ItemFormFeature.Action)
     case alert(AlertAction<Alert>)
+    case cancelAddItemButtonTapped
+    case confirmAddItemButtonTapped
     case confirmationDialog(ConfirmationDialogAction<Dialog>)
     case deleteButtonTapped(id: Item.ID)
+    case dismissAddItem
     case duplicateButtonTapped(id: Item.ID)
 
     enum Alert: Equatable {
@@ -24,6 +30,22 @@ struct InventoryFeature: Reducer {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .addButtonTapped:
+        state.addItem = ItemFormFeature.State(
+          item: Item(name: "", status: .inStock(quantity: 1))
+        )
+        return .none
+
+      case .addItem:
+        return .none
+//      case let .addItem(action):
+//        guard var itemFormState = state.addItem
+//        else { return .none }
+//        let itemFormEffects = ItemFormFeature().reduce(into: &itemFormState, action: action)
+//        state.addItem = itemFormState
+//        return itemFormEffects.map(Action.addItem)
+
+
       case let .alert(.presented(.confirmDeletion(id))):
         state.items.remove(id: id)
         return .none
@@ -33,6 +55,17 @@ struct InventoryFeature: Reducer {
 //        return .none
         
       case .alert:
+        return .none
+
+      case .cancelAddItemButtonTapped:
+        state.addItem = nil
+        return .none
+
+      case .confirmAddItemButtonTapped:
+        defer { state.addItem = nil }
+        guard let item = state.addItem?.item
+        else { return .none }
+        state.items.append(item)
         return .none
 
       case let .confirmationDialog(.presented(.confirmDuplication(id: id))):
@@ -55,6 +88,10 @@ struct InventoryFeature: Reducer {
         state.alert = .delete(item: item)
         return .none
 
+      case .dismissAddItem:
+        state.addItem = nil
+        return .none
+
       case let .duplicateButtonTapped(id):
         guard let item = state.items[id: id]
         else { return .none }
@@ -66,6 +103,9 @@ struct InventoryFeature: Reducer {
     }
     .alert(state: \.alert, action: /Action.alert)
     .confirmationDialog(state: \.confirmationDialog, action: /Action.confirmationDialog)
+    .ifLet(\.addItem, action: /Action.addItem) {
+      ItemFormFeature()
+    }
   }
 }
 
@@ -99,11 +139,21 @@ extension ConfirmationDialogState where Action == InventoryFeature.Action.Dialog
 
 struct InventoryView: View {
   let store: StoreOf<InventoryFeature>
+
+  struct ViewState: Equatable {
+    let addItemID: Item.ID?
+    let items: IdentifiedArrayOf<Item>
+
+    init(state: InventoryFeature.State) {
+      self.addItemID = state.addItem?.item.id
+      self.items = state.items
+    }
+  }
   
   var body: some View {
-    WithViewStore(self.store, observe: \.items) { viewStore in
+    WithViewStore(self.store, observe: ViewState.init) { (viewStore: ViewStore<ViewState, InventoryFeature.Action>) in
       List {
-        ForEach(viewStore.state) { item in
+        ForEach(viewStore.items) { item in
           HStack {
             VStack(alignment: .leading) {
               Text(item.name)
@@ -143,12 +193,49 @@ struct InventoryView: View {
           .foregroundColor(item.status.isInStock ? nil : Color.gray)
         }
       }
+      .toolbar {
+        ToolbarItem(placement: .primaryAction) {
+          Button("Add") {
+            viewStore.send(.addButtonTapped)
+          }
+        }
+      }
       .alert(
         store: self.store.scope(state: \.alert, action: InventoryFeature.Action.alert)
       )
       .confirmationDialog(
         store: self.store.scope(state: \.confirmationDialog, action: InventoryFeature.Action.confirmationDialog)
       )
+      .sheet(
+        item: viewStore.binding(
+          get: { $0.addItemID.map { Identified($0, id: \.self) } },
+          send: .dismissAddItem
+        )
+      ) { _ in
+        IfLetStore(
+          self.store.scope(
+            state: \.addItem,
+            action: InventoryFeature.Action.addItem
+          )
+        ) { store in
+          NavigationStack {
+            ItemFormView(store: store)
+              .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                  Button("Cancel") {
+                    viewStore.send(.cancelAddItemButtonTapped)
+                  }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                  Button("Add") {
+                    viewStore.send(.confirmAddItemButtonTapped)
+                  }
+                }
+              }
+              .navigationTitle("New item")
+          }
+        }
+      }
     }
   }
 }

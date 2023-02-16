@@ -8,7 +8,6 @@ struct ItemFormFeature: Reducer {
   }
   enum Action: BindableAction, Equatable {
     case binding(BindingAction<State>)
-//    case setName(String)
   }
 
   var body: some ReducerOf<Self> {

@@ -65,12 +65,14 @@ struct ContentView: View {
         .tabItem { Text("One") }
         .tag(Tab.one)
 
-        InventoryView(
-          store: self.store.scope(
-            state: \.inventory,
-            action: AppFeature.Action.inventory
+        NavigationStack {
+          InventoryView(
+            store: self.store.scope(
+              state: \.inventory,
+              action: AppFeature.Action.inventory
+            )
           )
-        )
+        }
         .tabItem { Text("Inventory") }
         .tag(Tab.inventory)
 
