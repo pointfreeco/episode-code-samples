@@ -78,7 +78,7 @@ final class InventoryTests: XCTestCase {
       )
     }
 
-    await store.send(.addItem(.set(\.$item.name, "Headphones"))) {
+    await store.send(.addItem(.presented(.set(\.$item.name, "Headphones")))) {
       $0.addItem?.item.name = "Headphones"
     }
 
