@@ -2,28 +2,20 @@ import ComposableArchitecture
 import SwiftUI
 import SwiftUINavigation
 
-enum AlertAction<Action> {
+enum PresentationAction<Action> {
   case dismiss
   case presented(Action)
 }
-extension AlertAction: Equatable where Action: Equatable {}
+extension PresentationAction: Equatable where Action: Equatable {}
 
-enum ConfirmationDialogAction<Action> {
-  case dismiss
-  case presented(Action)
-}
-extension ConfirmationDialogAction: Equatable where Action: Equatable {}
-
-enum SheetAction<Action> {
-  case dismiss
-  case presented(Action)
-}
-extension SheetAction: Equatable where Action: Equatable {}
+private protocol _EphemeralState {}
+extension AlertState: _EphemeralState {}
+extension ConfirmationDialogState: _EphemeralState {}
 
 extension Reducer {
-  func sheet<ChildState: Identifiable, ChildAction>(
-    state stateKeyPath: WritableKeyPath<State, ChildState?>,
-    action actionCasePath: CasePath<Action, SheetAction<ChildAction>>,
+  func ifLet<ChildState: Identifiable, ChildAction>(
+    _ stateKeyPath: WritableKeyPath<State, ChildState?>,
+    action actionCasePath: CasePath<Action, PresentationAction<ChildAction>>,
     @ReducerBuilder<ChildState, ChildAction> child: () -> some Reducer<ChildState, ChildAction>
   ) -> some ReducerOf<Self> {
     let child = child()
@@ -35,13 +27,21 @@ extension Reducer {
         let effects = self.reduce(into: &state, action: action)
         let childStateAfter = state[keyPath: stateKeyPath]
         let cancelEffect: Effect<Action>
-        if let childStateBefore, childStateBefore.id != childStateAfter?.id {
+        if
+          !(ChildState.self is _EphemeralState.Type),
+          let childStateBefore,
+          childStateBefore.id != childStateAfter?.id
+        {
           cancelEffect = .cancel(id: childStateBefore.id)
         } else {
           cancelEffect = .none
         }
         let onFirstAppearEffect: Effect<Action>
-        if let childStateAfter, childStateAfter.id != childStateBefore?.id {
+        if
+          !(ChildState.self is _EphemeralState.Type),
+          let childStateAfter,
+          childStateAfter.id != childStateBefore?.id
+        {
           onFirstAppearEffect = .run { send in
             do {
               try await withTaskCancellation(id:  DismissID(id: childStateAfter.id)) {
@@ -73,6 +73,11 @@ extension Reducer {
           .reduce(into: &childState, action: childAction)
         state[keyPath: stateKeyPath] = childState
         let effects = self.reduce(into: &state, action: action)
+        defer {
+          if ChildState.self is _EphemeralState.Type {
+            state[keyPath: stateKeyPath] = nil
+          }
+        }
         return .merge(
           childEffects
             .map { actionCasePath.embed(.presented($0)) }
@@ -90,6 +95,14 @@ extension Reducer {
       }
     }
   }
+
+//  func ifLet<ChildState: Identifiable, ChildAction>(
+//    _ stateKeyPath: WritableKeyPath<State, ChildState?>,
+//    action actionCasePath: CasePath<Action, PresentationAction<ChildAction>>
+//  ) -> some ReducerOf<Self> {
+//    self.ifLet(stateKeyPath, action: actionCasePath) {
+//    }
+//  }
 }
 
 private struct DismissID: Hashable { let id: AnyHashable }
@@ -120,7 +133,7 @@ extension DependencyValues {
 
 extension View {
   func sheet<ChildState: Identifiable, ChildAction>(
-    store: Store<ChildState?, SheetAction<ChildAction>>,
+    store: Store<ChildState?, PresentationAction<ChildAction>>,
     @ViewBuilder child: @escaping (Store<ChildState, ChildAction>) -> some View
   ) -> some View {
     WithViewStore(store, observe: { $0?.id }) { viewStore in
@@ -137,7 +150,34 @@ extension View {
         IfLetStore(
           store.scope(
             state: returningLastNonNilValue { $0 },
-            action: SheetAction.presented
+            action: PresentationAction.presented
+          )
+        ) { store in
+          child(store)
+        }
+      }
+    }
+  }
+
+  func popover<ChildState: Identifiable, ChildAction>(
+    store: Store<ChildState?, PresentationAction<ChildAction>>,
+    @ViewBuilder child: @escaping (Store<ChildState, ChildAction>) -> some View
+  ) -> some View {
+    WithViewStore(store, observe: { $0?.id }) { viewStore in
+      self.popover(
+        item: Binding(
+          get: { viewStore.state.map { Identified($0, id: \.self) } },
+          set: { newState in
+            if viewStore.state != nil {
+              viewStore.send(.dismiss)
+            }
+          }
+        )
+      ) { _ in
+        IfLetStore(
+          store.scope(
+            state: returningLastNonNilValue { $0 },
+            action: PresentationAction.presented
           )
         ) { store in
           child(store)
@@ -157,39 +197,9 @@ func returningLastNonNilValue<A, B>(
   }
 }
 
-extension Reducer {
-  func alert<Action>(
-    state alertKeyPath: WritableKeyPath<State, AlertState<Action>?>,
-    action alertCasePath: CasePath<Self.Action, AlertAction<Action>>
-  ) -> some ReducerOf<Self> {
-    Reduce { state, action in
-      let effects = self.reduce(into: &state, action: action)
-      if alertCasePath ~= action {
-        state[keyPath: alertKeyPath] = nil
-      }
-      return effects
-    }
-  }
-}
-
-extension Reducer {
-  func confirmationDialog<Action>(
-    state alertKeyPath: WritableKeyPath<State, ConfirmationDialogState<Action>?>,
-    action alertCasePath: CasePath<Self.Action, ConfirmationDialogAction<Action>>
-  ) -> some ReducerOf<Self> {
-    Reduce { state, action in
-      let effects = self.reduce(into: &state, action: action)
-      if alertCasePath ~= action {
-        state[keyPath: alertKeyPath] = nil
-      }
-      return effects
-    }
-  }
-}
-
 extension View {
   func alert<Action>(
-    store: Store<AlertState<Action>?, AlertAction<Action>>
+    store: Store<AlertState<Action>?, PresentationAction<Action>>
   ) -> some View {
     WithViewStore(
       store,
@@ -216,7 +226,7 @@ extension View {
 
 extension View {
   func confirmationDialog<Action>(
-    store: Store<ConfirmationDialogState<Action>?, ConfirmationDialogAction<Action>>
+    store: Store<ConfirmationDialogState<Action>?, PresentationAction<Action>>
   ) -> some View {
     WithViewStore(
       store,

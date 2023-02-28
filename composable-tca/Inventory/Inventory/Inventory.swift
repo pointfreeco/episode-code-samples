@@ -5,19 +5,23 @@ struct InventoryFeature: Reducer {
   struct State: Equatable {
     var addItem: ItemFormFeature.State?
     var alert: AlertState<Action.Alert>?
-    var confirmationDialog: ConfirmationDialogState<Action.Dialog>?
+    //var confirmationDialog: ConfirmationDialogState<Action.Dialog>?
+    var duplicateItem: ItemFormFeature.State?
     var items: IdentifiedArrayOf<Item> = []
   }
   enum Action: Equatable {
     case addButtonTapped
-    case addItem(SheetAction<ItemFormFeature.Action>)
-    case alert(AlertAction<Alert>)
+    case addItem(PresentationAction<ItemFormFeature.Action>)
+    case alert(PresentationAction<Alert>)
     case cancelAddItemButtonTapped
+    case cancelDuplicateItemButtonTapped
     case confirmAddItemButtonTapped
-    case confirmationDialog(ConfirmationDialogAction<Dialog>)
+    case confirmDuplicateItemButtonTapped
+    //case confirmationDialog(PresentationAction<Dialog>)
     case deleteButtonTapped(id: Item.ID)
     //case dismissAddItem
     case duplicateButtonTapped(id: Item.ID)
+    case duplicateItem(PresentationAction<ItemFormFeature.Action>)
 
     enum Alert: Equatable {
       case confirmDeletion(id: Item.ID)
@@ -65,6 +69,10 @@ struct InventoryFeature: Reducer {
         state.addItem = nil
         return .none
 
+      case .cancelDuplicateItemButtonTapped:
+        state.duplicateItem = nil
+        return .none
+
       case .confirmAddItemButtonTapped:
         defer { state.addItem = nil }
         guard let item = state.addItem?.item
@@ -72,18 +80,25 @@ struct InventoryFeature: Reducer {
         state.items.append(item)
         return .none
 
-      case let .confirmationDialog(.presented(.confirmDuplication(id: id))):
-        guard
-          let item = state.items[id: id],
-          let index = state.items.index(id: id)
-        else {
-          return .none
-        }
-        state.items.insert(item.duplicate(), at: index)
+      case .confirmDuplicateItemButtonTapped:
+        defer { state.duplicateItem = nil }
+        guard let item = state.duplicateItem?.item
+        else { return .none }
+        state.items.append(item)
         return .none
 
-      case .confirmationDialog(.dismiss):
-        return .none
+//      case let .confirmationDialog(.presented(.confirmDuplication(id: id))):
+//        guard
+//          let item = state.items[id: id],
+//          let index = state.items.index(id: id)
+//        else {
+//          return .none
+//        }
+//        state.items.insert(item.duplicate(), at: index)
+//        return .none
+//
+//      case .confirmationDialog(.dismiss):
+//        return .none
 
       case let .deleteButtonTapped(id):
         guard let item = state.items[id: id]
@@ -96,14 +111,20 @@ struct InventoryFeature: Reducer {
         guard let item = state.items[id: id]
         else { return .none }
 
-        // show a confirmation dialog
-        state.confirmationDialog = .duplicate(item: item)
+//        state.confirmationDialog = .duplicate(item: item)
+        state.duplicateItem = ItemFormFeature.State(item: item.duplicate())
+        return .none
+
+      case .duplicateItem:
         return .none
       }
     }
-    .alert(state: \.alert, action: /Action.alert)
-    .confirmationDialog(state: \.confirmationDialog, action: /Action.confirmationDialog)
-    .sheet(state: \.addItem, action: /Action.addItem) {
+//    .ifLet(\.alert, action: /Action.alert)
+//    .ifLet(\.confirmationDialog, action: /Action.confirmationDialog)
+//    .ifLet(\.addItem, action: /Action.addItem) {
+//      ItemFormFeature()
+//    }
+    ifLet(\.duplicateItem, action: /Action.duplicateItem) {
       ItemFormFeature()
     }
 //    let _ = \Item.status.isInStock
@@ -205,9 +226,9 @@ struct InventoryView: View {
       .alert(
         store: self.store.scope(state: \.alert, action: InventoryFeature.Action.alert)
       )
-      .confirmationDialog(
-        store: self.store.scope(state: \.confirmationDialog, action: InventoryFeature.Action.confirmationDialog)
-      )
+//      .confirmationDialog(
+//        store: self.store.scope(state: \.confirmationDialog, action: InventoryFeature.Action.confirmationDialog)
+//      )
       .sheet(
         store: self.store.scope(state: \.addItem, action: InventoryFeature.Action.addItem)
       ) { store in
@@ -228,37 +249,29 @@ struct InventoryView: View {
             .navigationTitle("New item")
         }
       }
-
-//      .sheet(
-//        item: viewStore.binding(
-//          get: { $0.addItemID.map { Identified($0, id: \.self) } },
-//          send: .addItem(.dismiss)
-//        )
-//      ) { _ in
-//        IfLetStore(
-//          self.store.scope(
-//            state: \.addItem,
-//            action: { .addItem(.presented($0)) }
-//          )
-//        ) { store in
-//          NavigationStack {
-//            ItemFormView(store: store)
-//              .toolbar {
-//                ToolbarItem(placement: .cancellationAction) {
-//                  Button("Cancel") {
-//                    viewStore.send(.cancelAddItemButtonTapped)
-//                  }
-//                }
-//                ToolbarItem(placement: .primaryAction) {
-//                  Button("Add") {
-//                    viewStore.send(.confirmAddItemButtonTapped)
-//                  }
-//                }
-//              }
-//              .navigationTitle("New item")
-//          }
-//        }
-//      }
+      .popover(
+        store: self.store.scope(
+          state: \.duplicateItem,
+          action: InventoryFeature.Action.duplicateItem
+        )
+      ) { store in
+        NavigationStack {
+          ItemFormView(store: store)
+            .toolbar {
+              ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                  viewStore.send(.cancelDuplicateItemButtonTapped)
+                }
+              }
+              ToolbarItem(placement: .primaryAction) {
+                Button("Duplicate") {
+                  viewStore.send(.confirmDuplicateItemButtonTapped)
+                }
+              }
+            }
+            .navigationTitle("Duplicate item")
+        }
+      }
     }
   }
 }
