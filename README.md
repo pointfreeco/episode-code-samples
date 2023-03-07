@@ -226,3 +226,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Composable Navigation: Tabs](0222-composable-navigation-pt1)
 1. [Composable Navigation: Alerts & Dialogs](0223-composable-navigation-pt2)
 1. [Composable Navigation: Sheets](0224-composable-navigation-pt3)
+1. [Composable Navigation: Effect Cancellation](0225-composable-navigation-pt4)
