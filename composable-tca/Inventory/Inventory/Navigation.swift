@@ -161,6 +161,60 @@ extension View {
       }
     }
   }
+
+  func popover<ChildState: Identifiable, ChildAction>(
+    store: Store<ChildState?, PresentationAction<ChildAction>>,
+    @ViewBuilder child: @escaping (Store<ChildState, ChildAction>) -> some View
+  ) -> some View {
+    WithViewStore(store, observe: { $0?.id }) { viewStore in
+      self.popover(
+        item: Binding(
+          get: { viewStore.state.map { Identified($0, id: \.self) } },
+          set: { newState in
+            if viewStore.state != nil {
+              viewStore.send(.dismiss)
+            }
+          }
+        )
+      ) { _ in
+        IfLetStore(
+          store.scope(
+            state: returningLastNonNilValue { $0 },
+            action: PresentationAction.presented
+          )
+        ) { store in
+          child(store)
+        }
+      }
+    }
+  }
+
+  func fullScreenCover<ChildState: Identifiable, ChildAction>(
+    store: Store<ChildState?, PresentationAction<ChildAction>>,
+    @ViewBuilder child: @escaping (Store<ChildState, ChildAction>) -> some View
+  ) -> some View {
+    WithViewStore(store, observe: { $0?.id }) { viewStore in
+      self.fullScreenCover(
+        item: Binding(
+          get: { viewStore.state.map { Identified($0, id: \.self) } },
+          set: { newState in
+            if viewStore.state != nil {
+              viewStore.send(.dismiss)
+            }
+          }
+        )
+      ) { _ in
+        IfLetStore(
+          store.scope(
+            state: returningLastNonNilValue { $0 },
+            action: PresentationAction.presented
+          )
+        ) { store in
+          child(store)
+        }
+      }
+    }
+  }
 }
 
 func returningLastNonNilValue<A, B>(

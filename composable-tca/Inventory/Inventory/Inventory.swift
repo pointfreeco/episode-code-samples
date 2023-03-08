@@ -5,7 +5,7 @@ struct InventoryFeature: Reducer {
   struct State: Equatable {
     var addItem: ItemFormFeature.State?
     var alert: AlertState<Action.Alert>?
-    var confirmationDialog: ConfirmationDialogState<Action.Dialog>?
+    var duplicateItem: ItemFormFeature.State?
     var items: IdentifiedArrayOf<Item> = []
   }
   enum Action: Equatable {
@@ -13,10 +13,11 @@ struct InventoryFeature: Reducer {
     case addItem(PresentationAction<ItemFormFeature.Action>)
     case alert(PresentationAction<Alert>)
     case cancelAddItemButtonTapped
+    case cancelDuplicateItemButtonTapped
     case confirmAddItemButtonTapped
-    case confirmationDialog(PresentationAction<Dialog>)
+    case confirmDuplicateItemButtonTapped
+    case duplicateItem(PresentationAction<ItemFormFeature.Action>)
     case deleteButtonTapped(id: Item.ID)
-    //case dismissAddItem
     case duplicateButtonTapped(id: Item.ID)
 
     enum Alert: Equatable {
@@ -36,28 +37,13 @@ struct InventoryFeature: Reducer {
         )
         return .none
 
-//      case .addItem(.dismiss):
-//        state.addItem = nil
-//        return .none
-
       case .addItem:
         return .none
-//      case let .addItem(action):
-//        guard var itemFormState = state.addItem
-//        else { return .none }
-//        let itemFormEffects = ItemFormFeature().reduce(into: &itemFormState, action: action)
-//        state.addItem = itemFormState
-//        return itemFormEffects.map(Action.addItem)
-
 
       case let .alert(.presented(.confirmDeletion(id))):
         state.items.remove(id: id)
         return .none
 
-//      case .alert(.dismiss):
-//        state.alert = nil
-//        return .none
-        
       case .alert:
         return .none
 
@@ -65,24 +51,28 @@ struct InventoryFeature: Reducer {
         state.addItem = nil
         return .none
 
+      case .cancelDuplicateItemButtonTapped:
+        state.duplicateItem = nil
+        return .none
+
       case .confirmAddItemButtonTapped:
         defer { state.addItem = nil }
         guard let item = state.addItem?.item
-        else { return .none }
+        else {
+          XCTFail("Can't confirm add when item is nil")
+          return .none
+        }
         state.items.append(item)
         return .none
 
-      case let .confirmationDialog(.presented(.confirmDuplication(id: id))):
-        guard
-          let item = state.items[id: id],
-          let index = state.items.index(id: id)
+      case .confirmDuplicateItemButtonTapped:
+        defer { state.duplicateItem = nil }
+        guard let item = state.duplicateItem?.item
         else {
+          XCTFail("Can't confirm duplicate when item is nil")
           return .none
         }
-        state.items.insert(item.duplicate(), at: index)
-        return .none
-
-      case .confirmationDialog(.dismiss):
+        state.items.append(item)
         return .none
 
       case let .deleteButtonTapped(id):
@@ -96,18 +86,20 @@ struct InventoryFeature: Reducer {
         guard let item = state.items[id: id]
         else { return .none }
 
-        // show a confirmation dialog
-        state.confirmationDialog = .duplicate(item: item)
+        state.duplicateItem = ItemFormFeature.State(item: item.duplicate())
+        return .none
+
+      case .duplicateItem:
         return .none
       }
     }
     .ifLet(\.alert, action: /Action.alert)
-    .ifLet(\.confirmationDialog, action: /Action.confirmationDialog)
     .ifLet(\.addItem, action: /Action.addItem) {
       ItemFormFeature()
     }
-//    let _ = \Item.status.isInStock
-//    let _ = (\Item.status).appending(path: \Item.Status.isInStock)
+    .ifLet(\.duplicateItem, action: /Action.duplicateItem) {
+      ItemFormFeature()
+    }
   }
 }
 
@@ -205,9 +197,26 @@ struct InventoryView: View {
       .alert(
         store: self.store.scope(state: \.alert, action: InventoryFeature.Action.alert)
       )
-      .confirmationDialog(
-        store: self.store.scope(state: \.confirmationDialog, action: InventoryFeature.Action.confirmationDialog)
-      )
+      .popover(
+        store: self.store.scope(state: \.duplicateItem, action: InventoryFeature.Action.duplicateItem)
+      ) { store in
+        NavigationStack {
+          ItemFormView(store: store)
+            .toolbar {
+              ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                  viewStore.send(.cancelDuplicateItemButtonTapped)
+                }
+              }
+              ToolbarItem(placement: .primaryAction) {
+                Button("Add") {
+                  viewStore.send(.confirmDuplicateItemButtonTapped)
+                }
+              }
+            }
+            .navigationTitle("Duplicate item")
+        }
+      }
       .sheet(
         store: self.store.scope(state: \.addItem, action: InventoryFeature.Action.addItem)
       ) { store in

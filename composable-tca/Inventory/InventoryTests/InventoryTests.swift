@@ -44,18 +44,28 @@ final class InventoryTests: XCTestCase {
     }
 
     await store.send(.duplicateButtonTapped(id: item.id)) {
-      $0.confirmationDialog = .duplicate(item: item)
-    }
-    await store.send(.confirmationDialog(.presented(.confirmDuplication(id: item.id)))) {
-      $0.confirmationDialog = nil
-      $0.items = [
-        Item(
+      $0.duplicateItem = ItemFormFeature.State(
+        item: Item(
           id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
           name: "Headphones",
           color: .blue,
           status: .inStock(quantity: 20)
-        ),
-        item
+        )
+      )
+    }
+    await store.send(.duplicateItem(.presented(.set(\.$item.name, "Bluetooth Headphones")))) {
+      $0.duplicateItem?.item.name = "Bluetooth Headphones"
+    }
+    await store.send(.confirmDuplicateItemButtonTapped) {
+      $0.duplicateItem = nil
+      $0.items = [
+        item,
+        Item(
+          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+          name: "Bluetooth Headphones",
+          color: .blue,
+          status: .inStock(quantity: 20)
+        )
       ]
     }
   }
