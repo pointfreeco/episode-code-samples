@@ -10,11 +10,11 @@ struct InventoryFeature: Reducer {
   }
   enum Action: Equatable {
     case addButtonTapped
-    case addItem(SheetAction<ItemFormFeature.Action>)
-    case alert(AlertAction<Alert>)
+    case addItem(PresentationAction<ItemFormFeature.Action>)
+    case alert(PresentationAction<Alert>)
     case cancelAddItemButtonTapped
     case confirmAddItemButtonTapped
-    case confirmationDialog(ConfirmationDialogAction<Dialog>)
+    case confirmationDialog(PresentationAction<Dialog>)
     case deleteButtonTapped(id: Item.ID)
     //case dismissAddItem
     case duplicateButtonTapped(id: Item.ID)
@@ -101,9 +101,9 @@ struct InventoryFeature: Reducer {
         return .none
       }
     }
-    .alert(state: \.alert, action: /Action.alert)
-    .confirmationDialog(state: \.confirmationDialog, action: /Action.confirmationDialog)
-    .sheet(state: \.addItem, action: /Action.addItem) {
+    .ifLet(\.alert, action: /Action.alert)
+    .ifLet(\.confirmationDialog, action: /Action.confirmationDialog)
+    .ifLet(\.addItem, action: /Action.addItem) {
       ItemFormFeature()
     }
 //    let _ = \Item.status.isInStock
