@@ -6,6 +6,7 @@ struct InventoryFeature: Reducer {
     var addItem: ItemFormFeature.State?
     var alert: AlertState<Action.Alert>?
     var duplicateItem: ItemFormFeature.State?
+    var editItem: ItemFormFeature.State?
     var items: IdentifiedArrayOf<Item> = []
   }
   enum Action: Equatable {
@@ -19,6 +20,8 @@ struct InventoryFeature: Reducer {
     case duplicateItem(PresentationAction<ItemFormFeature.Action>)
     case deleteButtonTapped(id: Item.ID)
     case duplicateButtonTapped(id: Item.ID)
+    case editItem(PresentationAction<ItemFormFeature.Action>)
+    case itemButtonTapped(id: Item.ID)
 
     enum Alert: Equatable {
       case confirmDeletion(id: Item.ID)
@@ -91,6 +94,23 @@ struct InventoryFeature: Reducer {
 
       case .duplicateItem:
         return .none
+
+      case .editItem(.dismiss):
+        guard let item = state.editItem?.item
+        else { return .none }
+        state.items[id: item.id] = item
+        return .none
+      case .editItem:
+        return .none
+
+      case let .itemButtonTapped(id: itemID):
+        guard let item = state.items[id: itemID]
+        else {
+          XCTFail("Can't edit the item when it's not found in the list.")
+          return .none
+        }
+        state.editItem = ItemFormFeature.State(item: item)
+        return .none
       }
     }
     .ifLet(\.alert, action: /Action.alert)
@@ -98,6 +118,9 @@ struct InventoryFeature: Reducer {
       ItemFormFeature()
     }
     .ifLet(\.duplicateItem, action: /Action.duplicateItem) {
+      ItemFormFeature()
+    }
+    .ifLet(\.editItem, action: /Action.editItem) {
       ItemFormFeature()
     }
   }
@@ -135,11 +158,11 @@ struct InventoryView: View {
   let store: StoreOf<InventoryFeature>
 
   struct ViewState: Equatable {
-    let addItemID: Item.ID?
+    let editItemID: Item.ID?
     let items: IdentifiedArrayOf<Item>
 
     init(state: InventoryFeature.State) {
-      self.addItemID = state.addItem?.item.id
+      self.editItemID = state.editItem?.item.id
       self.items = state.items
     }
   }
@@ -148,41 +171,66 @@ struct InventoryView: View {
     WithViewStore(self.store, observe: ViewState.init) { (viewStore: ViewStore<ViewState, InventoryFeature.Action>) in
       List {
         ForEach(viewStore.items) { item in
-          HStack {
-            VStack(alignment: .leading) {
-              Text(item.name)
+          NavigationLink(
+            isActive: Binding(
+              get: { viewStore.editItemID == item.id },
+              set: { isActive in
+                if isActive {
+                  viewStore.send(.itemButtonTapped(id: item.id))
+                } else {
+                  viewStore.send(.editItem(.dismiss))
+                }
+              }
+            ),
+            destination: {
+              IfLetStore(
+                self.store.scope(
+                  state: \.editItem,
+                  action: { .editItem(.presented($0)) }
+                ),
+                then: { store in
+                  ItemFormView(store: store)
+                }
+              )
+            },
+            label: {
+              HStack {
+                VStack(alignment: .leading) {
+                  Text(item.name)
 
-              switch item.status {
-              case let .inStock(quantity):
-                Text("In stock: \(quantity)")
-              case let .outOfStock(isOnBackOrder):
-                Text("Out of stock" + (isOnBackOrder ? ": on back order" : ""))
+                  switch item.status {
+                  case let .inStock(quantity):
+                    Text("In stock: \(quantity)")
+                  case let .outOfStock(isOnBackOrder):
+                    Text("Out of stock" + (isOnBackOrder ? ": on back order" : ""))
+                  }
+                }
+
+                Spacer()
+
+                if let color = item.color {
+                  Rectangle()
+                    .frame(width: 30, height: 30)
+                    .foregroundColor(color.swiftUIColor)
+                    .border(Color.black, width: 1)
+                }
+
+                Button {
+                  viewStore.send(.duplicateButtonTapped(id: item.id))
+                } label: {
+                  Image(systemName: "doc.on.doc.fill")
+                }
+                .padding(.leading)
+
+                Button {
+                  viewStore.send(.deleteButtonTapped(id: item.id))
+                } label: {
+                  Image(systemName: "trash.fill")
+                }
+                .padding(.leading)
               }
             }
-
-            Spacer()
-
-            if let color = item.color {
-              Rectangle()
-                .frame(width: 30, height: 30)
-                .foregroundColor(color.swiftUIColor)
-                .border(Color.black, width: 1)
-            }
-
-            Button {
-              viewStore.send(.duplicateButtonTapped(id: item.id))
-            } label: {
-              Image(systemName: "doc.on.doc.fill")
-            }
-            .padding(.leading)
-
-            Button {
-              viewStore.send(.deleteButtonTapped(id: item.id))
-            } label: {
-              Image(systemName: "trash.fill")
-            }
-            .padding(.leading)
-          }
+          )
           .buttonStyle(.plain)
           .foregroundColor(item.status.isInStock ? nil : Color.gray)
         }
@@ -274,7 +322,7 @@ struct InventoryView: View {
 
 struct Inventory_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationStack {
+    NavigationView {
       InventoryView(
         store: Store(
           initialState: InventoryFeature.State(

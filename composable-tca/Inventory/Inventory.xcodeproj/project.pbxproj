@@ -15,6 +15,7 @@
 		2A3BEA2229944BA700351060 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 2A3BEA2129944BA700351060 /* ComposableArchitecture */; };
 		2A3BEA2429945D4000351060 /* Vanilla.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3BEA2329945D4000351060 /* Vanilla.swift */; };
 		2A3BEA2829945ECB00351060 /* VanillaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3BEA2729945ECB00351060 /* VanillaTests.swift */; };
+		2AD4AD5329B9512C00F691CF /* CustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 2AD4AD5229B9512C00F691CF /* CustomDump */; };
 		4B0E65B729944EFC00DFB522 /* FirstTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65B629944EFC00DFB522 /* FirstTab.swift */; };
 		4B0E65B929944F4800DFB522 /* Inventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65B829944F4800DFB522 /* Inventory.swift */; };
 		4B0E65BB29944F6500DFB522 /* ThirdTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65BA29944F6500DFB522 /* ThirdTab.swift */; };
@@ -58,6 +59,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B0E65C229946FD700DFB522 /* SwiftUINavigation in Frameworks */,
+				2AD4AD5329B9512C00F691CF /* CustomDump in Frameworks */,
 				2A3BEA2229944BA700351060 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -144,6 +146,7 @@
 			packageProductDependencies = (
 				2A3BEA2129944BA700351060 /* ComposableArchitecture */,
 				4B0E65C129946FD700DFB522 /* SwiftUINavigation */,
+				2AD4AD5229B9512C00F691CF /* CustomDump */,
 			);
 			productName = Inventory;
 			productReference = 2A3BE9F32994469500351060 /* Inventory.app */;
@@ -198,6 +201,7 @@
 			packageReferences = (
 				2A3BEA2029944BA700351060 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				4B0E65C029946FD700DFB522 /* XCRemoteSwiftPackageReference "swiftui-navigation" */,
+				2AD4AD5129B9512C00F691CF /* XCRemoteSwiftPackageReference "swift-custom-dump" */,
 			);
 			productRefGroup = 2A3BE9F42994469500351060 /* Products */;
 			projectDirPath = "";
@@ -514,6 +518,14 @@
 				revision = bcf5683aecdba339d309848c50b7f33fed887709;
 			};
 		};
+		2AD4AD5129B9512C00F691CF /* XCRemoteSwiftPackageReference "swift-custom-dump" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-custom-dump.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.8.0;
+			};
+		};
 		4B0E65C029946FD700DFB522 /* XCRemoteSwiftPackageReference "swiftui-navigation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swiftui-navigation.git";
@@ -529,6 +541,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2A3BEA2029944BA700351060 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		2AD4AD5229B9512C00F691CF /* CustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2AD4AD5129B9512C00F691CF /* XCRemoteSwiftPackageReference "swift-custom-dump" */;
+			productName = CustomDump;
 		};
 		4B0E65C129946FD700DFB522 /* SwiftUINavigation */ = {
 			isa = XCSwiftPackageProductDependency;

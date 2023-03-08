@@ -20,7 +20,7 @@ struct InventoryApp: App {
 //            selectedTab: .inventory
           ),
           reducer: AppFeature()
-            ._printChanges()
+            //._printChanges()
         )
       )
     }
