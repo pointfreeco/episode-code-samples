@@ -281,6 +281,47 @@ extension View {
   }
 }
 
+@available(*, deprecated)
+struct NavigationLinkStore<ChildState: Identifiable, ChildAction, Destination: View, Label: View>: View {
+  let store: Store<ChildState?, PresentationAction<ChildAction>>
+  let id: ChildState.ID?
+  let action: () -> Void
+  @ViewBuilder let destination: (Store<ChildState, ChildAction>) -> Destination
+  @ViewBuilder let label: Label
+
+  var body: some View {
+//    NavigationLink(
+//      tag: <#T##V#>,
+//      selection: <#T##SwiftUI.Binding<V?>#>,
+//      destination: <#T##() -> Destination#>,
+//      label: <#T##() -> Label#>
+//    )
+
+    WithViewStore(self.store, observe: { $0?.id == self.id }) { viewStore in
+      NavigationLink(
+        isActive: Binding(
+          get: { viewStore.state },
+          set: { isActive in
+            if isActive {
+              self.action()
+            } else if viewStore.state {
+              viewStore.send(.dismiss)
+            }
+          }
+        ),
+        destination: {
+          IfLetStore(
+            self.store.scope(state: { $0 }, action: { .presented($0) })
+          ) { store in
+            self.destination(store)
+          }
+        },
+        label: { self.label }
+      )
+    }
+  }
+}
+
 struct Test: View, PreviewProvider {
   static var previews: some View {
     Self()

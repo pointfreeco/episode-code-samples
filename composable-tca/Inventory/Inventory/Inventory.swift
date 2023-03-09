@@ -171,66 +171,113 @@ struct InventoryView: View {
     WithViewStore(self.store, observe: ViewState.init) { (viewStore: ViewStore<ViewState, InventoryFeature.Action>) in
       List {
         ForEach(viewStore.items) { item in
-          NavigationLink(
-            isActive: Binding(
-              get: { viewStore.editItemID == item.id },
-              set: { isActive in
-                if isActive {
-                  viewStore.send(.itemButtonTapped(id: item.id))
-                } else {
-                  viewStore.send(.editItem(.dismiss))
-                }
-              }
+          NavigationLinkStore(
+            store: self.store.scope(
+              state: \.editItem,
+              action: InventoryFeature.Action.editItem
             ),
-            destination: {
-              IfLetStore(
-                self.store.scope(
-                  state: \.editItem,
-                  action: { .editItem(.presented($0)) }
-                ),
-                then: { store in
-                  ItemFormView(store: store)
-                }
-              )
-            },
-            label: {
-              HStack {
-                VStack(alignment: .leading) {
-                  Text(item.name)
+            id: item.id
+          ) {
+            viewStore.send(.itemButtonTapped(id: item.id))
+          } destination: { store in
+            ItemFormView(store: store)
+              .navigationTitle("Edit item")
+          } label: {
+            HStack {
+              VStack(alignment: .leading) {
+                Text(item.name)
 
-                  switch item.status {
-                  case let .inStock(quantity):
-                    Text("In stock: \(quantity)")
-                  case let .outOfStock(isOnBackOrder):
-                    Text("Out of stock" + (isOnBackOrder ? ": on back order" : ""))
-                  }
+                switch item.status {
+                case let .inStock(quantity):
+                  Text("In stock: \(quantity)")
+                case let .outOfStock(isOnBackOrder):
+                  Text("Out of stock" + (isOnBackOrder ? ": on back order" : ""))
                 }
-
-                Spacer()
-
-                if let color = item.color {
-                  Rectangle()
-                    .frame(width: 30, height: 30)
-                    .foregroundColor(color.swiftUIColor)
-                    .border(Color.black, width: 1)
-                }
-
-                Button {
-                  viewStore.send(.duplicateButtonTapped(id: item.id))
-                } label: {
-                  Image(systemName: "doc.on.doc.fill")
-                }
-                .padding(.leading)
-
-                Button {
-                  viewStore.send(.deleteButtonTapped(id: item.id))
-                } label: {
-                  Image(systemName: "trash.fill")
-                }
-                .padding(.leading)
               }
-            }
-          )
+
+              Spacer()
+
+              if let color = item.color {
+                Rectangle()
+                  .frame(width: 30, height: 30)
+                  .foregroundColor(color.swiftUIColor)
+                  .border(Color.black, width: 1)
+              }
+
+              Button {
+                viewStore.send(.duplicateButtonTapped(id: item.id))
+              } label: {
+                Image(systemName: "doc.on.doc.fill")
+              }
+              .padding(.leading)
+
+              Button {
+                viewStore.send(.deleteButtonTapped(id: item.id))
+              } label: {
+                Image(systemName: "trash.fill")
+              }
+              .padding(.leading)
+            }          }
+//          NavigationLink(
+//            isActive: Binding(
+//              get: { viewStore.editItemID == item.id },
+//              set: { isActive in
+//                if isActive {
+//                  viewStore.send(.itemButtonTapped(id: item.id))
+//                } else {
+//                  viewStore.send(.editItem(.dismiss))
+//                }
+//              }
+//            ),
+//            destination: {
+//              IfLetStore(
+//                self.store.scope(
+//                  state: \.editItem,
+//                  action: { .editItem(.presented($0)) }
+//                ),
+//                then: { store in
+//                  ItemFormView(store: store)
+//                }
+//              )
+//            },
+//            label: {
+//              HStack {
+//                VStack(alignment: .leading) {
+//                  Text(item.name)
+//
+//                  switch item.status {
+//                  case let .inStock(quantity):
+//                    Text("In stock: \(quantity)")
+//                  case let .outOfStock(isOnBackOrder):
+//                    Text("Out of stock" + (isOnBackOrder ? ": on back order" : ""))
+//                  }
+//                }
+//
+//                Spacer()
+//
+//                if let color = item.color {
+//                  Rectangle()
+//                    .frame(width: 30, height: 30)
+//                    .foregroundColor(color.swiftUIColor)
+//                    .border(Color.black, width: 1)
+//                }
+//
+//                Button {
+//                  viewStore.send(.duplicateButtonTapped(id: item.id))
+//                } label: {
+//                  Image(systemName: "doc.on.doc.fill")
+//                }
+//                .padding(.leading)
+//
+//                Button {
+//                  viewStore.send(.deleteButtonTapped(id: item.id))
+//                } label: {
+//                  Image(systemName: "trash.fill")
+//                }
+//                .padding(.leading)
+//              }
+//            }
+//          )
           .buttonStyle(.plain)
           .foregroundColor(item.status.isInStock ? nil : Color.gray)
         }
@@ -326,6 +373,14 @@ struct Inventory_Previews: PreviewProvider {
       InventoryView(
         store: Store(
           initialState: InventoryFeature.State(
+            editItem: ItemFormFeature.State(
+              item: Item(
+                id: Item.keyboard.id,
+                name: "Bluetooth Keyboard",
+                color: .red,
+                status: .outOfStock(isOnBackOrder: true)
+              )
+            ),
             items: [
               .headphones,
               .mouse,
