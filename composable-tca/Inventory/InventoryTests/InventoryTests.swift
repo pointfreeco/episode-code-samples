@@ -217,4 +217,41 @@ final class InventoryTests: XCTestCase {
       $0.addItem = nil
     }
   }
+
+  func testEditItem() async {
+    let item = Item.headphones
+    let store = TestStore(
+      initialState: InventoryFeature.State(items: [item]),
+      reducer: InventoryFeature()
+    )
+
+    await store.send(.itemButtonTapped(id: item.id)) {
+      $0.editItem = ItemFormFeature.State(item: item)
+    }
+    await store.send(.editItem(.presented(.set(\.$item.name, "Bluetooth Headphones")))) {
+      $0.editItem?.item.name = "Bluetooth Headphones"
+    }
+    await store.send(.editItem(.dismiss)) {
+      $0.editItem = nil
+      $0.items[0].name = "Bluetooth Headphones"
+    }
+  }
+
+  func testEditItem_Timer() async {
+    let item = Item.headphones
+    let store = TestStore(
+      initialState: InventoryFeature.State(items: [item]),
+      reducer: InventoryFeature()
+    ) {
+      $0.continuousClock = ImmediateClock()
+    }
+    store.exhaustivity = .off(showSkippedAssertions: true)
+
+    await store.send(.itemButtonTapped(id: item.id)) 
+    await store.send(.editItem(.presented(.set(\.$isTimerOn, true))))
+    await store.receive(.editItem(.dismiss)) {
+      $0.editItem = nil
+      $0.items[0].status = .inStock(quantity: 23)
+    }
+  }
 }

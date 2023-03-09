@@ -69,7 +69,7 @@ extension Reducer {
         )
 
       case (.none, .some(.presented)), (.none, .some(.dismiss)):
-        XCTFail("A sheet action was sent while child state was nil.")
+        XCTFail("A presentation action was sent while child state was nil.")
         return self.reduce(into: &state, action: action)
 
       case (.some(var childState), .some(.presented(let childAction))):
@@ -311,7 +311,7 @@ struct NavigationLinkStore<ChildState: Identifiable, ChildAction, Destination: V
         ),
         destination: {
           IfLetStore(
-            self.store.scope(state: { $0 }, action: { .presented($0) })
+            self.store.scope(state: returningLastNonNilValue { $0 }, action: { .presented($0) })
           ) { store in
             self.destination(store)
           }
