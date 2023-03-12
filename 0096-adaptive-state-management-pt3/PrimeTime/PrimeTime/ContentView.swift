@@ -138,7 +138,7 @@ let isInExperiment = false //Bool.random()
 struct ContentView: View {
   let store: Store<AppState, AppAction>
 //  @ObservedObject var viewStore: ViewStore<???>
-  
+
   init(store: Store<AppState, AppAction>) {
     print("ContentView.init")
     self.store = store
