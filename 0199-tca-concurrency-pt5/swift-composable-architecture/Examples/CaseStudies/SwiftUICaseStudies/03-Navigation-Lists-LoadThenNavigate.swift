@@ -133,7 +133,7 @@ struct LoadThenNavigateListView: View {
 
 struct LoadThenNavigateListView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       LoadThenNavigateListView(
         store: Store(
           initialState: LoadThenNavigateListState(

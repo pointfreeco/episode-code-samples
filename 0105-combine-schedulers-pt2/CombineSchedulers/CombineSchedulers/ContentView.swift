@@ -80,7 +80,7 @@ struct ContentView: View {
   @ObservedObject var viewModel: RegisterViewModel
 
   var body: some View {
-    NavigationView {
+    NavigationStack {
       if self.viewModel.isRegistered {
         Text("Welcome!")
       } else {

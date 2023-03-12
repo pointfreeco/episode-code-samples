@@ -97,7 +97,7 @@ struct LoadThenPresentView: View {
 
 struct LoadThenPresentView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       LoadThenPresentView(
         store: Store(
           initialState: LoadThenPresentState(),

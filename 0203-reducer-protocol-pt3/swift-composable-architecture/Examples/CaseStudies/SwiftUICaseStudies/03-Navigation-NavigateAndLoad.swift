@@ -99,7 +99,7 @@ struct NavigateAndLoadView: View {
 
 struct NavigateAndLoadView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       NavigateAndLoadView(
         store: Store(
           initialState: NavigateAndLoadState(),

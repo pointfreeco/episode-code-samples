@@ -344,7 +344,7 @@ private class WebSocketDelegate: NSObject, URLSessionWebSocketDelegate {
 
 struct WebSocketView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       WebSocketView(
         store: Store(
           initialState: .init(receivedMessages: ["Echo"]),

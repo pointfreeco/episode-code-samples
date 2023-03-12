@@ -49,7 +49,7 @@ struct ItemView_Previews: PreviewProvider {
   }
   
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       WrapperView()
     }
   }

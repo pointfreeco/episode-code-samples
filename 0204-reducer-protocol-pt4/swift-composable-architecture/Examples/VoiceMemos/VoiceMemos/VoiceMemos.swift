@@ -141,7 +141,7 @@ struct VoiceMemosView: View {
 
   var body: some View {
     WithViewStore(self.store) { viewStore in
-      NavigationView {
+      NavigationStack {
         VStack {
           List {
             ForEachStore(

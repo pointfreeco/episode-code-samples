@@ -65,7 +65,7 @@ struct ContentView: View {
   @ObservedObject var state: AppState
 
   var body: some View {
-    NavigationView {
+    NavigationStack {
       List {
         NavigationLink(destination: CounterView(state: self.state)) {
           Text("Counter demo")

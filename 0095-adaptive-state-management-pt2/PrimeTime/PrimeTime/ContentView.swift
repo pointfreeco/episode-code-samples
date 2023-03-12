@@ -146,7 +146,7 @@ struct ContentView: View {
 
   var body: some View {
     print("ContentView.body")
-    return NavigationView {
+    return NavigationStack {
       List {
         if !isInExperiment {
           NavigationLink(

@@ -112,7 +112,7 @@ struct VanillaSwiftUIFormView: View {
 
 struct VanillaSwiftUIFormView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       VanillaSwiftUIFormView(
         viewModel: SettingsViewModel()
       )

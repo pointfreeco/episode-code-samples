@@ -144,7 +144,7 @@ struct ClockView: View {
 
 struct Subscriptions_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       ClockView(
         store: Store(
           initialState: ClockState(),

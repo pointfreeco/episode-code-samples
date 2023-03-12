@@ -184,7 +184,7 @@ struct ItemRowView: View {
         }
       )
       //    .sheet(unwrap: self.$viewModel.route.case(/ItemRowViewModel.Route.edit)) { $item in
-      //      NavigationView {
+      //      NavigationStack {
       //        ItemView(item: $item)
       //          .navigationBarTitle("Edit")
       //          .toolbar {
@@ -204,7 +204,7 @@ struct ItemRowView: View {
       .popover(
         item: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate)
       ) { itemViewModel in
-        NavigationView {
+        NavigationStack {
           ItemView(viewModel: itemViewModel)
             .navigationBarTitle("Duplicate")
             .toolbar {

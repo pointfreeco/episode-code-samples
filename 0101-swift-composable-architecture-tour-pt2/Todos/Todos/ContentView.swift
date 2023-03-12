@@ -75,7 +75,7 @@ struct ContentView: View {
 //  @ObservableObject var viewStore
   
   var body: some View {
-    NavigationView {
+    NavigationStack {
       WithViewStore(self.store) { viewStore in
         List {
           ForEachStore(

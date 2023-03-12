@@ -128,7 +128,7 @@ private func alternate(_ string: String) -> String {
 
 struct BindingBasicsView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       BindingBasicsView(
         store: Store(
           initialState: BindingBasicsState(),

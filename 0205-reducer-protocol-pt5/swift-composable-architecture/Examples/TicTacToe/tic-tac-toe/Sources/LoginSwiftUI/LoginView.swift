@@ -120,7 +120,7 @@ extension LoginAction {
 
 struct LoginView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       LoginView(
         store: Store(
           initialState: LoginState(),

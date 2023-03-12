@@ -110,7 +110,7 @@ private func alternate(_ string: String) -> String {
 
 struct BindingFormView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       BindingFormView(
         store: Store(
           initialState: BindingFormState(),

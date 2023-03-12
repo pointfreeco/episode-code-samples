@@ -38,7 +38,7 @@ struct RootView: View {
   @State var showGame: GameType?
 
   var body: some View {
-    NavigationView {
+    NavigationStack {
       Form {
         Section(
           header: Text(readMe).padding([.bottom], 16)

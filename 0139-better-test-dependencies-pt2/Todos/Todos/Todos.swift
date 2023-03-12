@@ -111,7 +111,7 @@ struct AppView: View {
 
   var body: some View {
     WithViewStore(self.store.scope(state: { $0.view })) { viewStore in
-      NavigationView {
+      NavigationStack {
         VStack(alignment: .leading) {
           WithViewStore(self.store.scope(state: { $0.filter }, action: AppAction.filterPicked)) {
             filterViewStore in

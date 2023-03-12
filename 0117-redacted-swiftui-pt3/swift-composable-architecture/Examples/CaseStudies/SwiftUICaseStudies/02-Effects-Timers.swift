@@ -121,7 +121,7 @@ struct TimersView: View {
 
 struct TimersView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       TimersView(
         store: Store(
           initialState: TimersState(),

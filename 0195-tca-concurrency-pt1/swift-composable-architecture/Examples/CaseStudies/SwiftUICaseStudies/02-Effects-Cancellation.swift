@@ -129,7 +129,7 @@ struct EffectsCancellationView: View {
 
 struct EffectsCancellation_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       EffectsCancellationView(
         store: Store(
           initialState: EffectsCancellationState(),

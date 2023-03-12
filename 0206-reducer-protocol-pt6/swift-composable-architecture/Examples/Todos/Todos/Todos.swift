@@ -125,7 +125,7 @@ struct AppView: View {
   }
 
   var body: some View {
-    NavigationView {
+    NavigationStack {
       VStack(alignment: .leading) {
         Picker(
           "Filter",

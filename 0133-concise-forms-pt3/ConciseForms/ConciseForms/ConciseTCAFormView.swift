@@ -301,7 +301,7 @@ extension ViewStore {
 
 struct ConciseTCAFormView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       ConciseTCAFormView(
         store: Store(
           initialState: SettingsState(),

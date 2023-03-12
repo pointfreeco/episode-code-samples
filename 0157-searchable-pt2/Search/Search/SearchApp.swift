@@ -5,7 +5,7 @@ import SwiftUI
 struct SearchApp: App {
   var body: some Scene {
     WindowGroup {
-      NavigationView {
+      NavigationStack {
         ContentView(
           store: .init(
             initialState: .init(),

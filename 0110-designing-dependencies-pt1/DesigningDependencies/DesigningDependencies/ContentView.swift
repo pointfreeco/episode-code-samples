@@ -27,7 +27,7 @@ struct ContentView: View {
   @ObservedObject var viewModel: AppViewModel
 
   var body: some View {
-    NavigationView {
+    NavigationStack {
       ZStack(alignment: .bottom) {
         ZStack(alignment: .bottomTrailing) {
           List {

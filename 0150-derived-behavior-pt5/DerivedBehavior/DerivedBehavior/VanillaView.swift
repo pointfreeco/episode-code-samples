@@ -322,7 +322,7 @@ struct VanillaAppView: View {
 
 struct Vanilla_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       VanillaAppView(
         viewModel: .init(
           fact: .live,

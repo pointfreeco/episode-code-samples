@@ -5,7 +5,7 @@ import SwiftUI
 struct CaseStudiesApp: App {
   var body: some Scene {
     WindowGroup {
-//      NavigationView {
+//      NavigationStack {
 //        NavigationLink("Effect basics") {
 //          EffectsBasicsView(
 //            store: Store(

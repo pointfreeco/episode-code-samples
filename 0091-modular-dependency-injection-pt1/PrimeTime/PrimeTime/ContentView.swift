@@ -101,7 +101,7 @@ struct ContentView: View {
   @ObservedObject var store: Store<AppState, AppAction>
 
   var body: some View {
-    NavigationView {
+    NavigationStack {
       List {
         NavigationLink(
           "Counter demo",

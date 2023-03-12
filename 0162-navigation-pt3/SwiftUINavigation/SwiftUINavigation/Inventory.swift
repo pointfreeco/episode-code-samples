@@ -147,7 +147,7 @@ struct InventoryView: View {
     .navigationTitle("Inventory")
 //    .sheet(isPresented: self.$addItemIsPresented) {
     .sheet(item: self.$viewModel.itemToAdd) { itemToAdd in
-      NavigationView {
+      NavigationStack {
         ItemView(
           item: itemToAdd,
           onSave: { self.viewModel.add(item: $0) },
@@ -162,7 +162,7 @@ struct InventoryView_Previews: PreviewProvider {
   static var previews: some View {
     let keyboard = Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
     
-    NavigationView {
+    NavigationStack {
       InventoryView(
         viewModel: .init(
           inventory: [

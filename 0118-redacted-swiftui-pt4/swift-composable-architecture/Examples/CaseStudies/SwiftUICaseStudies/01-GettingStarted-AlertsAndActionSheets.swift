@@ -119,7 +119,7 @@ struct AlertAndSheetView: View {
 
 struct AlertAndSheet_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       AlertAndSheetView(
         store: .init(
           initialState: .init(),

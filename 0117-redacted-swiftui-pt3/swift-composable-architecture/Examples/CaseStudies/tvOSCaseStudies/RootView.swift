@@ -5,7 +5,7 @@ struct RootView: View {
   let store: Store<RootState, RootAction>
 
   var body: some View {
-    NavigationView {
+    NavigationStack {
       Form {
         Section {
           self.focusView
@@ -37,7 +37,7 @@ struct RootView: View {
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       RootView(
         store: Store(
           initialState: .init(),

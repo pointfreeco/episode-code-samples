@@ -14,14 +14,14 @@ public struct AppView: View {
 
   @ViewBuilder public var body: some View {
     IfLetStore(self.store.scope(state: { $0.login }, action: AppAction.login)) { store in
-      NavigationView {
+      NavigationStack {
         LoginView(store: store)
       }
       .navigationViewStyle(StackNavigationViewStyle())
     }
 
     IfLetStore(self.store.scope(state: { $0.newGame }, action: AppAction.newGame)) { store in
-      NavigationView {
+      NavigationStack {
         NewGameView(store: store)
       }
       .navigationViewStyle(StackNavigationViewStyle())

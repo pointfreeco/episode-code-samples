@@ -326,7 +326,7 @@ struct FactPrompt: View {
 
 struct CounterView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       AppView(
         store: .init(
           initialState: .init(counters: []),

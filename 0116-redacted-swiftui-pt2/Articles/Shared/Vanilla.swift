@@ -27,7 +27,7 @@ struct VanillaArticlesView: View {
   @ObservedObject private var viewModel = AppViewModel()
 
   var body: some View {
-    NavigationView {
+    NavigationStack {
       List {
         if self.viewModel.isLoading {
           ActivityIndicator()
@@ -53,7 +53,7 @@ struct VanillaArticlesView: View {
         .disabled(self.viewModel.isLoading)
       }
       .sheet(item: self.$viewModel.readingArticle) { article in
-        NavigationView {
+        NavigationStack {
           ArticleDetailView(article: article)
             .navigationTitle(article.title)
         }

@@ -14,7 +14,7 @@ struct ItemRowPreviewAppApp: App {
 
   var body: some Scene {
     WindowGroup {
-      NavigationView {
+      NavigationStack {
         List {
           ItemRowView(model: self.model)
         }

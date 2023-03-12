@@ -61,7 +61,7 @@ struct ComposableArticlesView: View {
 
   var body: some View {
     WithViewStore(self.store) { viewStore in
-      NavigationView {
+      NavigationStack {
         List {
           if viewStore.isLoading {
             ActivityIndicator()
@@ -74,7 +74,7 @@ struct ComposableArticlesView: View {
         .sheet(
           item: viewStore.binding(get: \.readingArticle, send: .dismissArticle)
         ) { article in
-          NavigationView {
+          NavigationStack {
             ArticleDetailView(article: article)
               .navigationTitle(article.title)
           }

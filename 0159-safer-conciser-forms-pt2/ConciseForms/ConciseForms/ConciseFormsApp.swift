@@ -5,7 +5,7 @@ import SwiftUI
 struct ConciseFormsApp: App {
   var body: some Scene {
     WindowGroup {
-      NavigationView {
+      NavigationStack {
         TCAFormView(
           store: Store(
             initialState: .init(),

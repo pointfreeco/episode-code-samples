@@ -157,7 +157,7 @@ public struct ItemView: View {
 
 struct ItemView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       ItemView(
         viewModel: .init(
           item: Item(name: "", color: nil, status: .inStock(quantity: 1))

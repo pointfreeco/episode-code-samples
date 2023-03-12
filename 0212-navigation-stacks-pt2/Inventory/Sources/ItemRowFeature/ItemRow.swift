@@ -184,7 +184,7 @@ public struct ItemRowView: View {
       unwrapping: self.$model.destination,
       case: /ItemRowModel.Destination.duplicate
     ) { $itemModel in
-      NavigationView {
+      NavigationStack {
         ItemView(model: itemModel)
           .navigationBarTitle("Duplicate")
           .toolbar {
@@ -207,7 +207,7 @@ public struct ItemRowView: View {
 
 struct ItemRowPreviews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       List {
         ItemRowView(
           model: ItemRowModel(

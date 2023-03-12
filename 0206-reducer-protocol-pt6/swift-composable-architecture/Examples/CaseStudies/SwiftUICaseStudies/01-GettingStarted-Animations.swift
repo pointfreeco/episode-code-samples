@@ -148,7 +148,7 @@ struct AnimationsView: View {
 struct AnimationsView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      NavigationView {
+      NavigationStack {
         AnimationsView(
           store: Store(
             initialState: AnimationsState(),
@@ -160,7 +160,7 @@ struct AnimationsView_Previews: PreviewProvider {
         )
       }
 
-      NavigationView {
+      NavigationStack {
         AnimationsView(
           store: Store(
             initialState: AnimationsState(),

@@ -189,7 +189,7 @@ struct InconciseSettingsView: View {
 
 struct InconciseSettingsView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       InconciseSettingsView(
         store: Store(
           initialState: InconciseSettingsState(),

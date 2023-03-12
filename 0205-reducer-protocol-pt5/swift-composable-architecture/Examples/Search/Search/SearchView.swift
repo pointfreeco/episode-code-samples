@@ -120,7 +120,7 @@ struct SearchView: View {
 
   var body: some View {
     WithViewStore(self.store) { viewStore in
-      NavigationView {
+      NavigationStack {
         VStack(alignment: .leading) {
           Text(readMe)
             .padding()

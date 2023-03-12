@@ -89,7 +89,7 @@ extension TwoFactorAction {
 
 struct TwoFactorView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       TwoFactorView(
         store: Store(
           initialState: TwoFactorState(token: "deadbeef"),

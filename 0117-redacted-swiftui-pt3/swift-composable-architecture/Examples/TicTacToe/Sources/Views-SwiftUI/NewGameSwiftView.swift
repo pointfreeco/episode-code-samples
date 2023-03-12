@@ -102,7 +102,7 @@ extension NewGameAction {
 
 struct NewGame_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       NewGameView(
         store: Store(
           initialState: NewGameState(),

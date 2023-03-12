@@ -40,7 +40,7 @@ struct RootView: View {
   @State var showGame: GameType?
 
   var body: some View {
-    NavigationView {
+    NavigationStack {
       Form {
         Text(readMe)
 

@@ -190,7 +190,7 @@ struct EpisodesView: View {
 
 struct EpisodesView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       EpisodesView(
         store: Store(
           initialState: EpisodesState(

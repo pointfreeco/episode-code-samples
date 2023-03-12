@@ -209,7 +209,7 @@ struct TCAFormView: View {
 
 struct TCAFormView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       TCAFormView(
         store: Store(
           initialState: SettingsState(),

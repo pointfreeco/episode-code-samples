@@ -83,7 +83,7 @@ struct DieRollView: View {
 
 struct DieRollView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       DieRollView(
         store: Store(
           initialState: DieRollState(),

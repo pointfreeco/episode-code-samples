@@ -84,7 +84,7 @@ extension View {
 
 struct FocusDemo_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       FocusDemoView(
         store: Store(
           initialState: FocusDemoState(),

@@ -158,7 +158,7 @@ private struct TimerView: View {
 struct Lifecycle_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      NavigationView {
+      NavigationStack {
         LifecycleDemoView(
           store: Store(
             initialState: LifecycleDemoState(),

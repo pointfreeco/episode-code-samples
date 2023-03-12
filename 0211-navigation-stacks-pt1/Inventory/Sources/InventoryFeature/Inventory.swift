@@ -71,7 +71,7 @@ public struct InventoryView: View {
   }
 
   public var body: some View {
-    NavigationView {
+    NavigationStack {
       List {
         ForEach(
           self.model.inventory,
@@ -97,7 +97,7 @@ public struct InventoryView: View {
         unwrapping: self.$model.destination,
         case: CasePath(InventoryModel.Destination.add)
       ) { $itemToAdd in
-        NavigationView {
+        NavigationStack {
           ItemView(model: itemToAdd)
             .navigationTitle("Add")
             .toolbar {
@@ -118,7 +118,7 @@ struct InventoryView_Previews: PreviewProvider {
   static var previews: some View {
     let keyboard = Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
 
-    NavigationView {
+    NavigationStack {
       InventoryView(
         model: InventoryModel(
           inventory: [

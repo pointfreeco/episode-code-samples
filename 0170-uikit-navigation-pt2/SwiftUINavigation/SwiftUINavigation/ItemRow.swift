@@ -169,7 +169,7 @@ struct ItemRowView: View {
       .popover(
         item: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate)
       ) { itemViewModel in
-        NavigationView {
+        NavigationStack {
           ItemView(viewModel: itemViewModel)
             .navigationBarTitle("Duplicate")
             .toolbar {

@@ -67,7 +67,7 @@ struct CounterDemoView: View {
 
 struct CounterView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       CounterDemoView(
         store: Store(
           initialState: CounterState(),

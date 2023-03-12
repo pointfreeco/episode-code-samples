@@ -139,7 +139,7 @@ struct ContentView_Previews: PreviewProvider {
       }
     }
 
-    return NavigationView {
+    return NavigationStack {
       Wrapper()
     }
   }

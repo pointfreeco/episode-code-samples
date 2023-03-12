@@ -87,7 +87,7 @@ struct OptionalBasicsView: View {
 struct OptionalBasicsView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      NavigationView {
+      NavigationStack {
         OptionalBasicsView(
           store: Store(
             initialState: OptionalBasicsState(),
@@ -97,7 +97,7 @@ struct OptionalBasicsView_Previews: PreviewProvider {
         )
       }
 
-      NavigationView {
+      NavigationStack {
         OptionalBasicsView(
           store: Store(
             initialState: OptionalBasicsState(optionalCounter: CounterState(count: 42)),

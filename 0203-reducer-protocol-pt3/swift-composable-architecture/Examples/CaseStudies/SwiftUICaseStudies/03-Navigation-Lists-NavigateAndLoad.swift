@@ -114,7 +114,7 @@ struct NavigateAndLoadListView: View {
 
 struct NavigateAndLoadListView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       NavigateAndLoadListView(
         store: Store(
           initialState: NavigateAndLoadListState(

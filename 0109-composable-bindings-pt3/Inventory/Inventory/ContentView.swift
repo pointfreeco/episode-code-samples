@@ -244,7 +244,7 @@ struct InventoryView: View {
   @ObservedObject var viewModel: InventoryViewModel
   
   var body: some View {
-    NavigationView {
+    NavigationStack {
       List {
         ForEach(self.viewModel.inventory, id: \.self) { item in
           HStack {
@@ -288,7 +288,7 @@ struct InventoryView: View {
 //        .sheet(item: self.$viewModel.draft) { _ in
 //          self.$viewModel.draft.unwrap().map { item in
         .sheet(unwrap: self.$viewModel.draft) { item in
-          NavigationView {
+          NavigationStack {
             ItemView(item: item)
               .navigationBarItems(
                 leading: Button("Cancel") { self.viewModel.cancelButtonTapped() },
@@ -343,7 +343,7 @@ struct ContentView_Previews: PreviewProvider {
       }
     }
 
-    return NavigationView {
+    return NavigationStack {
       Wrapper()
     }
   }

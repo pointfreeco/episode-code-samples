@@ -8,7 +8,7 @@ struct ItemRowPreviewAppApp: App {
   
   var body: some Scene {
     WindowGroup {
-      NavigationView {
+      NavigationStack {
         List {
           ItemRowView(
             viewModel: self.viewModel

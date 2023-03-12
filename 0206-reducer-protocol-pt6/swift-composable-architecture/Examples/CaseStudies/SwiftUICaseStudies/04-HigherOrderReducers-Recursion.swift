@@ -154,7 +154,7 @@ extension NestedState {
 #if DEBUG
   struct NestedView_Previews: PreviewProvider {
     static var previews: some View {
-      NavigationView {
+      NavigationStack {
         NestedView(
           store: Store(
             initialState: .mock,

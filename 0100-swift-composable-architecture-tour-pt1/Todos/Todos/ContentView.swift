@@ -36,7 +36,7 @@ struct ContentView: View {
 //  @ObservableObject var viewStore
   
   var body: some View {
-    NavigationView {
+    NavigationStack {
       WithViewStore(self.store) { viewStore in
         List {
 //          zip(viewStore.todos.indices, viewStore.todos)

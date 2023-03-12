@@ -103,8 +103,8 @@ struct EffectsLongLiving_Previews: PreviewProvider {
     )
 
     return Group {
-      NavigationView { appView }
-      NavigationView { appView.detailView }
+      NavigationStack { appView }
+      NavigationStack { appView.detailView }
     }
   }
 }

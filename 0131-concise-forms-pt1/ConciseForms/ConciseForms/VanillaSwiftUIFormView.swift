@@ -114,7 +114,7 @@ enum Digest: String, CaseIterable {
 
 struct VanillaSwiftUIFormView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       VanillaSwiftUIFormView(
         viewModel: SettingsViewModel()
       )

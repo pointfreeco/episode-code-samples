@@ -144,7 +144,7 @@ struct InventoryView: View {
     }
     .navigationTitle("Inventory")
     .sheet(unwrap: self.$viewModel.route.case(/InventoryViewModel.Route.add)) { $itemToAdd in
-      NavigationView {
+      NavigationStack {
         ItemView(item: $itemToAdd)
           .navigationTitle("Add")
           .toolbar {
@@ -174,7 +174,7 @@ struct InventoryView_Previews: PreviewProvider {
   static var previews: some View {
     let keyboard = Item(name: "Keyboard", color: .blue, status: .inStock(quantity: 100))
     
-    NavigationView {
+    NavigationStack {
       InventoryView(
         viewModel: .init(
           inventory: [

@@ -12,7 +12,7 @@ environment.fileClient.load = { _ in
 }
 
 PlaygroundPage.current.liveView = UIHostingController(
-  rootView: NavigationView {
+  rootView: NavigationStack {
     FavoritePrimesView(
       store: Store<FavoritePrimesState, FavoritePrimesAction>(
         initialValue: (

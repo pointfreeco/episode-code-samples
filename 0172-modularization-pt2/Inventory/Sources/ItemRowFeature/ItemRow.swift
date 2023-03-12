@@ -176,7 +176,7 @@ public struct ItemRowView: View {
       .popover(
         item: self.$viewModel.route.case(/ItemRowViewModel.Route.duplicate)
       ) { itemViewModel in
-        NavigationView {
+        NavigationStack {
           ItemView(viewModel: itemViewModel)
             .navigationBarTitle("Duplicate")
             .toolbar {
@@ -200,7 +200,7 @@ public struct ItemRowView: View {
 
 struct ItemRowPreviews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       List {
         ItemRowView(
           viewModel: .init(

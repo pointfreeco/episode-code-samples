@@ -142,7 +142,7 @@ struct MultipleDependenciesView: View {
 
 struct MultipleDependenciesView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       MultipleDependenciesView(
         store: Store(
           initialState: MultipleDependenciesState(),

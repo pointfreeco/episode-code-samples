@@ -67,7 +67,7 @@ public struct ContentView: View {
   }
 
   public var body: some View {
-    NavigationView {
+    NavigationStack {
       ZStack(alignment: .bottom) {
         ZStack(alignment: .bottomTrailing) {
           List {

@@ -191,7 +191,7 @@ struct CitiesView: View {
 struct DownloadList_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      NavigationView {
+      NavigationStack {
         CitiesView(
           store: Store(
             initialState: MapAppState(cityMaps: .mocks),
@@ -204,7 +204,7 @@ struct DownloadList_Previews: PreviewProvider {
         )
       }
 
-      NavigationView {
+      NavigationStack {
         CityMapDetailView(
           store: Store(
             initialState: IdentifiedArray.mocks.first!,

@@ -14,13 +14,13 @@ public struct AppView: View {
   public var body: some View {
     SwitchStore(self.store) {
       CaseLet(state: /AppState.login, action: AppAction.login) { store in
-        NavigationView {
+        NavigationStack {
           LoginView(store: store)
         }
         .navigationViewStyle(.stack)
       }
       CaseLet(state: /AppState.newGame, action: AppAction.newGame) { store in
-        NavigationView {
+        NavigationStack {
           NewGameView(store: store)
         }
         .navigationViewStyle(.stack)

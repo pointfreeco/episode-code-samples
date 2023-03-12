@@ -161,7 +161,7 @@ struct EffectsBasicsView: View {
 
 struct EffectsBasicsView_Previews: PreviewProvider {
   static var previews: some View {
-    NavigationView {
+    NavigationStack {
       EffectsBasicsView(
         store: Store(
           initialState: EffectsBasicsState(),
