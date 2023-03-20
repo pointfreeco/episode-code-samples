@@ -10,14 +10,16 @@ struct InventoryApp: App {
           initialState: AppFeature.State(
             inventory: InventoryFeature.State(
 //              addItem: ItemFormFeature.State(item: Item(name: "Laptop", status: .inStock(quantity: 100))),
-              items: [
+              editItem: ItemFormFeature.State(item: .headphones),
+              items: (1...100).map { Item(name: "Item \($0)", status: .inStock(quantity: $0)) }
+              + [
                 .monitor,
                 .mouse,
                 .keyboard,
                 .headphones
               ]
-            )//,
-//            selectedTab: .inventory
+            ),
+            selectedTab: .inventory
           ),
           reducer: AppFeature()
             //._printChanges()

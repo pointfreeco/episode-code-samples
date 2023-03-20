@@ -322,6 +322,39 @@ struct NavigationLinkStore<ChildState: Identifiable, ChildAction, Destination: V
   }
 }
 
+extension View {
+  func navigationDestination<ChildState, ChildAction>(
+    store: Store<ChildState?, PresentationAction<ChildAction>>,
+    @ViewBuilder destination: @escaping (Store<ChildState, ChildAction>) -> some View
+  ) -> some View {
+    WithViewStore(
+      store,
+      observe: { $0 },
+      removeDuplicates: { ($0 != nil) == ($1 != nil) }
+    ) { viewStore in
+      self.navigationDestination(
+        isPresented: Binding(
+          get: { viewStore.state != nil },
+          set: { isActive in
+            if !isActive, viewStore.state != nil {
+              viewStore.send(.dismiss)
+            }
+          }
+        )
+      ) {
+        IfLetStore(
+          store.scope(
+            state: returningLastNonNilValue { $0 },
+            action: { .presented($0) }
+          )
+        ) { store in
+          destination(store)
+        }
+      }
+    }
+  }
+}
+
 struct Test: View, PreviewProvider {
   static var previews: some View {
     Self()
