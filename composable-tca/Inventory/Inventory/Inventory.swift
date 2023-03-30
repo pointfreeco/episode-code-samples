@@ -3,18 +3,10 @@ import SwiftUI
 
 struct InventoryFeature: Reducer {
   struct State: Equatable {
-    var destination: Destination.State?
-//    var addItem: ItemFormFeature.State?
-//    var alert: AlertState<Action.Alert>?
-//    var duplicateItem: ItemFormFeature.State?
-//    var editItem: ItemFormFeature.State?
+    @PresentationState var destination: Destination.State?
     var items: IdentifiedArrayOf<Item> = []
   }
   enum Action: Equatable {
-//    case addItem(PresentationAction<ItemFormFeature.Action>)
-//    case alert(PresentationAction<Alert>)
-//    case duplicateItem(PresentationAction<ItemFormFeature.Action>)
-//    case editItem(PresentationAction<ItemFormFeature.Action>)
     case destination(PresentationAction<Destination.Action>)
 
     case addButtonTapped
@@ -166,7 +158,7 @@ struct InventoryFeature: Reducer {
         return .none
       }
     }
-    .ifLet(\.destination, action: /Action.destination) {
+    .ifLet(\.$destination, action: /Action.destination) {
       Destination()
     }
 //    .ifLet(\.alert, action: /Action.alert)

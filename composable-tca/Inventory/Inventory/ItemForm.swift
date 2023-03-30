@@ -11,6 +11,7 @@ struct ItemFormFeature: Reducer {
   }
   enum Action: BindableAction, Equatable {
     case binding(BindingAction<State>)
+    case dismissButtonTapped
     case timerTick
   }
   @Dependency(\.continuousClock) var clock
@@ -39,6 +40,9 @@ struct ItemFormFeature: Reducer {
 
       case .binding:
         return .none
+
+      case .dismissButtonTapped:
+        return .fireAndForget { await self.dismiss() }
 
       case .timerTick:
         guard case let .inStock(quantity) = state.item.status
@@ -130,7 +134,7 @@ struct ItemFormView: View {
 
         Toggle("Timer", isOn: viewStore.binding(\.$isTimerOn))
 
-        Button("Dismiss") { self.dismiss() }
+        Button("Dismiss") { viewStore.send(.dismissButtonTapped) }
       }
     }
   }

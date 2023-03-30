@@ -2,6 +2,49 @@ import ComposableArchitecture
 import SwiftUI
 import SwiftUINavigation
 
+@propertyWrapper
+struct PresentationState<State> {
+  private var value: [State]
+  fileprivate var isPresented = false
+
+  init(wrappedValue: State?) {
+    if let wrappedValue {
+      self.value = [wrappedValue]
+    } else {
+      self.value = []
+    }
+  }
+
+  var wrappedValue: State? {
+    get {
+      self.value.first
+    }
+    set {
+      guard let newValue = newValue
+      else {
+        self.value = []
+        return
+      }
+      self.value = [newValue]
+    }
+  }
+
+  var projectedValue: Self {
+    get { self }
+    set { self = newValue }
+  }
+}
+extension PresentationState: Equatable where State: Equatable {
+  static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.value == rhs.value
+  }
+}
+extension PresentationState: CustomDumpReflectable {
+  var customDumpMirror: Mirror {
+    Mirror(reflecting: self.wrappedValue as Any)
+  }
+}
+
 enum PresentationAction<Action> {
   case dismiss
   case presented(Action)
@@ -21,18 +64,18 @@ extension Reducer {
   }
 
   func ifLet<ChildState: Identifiable, ChildAction>(
-    _ stateKeyPath: WritableKeyPath<State, ChildState?>,
+    _ stateKeyPath: WritableKeyPath<State, PresentationState<ChildState>>,
     action actionCasePath: CasePath<Action, PresentationAction<ChildAction>>,
     @ReducerBuilder<ChildState, ChildAction> child: () -> some Reducer<ChildState, ChildAction>
   ) -> some ReducerOf<Self> {
     let child = child()
     return Reduce { state, action in
-      switch (state[keyPath: stateKeyPath], actionCasePath.extract(from: action)) {
+      switch (state[keyPath: stateKeyPath].wrappedValue, actionCasePath.extract(from: action)) {
 
       case (_, .none):
-        let childStateBefore = state[keyPath: stateKeyPath]
+        let childStateBefore = state[keyPath: stateKeyPath].wrappedValue
         let effects = self.reduce(into: &state, action: action)
-        let childStateAfter = state[keyPath: stateKeyPath]
+        let childStateAfter = state[keyPath: stateKeyPath].wrappedValue
         let cancelEffect: Effect<Action>
         if
           let childStateBefore,
@@ -47,8 +90,9 @@ extension Reducer {
         if
           let childStateAfter,
           !isEphemeral(childStateAfter),
-          childStateAfter.id != childStateBefore?.id
+          childStateAfter.id != childStateBefore?.id || !state[keyPath: stateKeyPath].isPresented
         {
+          state[keyPath: stateKeyPath].isPresented = true
           onFirstAppearEffect = .run { send in
             do {
               try await withTaskCancellation(id:  DismissID(id: childStateAfter.id)) {
@@ -75,7 +119,7 @@ extension Reducer {
       case (.some(var childState), .some(.presented(let childAction))):
         defer {
           if isEphemeral(childState) {
-            state[keyPath: stateKeyPath] = nil
+            state[keyPath: stateKeyPath].wrappedValue = nil
           }
         }
         let childEffects = child
@@ -83,18 +127,41 @@ extension Reducer {
             Task.cancel(id:  DismissID(id: id))
           })
           .reduce(into: &childState, action: childAction)
-        state[keyPath: stateKeyPath] = childState
+        state[keyPath: stateKeyPath].wrappedValue = childState
         let effects = self.reduce(into: &state, action: action)
+
+        let onFirstAppearEffect: Effect<Action>
+        if
+          let childStateAfter = state[keyPath: stateKeyPath].wrappedValue,
+          !isEphemeral(childStateAfter),
+          childStateAfter.id != childState.id || !state[keyPath: stateKeyPath].isPresented
+        {
+          state[keyPath: stateKeyPath].isPresented = true
+          onFirstAppearEffect = .run { send in
+            do {
+              try await withTaskCancellation(id:  DismissID(id: childStateAfter.id)) {
+                try await Task.never()
+              }
+            } catch is CancellationError {
+              await send(actionCasePath.embed(.dismiss))
+            }
+          }
+          .cancellable(id: childStateAfter.id)
+        } else {
+          onFirstAppearEffect = .none
+        }
+
         return .merge(
           childEffects
             .map { actionCasePath.embed(.presented($0)) }
             .cancellable(id: childState.id),
-          effects
+          effects,
+          onFirstAppearEffect
         )
 
       case let (.some(childState), .some(.dismiss)):
         let effects = self.reduce(into: &state, action: action)
-        state[keyPath: stateKeyPath] = nil
+        state[keyPath: stateKeyPath].wrappedValue = nil
         return .merge(
           effects,
           .cancel(id: childState.id)
