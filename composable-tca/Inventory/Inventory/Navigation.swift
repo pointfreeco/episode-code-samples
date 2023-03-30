@@ -35,8 +35,8 @@ extension Reducer {
         let childStateAfter = state[keyPath: stateKeyPath]
         let cancelEffect: Effect<Action>
         if
-          !(ChildState.self is _EphemeralState.Type),
           let childStateBefore,
+          !isEphemeral(childStateBefore),
           childStateBefore.id != childStateAfter?.id
         {
           cancelEffect = .cancel(id: childStateBefore.id)
@@ -45,8 +45,8 @@ extension Reducer {
         }
         let onFirstAppearEffect: Effect<Action>
         if
-          !(ChildState.self is _EphemeralState.Type),
           let childStateAfter,
+          !isEphemeral(childStateAfter),
           childStateAfter.id != childStateBefore?.id
         {
           onFirstAppearEffect = .run { send in
@@ -74,7 +74,7 @@ extension Reducer {
 
       case (.some(var childState), .some(.presented(let childAction))):
         defer {
-          if ChildState.self is _EphemeralState.Type {
+          if isEphemeral(childState) {
             state[keyPath: stateKeyPath] = nil
           }
         }
@@ -102,6 +102,16 @@ extension Reducer {
       }
     }
   }
+}
+
+@_spi(Reflection) import CasePaths
+private func isEphemeral<State>(_ state: State) -> Bool {
+  if State.self is _EphemeralState.Type {
+    return true
+  } else if let metadata = EnumMetadata(State.self) {
+    return metadata.associatedValueType(forTag: metadata.tag(of: state)) is _EphemeralState.Type
+  }
+  return false
 }
 
 protocol _EphemeralState {}

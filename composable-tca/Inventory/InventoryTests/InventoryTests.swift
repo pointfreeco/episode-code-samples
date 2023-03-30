@@ -25,10 +25,10 @@ final class InventoryTests: XCTestCase {
     )
 
     await store.send(.deleteButtonTapped(id: item.id)) {
-      $0.alert = .delete(item: item)
+      $0.destination = .alert(.delete(item: item))
     }
-    await store.send(.alert(.presented(.confirmDeletion(id: item.id)))) {
-      $0.alert = nil
+    await store.send(.destination(.presented(.alert(.confirmDeletion(id: item.id))))) {
+      $0.destination = nil
       $0.items = []
     }
   }
@@ -44,20 +44,28 @@ final class InventoryTests: XCTestCase {
     }
 
     await store.send(.duplicateButtonTapped(id: item.id)) {
-      $0.duplicateItem = ItemFormFeature.State(
-        item: Item(
-          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
-          name: "Headphones",
-          color: .blue,
-          status: .inStock(quantity: 20)
+      $0.destination = .duplicateItem(
+        ItemFormFeature.State(
+          item: Item(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+            name: "Headphones",
+            color: .blue,
+            status: .inStock(quantity: 20)
+          )
         )
       )
     }
-    await store.send(.duplicateItem(.presented(.set(\.$item.name, "Bluetooth Headphones")))) {
-      $0.duplicateItem?.item.name = "Bluetooth Headphones"
+    await store.send(.destination(.presented(.duplicateItem(.set(\.$item.name, "Bluetooth Headphones"))))) {
+//      guard case let .duplicateItem(&state) = $0.destination
+//      else { XCTFail(); return }
+//      state.item.name = "Bluetooth Headphones"
+
+      XCTModify(&$0.destination, case: /InventoryFeature.Destination.State.duplicateItem) {
+        $0.item.name = "Bluetooth Headphones"
+      }
     }
     await store.send(.confirmDuplicateItemButtonTapped) {
-      $0.duplicateItem = nil
+      $0.destination = nil
       $0.items = [
         item,
         Item(
@@ -79,21 +87,25 @@ final class InventoryTests: XCTestCase {
     }
 
     await store.send(.addButtonTapped) {
-      $0.addItem = ItemFormFeature.State(
-        item: Item(
-          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
-          name: "",
-          status: .inStock(quantity: 1)
+      $0.destination = .addItem(
+        ItemFormFeature.State(
+          item: Item(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+            name: "",
+            status: .inStock(quantity: 1)
+          )
         )
       )
     }
 
-    await store.send(.addItem(.presented(.set(\.$item.name, "Headphones")))) {
-      $0.addItem?.item.name = "Headphones"
+    await store.send(.destination(.presented(.addItem(.set(\.$item.name, "Headphones"))))) {
+      XCTModify(&$0.destination, case: /InventoryFeature.Destination.State.addItem) {
+        $0.item.name = "Headphones"
+      }
     }
 
     await store.send(.confirmAddItemButtonTapped) {
-      $0.addItem = nil
+      $0.destination = nil
       $0.items = [
         Item(
           id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
@@ -103,7 +115,7 @@ final class InventoryTests: XCTestCase {
       ]
     }
   }
-
+//
   func testAddItem_Timer() async {
     let clock = TestClock()
     let store = TestStore(
@@ -115,29 +127,31 @@ final class InventoryTests: XCTestCase {
     }
 
     await store.send(.addButtonTapped) {
-      $0.addItem = ItemFormFeature.State(
-        item: Item(
-          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
-          name: "",
-          status: .inStock(quantity: 1)
+      $0.destination = .addItem(
+        ItemFormFeature.State(
+          item: Item(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+            name: "",
+            status: .inStock(quantity: 1)
+          )
         )
       )
     }
 
-    await store.send(.addItem(.presented(.set(\.$item.name, "Headphones")))) {
-      $0.addItem?.item.name = "Headphones"
+    await store.send(.destination(.presented(.addItem(.set(\.$item.name, "Headphones"))))) {
+      XCTModify(&$0.destination, case: /InventoryFeature.Destination.State.addItem) {
+        $0.item.name = "Headphones"
+      }
     }
 
-    /*let toggleTask = */await store.send(.addItem(.presented(.set(\.$isTimerOn, true)))) {
-      $0.addItem?.isTimerOn = true
+    await store.send(.destination(.presented(.addItem(.set(\.$isTimerOn, true))))) {
+      XCTModify(&$0.destination, case: /InventoryFeature.Destination.State.addItem) {
+        $0.isTimerOn = true
+      }
     }
-
-    //    await store.send(.addItem(.presented(.set(\.$isTimerOn, false)))) {
-    //      $0.addItem?.isTimerOn = false
-    //    }
 
     await store.send(.confirmAddItemButtonTapped) {
-      $0.addItem = nil
+      $0.destination = nil
       $0.items = [
         Item(
           id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
@@ -146,10 +160,7 @@ final class InventoryTests: XCTestCase {
         )
       ]
     }
-
-    //    await toggleTask.cancel()
   }
-
 
   func testAddItem_Timer_Dismissal() async {
     let clock = TestClock()
@@ -162,33 +173,43 @@ final class InventoryTests: XCTestCase {
     }
 
     await store.send(.addButtonTapped) {
-      $0.addItem = ItemFormFeature.State(
-        item: Item(
-          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
-          name: "",
-          status: .inStock(quantity: 1)
+      $0.destination = .addItem(
+        ItemFormFeature.State(
+          item: Item(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+            name: "",
+            status: .inStock(quantity: 1)
+          )
         )
       )
     }
 
-    await store.send(.addItem(.presented(.set(\.$isTimerOn, true)))) {
-      $0.addItem?.isTimerOn = true
+    await store.send(.destination(.presented(.addItem(.set(\.$isTimerOn, true))))) {
+      XCTModify(&$0.destination, case: /InventoryFeature.Destination.State.addItem) {
+        $0.isTimerOn = true
+      }
     }
     await clock.advance(by: .seconds(3))
-    await store.receive(.addItem(.presented(.timerTick))) {
-      $0.addItem?.item.status = .inStock(quantity: 2)
+    await store.receive(.destination(.presented(.addItem(.timerTick)))) {
+      XCTModify(&$0.destination, case: /InventoryFeature.Destination.State.addItem) {
+        $0.item.status = .inStock(quantity: 2)
+      }
     }
-    await store.receive(.addItem(.presented(.timerTick))) {
-      $0.addItem?.item.status = .inStock(quantity: 3)
+    await store.receive(.destination(.presented(.addItem(.timerTick)))) {
+      XCTModify(&$0.destination, case: /InventoryFeature.Destination.State.addItem) {
+        $0.item.status = .inStock(quantity: 3)
+      }
     }
-    await store.receive(.addItem(.presented(.timerTick))) {
-      $0.addItem?.item.status = .inStock(quantity: 4)
+    await store.receive(.destination(.presented(.addItem(.timerTick)))) {
+      XCTModify(&$0.destination, case: /InventoryFeature.Destination.State.addItem) {
+        $0.item.status = .inStock(quantity: 4)
+      }
     }
-    await store.receive(.addItem(.dismiss)) {
-      $0.addItem = nil
+    await store.receive(.destination(.dismiss)) {
+      $0.destination = nil
     }
   }
-
+//
   func testAddItem_Timer_Dismissal_NonExhaustive() async {
     let store = TestStore(
       initialState: InventoryFeature.State(),
@@ -201,23 +222,23 @@ final class InventoryTests: XCTestCase {
     store.exhaustivity = .off(showSkippedAssertions: true)
 
     await store.send(.addButtonTapped) {
-      $0.addItem = ItemFormFeature.State(
-        item: Item(
-          id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
-          name: "",
-          status: .inStock(quantity: 1)
+      $0.destination = .addItem(
+        ItemFormFeature.State(
+          item: Item(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+            name: "",
+            status: .inStock(quantity: 1)
+          )
         )
       )
     }
 
-    await store.send(.addItem(.presented(.set(\.$isTimerOn, true)))) {
-      $0.addItem?.isTimerOn = true
-    }
-    await store.receive(.addItem(.dismiss)) {
-      $0.addItem = nil
+    await store.send(.destination(.presented(.addItem(.set(\.$isTimerOn, true)))))
+    await store.receive(.destination(.dismiss)) {
+      $0.destination = nil
     }
   }
-
+//
   func testEditItem() async {
     let item = Item.headphones
     let store = TestStore(
@@ -226,17 +247,19 @@ final class InventoryTests: XCTestCase {
     )
 
     await store.send(.itemButtonTapped(id: item.id)) {
-      $0.editItem = ItemFormFeature.State(item: item)
+      $0.destination = .editItem(ItemFormFeature.State(item: item))
     }
-    await store.send(.editItem(.presented(.set(\.$item.name, "Bluetooth Headphones")))) {
-      $0.editItem?.item.name = "Bluetooth Headphones"
+    await store.send(.destination(.presented(.editItem(.set(\.$item.name, "Bluetooth Headphones"))))) {
+      XCTModify(&$0.destination, case: /InventoryFeature.Destination.State.editItem) {
+        $0.item.name = "Bluetooth Headphones"
+      }
     }
-    await store.send(.editItem(.dismiss)) {
-      $0.editItem = nil
+    await store.send(.destination(.dismiss)) {
+      $0.destination = nil
       $0.items[0].name = "Bluetooth Headphones"
     }
   }
-
+//
   func testEditItem_Timer() async {
     let item = Item.headphones
     let store = TestStore(
@@ -247,10 +270,10 @@ final class InventoryTests: XCTestCase {
     }
     store.exhaustivity = .off(showSkippedAssertions: true)
 
-    await store.send(.itemButtonTapped(id: item.id)) 
-    await store.send(.editItem(.presented(.set(\.$isTimerOn, true))))
-    await store.receive(.editItem(.dismiss)) {
-      $0.editItem = nil
+    await store.send(.itemButtonTapped(id: item.id))
+    await store.send(.destination(.presented(.editItem(.set(\.$isTimerOn, true)))))
+    await store.receive(.destination(.dismiss)) {
+      $0.destination = nil
       $0.items[0].status = .inStock(quantity: 23)
     }
   }

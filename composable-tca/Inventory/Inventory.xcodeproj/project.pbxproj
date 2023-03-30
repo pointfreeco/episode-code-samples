@@ -16,6 +16,7 @@
 		2A3BEA2429945D4000351060 /* Vanilla.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3BEA2329945D4000351060 /* Vanilla.swift */; };
 		2A3BEA2829945ECB00351060 /* VanillaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3BEA2729945ECB00351060 /* VanillaTests.swift */; };
 		2AD4AD5329B9512C00F691CF /* CustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 2AD4AD5229B9512C00F691CF /* CustomDump */; };
+		2AF684F329D6072C0022ED33 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 2AF684F229D6072C0022ED33 /* CasePaths */; };
 		4B0E65B729944EFC00DFB522 /* FirstTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65B629944EFC00DFB522 /* FirstTab.swift */; };
 		4B0E65B929944F4800DFB522 /* Inventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65B829944F4800DFB522 /* Inventory.swift */; };
 		4B0E65BB29944F6500DFB522 /* ThirdTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65BA29944F6500DFB522 /* ThirdTab.swift */; };
@@ -59,6 +60,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B0E65C229946FD700DFB522 /* SwiftUINavigation in Frameworks */,
+				2AF684F329D6072C0022ED33 /* CasePaths in Frameworks */,
 				2AD4AD5329B9512C00F691CF /* CustomDump in Frameworks */,
 				2A3BEA2229944BA700351060 /* ComposableArchitecture in Frameworks */,
 			);
@@ -147,6 +149,7 @@
 				2A3BEA2129944BA700351060 /* ComposableArchitecture */,
 				4B0E65C129946FD700DFB522 /* SwiftUINavigation */,
 				2AD4AD5229B9512C00F691CF /* CustomDump */,
+				2AF684F229D6072C0022ED33 /* CasePaths */,
 			);
 			productName = Inventory;
 			productReference = 2A3BE9F32994469500351060 /* Inventory.app */;
@@ -202,6 +205,7 @@
 				2A3BEA2029944BA700351060 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				4B0E65C029946FD700DFB522 /* XCRemoteSwiftPackageReference "swiftui-navigation" */,
 				2AD4AD5129B9512C00F691CF /* XCRemoteSwiftPackageReference "swift-custom-dump" */,
+				2AF684F129D6072C0022ED33 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
 			);
 			productRefGroup = 2A3BE9F42994469500351060 /* Products */;
 			projectDirPath = "";
@@ -319,7 +323,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -373,7 +377,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -398,7 +402,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -427,7 +430,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -449,7 +451,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.InventoryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -468,7 +469,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.InventoryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -528,6 +528,14 @@
 				version = 0.8.0;
 			};
 		};
+		2AF684F129D6072C0022ED33 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-case-paths.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		4B0E65C029946FD700DFB522 /* XCRemoteSwiftPackageReference "swiftui-navigation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swiftui-navigation.git";
@@ -548,6 +556,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2AD4AD5129B9512C00F691CF /* XCRemoteSwiftPackageReference "swift-custom-dump" */;
 			productName = CustomDump;
+		};
+		2AF684F229D6072C0022ED33 /* CasePaths */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2AF684F129D6072C0022ED33 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
+			productName = CasePaths;
 		};
 		4B0E65C129946FD700DFB522 /* SwiftUINavigation */ = {
 			isa = XCSwiftPackageProductDependency;
