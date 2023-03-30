@@ -16,7 +16,6 @@
 		2A3BEA2429945D4000351060 /* Vanilla.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3BEA2329945D4000351060 /* Vanilla.swift */; };
 		2A3BEA2829945ECB00351060 /* VanillaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3BEA2729945ECB00351060 /* VanillaTests.swift */; };
 		2AD4AD5329B9512C00F691CF /* CustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 2AD4AD5229B9512C00F691CF /* CustomDump */; };
-		2AF684F329D6072C0022ED33 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 2AF684F229D6072C0022ED33 /* CasePaths */; };
 		4B0E65B729944EFC00DFB522 /* FirstTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65B629944EFC00DFB522 /* FirstTab.swift */; };
 		4B0E65B929944F4800DFB522 /* Inventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65B829944F4800DFB522 /* Inventory.swift */; };
 		4B0E65BB29944F6500DFB522 /* ThirdTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65BA29944F6500DFB522 /* ThirdTab.swift */; };
@@ -24,6 +23,7 @@
 		4B0E65BF29946B1100DFB522 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E65BE29946B1100DFB522 /* Navigation.swift */; };
 		4B0E65C229946FD700DFB522 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 4B0E65C129946FD700DFB522 /* SwiftUINavigation */; };
 		4BD190FF299EA3D500A6A7E5 /* ItemForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD190FE299EA3D500A6A7E5 /* ItemForm.swift */; };
+		4BFB468D29D60F9B004C6032 /* StackOverflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFB468C29D60F9B004C6032 /* StackOverflowTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +52,8 @@
 		4B0E65BC2994626900DFB522 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		4B0E65BE29946B1100DFB522 /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
 		4BD190FE299EA3D500A6A7E5 /* ItemForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemForm.swift; sourceTree = "<group>"; };
+		4BFB468C29D60F9B004C6032 /* StackOverflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackOverflowTests.swift; sourceTree = "<group>"; };
+		4BFB468E29D61689004C6032 /* COW.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = COW.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +62,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B0E65C229946FD700DFB522 /* SwiftUINavigation in Frameworks */,
-				2AF684F329D6072C0022ED33 /* CasePaths in Frameworks */,
 				2AD4AD5329B9512C00F691CF /* CustomDump in Frameworks */,
 				2A3BEA2229944BA700351060 /* ComposableArchitecture in Frameworks */,
 			);
@@ -79,6 +80,7 @@
 		2A3BE9EA2994469500351060 = {
 			isa = PBXGroup;
 			children = (
+				4BFB468E29D61689004C6032 /* COW.playground */,
 				2A3BE9F52994469500351060 /* Inventory */,
 				2A3BEA062994469600351060 /* InventoryTests */,
 				2A3BE9F42994469500351060 /* Products */,
@@ -125,6 +127,7 @@
 			children = (
 				2A3BEA072994469600351060 /* InventoryTests.swift */,
 				2A3BEA2729945ECB00351060 /* VanillaTests.swift */,
+				4BFB468C29D60F9B004C6032 /* StackOverflowTests.swift */,
 			);
 			path = InventoryTests;
 			sourceTree = "<group>";
@@ -149,7 +152,6 @@
 				2A3BEA2129944BA700351060 /* ComposableArchitecture */,
 				4B0E65C129946FD700DFB522 /* SwiftUINavigation */,
 				2AD4AD5229B9512C00F691CF /* CustomDump */,
-				2AF684F229D6072C0022ED33 /* CasePaths */,
 			);
 			productName = Inventory;
 			productReference = 2A3BE9F32994469500351060 /* Inventory.app */;
@@ -205,7 +207,6 @@
 				2A3BEA2029944BA700351060 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				4B0E65C029946FD700DFB522 /* XCRemoteSwiftPackageReference "swiftui-navigation" */,
 				2AD4AD5129B9512C00F691CF /* XCRemoteSwiftPackageReference "swift-custom-dump" */,
-				2AF684F129D6072C0022ED33 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
 			);
 			productRefGroup = 2A3BE9F42994469500351060 /* Products */;
 			projectDirPath = "";
@@ -257,6 +258,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BFB468D29D60F9B004C6032 /* StackOverflowTests.swift in Sources */,
 				2A3BEA082994469600351060 /* InventoryTests.swift in Sources */,
 				2A3BEA2829945ECB00351060 /* VanillaTests.swift in Sources */,
 			);
@@ -528,14 +530,6 @@
 				version = 0.8.0;
 			};
 		};
-		2AF684F129D6072C0022ED33 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-case-paths.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		4B0E65C029946FD700DFB522 /* XCRemoteSwiftPackageReference "swiftui-navigation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swiftui-navigation.git";
@@ -556,11 +550,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2AD4AD5129B9512C00F691CF /* XCRemoteSwiftPackageReference "swift-custom-dump" */;
 			productName = CustomDump;
-		};
-		2AF684F229D6072C0022ED33 /* CasePaths */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2AF684F129D6072C0022ED33 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
-			productName = CasePaths;
 		};
 		4B0E65C129946FD700DFB522 /* SwiftUINavigation */ = {
 			isa = XCSwiftPackageProductDependency;
