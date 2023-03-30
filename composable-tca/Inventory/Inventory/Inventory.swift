@@ -287,37 +287,17 @@ struct InventoryView: View {
       }
       .alert(
         store: self.store.scope(
-          state: { (inventoryState: InventoryFeature.State) -> AlertState<InventoryFeature.Action.Alert>? in
-            guard case let .some(.alert(state)) = inventoryState.destination
-            else { return nil }
-            return state
-          },
-          action: { (childAction: PresentationAction<InventoryFeature.Action.Alert>) -> InventoryFeature.Action in
-            switch childAction {
-            case .dismiss:
-              return .destination(.dismiss)
-            case let .presented(action):
-              return .destination(.presented(.alert(action)))
-            }
-          }
-        )
+          state: \.destination, action: InventoryFeature.Action.destination
+        ),
+        state: /InventoryFeature.Destination.State.alert,
+        action: InventoryFeature.Destination.Action.alert
       )
       .popover(
         store: self.store.scope(
-          state: { (inventoryState: InventoryFeature.State) -> ItemFormFeature.State? in
-            guard case let .some(.duplicateItem(state)) = inventoryState.destination
-            else { return nil }
-            return state
-          },
-          action: { (childAction: PresentationAction<ItemFormFeature.Action>) -> InventoryFeature.Action in
-            switch childAction {
-            case .dismiss:
-              return .destination(.dismiss)
-            case let .presented(action):
-              return .destination(.presented(.duplicateItem(action)))
-            }
-          }
-        )
+          state: \.destination, action: InventoryFeature.Action.destination
+        ),
+        state: /InventoryFeature.Destination.State.duplicateItem,
+        action: InventoryFeature.Destination.Action.duplicateItem
       ) { store in
         NavigationStack {
           ItemFormView(store: store)
@@ -338,20 +318,10 @@ struct InventoryView: View {
       }
       .sheet(
         store: self.store.scope(
-          state: { (inventoryState: InventoryFeature.State) -> ItemFormFeature.State? in
-            guard case let .some(.addItem(state)) = inventoryState.destination
-            else { return nil }
-            return state
-          },
-          action: { (childAction: PresentationAction<ItemFormFeature.Action>) -> InventoryFeature.Action in
-            switch childAction {
-            case .dismiss:
-              return .destination(.dismiss)
-            case let .presented(action):
-              return .destination(.presented(.addItem(action)))
-            }
-          }
-        )
+          state: \.destination, action: InventoryFeature.Action.destination
+        ),
+        state: /InventoryFeature.Destination.State.addItem,
+        action: InventoryFeature.Destination.Action.addItem
       ) { store in
         NavigationStack {
           ItemFormView(store: store)
@@ -372,20 +342,10 @@ struct InventoryView: View {
       }
       .navigationDestination(
         store: self.store.scope(
-          state: { (inventoryState: InventoryFeature.State) -> ItemFormFeature.State? in
-            guard case let .some(.editItem(state)) = inventoryState.destination
-            else { return nil }
-            return state
-          },
-          action: { (childAction: PresentationAction<ItemFormFeature.Action>) -> InventoryFeature.Action in
-            switch childAction {
-            case .dismiss:
-              return .destination(.dismiss)
-            case let .presented(action):
-              return .destination(.presented(.editItem(action)))
-            }
-          }
-        )
+          state: \.destination, action: InventoryFeature.Action.destination
+        ),
+        state: /InventoryFeature.Destination.State.editItem,
+        action: InventoryFeature.Destination.Action.editItem
       ) { store in
         ItemFormView(store: store)
           .navigationTitle("Edit item")

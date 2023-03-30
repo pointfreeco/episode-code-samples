@@ -135,6 +135,28 @@ extension DependencyValues {
 // self.dismiss()
 
 extension View {
+  func sheet<DestinationState, DestinationAction, ChildState: Identifiable, ChildAction>(
+    store: Store<DestinationState?, PresentationAction<DestinationAction>>,
+    state toChildState: @escaping (DestinationState) -> ChildState?,
+    action fromChildAction: @escaping (ChildAction) -> DestinationAction,
+    @ViewBuilder child: @escaping (Store<ChildState, ChildAction>) -> some View
+  ) -> some View {
+    self.sheet(
+      store: store.scope(
+        state: { $0.flatMap(toChildState) },
+        action: {
+          switch $0 {
+          case .dismiss:
+            return .dismiss
+          case let .presented(action):
+            return .presented(fromChildAction(action))
+          }
+        }
+      ),
+      child: child
+    )
+  }
+
   func sheet<ChildState: Identifiable, ChildAction>(
     store: Store<ChildState?, PresentationAction<ChildAction>>,
     @ViewBuilder child: @escaping (Store<ChildState, ChildAction>) -> some View
@@ -160,6 +182,28 @@ extension View {
         }
       }
     }
+  }
+
+  func popover<DestinationState, DestinationAction, ChildState: Identifiable, ChildAction>(
+    store: Store<DestinationState?, PresentationAction<DestinationAction>>,
+    state toChildState: @escaping (DestinationState) -> ChildState?,
+    action fromChildAction: @escaping (ChildAction) -> DestinationAction,
+    @ViewBuilder child: @escaping (Store<ChildState, ChildAction>) -> some View
+  ) -> some View {
+    self.popover(
+      store: store.scope(
+        state: { $0.flatMap(toChildState) },
+        action: {
+          switch $0 {
+          case .dismiss:
+            return .dismiss
+          case let .presented(action):
+            return .presented(fromChildAction(action))
+          }
+        }
+      ),
+      child: child
+    )
   }
 
   func popover<ChildState: Identifiable, ChildAction>(
@@ -228,6 +272,26 @@ func returningLastNonNilValue<A, B>(
 }
 
 extension View {
+  func alert<DestinationState, DestinationAction, Action>(
+    store: Store<DestinationState?, PresentationAction<DestinationAction>>,
+    state toAlertState: @escaping (DestinationState) -> AlertState<Action>?,
+    action fromAlertAction: @escaping (Action) -> DestinationAction
+  ) -> some View {
+    self.alert(
+      store: store.scope(
+        state: { $0.flatMap(toAlertState) },
+        action: {
+          switch $0 {
+          case .dismiss:
+            return .dismiss
+          case let .presented(action):
+            return .presented(fromAlertAction(action))
+          }
+        }
+      )
+    )
+  }
+
   func alert<Action>(
     store: Store<AlertState<Action>?, PresentationAction<Action>>
   ) -> some View {
@@ -255,6 +319,26 @@ extension View {
 }
 
 extension View {
+  func confirmationDialog<DestinationState, DestinationAction, Action>(
+    store: Store<DestinationState?, PresentationAction<DestinationAction>>,
+    state toAlertState: @escaping (DestinationState) -> ConfirmationDialogState<Action>?,
+    action fromAlertAction: @escaping (Action) -> DestinationAction
+  ) -> some View {
+    self.confirmationDialog(
+      store: store.scope(
+        state: { $0.flatMap(toAlertState) },
+        action: {
+          switch $0 {
+          case .dismiss:
+            return .dismiss
+          case let .presented(action):
+            return .presented(fromAlertAction(action))
+          }
+        }
+      )
+    )
+  }
+
   func confirmationDialog<Action>(
     store: Store<ConfirmationDialogState<Action>?, PresentationAction<Action>>
   ) -> some View {
@@ -323,6 +407,28 @@ struct NavigationLinkStore<ChildState: Identifiable, ChildAction, Destination: V
 }
 
 extension View {
+  func navigationDestination<DestinationState, DestinationAction, ChildState: Identifiable, ChildAction>(
+    store: Store<DestinationState?, PresentationAction<DestinationAction>>,
+    state toChildState: @escaping (DestinationState) -> ChildState?,
+    action fromChildAction: @escaping (ChildAction) -> DestinationAction,
+    @ViewBuilder child: @escaping (Store<ChildState, ChildAction>) -> some View
+  ) -> some View {
+    self.navigationDestination(
+      store: store.scope(
+        state: { $0.flatMap(toChildState) },
+        action: {
+          switch $0 {
+          case .dismiss:
+            return .dismiss
+          case let .presented(action):
+            return .presented(fromChildAction(action))
+          }
+        }
+      ),
+      destination: child
+    )
+  }
+
   func navigationDestination<ChildState, ChildAction>(
     store: Store<ChildState?, PresentationAction<ChildAction>>,
     @ViewBuilder destination: @escaping (Store<ChildState, ChildAction>) -> some View
