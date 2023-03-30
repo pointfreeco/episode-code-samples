@@ -9,10 +9,10 @@ struct InventoryApp: App {
         store: Store(
           initialState: AppFeature.State(
             inventory: InventoryFeature.State(
-//              addItem: ItemFormFeature.State(item: Item(name: "Laptop", status: .inStock(quantity: 100))),
-              editItem: ItemFormFeature.State(item: .headphones),
-              items: (1...100).map { Item(name: "Item \($0)", status: .inStock(quantity: $0)) }
-              + [
+              destination: .addItem(ItemFormFeature.State(item: .headphones)),
+//              addItem: ItemFormFeature.State(item: .headphones),
+//              duplicateItem: ItemFormFeature.State(item: .headphones.duplicate()),
+              items: [
                 .monitor,
                 .mouse,
                 .keyboard,
@@ -21,8 +21,7 @@ struct InventoryApp: App {
             ),
             selectedTab: .inventory
           ),
-          reducer: AppFeature()
-            //._printChanges()
+          reducer: AppFeature()._printChanges()
         )
       )
     }

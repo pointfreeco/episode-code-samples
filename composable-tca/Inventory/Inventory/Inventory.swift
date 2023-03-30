@@ -3,24 +3,27 @@ import SwiftUI
 
 struct InventoryFeature: Reducer {
   struct State: Equatable {
-    var addItem: ItemFormFeature.State?
-    var alert: AlertState<Action.Alert>?
-    var duplicateItem: ItemFormFeature.State?
-    var editItem: ItemFormFeature.State?
+    var destination: Destination.State?
+//    var addItem: ItemFormFeature.State?
+//    var alert: AlertState<Action.Alert>?
+//    var duplicateItem: ItemFormFeature.State?
+//    var editItem: ItemFormFeature.State?
     var items: IdentifiedArrayOf<Item> = []
   }
   enum Action: Equatable {
+//    case addItem(PresentationAction<ItemFormFeature.Action>)
+//    case alert(PresentationAction<Alert>)
+//    case duplicateItem(PresentationAction<ItemFormFeature.Action>)
+//    case editItem(PresentationAction<ItemFormFeature.Action>)
+    case destination(PresentationAction<Destination.Action>)
+
     case addButtonTapped
-    case addItem(PresentationAction<ItemFormFeature.Action>)
-    case alert(PresentationAction<Alert>)
     case cancelAddItemButtonTapped
     case cancelDuplicateItemButtonTapped
     case confirmAddItemButtonTapped
     case confirmDuplicateItemButtonTapped
-    case duplicateItem(PresentationAction<ItemFormFeature.Action>)
     case deleteButtonTapped(id: Item.ID)
     case duplicateButtonTapped(id: Item.ID)
-    case editItem(PresentationAction<ItemFormFeature.Action>)
     case itemButtonTapped(id: Item.ID)
 
     enum Alert: Equatable {
@@ -31,77 +34,124 @@ struct InventoryFeature: Reducer {
     }
   }
 
+  struct Destination: Reducer {
+//    @DerivingIdentifable
+    enum State: Equatable, Identifiable /*, DerivingIdentifiable */ {
+      case addItem(ItemFormFeature.State)
+      case alert(AlertState<InventoryFeature.Action.Alert>)
+      case duplicateItem(ItemFormFeature.State)
+      case editItem(ItemFormFeature.State)
+      var id: AnyHashable {
+        switch self {
+        case let .addItem(state):
+          return state.id
+        case let .alert(state):
+          return state.id
+        case let .editItem(state):
+          return state.id
+        case let .duplicateItem(state):
+          return state.id
+        }
+      }
+    }
+    enum Action: Equatable {
+      case addItem(ItemFormFeature.Action)
+      case alert(InventoryFeature.Action.Alert)
+      case duplicateItem(ItemFormFeature.Action)
+      case editItem(ItemFormFeature.Action)
+    }
+    var body: some ReducerOf<Self> {
+      Scope(state: /State.addItem, action: /Action.addItem) {
+        ItemFormFeature()
+      }
+      Scope(state: /State.duplicateItem, action: /Action.duplicateItem) {
+        ItemFormFeature()
+      }
+      Scope(state: /State.editItem, action: /Action.editItem) {
+        ItemFormFeature()
+      }
+    }
+  }
+
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .addButtonTapped:
-        state.addItem = ItemFormFeature.State(
-          item: Item(name: "", status: .inStock(quantity: 1))
+        state.destination = .addItem(
+          ItemFormFeature.State(
+            item: Item(name: "", status: .inStock(quantity: 1))
+          )
         )
         return .none
 
-      case .addItem:
-        return .none
+//      case .addItem:
+//        return .none
 
-      case let .alert(.presented(.confirmDeletion(id))):
+      case let .destination(.presented(.alert(.confirmDeletion(id: id)))):
         state.items.remove(id: id)
         return .none
 
-      case .alert:
-        return .none
+//      case .alert:
+//        return .none
 
       case .cancelAddItemButtonTapped:
-        state.addItem = nil
+        state.destination = nil
         return .none
 
       case .cancelDuplicateItemButtonTapped:
-        state.duplicateItem = nil
+        state.destination = nil
         return .none
 
       case .confirmAddItemButtonTapped:
-        defer { state.addItem = nil }
-        guard let item = state.addItem?.item
+        defer { state.destination = nil }
+        guard case let .addItem(itemFormState) = state.destination
         else {
-          XCTFail("Can't confirm add when item is nil")
+          XCTFail("Can't confirm add when destination is not 'addItem'")
           return .none
         }
-        state.items.append(item)
+        state.items.append(itemFormState.item)
         return .none
 
       case .confirmDuplicateItemButtonTapped:
-        defer { state.duplicateItem = nil }
-        guard let item = state.duplicateItem?.item
+        defer { state.destination = nil }
+        guard case let .duplicateItem(itemFormState) = state.destination
         else {
-          XCTFail("Can't confirm duplicate when item is nil")
+          XCTFail("Can't confirm duplicate when destination is not 'duplicateItem'")
           return .none
         }
-        state.items.append(item)
+        state.items.append(itemFormState.item)
         return .none
 
       case let .deleteButtonTapped(id):
         guard let item = state.items[id: id]
         else { return .none }
 
-        state.alert = .delete(item: item)
+        state.destination = .alert(.delete(item: item))
         return .none
 
       case let .duplicateButtonTapped(id):
         guard let item = state.items[id: id]
         else { return .none }
 
-        state.duplicateItem = ItemFormFeature.State(item: item.duplicate())
+        state.destination = .duplicateItem(ItemFormFeature.State(item: item.duplicate()))
         return .none
 
-      case .duplicateItem:
-        return .none
+//      case .duplicateItem:
+//        return .none
 
-      case .editItem(.dismiss):
-        guard let item = state.editItem?.item
+      case .destination(.dismiss):
+        guard case let .editItem(itemFormState) = state.destination
         else { return .none }
-        state.items[id: item.id] = item
+        state.items[id: itemFormState.id] = itemFormState.item
         return .none
-      case .editItem:
-        return .none
+
+//      case .editItem(.dismiss):
+//        guard let item = state.editItem?.item
+//        else { return .none }
+//        state.items[id: item.id] = item
+//        return .none
+//      case .editItem:
+//        return .none
 
       case let .itemButtonTapped(id: itemID):
         guard let item = state.items[id: itemID]
@@ -109,20 +159,26 @@ struct InventoryFeature: Reducer {
           XCTFail("Can't edit the item when it's not found in the list.")
           return .none
         }
-        state.editItem = ItemFormFeature.State(item: item)
+        state.destination = .editItem(ItemFormFeature.State(item: item))
+        return .none
+
+      case .destination:
         return .none
       }
     }
-    .ifLet(\.alert, action: /Action.alert)
-    .ifLet(\.addItem, action: /Action.addItem) {
-      ItemFormFeature()
+    .ifLet(\.destination, action: /Action.destination) {
+      Destination()
     }
-    .ifLet(\.duplicateItem, action: /Action.duplicateItem) {
-      ItemFormFeature()
-    }
-    .ifLet(\.editItem, action: /Action.editItem) {
-      ItemFormFeature()
-    }
+//    .ifLet(\.alert, action: /Action.alert)
+//    .ifLet(\.addItem, action: /Action.addItem) {
+//      ItemFormFeature()
+//    }
+//    .ifLet(\.duplicateItem, action: /Action.duplicateItem) {
+//      ItemFormFeature()
+//    }
+//    .ifLet(\.editItem, action: /Action.editItem) {
+//      ItemFormFeature()
+//    }
   }
 }
 
@@ -158,11 +214,9 @@ struct InventoryView: View {
   let store: StoreOf<InventoryFeature>
 
   struct ViewState: Equatable {
-    let editItemID: Item.ID?
     let items: IdentifiedArrayOf<Item>
 
     init(state: InventoryFeature.State) {
-      self.editItemID = state.editItem?.item.id
       self.items = state.items
     }
   }
@@ -232,10 +286,38 @@ struct InventoryView: View {
         }
       }
       .alert(
-        store: self.store.scope(state: \.alert, action: InventoryFeature.Action.alert)
+        store: self.store.scope(
+          state: { (inventoryState: InventoryFeature.State) -> AlertState<InventoryFeature.Action.Alert>? in
+            guard case let .some(.alert(state)) = inventoryState.destination
+            else { return nil }
+            return state
+          },
+          action: { (childAction: PresentationAction<InventoryFeature.Action.Alert>) -> InventoryFeature.Action in
+            switch childAction {
+            case .dismiss:
+              return .destination(.dismiss)
+            case let .presented(action):
+              return .destination(.presented(.alert(action)))
+            }
+          }
+        )
       )
       .popover(
-        store: self.store.scope(state: \.duplicateItem, action: InventoryFeature.Action.duplicateItem)
+        store: self.store.scope(
+          state: { (inventoryState: InventoryFeature.State) -> ItemFormFeature.State? in
+            guard case let .some(.duplicateItem(state)) = inventoryState.destination
+            else { return nil }
+            return state
+          },
+          action: { (childAction: PresentationAction<ItemFormFeature.Action>) -> InventoryFeature.Action in
+            switch childAction {
+            case .dismiss:
+              return .destination(.dismiss)
+            case let .presented(action):
+              return .destination(.presented(.duplicateItem(action)))
+            }
+          }
+        )
       ) { store in
         NavigationStack {
           ItemFormView(store: store)
@@ -255,7 +337,21 @@ struct InventoryView: View {
         }
       }
       .sheet(
-        store: self.store.scope(state: \.addItem, action: InventoryFeature.Action.addItem)
+        store: self.store.scope(
+          state: { (inventoryState: InventoryFeature.State) -> ItemFormFeature.State? in
+            guard case let .some(.addItem(state)) = inventoryState.destination
+            else { return nil }
+            return state
+          },
+          action: { (childAction: PresentationAction<ItemFormFeature.Action>) -> InventoryFeature.Action in
+            switch childAction {
+            case .dismiss:
+              return .destination(.dismiss)
+            case let .presented(action):
+              return .destination(.presented(.addItem(action)))
+            }
+          }
+        )
       ) { store in
         NavigationStack {
           ItemFormView(store: store)
@@ -276,8 +372,19 @@ struct InventoryView: View {
       }
       .navigationDestination(
         store: self.store.scope(
-          state: \.editItem,
-          action: InventoryFeature.Action.editItem
+          state: { (inventoryState: InventoryFeature.State) -> ItemFormFeature.State? in
+            guard case let .some(.editItem(state)) = inventoryState.destination
+            else { return nil }
+            return state
+          },
+          action: { (childAction: PresentationAction<ItemFormFeature.Action>) -> InventoryFeature.Action in
+            switch childAction {
+            case .dismiss:
+              return .destination(.dismiss)
+            case let .presented(action):
+              return .destination(.presented(.editItem(action)))
+            }
+          }
         )
       ) { store in
         ItemFormView(store: store)
@@ -293,12 +400,14 @@ struct Inventory_Previews: PreviewProvider {
       InventoryView(
         store: Store(
           initialState: InventoryFeature.State(
-            editItem: ItemFormFeature.State(
-              item: Item(
-                id: Item.keyboard.id,
-                name: "Bluetooth Keyboard",
-                color: .red,
-                status: .outOfStock(isOnBackOrder: true)
+            destination: .editItem(
+              ItemFormFeature.State(
+                item: Item(
+                  id: Item.keyboard.id,
+                  name: "Bluetooth Keyboard",
+                  color: .red,
+                  status: .outOfStock(isOnBackOrder: true)
+                )
               )
             ),
             items: [
