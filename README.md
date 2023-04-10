@@ -230,3 +230,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Composable Navigation: Unification](0226-composable-navigation-pt5)
 1. [Composable Navigation: Links](0227-composable-navigation-pt6)
 1. [Composable Navigation: Destinations](0228-composable-navigation-pt7)
+1. [Composable Navigation: Correctness](0229-composable-navigation-pt8)
+1. [Composable Navigation: Stack vs Heap](0230-composable-navigation-pt9)
