@@ -39,6 +39,11 @@ extension PresentationState: Equatable where State: Equatable {
     lhs.value == rhs.value
   }
 }
+extension PresentationState: Hashable where State: Hashable {
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(self.value)
+  }
+}
 extension PresentationState: CustomDumpReflectable {
   var customDumpMirror: Mirror {
     Mirror(reflecting: self.wrappedValue as Any)
