@@ -7,7 +7,13 @@ struct InventoryApp: App {
     WindowGroup {
       RootView(
         store: Store(
-          initialState: RootFeature.State(),
+          initialState: RootFeature.State(
+            counters: [
+              CounterFeature.State(count: 42),
+              CounterFeature.State(count: 1729),
+              CounterFeature.State(count: -999),
+            ]
+          ),
           reducer: RootFeature()
         )
       )

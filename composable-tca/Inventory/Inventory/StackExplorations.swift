@@ -5,13 +5,21 @@ struct CounterFeature: Reducer {
   struct State: Equatable, Hashable, Identifiable {
     let id = UUID()
     var count = 0
+    var isLoading = false
     var isTimerOn = false
   }
   enum Action {
     case decrementButtonTapped
+    case delegate(Delegate)
     case incrementButtonTapped
+    case loadAndGoToCounterButtonTapped
+    case loadResponse
     case timerTick
     case toggleTimerButtonTapped
+
+    enum Delegate {
+      case goToCounter(Int)
+    }
   }
   private enum CancelID { case timer }
   func reduce(into state: inout State, action: Action) -> Effect<Action> {
@@ -19,9 +27,28 @@ struct CounterFeature: Reducer {
     case .decrementButtonTapped:
       state.count -= 1
       return .none
+
+    case .delegate:
+      return .none
+
     case .incrementButtonTapped:
       state.count += 1
       return .none
+
+    case .loadAndGoToCounterButtonTapped:
+      state.isLoading = true
+      return .run { send in
+        try await Task.sleep(for: .seconds(2))
+        await send(.loadResponse)
+      }
+
+    case .loadResponse:
+      state.isLoading = false
+      if Bool.random() {
+        return .send(.delegate(.goToCounter(state.count)))
+      } else {
+        return .none
+      }
 
     case .timerTick:
       state.count += 1
@@ -64,6 +91,19 @@ struct CounterView: View {
         Button(viewStore.isTimerOn ? "Stop timer" : "Start timer") {
           viewStore.send(.toggleTimerButtonTapped)
         }
+
+        NavigationLink(value: CounterFeature.State(count: viewStore.count)) {
+          Text("Push counter: \(viewStore.count)")
+        }
+
+        Button {
+          viewStore.send(.loadAndGoToCounterButtonTapped)
+        } label: {
+          if viewStore.isLoading {
+            ProgressView()
+          }
+          Text("Load and go to counter: \(viewStore.count)")
+        }
       }
       .navigationTitle("Counter: \(viewStore.count)")
     }
@@ -82,11 +122,20 @@ struct RootFeature: Reducer {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case let .counter(id: _, action: .delegate(action)):
+        switch action {
+        case let .goToCounter(count):
+          state.counters.append(CounterFeature.State(count: count))
+          return .none
+        }
+
       case .counter:
         return .none
+
       case .goToCounterButtonTapped:
         state.counters.append(CounterFeature.State())
         return .none
+
       case let .setPath(counters):
         state.counters = counters
         return .none
@@ -136,12 +185,14 @@ struct Previews: PreviewProvider {
     )
     .previewDisplayName("RootView")
 
-    CounterView(
-      store: Store(
-        initialState: CounterFeature.State(),
-        reducer: CounterFeature()
+    NavigationStack {
+      CounterView(
+        store: Store(
+          initialState: CounterFeature.State(),
+          reducer: CounterFeature()
+        )
       )
-    )
+    }
     .previewDisplayName("Counter")
   }
 }
