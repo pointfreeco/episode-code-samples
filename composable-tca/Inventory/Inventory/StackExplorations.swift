@@ -252,6 +252,29 @@ struct RootView: View {
   let store: StoreOf<RootFeature>
 
   var body: some View {
+    NavigationStackStore(
+      self.store.scope(
+        state: \.path,
+        action: RootFeature.Action.path
+      )
+    ) {
+      // ...
+    } destination: { state in
+      switch state {
+      case .counter:
+        CaseLet(
+          state: /RootFeature.Path.State.counter,
+          action: RootFeature.Path.Action.counter,
+          then: CounterView.init(store:)
+        )
+      case .numberFact:
+        CaseLet(
+          state: /RootFeature.Path.State.numberFact,
+          action: RootFeature.Path.Action.numberFact,
+          then: NumberFactView.init(store:)
+        )
+      }
+    }
     WithViewStore(self.store, observe: { $0 }) { viewStore in
       NavigationStack(
         path: viewStore.binding(
