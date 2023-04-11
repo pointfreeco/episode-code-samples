@@ -110,6 +110,68 @@ struct CounterView: View {
   }
 }
 
+struct NumberFactFeature: Reducer {
+  struct State: Equatable {
+    @PresentationState var alert: AlertState<AlertAction>?
+    let number: Int
+  }
+  enum Action {
+    case alert(PresentationAction<AlertAction>)
+    case factButtonTapped
+    case factResponse(TaskResult<String>)
+  }
+  enum AlertAction: Equatable {
+  }
+  var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case .alert:
+        return .none
+
+      case .factButtonTapped:
+        return .task { [number = state.number] in
+          await .factResponse(
+            TaskResult {
+              try await String(
+                decoding: URLSession.shared.data(from: URL(string: "http://numbersapi.com/\(number)/trivia")!).0,
+                as: UTF8.self
+              )
+            }
+          )
+        }
+
+      case let .factResponse(.success(fact)):
+        state.alert = AlertState {
+          TextState(fact)
+        }
+        return .none
+
+      case .factResponse(.failure):
+        state.alert = AlertState {
+          TextState("Could not load a number fact :(")
+        }
+        return .none
+      }
+    }
+    .ifLet(\.$alert, action: /Action.alert)
+  }
+}
+
+struct NumberFactView: View {
+  let store: StoreOf<NumberFactFeature>
+  var body: some View {
+    WithViewStore(self.store, observe: { $0 }) { viewStore in
+      VStack {
+        Text("Number: \(viewStore.number)")
+        Button("Get fact") {
+          viewStore.send(.factButtonTapped)
+        }
+      }
+      .alert(store: self.store.scope(state: \.alert, action: NumberFactFeature.Action.alert))
+    }
+  }
+}
+
 struct RootFeature: Reducer {
   struct State: Equatable {
     var counters: IdentifiedArrayOf<CounterFeature.State> = []
@@ -184,6 +246,14 @@ struct Previews: PreviewProvider {
       )
     )
     .previewDisplayName("RootView")
+
+    NumberFactView(
+      store: Store(
+        initialState: NumberFactFeature.State(number: 42),
+        reducer: NumberFactFeature()
+      )
+    )
+    .previewDisplayName("Fact")
 
     NavigationStack {
       CounterView(

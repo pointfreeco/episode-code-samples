@@ -53,7 +53,7 @@ extension PresentationAction: Equatable where Action: Equatable {}
 
 extension Reducer {
   func ifLet<ChildState: Identifiable, ChildAction>(
-    _ stateKeyPath: WritableKeyPath<State, ChildState?>,
+    _ stateKeyPath: WritableKeyPath<State, PresentationState<ChildState>>,
     action actionCasePath: CasePath<Action, PresentationAction<ChildAction>>
   ) -> some ReducerOf<Self>
   where ChildState: _EphemeralState

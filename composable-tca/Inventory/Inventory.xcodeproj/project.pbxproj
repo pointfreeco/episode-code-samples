@@ -53,6 +53,7 @@
 		4B0E65BA29944F6500DFB522 /* ThirdTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdTab.swift; sourceTree = "<group>"; };
 		4B0E65BC2994626900DFB522 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		4B0E65BE29946B1100DFB522 /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
+		4B94848A29E5E6E3000009E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4BD190FE299EA3D500A6A7E5 /* ItemForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemForm.swift; sourceTree = "<group>"; };
 		4BFB468C29D60F9B004C6032 /* StackOverflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackOverflowTests.swift; sourceTree = "<group>"; };
 		4BFB468E29D61689004C6032 /* COW.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = COW.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -101,6 +102,7 @@
 		2A3BE9F52994469500351060 /* Inventory */ = {
 			isa = PBXGroup;
 			children = (
+				4B94848A29E5E6E3000009E6 /* Info.plist */,
 				2A3BE9F82994469500351060 /* ContentView.swift */,
 				4B0E65B629944EFC00DFB522 /* FirstTab.swift */,
 				4B0E65B829944F4800DFB522 /* Inventory.swift */,
@@ -403,6 +405,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Inventory/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Inventory/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -431,6 +434,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Inventory/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Inventory/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
