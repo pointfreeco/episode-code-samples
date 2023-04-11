@@ -2,7 +2,8 @@ import ComposableArchitecture
 import SwiftUI
 
 struct CounterFeature: Reducer {
-  struct State: Equatable {
+  struct State: Equatable, Hashable, Identifiable {
+    let id = UUID()
     var count = 0
     var isTimerOn = false
   }
@@ -69,8 +70,72 @@ struct CounterView: View {
   }
 }
 
+struct RootFeature: Reducer {
+  struct State: Equatable {
+    var counters: IdentifiedArrayOf<CounterFeature.State> = []
+  }
+  enum Action {
+    case counter(id: CounterFeature.State.ID, action: CounterFeature.Action)
+    case goToCounterButtonTapped
+    case setPath(IdentifiedArrayOf<CounterFeature.State>)
+  }
+  var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case .counter:
+        return .none
+      case .goToCounterButtonTapped:
+        state.counters.append(CounterFeature.State())
+        return .none
+      case let .setPath(counters):
+        state.counters = counters
+        return .none
+      }
+    }
+    .forEach(\.counters, action: /Action.counter) {
+      CounterFeature()
+    }
+  }
+}
+
+struct RootView: View {
+  let store: StoreOf<RootFeature>
+
+  var body: some View {
+    WithViewStore(self.store, observe: { $0 }) { viewStore in
+      NavigationStack(
+        path: viewStore.binding(
+          get: \.counters,
+          send: RootFeature.Action.setPath
+        )
+      ) {
+        Button("Go to counter") {
+          viewStore.send(.goToCounterButtonTapped)
+        }
+        .navigationDestination(for: CounterFeature.State.self) { counterState in
+          CounterView(
+            store: self.store.scope(
+              state: { $0.counters[id: counterState.id] ?? counterState },
+              action: { .counter(id: counterState.id, action: $0) }
+            )
+          )
+        }
+      }
+    }
+  }
+}
+
 struct Previews: PreviewProvider {
   static var previews: some View {
+    RootView(
+      store: Store(
+        initialState: RootFeature.State(),
+        reducer: RootFeature()
+          ._printChanges()
+      )
+    )
+    .previewDisplayName("RootView")
+
     CounterView(
       store: Store(
         initialState: CounterFeature.State(),
