@@ -115,6 +115,14 @@ struct CounterView: View {
         ) {
           Text("Go to fact for \(viewStore.count)")
         }
+
+        NavigationLink(
+          state: RootFeature.Path.State.primeNumber(
+            PrimeNumberFeature.State(number: viewStore.count)
+          )
+        ) {
+          Text("Go to prime number for \(viewStore.count)")
+        }
       }
       .navigationTitle("Counter: \(viewStore.count)")
     }
@@ -183,22 +191,89 @@ struct NumberFactView: View {
   }
 }
 
-func foo() {
-  var path = NavigationPath()
-  path.append(1)
-  path.append(2)
-  path.append(3)
-  path.append("Hello")
-  path.append(true)
-  path.count
-  path.isEmpty
-  path.removeLast()
-  path.removeLast(2)
-//  path.insert
-//  path.remove(at:)
-//  for element in path {
-//
-//  }
+struct PrimeNumberFeature: Reducer {
+  struct State: Equatable {
+    @PresentationState var alert: AlertState<Action.Alert>?
+    var isLoading = false
+    let number: Int
+  }
+  enum Action: Equatable {
+    case alert(PresentationAction<Alert>)
+    case nthPrimeButtonTapped
+    case response(TaskResult<Int>)
+
+    enum Alert: Equatable {}
+  }
+  var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case .alert:
+        return .none
+
+      case .nthPrimeButtonTapped:
+        state.isLoading = true
+        return .task { [number = state.number] in
+          await .response(
+            TaskResult {
+              let (data, _) = try await URLSession.shared
+                .data(from: wolframRequest(query: "prime \(number)"))
+              let result = try JSONDecoder().decode(WolframAlphaResult.self, from: data)
+
+              if let prime = (
+                result.queryresult
+                  .pods
+                  .first(where: { $0.primary == .some(true) })?
+                  .subpods
+                  .first?
+                  .plaintext
+              ).flatMap(Int.init) {
+                return prime
+              } else {
+                struct PrimeError: Error {}
+                throw PrimeError()
+              }
+            }
+          )
+        }
+
+      case let .response(.success(prime)):
+        state.alert = AlertState {
+          TextState("The \(state.number)th prime is \(prime).")
+        }
+        state.isLoading = false
+        return .none
+
+      case .response(.failure):
+        state.alert = AlertState {
+          TextState("Something went wrong :(")
+        }
+        state.isLoading = false
+        return .none
+      }
+    }
+    .ifLet(\.$alert, action: /Action.alert)
+  }
+}
+struct PrimeNumberView: View {
+  let store: StoreOf<PrimeNumberFeature>
+
+  var body: some View {
+    WithViewStore(self.store, observe: { $0 }) { viewStore in
+      Form {
+        Button {
+          viewStore.send(.nthPrimeButtonTapped)
+        } label: {
+          HStack {
+            if viewStore.isLoading {
+              ProgressView()
+            }
+            Text("What is the \(viewStore.number)th prime?")
+          }
+        }
+      }
+      .alert(store: self.store.scope(state: \.alert, action: { .alert($0) }))
+    }
+  }
 }
 
 struct RootFeature: Reducer {
@@ -209,7 +284,7 @@ struct RootFeature: Reducer {
         switch element {
         case let .counter(counterState):
           sum += counterState.count
-        case .numberFact:
+        case .numberFact, .primeNumber:
           break
         }
       }
@@ -222,10 +297,12 @@ struct RootFeature: Reducer {
     enum State: Equatable {
       case counter(CounterFeature.State = CounterFeature.State())
       case numberFact(NumberFactFeature.State)
+      case primeNumber(PrimeNumberFeature.State)
     }
     enum Action {
       case counter(CounterFeature.Action)
       case numberFact(NumberFactFeature.Action)
+      case primeNumber(PrimeNumberFeature.Action)
     }
     var body: some ReducerOf<Self> {
       Scope(state: /State.counter, action: /Action.counter) {
@@ -233,6 +310,9 @@ struct RootFeature: Reducer {
       }
       Scope(state: /State.numberFact, action: /Action.numberFact) {
         NumberFactFeature()
+      }
+      Scope(state: /State.primeNumber, action: /Action.primeNumber) {
+        PrimeNumberFeature()
       }
     }
   }
@@ -262,7 +342,16 @@ struct RootView: View {
     let sum: Int
 
     init(state: RootFeature.State) {
-      self.isSummaryVisible = !state.path.isEmpty
+      self.isSummaryVisible = !state.path.isEmpty && !state.path.reduce(into: false) { isAlertShown, element in
+        switch element {
+        case .counter:
+          break
+        case let .numberFact(numberFactState):
+          isAlertShown = isAlertShown || numberFactState.alert != nil
+        case let .primeNumber(primeNumberState):
+          isAlertShown = isAlertShown || primeNumberState.alert != nil
+        }
+      }
       self.sum = state.sum
     }
   }
@@ -287,6 +376,12 @@ struct RootView: View {
           state: /RootFeature.Path.State.numberFact,
           action: RootFeature.Path.Action.numberFact,
           then: NumberFactView.init(store:)
+        )
+      case .primeNumber:
+        CaseLet(
+          state: /RootFeature.Path.State.primeNumber,
+          action: RootFeature.Path.Action.primeNumber,
+          then: PrimeNumberView.init(store:)
         )
       }
     }
@@ -337,5 +432,13 @@ struct Previews: PreviewProvider {
       )
     }
     .previewDisplayName("Counter")
+
+    PrimeNumberView(
+      store: Store(
+        initialState: PrimeNumberFeature.State(number: 999),
+        reducer: PrimeNumberFeature()
+      )
+    )
+    .previewDisplayName("Prime number")
   }
 }
