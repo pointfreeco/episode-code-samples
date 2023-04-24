@@ -191,8 +191,9 @@ struct RootFeature: Reducer {
   }
   enum Action {
     case goToCounterButtonTapped
-    case path(id: Path.State.ID, action: Path.Action)
-    case setPath(IdentifiedArrayOf<Path.State>)
+    case path(StackAction<Path.State, Path.Action>)
+//    case path(id: Path.State.ID, action: Path.Action)
+//    case setPath(IdentifiedArrayOf<Path.State>)
   }
   struct Path: Reducer {
     enum State: Hashable, Identifiable {
@@ -223,12 +224,16 @@ struct RootFeature: Reducer {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case let .path(id: _, action: .counter(.delegate(action))):
+      case let .path(.element(id: _, action: .counter(.delegate(action)))):
         switch action {
         case let .goToCounter(count):
           state.path.append(.counter(CounterFeature.State(count: count)))
           return .none
         }
+
+      case let .path(.setPath(path)):
+        state.path = path
+        return .none
 
       case .path:
         return .none
@@ -236,13 +241,9 @@ struct RootFeature: Reducer {
       case .goToCounterButtonTapped:
         state.path.append(.counter(CounterFeature.State()))
         return .none
-
-      case let .setPath(path):
-        state.path = path
-        return .none
       }
     }
-    .forEach(\.path, action: /Action.path) {
+    .forEach(\.path, action: (/Action.path).appending(path: /StackAction.element)) {
       Path()
     }
   }
@@ -252,75 +253,69 @@ struct RootView: View {
   let store: StoreOf<RootFeature>
 
   var body: some View {
-    NavigationStackStore(
-      self.store.scope(
-        state: \.path,
-        action: RootFeature.Action.path
-      )
-    ) {
-      Button("Go to counter") {
-        viewStore.send(.goToCounterButtonTapped)
-      }
-    } destination: { state in
-      switch state {
-      case .counter:
-        CaseLet(
-          state: /RootFeature.Path.State.counter,
-          action: RootFeature.Path.Action.counter,
-          then: CounterView.init(store:)
-        )
-      case .numberFact:
-        CaseLet(
-          state: /RootFeature.Path.State.numberFact,
-          action: RootFeature.Path.Action.numberFact,
-          then: NumberFactView.init(store:)
-        )
-      }
-    }
-
-
     WithViewStore(self.store, observe: { $0 }) { viewStore in
-      NavigationStack(
-        path: viewStore.binding(
-          get: \.path,
-          send: RootFeature.Action.setPath
-        )
-      ) {
+      NavigationStackStore(self.store.scope(state: \.path, action: { .path($0) })) {
         Button("Go to counter") {
           viewStore.send(.goToCounterButtonTapped)
         }
-        .navigationDestination(for: RootFeature.Path.State.self) {
-          switch $0 {
-          case let .counter(counterState):
-            CounterView(
-              store: self.store.scope(
-                state: {
-                  guard case let .counter(state) = $0.path[id: counterState.id]
-                  else { return counterState }
-                  return state
-                },
-                action: {
-                  .path(id: counterState.id, action: .counter($0))
-                }
-              )
-            )
-
-          case let .numberFact(numberFactState):
-            NumberFactView(
-              store: self.store.scope(
-                state: {
-                  guard case let .numberFact(state) = $0.path[id: numberFactState.id]
-                  else { return numberFactState }
-                  return state
-                },
-                action: {
-                  .path(id: numberFactState.id, action: .numberFact($0))
-                }
-              )
-            )
-          }
+      } destination: { state in
+        switch state {
+        case .counter:
+          CaseLet(
+            state: /RootFeature.Path.State.counter,
+            action: RootFeature.Path.Action.counter,
+            then: CounterView.init(store:)
+          )
+        case .numberFact:
+          CaseLet(
+            state: /RootFeature.Path.State.numberFact,
+            action: RootFeature.Path.Action.numberFact,
+            then: NumberFactView.init(store:)
+          )
         }
       }
+
+//      NavigationStack(
+//        path: viewStore.binding(
+//          get: \.path,
+//          send: RootFeature.Action.setPath
+//        )
+//      ) {
+//        Button("Go to counter") {
+//          viewStore.send(.goToCounterButtonTapped)
+//        }
+//        .navigationDestination(for: RootFeature.Path.State.self) {
+//          switch $0 {
+//          case let .counter(counterState):
+//            CounterView(
+//              store: self.store.scope(
+//                state: {
+//                  guard case let .counter(state) = $0.path[id: counterState.id]
+//                  else { return counterState }
+//                  return state
+//                },
+//                action: {
+//                  .path(id: counterState.id, action: .counter($0))
+//                }
+//              )
+//            )
+//
+//          case let .numberFact(numberFactState):
+//            NumberFactView(
+//              store: self.store.scope(
+//                state: {
+//                  guard case let .numberFact(state) = $0.path[id: numberFactState.id]
+//                  else { return numberFactState }
+//                  return state
+//                },
+//                action: {
+//                  .path(id: numberFactState.id, action: .numberFact($0))
+//                }
+//              )
+//            )
+//          }
+//        }
+//      }
     }
   }
 }

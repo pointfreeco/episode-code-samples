@@ -9,9 +9,9 @@ struct InventoryApp: App {
         store: Store(
           initialState: RootFeature.State(
             path: [
-              .counter(CounterFeature.State(count: 42)),
-              .counter(CounterFeature.State(count: 1729)),
-              .counter(CounterFeature.State(count: -999)),
+//              .counter(CounterFeature.State(count: 42)),
+//              .counter(CounterFeature.State(count: 1729)),
+//              .counter(CounterFeature.State(count: -999)),
             ]
           ),
           reducer: RootFeature()._printChanges()

@@ -35,7 +35,9 @@ struct NavigationStackStore<
     ) { viewStore in
       NavigationStack(
         path: viewStore.binding(
-          get: { $0 },
+          get: { _ in
+            ViewStore(self.store, observe: { $0 }).state
+          },
           send: { .setPath($0) }
         )
       ) {
