@@ -3,6 +3,42 @@ import SwiftUI
 import SwiftUINavigation
 
 extension Reducer {
+  func forEach<ElementState, ElementAction, Element: Reducer>(
+    _ toElementsState: WritableKeyPath<State, StackState<ElementState>>,
+    action toStackAction: CasePath<Action, _StackAction<ElementState, ElementAction>>,
+    @ReducerBuilder<ElementState, ElementAction> element: () -> Element,
+    file: StaticString = #file,
+    fileID: StaticString = #fileID,
+    line: UInt = #line
+  ) -> some ReducerOf<Self>
+  where ElementState == Element.State, ElementAction == Element.Action {
+    let element = element()
+
+    return Reduce { state, action in
+      switch toStackAction.extract(from: action) {
+      case let .element(id: id, action: childAction):
+        if state[keyPath: toElementsState].elements[id: id] == nil {
+          XCTFail("Action was sent for an element that does not exist")
+          return self.reduce(into: &state, action: action)
+        }
+
+        return .merge(
+          element
+            .reduce(into: &state[keyPath: toElementsState].elements[id: id]!.element, action: childAction)
+            .map { toStackAction.embed(.element(id: id, action: $0)) },
+          self.reduce(into: &state, action: action)
+        )
+
+      case let .setPath(path):
+        state[keyPath: toElementsState] = path
+        return self.reduce(into: &state, action: action)
+
+      case .none:
+        return self.reduce(into: &state, action: action)
+      }
+    }
+  }
+
   func forEach<ElementState: Identifiable, ElementAction, Element: Reducer>(
     _ toElementsState: WritableKeyPath<State, IdentifiedArrayOf<ElementState>>,
     action toStackAction: CasePath<Action, StackAction<ElementState, ElementAction>>,
@@ -40,9 +76,88 @@ extension Reducer {
   }
 }
 
+struct StackState<Element> {
+  fileprivate var elements: IdentifiedArrayOf<Component> = []
+
+  fileprivate struct Component: Identifiable {
+    let id: UUID
+    var element: Element
+  }
+
+  mutating func append(_ element: Element) {
+    self.elements.append(Component(id: UUID(), element: element))
+  }
+}
+
+extension StackState.Component: Hashable {
+  static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.id == rhs.id
+  }
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(self.id)
+  }
+}
+
+enum _StackAction<State, Action> {
+  case element(id: UUID, action: Action)
+  case setPath(StackState<State>)
+}
+
 enum StackAction<State: Identifiable, Action> {
   case element(id: State.ID, action: Action)
   case setPath(IdentifiedArrayOf<State>)
+}
+
+struct _NavigationStackStore<
+  Root: View,
+  PathState,
+  PathAction,
+  Destination: View
+>: View {
+  let store: Store<StackState<PathState>, _StackAction<PathState, PathAction>>
+  let root: Root
+  let destination: (PathState) -> Destination
+
+  init(
+    _ store: Store<StackState<PathState>, _StackAction<PathState, PathAction>>,
+    @ViewBuilder root: () -> Root,
+    @ViewBuilder destination: @escaping (PathState) -> Destination
+  ) {
+    self.store = store
+    self.root = root()
+    self.destination = destination
+  }
+
+  var body: some View {
+    WithViewStore(
+      self.store,
+      observe: { $0 },
+      removeDuplicates: { $0.elements.ids == $1.elements.ids }
+    ) { viewStore in
+      NavigationStack(
+        path: viewStore.binding(
+          get: { _ in
+            ViewStore(self.store, observe: { $0 }, removeDuplicates: { _, _ in true }).state.elements
+          },
+          send: { .setPath(StackState(elements: $0)) }
+        )
+      ) {
+        self.root
+          .navigationDestination(for: StackState<PathState>.Component.self) { component in
+            SwitchStore(
+              self.store.scope(
+                state: { $0.elements[id: component.id]?.element ?? component.element },
+                action: {
+                  .element(id: component.id, action: $0)
+                }
+              )
+            ) { state in
+              self.destination(state)
+            }
+          }
+      }
+    }
+  }
 }
 
 struct NavigationStackStore<
