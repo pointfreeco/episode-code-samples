@@ -79,6 +79,12 @@ struct StackState<Element> {
     self.elements.append(Component(id: UUID(), element: element))
   }
 }
+extension StackState: Collection {
+  var startIndex: Int { self.elements.startIndex }
+  var endIndex: Int { self.elements.endIndex }
+  func index(after i: Int) -> Int { self.elements.index(after: i) }
+  subscript(position: Int) -> Element { self.elements[position].element }
+}
 extension StackState: Equatable where Element: Equatable {
   static func == (lhs: Self, rhs: Self) -> Bool {
     guard lhs.elements.count == rhs.elements.count
