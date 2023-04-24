@@ -8,11 +8,18 @@ struct InventoryApp: App {
       RootView(
         store: Store(
           initialState: RootFeature.State(
-            path: [
-//              .counter(CounterFeature.State(count: 42)),
-//              .counter(CounterFeature.State(count: 1729)),
-//              .counter(CounterFeature.State(count: -999)),
-            ]
+            path: StackState([
+              .counter(CounterFeature.State(count: 42)),
+              .counter(CounterFeature.State(count: 1729)),
+              .counter(CounterFeature.State(count: -999)),
+            ])
+            /*
+             state.path = [
+               state.path[0],
+               .counter(…),
+               state.path[1],
+             ]
+             */
           ),
           reducer: RootFeature()._printChanges()
         )

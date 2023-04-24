@@ -2,8 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 struct CounterFeature: Reducer {
-  struct State: Equatable, Hashable, Identifiable {
-    let id = UUID()
+  struct State: Equatable {
     var count = 0
     var isLoading = false
     var isTimerOn = false
@@ -93,7 +92,7 @@ struct CounterView: View {
         }
 
         NavigationLink(
-          value: RootFeature.Path.State.counter(
+          state: RootFeature.Path.State.counter(
             CounterFeature.State(count: viewStore.count)
           )
         ) {
@@ -110,7 +109,7 @@ struct CounterView: View {
         }
 
         NavigationLink(
-          value: RootFeature.Path.State.numberFact(
+          state: RootFeature.Path.State.numberFact(
             NumberFactFeature.State(number: viewStore.count)
           )
         ) {
@@ -123,8 +122,7 @@ struct CounterView: View {
 }
 
 struct NumberFactFeature: Reducer {
-  struct State: Hashable, Identifiable {
-    let id = UUID()
+  struct State: Equatable {
     @PresentationState var alert: AlertState<AlertAction>?
     let number: Int
   }
@@ -187,26 +185,16 @@ struct NumberFactView: View {
 
 struct RootFeature: Reducer {
   struct State: Equatable {
-    var path: IdentifiedArrayOf<Path.State> = []
+    var path: StackState<Path.State> = StackState()
   }
   enum Action {
     case goToCounterButtonTapped
     case path(StackAction<Path.State, Path.Action>)
-//    case path(id: Path.State.ID, action: Path.Action)
-//    case setPath(IdentifiedArrayOf<Path.State>)
   }
   struct Path: Reducer {
-    enum State: Hashable, Identifiable {
+    enum State: Equatable {
       case counter(CounterFeature.State)
       case numberFact(NumberFactFeature.State)
-      var id: AnyHashable {
-        switch self {
-        case let .counter(state):
-          return state.id
-        case let .numberFact(state):
-          return state.id
-        }
-      }
     }
     enum Action {
       case counter(CounterFeature.Action)

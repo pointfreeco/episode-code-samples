@@ -2,10 +2,25 @@ import ComposableArchitecture
 import SwiftUI
 import SwiftUINavigation
 
+extension NavigationLink where Destination == Never {
+  init<Element>(
+    state element: Element,
+    @ViewBuilder label: () -> Label
+  ) {
+    self.init(
+      value: StackState<Element>.Component(
+        id: UUID(),
+        element: element
+      ),
+      label: label
+    )
+  }
+}
+
 extension Reducer {
   func forEach<ElementState, ElementAction, Element: Reducer>(
     _ toElementsState: WritableKeyPath<State, StackState<ElementState>>,
-    action toStackAction: CasePath<Action, _StackAction<ElementState, ElementAction>>,
+    action toStackAction: CasePath<Action, StackAction<ElementState, ElementAction>>,
     @ReducerBuilder<ElementState, ElementAction> element: () -> Element,
     file: StaticString = #file,
     fileID: StaticString = #fileID,
@@ -38,46 +53,22 @@ extension Reducer {
       }
     }
   }
-
-  func forEach<ElementState: Identifiable, ElementAction, Element: Reducer>(
-    _ toElementsState: WritableKeyPath<State, IdentifiedArrayOf<ElementState>>,
-    action toStackAction: CasePath<Action, StackAction<ElementState, ElementAction>>,
-    @ReducerBuilder<ElementState, ElementAction> element: () -> Element,
-    file: StaticString = #file,
-    fileID: StaticString = #fileID,
-    line: UInt = #line
-  ) -> some ReducerOf<Self>
-  where ElementState == Element.State, ElementAction == Element.Action {
-    let element = element()
-
-    return Reduce { state, action in
-      switch toStackAction.extract(from: action) {
-      case let .element(id: id, action: childAction):
-        if state[keyPath: toElementsState][id: id] == nil {
-          XCTFail("Action was sent for an element that does not exist")
-          return self.reduce(into: &state, action: action)
-        }
-
-        return .merge(
-          element
-            .reduce(into: &state[keyPath: toElementsState][id: id]!, action: childAction)
-            .map { toStackAction.embed(.element(id: id, action: $0)) },
-          self.reduce(into: &state, action: action)
-        )
-
-      case let .setPath(path):
-        state[keyPath: toElementsState] = path
-        return self.reduce(into: &state, action: action)
-
-      case .none:
-        return self.reduce(into: &state, action: action)
-      }
-    }
-  }
 }
 
 struct StackState<Element> {
   fileprivate var elements: IdentifiedArrayOf<Component> = []
+
+  fileprivate init(elements: IdentifiedArrayOf<Component> = []) {
+    self.elements = elements
+  }
+
+  init() {
+  }
+  init<S: Sequence>(_ elements: S) where S.Element == Element {
+    self.elements = IdentifiedArray(
+      uncheckedUniqueElements: elements.map { Component(id: UUID(), element: $0) }
+    )
+  }
 
   fileprivate struct Component: Identifiable {
     let id: UUID
@@ -86,6 +77,15 @@ struct StackState<Element> {
 
   mutating func append(_ element: Element) {
     self.elements.append(Component(id: UUID(), element: element))
+  }
+}
+extension StackState: Equatable where Element: Equatable {
+  static func == (lhs: Self, rhs: Self) -> Bool {
+    guard lhs.elements.count == rhs.elements.count
+    else { return false }
+    return zip(lhs.elements, rhs.elements).allSatisfy {
+      $0.id == $1.id && $0.element == $1.element
+    }
   }
 }
 
@@ -98,28 +98,23 @@ extension StackState.Component: Hashable {
   }
 }
 
-enum _StackAction<State, Action> {
+enum StackAction<State, Action> {
   case element(id: UUID, action: Action)
   case setPath(StackState<State>)
 }
 
-enum StackAction<State: Identifiable, Action> {
-  case element(id: State.ID, action: Action)
-  case setPath(IdentifiedArrayOf<State>)
-}
-
-struct _NavigationStackStore<
+struct NavigationStackStore<
   Root: View,
   PathState,
   PathAction,
   Destination: View
 >: View {
-  let store: Store<StackState<PathState>, _StackAction<PathState, PathAction>>
+  let store: Store<StackState<PathState>, StackAction<PathState, PathAction>>
   let root: Root
   let destination: (PathState) -> Destination
 
   init(
-    _ store: Store<StackState<PathState>, _StackAction<PathState, PathAction>>,
+    _ store: Store<StackState<PathState>, StackAction<PathState, PathAction>>,
     @ViewBuilder root: () -> Root,
     @ViewBuilder destination: @escaping (PathState) -> Destination
   ) {
@@ -149,58 +144,6 @@ struct _NavigationStackStore<
                 state: { $0.elements[id: component.id]?.element ?? component.element },
                 action: {
                   .element(id: component.id, action: $0)
-                }
-              )
-            ) { state in
-              self.destination(state)
-            }
-          }
-      }
-    }
-  }
-}
-
-struct NavigationStackStore<
-  Root: View,
-  PathState: Hashable & Identifiable,
-  PathAction,
-  Destination: View
->: View {
-  let store: Store<IdentifiedArrayOf<PathState>, StackAction<PathState, PathAction>>
-  let root: Root
-  let destination: (PathState) -> Destination
-
-  init(
-    _ store: Store<IdentifiedArrayOf<PathState>, StackAction<PathState, PathAction>>,
-    @ViewBuilder root: () -> Root,
-    @ViewBuilder destination: @escaping (PathState) -> Destination
-  ) {
-    self.store = store
-    self.root = root()
-    self.destination = destination
-  }
-
-  var body: some View {
-    WithViewStore(
-      self.store,
-      observe: { $0 },
-      removeDuplicates: { $0.ids == $1.ids }
-    ) { viewStore in
-      NavigationStack(
-        path: viewStore.binding(
-          get: { _ in
-            ViewStore(self.store, observe: { $0 }).state
-          },
-          send: { .setPath($0) }
-        )
-      ) {
-        self.root
-          .navigationDestination(for: PathState.self) { pathState in
-            SwitchStore(
-              self.store.scope(
-                state: { $0[id: pathState.id] ?? pathState },
-                action: {
-                  .element(id: pathState.id, action: $0)
                 }
               )
             ) { state in
