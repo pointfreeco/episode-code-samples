@@ -526,8 +526,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture.git";
 			requirement = {
-				kind = revision;
-				revision = bcf5683aecdba339d309848c50b7f33fed887709;
+				branch = "for-tca-nav-eps";
+				kind = branch;
 			};
 		};
 		2AD4AD5129B9512C00F691CF /* XCRemoteSwiftPackageReference "swift-custom-dump" */ = {

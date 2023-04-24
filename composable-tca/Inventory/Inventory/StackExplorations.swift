@@ -258,7 +258,9 @@ struct RootView: View {
         action: RootFeature.Action.path
       )
     ) {
-      // ...
+      Button("Go to counter") {
+        viewStore.send(.goToCounterButtonTapped)
+      }
     } destination: { state in
       switch state {
       case .counter:
@@ -275,6 +277,8 @@ struct RootView: View {
         )
       }
     }
+
+
     WithViewStore(self.store, observe: { $0 }) { viewStore in
       NavigationStack(
         path: viewStore.binding(
