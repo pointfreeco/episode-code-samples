@@ -2,6 +2,44 @@ import ComposableArchitecture
 import SwiftUI
 import SwiftUINavigation
 
+extension Reducer {
+  func forEach<ElementState: Identifiable, ElementAction, Element: Reducer>(
+    _ toElementsState: WritableKeyPath<State, IdentifiedArrayOf<ElementState>>,
+    action toStackAction: CasePath<Action, StackAction<ElementState, ElementAction>>,
+    @ReducerBuilder<ElementState, ElementAction> element: () -> Element,
+    file: StaticString = #file,
+    fileID: StaticString = #fileID,
+    line: UInt = #line
+  ) -> some ReducerOf<Self>
+  where ElementState == Element.State, ElementAction == Element.Action {
+    let element = element()
+
+    return Reduce { state, action in
+      switch toStackAction.extract(from: action) {
+      case let .element(id: id, action: childAction):
+        if state[keyPath: toElementsState][id: id] == nil {
+          XCTFail("Action was sent for an element that does not exist")
+          return self.reduce(into: &state, action: action)
+        }
+
+        return .merge(
+          element
+            .reduce(into: &state[keyPath: toElementsState][id: id]!, action: childAction)
+            .map { toStackAction.embed(.element(id: id, action: $0)) },
+          self.reduce(into: &state, action: action)
+        )
+
+      case let .setPath(path):
+        state[keyPath: toElementsState] = path
+        return self.reduce(into: &state, action: action)
+
+      case .none:
+        return self.reduce(into: &state, action: action)
+      }
+    }
+  }
+}
+
 enum StackAction<State: Identifiable, Action> {
   case element(id: State.ID, action: Action)
   case setPath(IdentifiedArrayOf<State>)
