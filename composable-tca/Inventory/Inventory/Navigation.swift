@@ -43,21 +43,33 @@ extension Reducer {
 
         effects = .merge(
           element
+            .dependency(\.dismiss, DismissEffect {
+              Task.cancel(id: DismissID(id: id))
+            })
             .reduce(into: &state[keyPath: toElementsState].elements[id: id]!.element, action: childAction)
             .map { toStackAction.embed(.element(id: id, action: $0)) }
             .cancellable(id: id),
           self.reduce(into: &state, action: action)
         )
 
-      case let .setPath(path):
-        state[keyPath: toElementsState] = path
+      case let .push(element):
+        state[keyPath: toElementsState].append(element)
         effects = self.reduce(into: &state, action: action)
+
+      case let .popFrom(id: id):
+        effects = self.reduce(into: &state, action: action)
+        if !state[keyPath: toElementsState].elements.ids.contains(id) {
+          XCTFail("Tried popping an element off the stack that does not exist.")
+        } else {
+          state[keyPath: toElementsState].pop(from: id)
+        }
 
       case .none:
         effects = self.reduce(into: &state, action: action)
       }
 
       let idsAfter = state[keyPath: toElementsState].elements.ids
+      let idsPresented = state[keyPath: toElementsState].idsPresented
 
       let cancelEffects: Effect<Action> = .merge(
         idsBefore.subtracting(idsAfter).map { id in
@@ -65,13 +77,29 @@ extension Reducer {
         }
       )
 
-      return .merge(effects, cancelEffects)
+      let onFirstAppearEffects: Effect<Action> = .merge(
+        idsAfter.subtracting(idsPresented).map { id in
+          state[keyPath: toElementsState].idsPresented.insert(id)
+          return .run { send in
+            do {
+              try await withTaskCancellation(id: DismissID(id: id)) {
+                try await Task.never()
+              }
+            } catch is CancellationError {
+              await send(toStackAction.embed(.popFrom(id: id)))
+            }
+          }
+        }
+      )
+
+      return .merge(effects, cancelEffects, onFirstAppearEffects)
     }
   }
 }
 
 struct StackState<Element> {
   fileprivate var elements: IdentifiedArrayOf<Component> = []
+  fileprivate var idsPresented = Set<UUID>()
 
   fileprivate init(elements: IdentifiedArrayOf<Component> = []) {
     self.elements = elements
@@ -92,6 +120,17 @@ struct StackState<Element> {
 
   mutating func append(_ element: Element) {
     self.elements.append(Component(id: UUID(), element: element))
+  }
+
+  mutating func pop(from id: UUID) {
+    guard let index = self.elements.ids.firstIndex(of: id)
+    else {
+      return
+    }
+    for id in self.elements.ids[index...] {
+      self.idsPresented.remove(id)
+    }
+    self.elements.removeSubrange(index...)
   }
 }
 extension StackState: Collection {
@@ -126,7 +165,9 @@ extension StackState: CustomDumpReflectable {
 
 enum StackAction<State, Action> {
   case element(id: UUID, action: Action)
-  case setPath(StackState<State>)
+//  case setPath(StackState<State>)
+  case push(State)
+  case popFrom(id: UUID)
 }
 
 struct NavigationStackStore<
@@ -160,7 +201,15 @@ struct NavigationStackStore<
           get: { _ in
             ViewStore(self.store, observe: { $0 }, removeDuplicates: { _, _ in true }).state.elements
           },
-          send: { .setPath(StackState(elements: $0)) }
+          send: { newStack in
+            let currentStack = ViewStore(self.store, observe: { $0 }, removeDuplicates: { _, _ in true }).state.elements
+
+            if newStack.count > currentStack.count, let component = newStack.last {
+              return .push(component.element)
+            } else {
+              return .popFrom(id: currentStack[newStack.count].id)
+            }
+          }
         )
       ) {
         self.root
@@ -323,7 +372,7 @@ extension Reducer {
           state[keyPath: stateKeyPath].isPresented = true
           onFirstAppearEffect = .run { send in
             do {
-              try await withTaskCancellation(id:  DismissID(id: childStateAfter.id)) {
+              try await withTaskCancellation(id: DismissID(id: childStateAfter.id)) {
                 try await Task.never()
               }
             } catch is CancellationError {
@@ -383,7 +432,11 @@ extension DismissEffect {
   }
 }
 extension DismissEffect: DependencyKey {
-  static var liveValue = DismissEffect(dismiss: {})
+  static var liveValue = DismissEffect(dismiss: {
+    XCTFail("""
+      Trying to dismiss from a context that does not support dismissal.
+      """)
+  })
   static var testValue = DismissEffect(dismiss: {})
 }
 extension DependencyValues {

@@ -21,6 +21,7 @@ struct CounterFeature: Reducer {
     }
   }
   private enum CancelID { case timer }
+  @Dependency(\.dismiss) var dismiss
   func reduce(into state: inout State, action: Action) -> Effect<Action> {
     switch action {
     case .decrementButtonTapped:
@@ -46,12 +47,16 @@ struct CounterFeature: Reducer {
       if Bool.random() {
         return .send(.delegate(.goToCounter(state.count)))
       } else {
-        return .none
+        return .fireAndForget { await self.dismiss() }
       }
 
     case .timerTick:
       state.count += 1
-      return .none
+      if state.count >= 100 {
+        return .fireAndForget { await self.dismiss() }
+      } else {
+        return .none
+      }
 
     case .toggleTimerButtonTapped:
       state.isTimerOn.toggle()
