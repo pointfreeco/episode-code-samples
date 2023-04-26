@@ -208,6 +208,60 @@ class StackExplorationTests: XCTestCase {
     await store.send(.path(.popFrom(id: store.state.path.ids[0])))
     XCTAssertEqual(store.state.sum, 0)
   }
+
+  func testCounterFeature_TimerDismissal() async {
+    let store = TestStore(
+      initialState: RootFeature.State(
+        path: StackState([
+          .counter(CounterFeature.State(count: 97))
+        ])
+      ),
+      reducer: RootFeature()
+    ) {
+      $0.continuousClock = ImmediateClock()
+    }
+
+    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.toggleTimerButtonTapped)))) {
+      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+        $0.isTimerOn = true
+      }
+    }
+    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.timerTick)))) {
+      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+        $0.count = 98
+      }
+    }
+    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.timerTick)))) {
+      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+        $0.count = 99
+      }
+    }
+    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.timerTick)))) {
+      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+        $0.count = 100
+      }
+    }
+    await store.receive(.path(.popFrom(id: store.state.path.ids[0]))) {
+      $0.path = StackState()
+    }
+  }
+
+  func testCounterFeature_TimerDismissal_NonExhaustive() async {
+    let store = TestStore(
+      initialState: RootFeature.State(
+        path: StackState([
+          .counter(CounterFeature.State(count: 97))
+        ])
+      ),
+      reducer: RootFeature()
+    ) {
+      $0.continuousClock = ImmediateClock()
+    }
+    store.exhaustivity = .off
+
+    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.toggleTimerButtonTapped))))
+    await store.receive(.path(.popFrom(id: store.state.path.ids[0])))
+  }
 }
 
 
