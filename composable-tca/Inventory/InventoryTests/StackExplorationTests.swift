@@ -149,6 +149,65 @@ class StackExplorationTests: XCTestCase {
       $0.path[id: $0.path.ids[1]] = .counter(CounterFeature.State(count: 42))
     }
   }
+
+  func testSummary() async {
+    let store = TestStore(
+      initialState: RootFeature.State(),
+      reducer: RootFeature()
+    )
+
+    XCTAssertEqual(store.state.sum, 0)
+    await store.send(.path(.push(.counter(CounterFeature.State(count: 42))))) {
+      $0.path.append(.counter(CounterFeature.State(count: 42)))
+    }
+    XCTAssertEqual(store.state.sum, 42)
+    await store.send(.path(.push(.counter(CounterFeature.State(count: 1729))))) {
+      $0.path.append(.counter(CounterFeature.State(count: 1729)))
+    }
+    XCTAssertEqual(store.state.sum, 1771)
+    await store.send(.path(.push(.numberFact(NumberFactFeature.State(number: 1771))))) {
+      $0.path.append(.numberFact(NumberFactFeature.State(number: 1771)))
+    }
+    XCTAssertEqual(store.state.sum, 1771)
+    await store.send(.path(.popFrom(id: store.state.path.ids[1]))) {
+      $0.path.pop(from: $0.path.ids[1])
+    }
+    XCTAssertEqual(store.state.sum, 42)
+    await store.send(.path(.popFrom(id: store.state.path.ids[0]))) {
+      $0.path.pop(from: $0.path.ids[0])
+    }
+    XCTAssertEqual(store.state.sum, 0)
+  }
+
+  func testSummary_NonExhaustive() async {
+    let clock = TestClock()
+    let store = TestStore(
+      initialState: RootFeature.State(),
+      reducer: RootFeature()
+    ) {
+      $0.continuousClock = clock
+    }
+    store.exhaustivity = .off(showSkippedAssertions: true)
+
+    XCTAssertEqual(store.state.sum, 0)
+    await store.send(.path(.push(.counter(CounterFeature.State(count: 42)))))
+    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.toggleTimerButtonTapped))))
+    XCTAssertEqual(store.state.sum, 42)
+    await store.send(.path(.push(.counter(CounterFeature.State(count: 55)))))
+    await store.send(.path(.element(id: store.state.path.ids[1], action: .counter(.toggleTimerButtonTapped))))
+    XCTAssertEqual(store.state.sum, 97)
+    await store.send(.path(.push(.numberFact(NumberFactFeature.State(number: 55)))))
+    XCTAssertEqual(store.state.sum, 97)
+
+    await clock.advance(by: .seconds(5))
+    await store.skipReceivedActions()
+    XCTAssertEqual(store.state.sum, 107)
+
+    await store.send(.path(.popFrom(id: store.state.path.ids[1])))
+    XCTAssertEqual(store.state.sum, 47)
+    await store.send(.path(.popFrom(id: store.state.path.ids[0])))
+    XCTAssertEqual(store.state.sum, 0)
+  }
 }
 
 
