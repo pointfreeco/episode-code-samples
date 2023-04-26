@@ -89,6 +89,7 @@ extension Reducer {
               await send(toStackAction.embed(.popFrom(id: id)))
             }
           }
+          .cancellable(id: id)
         }
       )
 
@@ -96,6 +97,8 @@ extension Reducer {
     }
   }
 }
+
+import OrderedCollections
 
 struct StackState<Element> {
   fileprivate var elements: IdentifiedArrayOf<Component> = []
@@ -105,12 +108,23 @@ struct StackState<Element> {
     self.elements = elements
   }
 
+  var ids: OrderedSet<UUID> {
+    self.elements.ids
+  }
+
   init() {
   }
   init<S: Sequence>(_ elements: S) where S.Element == Element {
     self.elements = IdentifiedArray(
       uncheckedUniqueElements: elements.map { Component(id: UUID(), element: $0) }
     )
+  }
+
+  subscript(id id: UUID) -> Element? {
+    get { self.elements[id: id]?.element }
+    set {
+      self.elements[id: id] = newValue.map { .init(id: id, element: $0) }
+    }
   }
 
   fileprivate struct Component: Identifiable {
