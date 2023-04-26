@@ -30,27 +30,42 @@ extension Reducer {
     let element = element()
 
     return Reduce { state, action in
+      let idsBefore = state[keyPath: toElementsState].elements.ids
+      let effects: Effect<Action>
+
       switch toStackAction.extract(from: action) {
       case let .element(id: id, action: childAction):
         if state[keyPath: toElementsState].elements[id: id] == nil {
           XCTFail("Action was sent for an element that does not exist")
-          return self.reduce(into: &state, action: action)
+          effects = self.reduce(into: &state, action: action)
+          break
         }
 
-        return .merge(
+        effects = .merge(
           element
             .reduce(into: &state[keyPath: toElementsState].elements[id: id]!.element, action: childAction)
-            .map { toStackAction.embed(.element(id: id, action: $0)) },
+            .map { toStackAction.embed(.element(id: id, action: $0)) }
+            .cancellable(id: id),
           self.reduce(into: &state, action: action)
         )
 
       case let .setPath(path):
         state[keyPath: toElementsState] = path
-        return self.reduce(into: &state, action: action)
+        effects = self.reduce(into: &state, action: action)
 
       case .none:
-        return self.reduce(into: &state, action: action)
+        effects = self.reduce(into: &state, action: action)
       }
+
+      let idsAfter = state[keyPath: toElementsState].elements.ids
+
+      let cancelEffects: Effect<Action> = .merge(
+        idsBefore.subtracting(idsAfter).map { id in
+          .cancel(id: id)
+        }
+      )
+
+      return .merge(effects, cancelEffects)
     }
   }
 }
@@ -101,6 +116,11 @@ extension StackState.Component: Hashable {
   }
   func hash(into hasher: inout Hasher) {
     hasher.combine(self.id)
+  }
+}
+extension StackState: CustomDumpReflectable {
+  var customDumpMirror: Mirror {
+    Mirror(reflecting: self.elements.map { (id: $0.id, element: $0.element) })
   }
 }
 
