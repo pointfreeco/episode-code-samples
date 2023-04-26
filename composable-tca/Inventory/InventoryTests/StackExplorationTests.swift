@@ -9,12 +9,14 @@ class StackExplorationTests: XCTestCase {
     let store = TestStore(
       initialState: RootFeature.State(),
       reducer: RootFeature()
-    )
+    ) {
+      $0.uuid = .incrementing
+    }
 
     await store.send(.path(.push(.counter()))) {
-      $0.path.append(.counter())
+      $0.path[id: UUID(0)] = .counter()
     }
-    await store.send(.path(.popFrom(id: store.state.path.ids[0]))) {
+    await store.send(.path(.popFrom(id: UUID(0)))) {
       $0.path = StackState()
     }
   }
@@ -27,14 +29,16 @@ class StackExplorationTests: XCTestCase {
         ])
       ),
       reducer: RootFeature()
-    )
+    ) {
+      $0.uuid = .incrementing
+    }
 
-    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.incrementButtonTapped)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.send(.path(.element(id: UUID(0), action: .counter(.incrementButtonTapped)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.count = 1
       }
     }
-    await store.send(.path(.popFrom(id: store.state.path.ids[0]))) {
+    await store.send(.path(.popFrom(id: UUID(0)))) {
       $0.path = StackState()
     }
   }
@@ -50,32 +54,33 @@ class StackExplorationTests: XCTestCase {
       reducer: RootFeature()
     ) {
       $0.continuousClock = clock
+      $0.uuid = .incrementing
     }
 
-    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.toggleTimerButtonTapped)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.send(.path(.element(id: UUID(0), action: .counter(.toggleTimerButtonTapped)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.isTimerOn = true
       }
     }
     await clock.advance(by: .seconds(1))
-    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.timerTick)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.receive(.path(.element(id: UUID(0), action: .counter(.timerTick)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.count = 1
       }
     }
     await clock.advance(by: .seconds(1))
-    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.timerTick)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.receive(.path(.element(id: UUID(0), action: .counter(.timerTick)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.count = 2
       }
     }
     await clock.advance(by: .seconds(1))
-    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.timerTick)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.receive(.path(.element(id: UUID(0), action: .counter(.timerTick)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.count = 3
       }
     }
-    await store.send(.path(.popFrom(id: store.state.path.ids[0]))) {
+    await store.send(.path(.popFrom(id: UUID(0)))) {
       $0.path = StackState()
     }
   }
@@ -91,12 +96,13 @@ class StackExplorationTests: XCTestCase {
       reducer: RootFeature()
     ) {
       $0.continuousClock = clock
+      $0.uuid = .incrementing
     }
 
     XCTExpectFailure()
 
-    await store.send(.path(.element(id: store.state.path.ids[0], action: .numberFact(.factButtonTapped))))
-    await store.send(.path(.popFrom(id: store.state.path.ids[0]))) {
+    await store.send(.path(.element(id: UUID(0), action: .numberFact(.factButtonTapped))))
+    await store.send(.path(.popFrom(id: UUID(0)))) {
       $0.path = StackState()
     }
   }
@@ -111,22 +117,23 @@ class StackExplorationTests: XCTestCase {
       reducer: RootFeature()
     ) {
       $0.continuousClock = ImmediateClock()
+      $0.uuid = .incrementing
     }
 
-    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.loadAndGoToCounterButtonTapped)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.send(.path(.element(id: UUID(0), action: .counter(.loadAndGoToCounterButtonTapped)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.isLoading = true
       }
     }
-    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.loadResponse)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.receive(.path(.element(id: UUID(0), action: .counter(.loadResponse)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.isLoading = false
       }
     }
-    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.delegate(.goToCounter(42)))))) {
-      $0.path.append(.counter(CounterFeature.State(count: 42)))
+    await store.receive(.path(.element(id: UUID(0), action: .counter(.delegate(.goToCounter(42)))))) {
+      $0.path[id: UUID(1)] = .counter(CounterFeature.State(count: 42))
     }
-    await store.send(.path(.popFrom(id: store.state.path.ids[0]))) {
+    await store.send(.path(.popFrom(id: UUID(0)))) {
       $0.path = StackState()
     }
   }
@@ -141,12 +148,13 @@ class StackExplorationTests: XCTestCase {
       reducer: RootFeature()
     ) {
       $0.continuousClock = ImmediateClock()
+      $0.uuid = .incrementing
     }
     store.exhaustivity = .off
 
-    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.loadAndGoToCounterButtonTapped))))
-    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.delegate(.goToCounter(42)))))) {
-      $0.path[id: $0.path.ids[1]] = .counter(CounterFeature.State(count: 42))
+    await store.send(.path(.element(id: UUID(0), action: .counter(.loadAndGoToCounterButtonTapped))))
+    await store.receive(.path(.element(id: UUID(0), action: .counter(.delegate(.goToCounter(42)))))) {
+      $0.path[id: UUID(1)] = .counter(CounterFeature.State(count: 42))
     }
   }
 
@@ -154,27 +162,29 @@ class StackExplorationTests: XCTestCase {
     let store = TestStore(
       initialState: RootFeature.State(),
       reducer: RootFeature()
-    )
+    ) {
+      $0.uuid = .incrementing
+    }
 
     XCTAssertEqual(store.state.sum, 0)
     await store.send(.path(.push(.counter(CounterFeature.State(count: 42))))) {
-      $0.path.append(.counter(CounterFeature.State(count: 42)))
+      $0.path[id: UUID(0)] = .counter(CounterFeature.State(count: 42))
     }
     XCTAssertEqual(store.state.sum, 42)
     await store.send(.path(.push(.counter(CounterFeature.State(count: 1729))))) {
-      $0.path.append(.counter(CounterFeature.State(count: 1729)))
+      $0.path[id: UUID(1)] = .counter(CounterFeature.State(count: 1729))
     }
     XCTAssertEqual(store.state.sum, 1771)
     await store.send(.path(.push(.numberFact(NumberFactFeature.State(number: 1771))))) {
-      $0.path.append(.numberFact(NumberFactFeature.State(number: 1771)))
+      $0.path[id: UUID(2)] = .numberFact(NumberFactFeature.State(number: 1771))
     }
     XCTAssertEqual(store.state.sum, 1771)
-    await store.send(.path(.popFrom(id: store.state.path.ids[1]))) {
-      $0.path.pop(from: $0.path.ids[1])
+    await store.send(.path(.popFrom(id: UUID(1)))) {
+      $0.path.pop(from: UUID(1))
     }
     XCTAssertEqual(store.state.sum, 42)
-    await store.send(.path(.popFrom(id: store.state.path.ids[0]))) {
-      $0.path.pop(from: $0.path.ids[0])
+    await store.send(.path(.popFrom(id: UUID(0)))) {
+      $0.path.pop(from: UUID(0))
     }
     XCTAssertEqual(store.state.sum, 0)
   }
@@ -186,15 +196,16 @@ class StackExplorationTests: XCTestCase {
       reducer: RootFeature()
     ) {
       $0.continuousClock = clock
+      $0.uuid = .incrementing
     }
     store.exhaustivity = .off(showSkippedAssertions: true)
 
     XCTAssertEqual(store.state.sum, 0)
     await store.send(.path(.push(.counter(CounterFeature.State(count: 42)))))
-    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.toggleTimerButtonTapped))))
+    await store.send(.path(.element(id: UUID(0), action: .counter(.toggleTimerButtonTapped))))
     XCTAssertEqual(store.state.sum, 42)
     await store.send(.path(.push(.counter(CounterFeature.State(count: 55)))))
-    await store.send(.path(.element(id: store.state.path.ids[1], action: .counter(.toggleTimerButtonTapped))))
+    await store.send(.path(.element(id: UUID(1), action: .counter(.toggleTimerButtonTapped))))
     XCTAssertEqual(store.state.sum, 97)
     await store.send(.path(.push(.numberFact(NumberFactFeature.State(number: 55)))))
     XCTAssertEqual(store.state.sum, 97)
@@ -203,9 +214,9 @@ class StackExplorationTests: XCTestCase {
     await store.skipReceivedActions()
     XCTAssertEqual(store.state.sum, 107)
 
-    await store.send(.path(.popFrom(id: store.state.path.ids[1])))
+    await store.send(.path(.popFrom(id: UUID(1))))
     XCTAssertEqual(store.state.sum, 47)
-    await store.send(.path(.popFrom(id: store.state.path.ids[0])))
+    await store.send(.path(.popFrom(id: UUID(0))))
     XCTAssertEqual(store.state.sum, 0)
   }
 
@@ -219,29 +230,30 @@ class StackExplorationTests: XCTestCase {
       reducer: RootFeature()
     ) {
       $0.continuousClock = ImmediateClock()
+      $0.uuid = .incrementing
     }
 
-    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.toggleTimerButtonTapped)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.send(.path(.element(id: UUID(0), action: .counter(.toggleTimerButtonTapped)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.isTimerOn = true
       }
     }
-    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.timerTick)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.receive(.path(.element(id: UUID(0), action: .counter(.timerTick)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.count = 98
       }
     }
-    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.timerTick)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.receive(.path(.element(id: UUID(0), action: .counter(.timerTick)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.count = 99
       }
     }
-    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.timerTick)))) {
-      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+    await store.receive(.path(.element(id: UUID(0), action: .counter(.timerTick)))) {
+      XCTModify(&$0.path[id: UUID(0)], case: /RootFeature.Path.State.counter) {
         $0.count = 100
       }
     }
-    await store.receive(.path(.popFrom(id: store.state.path.ids[0]))) {
+    await store.receive(.path(.popFrom(id: UUID(0)))) {
       $0.path = StackState()
     }
   }
@@ -256,11 +268,12 @@ class StackExplorationTests: XCTestCase {
       reducer: RootFeature()
     ) {
       $0.continuousClock = ImmediateClock()
+      $0.uuid = .incrementing
     }
     store.exhaustivity = .off
 
-    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.toggleTimerButtonTapped))))
-    await store.receive(.path(.popFrom(id: store.state.path.ids[0])))
+    await store.send(.path(.element(id: UUID(0), action: .counter(.toggleTimerButtonTapped))))
+    await store.receive(.path(.popFrom(id: UUID(0))))
   }
 }
 

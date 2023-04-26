@@ -103,6 +103,7 @@ import OrderedCollections
 struct StackState<Element> {
   fileprivate var elements: IdentifiedArrayOf<Component> = []
   fileprivate var idsPresented = Set<UUID>()
+  @Dependency(\.uuid) var uuid
 
   fileprivate init(elements: IdentifiedArrayOf<Component> = []) {
     self.elements = elements
@@ -116,7 +117,7 @@ struct StackState<Element> {
   }
   init<S: Sequence>(_ elements: S) where S.Element == Element {
     self.elements = IdentifiedArray(
-      uncheckedUniqueElements: elements.map { Component(id: UUID(), element: $0) }
+      uncheckedUniqueElements: elements.map { Component(id: self.uuid(), element: $0) }
     )
   }
 
@@ -133,7 +134,7 @@ struct StackState<Element> {
   }
 
   mutating func append(_ element: Element) {
-    self.elements.append(Component(id: UUID(), element: element))
+    self.elements.append(Component(id: self.uuid(), element: element))
   }
 
   mutating func pop(from id: UUID) {
