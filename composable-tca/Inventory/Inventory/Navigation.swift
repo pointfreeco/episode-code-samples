@@ -183,6 +183,7 @@ enum StackAction<State, Action> {
   case push(State)
   case popFrom(id: UUID)
 }
+extension StackAction: Equatable where State: Equatable, Action: Equatable {}
 
 struct NavigationStackStore<
   Root: View,

@@ -7,7 +7,7 @@ struct CounterFeature: Reducer {
     var isLoading = false
     var isTimerOn = false
   }
-  enum Action {
+  enum Action: Equatable {
     case decrementButtonTapped
     case delegate(Delegate)
     case incrementButtonTapped
@@ -16,11 +16,12 @@ struct CounterFeature: Reducer {
     case timerTick
     case toggleTimerButtonTapped
 
-    enum Delegate {
+    enum Delegate: Equatable {
       case goToCounter(Int)
     }
   }
   private enum CancelID { case timer }
+  @Dependency(\.continuousClock) var clock
   @Dependency(\.dismiss) var dismiss
   func reduce(into state: inout State, action: Action) -> Effect<Action> {
     switch action {
@@ -38,7 +39,7 @@ struct CounterFeature: Reducer {
     case .loadAndGoToCounterButtonTapped:
       state.isLoading = true
       return .run { send in
-        try await Task.sleep(for: .seconds(2))
+        try await self.clock.sleep(for: .seconds(2))
         await send(.loadResponse)
       }
 
@@ -63,8 +64,7 @@ struct CounterFeature: Reducer {
       if state.isTimerOn {
         // Start up a timer
         return .run { send in
-          while true {
-            try await Task.sleep(for: .seconds(1))
+          for await _ in self.clock.timer(interval: .seconds(1)) {
             await send(.timerTick)
           }
         }
@@ -139,7 +139,7 @@ struct NumberFactFeature: Reducer {
     @PresentationState var alert: AlertState<AlertAction>?
     let number: Int
   }
-  enum Action {
+  enum Action: Equatable {
     case alert(PresentationAction<AlertAction>)
     case factButtonTapped
     case factResponse(TaskResult<String>)
@@ -295,7 +295,7 @@ struct RootFeature: Reducer {
       }
     }
   }
-  enum Action {
+  enum Action: Equatable {
     case path(StackAction<Path.State, Path.Action>)
   }
   struct Path: Reducer {
@@ -304,7 +304,7 @@ struct RootFeature: Reducer {
       case numberFact(NumberFactFeature.State)
       case primeNumber(PrimeNumberFeature.State)
     }
-    enum Action {
+    enum Action: Equatable {
       case counter(CounterFeature.Action)
       case numberFact(NumberFactFeature.Action)
       case primeNumber(PrimeNumberFeature.Action)
