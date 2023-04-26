@@ -45,11 +45,7 @@ struct CounterFeature: Reducer {
 
     case .loadResponse:
       state.isLoading = false
-      if Bool.random() {
-        return .send(.delegate(.goToCounter(state.count)))
-      } else {
-        return .fireAndForget { await self.dismiss() }
-      }
+      return .send(.delegate(.goToCounter(state.count)))
 
     case .timerTick:
       state.count += 1

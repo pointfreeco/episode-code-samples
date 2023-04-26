@@ -100,6 +100,55 @@ class StackExplorationTests: XCTestCase {
       $0.path = StackState()
     }
   }
+
+  func testCounterFeature_LoadAndGoToCounter() async {
+    let store = TestStore(
+      initialState: RootFeature.State(
+        path: StackState([
+          .counter(CounterFeature.State(count: 42))
+        ])
+      ),
+      reducer: RootFeature()
+    ) {
+      $0.continuousClock = ImmediateClock()
+    }
+
+    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.loadAndGoToCounterButtonTapped)))) {
+      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+        $0.isLoading = true
+      }
+    }
+    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.loadResponse)))) {
+      XCTModify(&$0.path[id: $0.path.ids[0]], case: /RootFeature.Path.State.counter) {
+        $0.isLoading = false
+      }
+    }
+    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.delegate(.goToCounter(42)))))) {
+      $0.path.append(.counter(CounterFeature.State(count: 42)))
+    }
+    await store.send(.path(.popFrom(id: store.state.path.ids[0]))) {
+      $0.path = StackState()
+    }
+  }
+
+  func testCounterFeature_LoadAndGoToCounter_NonExhaustive() async {
+    let store = TestStore(
+      initialState: RootFeature.State(
+        path: StackState([
+          .counter(CounterFeature.State(count: 42))
+        ])
+      ),
+      reducer: RootFeature()
+    ) {
+      $0.continuousClock = ImmediateClock()
+    }
+    store.exhaustivity = .off
+
+    await store.send(.path(.element(id: store.state.path.ids[0], action: .counter(.loadAndGoToCounterButtonTapped))))
+    await store.receive(.path(.element(id: store.state.path.ids[0], action: .counter(.delegate(.goToCounter(42)))))) {
+      $0.path[id: $0.path.ids[1]] = .counter(CounterFeature.State(count: 42))
+    }
+  }
 }
 
 
