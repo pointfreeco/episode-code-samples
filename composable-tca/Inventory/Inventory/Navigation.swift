@@ -2,6 +2,39 @@ import ComposableArchitecture
 import SwiftUI
 import SwiftUINavigation
 
+struct StackElementID: Hashable {
+  fileprivate let uuid: UUID
+}
+extension StackElementID: ExpressibleByIntegerLiteral {
+  init(integerLiteral value: Int) {
+    @Dependency(\.context) var context
+    if context != .test {
+      XCTFail("This should only be called in tests.")
+    }
+    self.uuid = UUID(value)
+  }
+}
+
+struct StackElementIDGenerator {
+  let next: () -> StackElementID
+  func callAsFunction() -> StackElementID {
+    self.next()
+  }
+}
+extension StackElementIDGenerator: DependencyKey {
+  static let liveValue = Self { StackElementID(uuid: UUID()) }
+  static var testValue: Self {
+    let uuid = UUIDGenerator.incrementing
+    return Self { StackElementID(uuid: uuid()) }
+  }
+}
+extension DependencyValues {
+  var stackElementID: StackElementIDGenerator {
+    get { self[StackElementIDGenerator.self] }
+    set { self[StackElementIDGenerator.self] = newValue }
+  }
+}
+
 extension NavigationLink where Destination == Never {
   init<Element>(
     state element: Element,
@@ -9,7 +42,7 @@ extension NavigationLink where Destination == Never {
   ) {
     self.init(
       value: StackState<Element>.Component(
-        id: UUID(),
+        id: StackElementID(uuid: UUID()),
         element: element
       ),
       label: label
@@ -102,14 +135,14 @@ import OrderedCollections
 
 struct StackState<Element> {
   fileprivate var elements: IdentifiedArrayOf<Component> = []
-  fileprivate var idsPresented = Set<UUID>()
-  @Dependency(\.uuid) var uuid
+  fileprivate var idsPresented = Set<StackElementID>()
+  @Dependency(\.stackElementID) var stackElementID
 
   fileprivate init(elements: IdentifiedArrayOf<Component> = []) {
     self.elements = elements
   }
 
-  var ids: OrderedSet<UUID> {
+  var ids: OrderedSet<StackElementID> {
     self.elements.ids
   }
 
@@ -117,11 +150,11 @@ struct StackState<Element> {
   }
   init<S: Sequence>(_ elements: S) where S.Element == Element {
     self.elements = IdentifiedArray(
-      uncheckedUniqueElements: elements.map { Component(id: self.uuid(), element: $0) }
+      uncheckedUniqueElements: elements.map { Component(id: self.stackElementID(), element: $0) }
     )
   }
 
-  subscript(id id: UUID) -> Element? {
+  subscript(id id: StackElementID) -> Element? {
     get { self.elements[id: id]?.element }
     set {
       self.elements[id: id] = newValue.map { .init(id: id, element: $0) }
@@ -129,15 +162,15 @@ struct StackState<Element> {
   }
 
   fileprivate struct Component: Identifiable {
-    let id: UUID
+    let id: StackElementID
     var element: Element
   }
 
   mutating func append(_ element: Element) {
-    self.elements.append(Component(id: self.uuid(), element: element))
+    self.elements.append(Component(id: self.stackElementID(), element: element))
   }
 
-  mutating func pop(from id: UUID) {
+  mutating func pop(from id: StackElementID) {
     guard let index = self.elements.ids.firstIndex(of: id)
     else {
       return
@@ -179,10 +212,10 @@ extension StackState: CustomDumpReflectable {
 }
 
 enum StackAction<State, Action> {
-  case element(id: UUID, action: Action)
+  case element(id: StackElementID, action: Action)
 //  case setPath(StackState<State>)
   case push(State)
-  case popFrom(id: UUID)
+  case popFrom(id: StackElementID)
 }
 extension StackAction: Equatable where State: Equatable, Action: Equatable {}
 
