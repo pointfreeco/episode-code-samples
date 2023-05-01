@@ -234,3 +234,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Composable Navigation: Stack vs Heap](0230-composable-navigation-pt9)
 1. [Composable Stacks: vs Trees](0231-composable-navigation-pt10)
 1. [Composable Stacks: Multiple Layers](0232-composable-navigation-pt11)
+1. [Composable Stacks: Multiple Destinations](0233-composable-navigation-pt12)
