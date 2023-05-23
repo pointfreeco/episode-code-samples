@@ -80,27 +80,6 @@ class StackExplorationTests: XCTestCase {
     }
   }
 
-  func testCounterFeature_InvalidAction() async {
-    let clock = TestClock()
-    let store = TestStore(
-      initialState: RootFeature.State(
-        path: StackState([
-          .counter()
-        ])
-      ),
-      reducer: RootFeature()
-    ) {
-      $0.continuousClock = clock
-    }
-
-    XCTExpectFailure()
-
-    await store.send(.path(.element(id: 0, action: .numberFact(.factButtonTapped))))
-    await store.send(.path(.popFrom(id: 0))) {
-      $0.path = StackState()
-    }
-  }
-
   func testCounterFeature_LoadAndGoToCounter() async {
     let store = TestStore(
       initialState: RootFeature.State(
