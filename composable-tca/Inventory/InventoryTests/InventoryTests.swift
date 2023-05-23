@@ -209,7 +209,7 @@ final class InventoryTests: XCTestCase {
       $0.destination = nil
     }
   }
-//
+
   func testAddItem_Timer_Dismissal_NonExhaustive() async {
     let store = TestStore(
       initialState: InventoryFeature.State(),
@@ -219,7 +219,7 @@ final class InventoryTests: XCTestCase {
       $0.uuid = .incrementing
     }
 
-    store.exhaustivity = .off(showSkippedAssertions: true)
+    store.exhaustivity = .off
 
     await store.send(.addButtonTapped) {
       $0.destination = .addItem(
@@ -238,7 +238,7 @@ final class InventoryTests: XCTestCase {
       $0.destination = nil
     }
   }
-//
+
   func testEditItem() async {
     let item = Item.headphones
     let store = TestStore(
@@ -259,7 +259,7 @@ final class InventoryTests: XCTestCase {
       $0.items[0].name = "Bluetooth Headphones"
     }
   }
-//
+
   func testEditItem_Timer() async {
     let item = Item.headphones
     let store = TestStore(
@@ -268,7 +268,7 @@ final class InventoryTests: XCTestCase {
     ) {
       $0.continuousClock = ImmediateClock()
     }
-    store.exhaustivity = .off(showSkippedAssertions: true)
+    store.exhaustivity = .off
 
     await store.send(.itemButtonTapped(id: item.id))
     await store.send(.destination(.presented(.editItem(.set(\.$isTimerOn, true)))))

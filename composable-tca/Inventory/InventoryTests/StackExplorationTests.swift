@@ -166,7 +166,7 @@ class StackExplorationTests: XCTestCase {
     ) {
       $0.continuousClock = clock
     }
-    store.exhaustivity = .off(showSkippedAssertions: true)
+    store.exhaustivity = .off
 
     XCTAssertEqual(store.state.sum, 0)
     await store.send(.path(.push(.counter(CounterFeature.State(count: 42)))))
