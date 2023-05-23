@@ -286,11 +286,9 @@ final class InventoryTests: XCTestCase {
       reducer: InventoryFeature()
     )
 
-    await store.send(.destination(.presented(.addItem(.dismissButtonTapped)))) {
+    await store.send(.destination(.presented(.addItem(.dismissButtonTapped))))
+    await store.receive(.destination(.dismiss)) {
       $0.destination = nil
     }
-//    await store.receive(.destination(.dismiss)) {
-//      $0.destination = nil
-//    }
   }
 }

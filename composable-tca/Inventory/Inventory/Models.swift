@@ -81,8 +81,8 @@ public struct Item: Equatable, Identifiable {
 }
 
 extension Item {
-  static let headphones = Self(name: "Headphones", color: .blue, status: .inStock(quantity: 20))
-  static let mouse = Self(name: "Mouse", color: .green, status: .inStock(quantity: 10))
-  static let keyboard = Self(name: "Keyboard", color: .yellow, status: .outOfStock(isOnBackOrder: false))
-  static let monitor = Self(name: "Monitor", color: .red, status: .outOfStock(isOnBackOrder: true))
+  static let headphones = Self(id: UUID(), name: "Headphones", color: .blue, status: .inStock(quantity: 20))
+  static let mouse = Self(id: UUID(), name: "Mouse", color: .green, status: .inStock(quantity: 10))
+  static let keyboard = Self(id: UUID(), name: "Keyboard", color: .yellow, status: .outOfStock(isOnBackOrder: false))
+  static let monitor = Self(id: UUID(), name: "Monitor", color: .red, status: .outOfStock(isOnBackOrder: true))
 }
