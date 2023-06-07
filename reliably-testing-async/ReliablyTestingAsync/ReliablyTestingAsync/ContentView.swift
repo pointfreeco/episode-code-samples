@@ -28,26 +28,38 @@ class NumberFactModel: ObservableObject {
 
   @Published var count = 0
   @Published var fact: String?
-  @Published var isLoading = false
+  @Published var factTask: Task<String, Error>?
+  var isLoading: Bool { self.factTask != nil }
 
   func incrementButtonTapped() {
     self.fact = nil
+    self.factTask?.cancel()
+    self.factTask = nil
     self.count += 1
   }
   func decrementButtonTapped() {
     self.fact = nil
+    self.factTask?.cancel()
+    self.factTask = nil
     self.count -= 1
   }
   func getFactButtonTapped() async {
-    self.isLoading = true
-    defer { self.isLoading = false }
+    self.factTask?.cancel()
 
     self.fact = nil
+    self.factTask = Task {
+      try await self.numberFact.fact(self.count)
+    }
+    defer { self.factTask = nil }
     do {
-      self.fact = try await self.numberFact.fact(self.count)
+      self.fact = try await self.factTask?.value
     } catch {
       // TODO: handle error
     }
+  }
+  func cancelButtonTapped() {
+    self.factTask?.cancel()
+    self.factTask = nil
   }
 }
 
@@ -65,16 +77,23 @@ struct ContentView: View {
       }
       .buttonStyle(.plain)
 
-      HStack {
-        Button("Get fact") {
-          Task { await self.model.getFactButtonTapped() }
-        }
+      Section {
         if self.model.isLoading {
-          Spacer()
-          ProgressView()
+          HStack(spacing: 4) {
+            Button("Cancel") {
+              self.model.cancelButtonTapped()
+            }
+            Spacer()
+            ProgressView()
+              .id(UUID())
+          }
+        } else {
+          Button("Get fact") {
+            Task { await self.model.getFactButtonTapped() }
+          }
         }
       }
-
+      
       if let fact = self.model.fact {
         Text(fact)
       }
