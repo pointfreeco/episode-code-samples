@@ -64,4 +64,14 @@ final class ReliablyTestingAsyncTests: XCTestCase {
       + Array(0...count).map { $0 * 2 + 1 }  // odds less than or equal to max
     )
   }
+
+  @MainActor
+  func testEnqueueHook() async throws {
+    swift_task_enqueueGlobal_hook = { job, original in
+      print("Job enqueued", job)
+      original(job)
+    }
+    let (bytes, _) = try await URLSession.shared.bytes(from: URL(string: "https://www.google.com")!)
+    for try await _ in bytes {}
+  }
 }
