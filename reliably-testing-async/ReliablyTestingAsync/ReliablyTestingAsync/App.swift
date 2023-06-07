@@ -4,7 +4,7 @@ import SwiftUI
 struct ReliablyTestingAsyncApp: App {
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(model: NumberFactModel())
     }
   }
 }
