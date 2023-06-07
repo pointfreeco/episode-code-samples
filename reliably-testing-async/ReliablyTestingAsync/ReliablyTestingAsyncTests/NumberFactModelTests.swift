@@ -112,6 +112,25 @@ final class NumberFactModelTests: XCTestCase {
     await task.value
     XCTAssertEqual(model.fact, nil)
   }
+
+  func testScreenshots() async {
+    let model = NumberFactModel()
+
+    let task = Task { await model.onTask() }
+
+    await Task.megaYield()
+    NotificationCenter.default.post(name: UIApplication.userDidTakeScreenshotNotification, object: nil)
+    while model.count != 1 {
+      await Task.yield()
+    }
+    XCTAssertEqual(model.count, 1)
+
+    NotificationCenter.default.post(name: UIApplication.userDidTakeScreenshotNotification, object: nil)
+    while model.count != 2 {
+      await Task.yield()
+    }
+    XCTAssertEqual(model.count, 2)
+  }
 }
 
 extension Task where Success == Never, Failure == Never {

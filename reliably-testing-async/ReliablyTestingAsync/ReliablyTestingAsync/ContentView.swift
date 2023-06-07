@@ -61,6 +61,11 @@ class NumberFactModel: ObservableObject {
     self.factTask?.cancel()
     self.factTask = nil
   }
+  func onTask() async {
+    for await _ in NotificationCenter.default.notifications(named: UIApplication.userDidTakeScreenshotNotification) {
+      self.count += 1
+    }
+  }
 }
 
 struct ContentView: View {
@@ -98,6 +103,7 @@ struct ContentView: View {
         Text(fact)
       }
     }
+    .task { await self.model.onTask() }
   }
 }
 
