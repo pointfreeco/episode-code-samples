@@ -117,8 +117,8 @@ final class NumberFactModelTests: XCTestCase {
     let model = NumberFactModel()
 
     let task = Task { await model.onTask() }
-    await Task.megaYield()
 
+    await Task.megaYield()
     NotificationCenter.default.post(name: UIApplication.userDidTakeScreenshotNotification, object: nil)
     while model.count != 1 {
       await Task.yield()

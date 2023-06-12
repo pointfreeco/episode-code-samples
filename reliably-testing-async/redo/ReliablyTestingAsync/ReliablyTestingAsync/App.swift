@@ -4,7 +4,9 @@ import SwiftUI
 struct ReliablyTestingAsyncApp: App {
   var body: some Scene {
     WindowGroup {
-      ContentView(model: NumberFactModel())
+      if NSClassFromString("XCTestCase") == nil {
+        ContentView(model: NumberFactModel())
+      }
     }
   }
 }
