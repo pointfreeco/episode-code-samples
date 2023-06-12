@@ -14,27 +14,34 @@ final class ReliablyTestingAsyncTests: XCTestCase {
     let values = LockIsolated([Int]())
     let task = Task {
       values.withValue { $0.append(1) }
+      print(#line, { Thread.current }())
     }
     values.withValue { $0.append(2) }
+    print(#line, { Thread.current }())
     await task.value
     XCTAssertEqual(values.value, [2, 1])
   }
 
-  @MainActor
   func testTaskStartOrder() async {
-    let values = LockIsolated<[Int]>([])
-    let task1 = Task { values.withValue { $0.append(1) } }
-    let task2 = Task { values.withValue { $0.append(2) } }
+    let values = LockIsolated([Int]())
+    let task1 = Task {
+      values.withValue { $0.append(1) }
+      print({ Thread.current }())
+    }
+    let task2 = Task {
+      values.withValue { $0.append(2) }
+      print({ Thread.current }())
+    }
     _ = await (task1.value, task2.value)
     XCTAssertEqual(values.value, [1, 2])
   }
 
   func testTaskGroupStartOrder() async {
     let values = await withTaskGroup(of: [Int].self) { group in
-      for n in 1...100 {
-        group.addTask { [n] }
+      for index in 1...100 {
+        group.addTask { [index] }
       }
-      return await group.reduce(into: [], +=)
+      return await group.reduce(into: []) { $0 += $1 }
     }
     XCTAssertEqual(values, Array(1...100))
   }
@@ -50,6 +57,11 @@ final class ReliablyTestingAsyncTests: XCTestCase {
       }
     }
     for task in tasks { await task.value }
-    XCTAssertEqual(values.value, [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21])
+
+    XCTAssertEqual(
+      values.value,
+      Array(0...count).map { $0 * 2 }        // evens less than or equal to max
+      + Array(0...count).map { $0 * 2 + 1 }  // odds less than or equal to max
+    )
   }
 }

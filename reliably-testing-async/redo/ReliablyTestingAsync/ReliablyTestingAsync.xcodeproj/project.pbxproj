@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2AD47AC02A3795B200D37C4A /* LockIsolated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD47ABF2A3795B200D37C4A /* LockIsolated.swift */; };
+		2A02A49F2A3100350073BDEC /* LockIsolated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A02A49E2A3100350073BDEC /* LockIsolated.swift */; };
+		4B07DB1E2A31063800037088 /* NumberFactModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07DB1D2A31063800037088 /* NumberFactModelTests.swift */; };
+		4B07DB212A31082B00037088 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 4B07DB202A31082B00037088 /* Dependencies */; };
 		CAC2DD812A30B827007675BD /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC2DD802A30B827007675BD /* App.swift */; };
 		CAC2DD832A30B827007675BD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC2DD822A30B827007675BD /* ContentView.swift */; };
 		CAC2DD852A30B829007675BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAC2DD842A30B829007675BD /* Assets.xcassets */; };
@@ -26,8 +28,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2AD47ABE2A3793ED00D37C4A /* ReliablyTestingAsync.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReliablyTestingAsync.xctestplan; sourceTree = "<group>"; };
-		2AD47ABF2A3795B200D37C4A /* LockIsolated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockIsolated.swift; sourceTree = "<group>"; };
+		2A02A49D2A30FD3E0073BDEC /* ReliablyTestingAsync.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReliablyTestingAsync.xctestplan; sourceTree = "<group>"; };
+		2A02A49E2A3100350073BDEC /* LockIsolated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockIsolated.swift; sourceTree = "<group>"; };
+		4B07DB1D2A31063800037088 /* NumberFactModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFactModelTests.swift; sourceTree = "<group>"; };
+		4B07DB222A310B1300037088 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CAC2DD7D2A30B827007675BD /* ReliablyTestingAsync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReliablyTestingAsync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAC2DD802A30B827007675BD /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		CAC2DD822A30B827007675BD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -42,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B07DB212A31082B00037088 /* Dependencies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +81,7 @@
 		CAC2DD7F2A30B827007675BD /* ReliablyTestingAsync */ = {
 			isa = PBXGroup;
 			children = (
+				4B07DB222A310B1300037088 /* Info.plist */,
 				CAC2DD802A30B827007675BD /* App.swift */,
 				CAC2DD822A30B827007675BD /* ContentView.swift */,
 				CAC2DD842A30B829007675BD /* Assets.xcassets */,
@@ -95,9 +101,10 @@
 		CAC2DD902A30B829007675BD /* ReliablyTestingAsyncTests */ = {
 			isa = PBXGroup;
 			children = (
+				2A02A49D2A30FD3E0073BDEC /* ReliablyTestingAsync.xctestplan */,
 				CAC2DD912A30B829007675BD /* ReliablyTestingAsyncTests.swift */,
-				2AD47ABE2A3793ED00D37C4A /* ReliablyTestingAsync.xctestplan */,
-				2AD47ABF2A3795B200D37C4A /* LockIsolated.swift */,
+				4B07DB1D2A31063800037088 /* NumberFactModelTests.swift */,
+				2A02A49E2A3100350073BDEC /* LockIsolated.swift */,
 			);
 			path = ReliablyTestingAsyncTests;
 			sourceTree = "<group>";
@@ -118,6 +125,9 @@
 			dependencies = (
 			);
 			name = ReliablyTestingAsync;
+			packageProductDependencies = (
+				4B07DB202A31082B00037088 /* Dependencies */,
+			);
 			productName = ReliablyTestingAsync;
 			productReference = CAC2DD7D2A30B827007675BD /* ReliablyTestingAsync.app */;
 			productType = "com.apple.product-type.application";
@@ -168,6 +178,9 @@
 				Base,
 			);
 			mainGroup = CAC2DD742A30B827007675BD;
+			packageReferences = (
+				4B07DB1F2A31082B00037088 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+			);
 			productRefGroup = CAC2DD7E2A30B827007675BD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -212,7 +225,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CAC2DD922A30B829007675BD /* ReliablyTestingAsyncTests.swift in Sources */,
-				2AD47AC02A3795B200D37C4A /* LockIsolated.swift in Sources */,
+				4B07DB1E2A31063800037088 /* NumberFactModelTests.swift in Sources */,
+				2A02A49F2A3100350073BDEC /* LockIsolated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,6 +301,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
 			};
 			name = Debug;
 		};
@@ -342,6 +357,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -356,6 +372,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ReliablyTestingAsync/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReliablyTestingAsync/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -384,6 +401,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ReliablyTestingAsync/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReliablyTestingAsync/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -471,6 +489,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4B07DB1F2A31082B00037088 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4B07DB202A31082B00037088 /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B07DB1F2A31082B00037088 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CAC2DD752A30B827007675BD /* Project object */;
 }
