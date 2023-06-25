@@ -374,6 +374,6 @@ struct ContentView: View {
 import PlaygroundSupport
 PlaygroundPage.current.liveView = UIHostingController(
   rootView: ContentView(
-    store: Store(initialValue: AppState(), appReducer)
+    store: Store(initialValue: AppState(), reducer: appReducer)
   )
 )
