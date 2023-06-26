@@ -1,3 +1,4 @@
+import Combine
 import Dependencies
 import XCTest
 @testable import ReliablyTestingAsync
@@ -11,7 +12,15 @@ final class NumberFactModelTests: XCTestCase {
     model.decrementButtonTapped()
     XCTAssertEqual(model.count, 0)
   }
-  
+
+  func testIncrementDecrement_Combine() {
+    let model = CombineNumberFactModel()
+    model.incrementButtonTapped()
+    XCTAssertEqual(model.count, 1)
+    model.decrementButtonTapped()
+    XCTAssertEqual(model.count, 0)
+  }
+
   func testGetFact() async {
     let model = withDependencies {
       $0.numberFact.fact = { "\($0) is a good number." }
@@ -20,14 +29,35 @@ final class NumberFactModelTests: XCTestCase {
     }
     await model.getFactButtonTapped()
     XCTAssertEqual(model.fact, "0 is a good number.")
-    
+
     model.incrementButtonTapped()
     XCTAssertEqual(model.fact, nil)
-    
+
     await model.getFactButtonTapped()
     XCTAssertEqual(model.fact, "1 is a good number.")
   }
-  
+
+  func testGetFact_Combine() {
+    let model = withDependencies {
+      $0.mainQueue = .immediate
+      $0.numberFact.factPublisher = {
+        Just("\($0) is a good number.")
+          .setFailureType(to: Error.self)
+          .eraseToAnyPublisher()
+      }
+    } operation: {
+      CombineNumberFactModel()
+    }
+    model.getFactButtonTapped()
+    XCTAssertEqual(model.fact, "0 is a good number.")
+
+    model.incrementButtonTapped()
+    XCTAssertEqual(model.fact, nil)
+
+    model.getFactButtonTapped()
+    XCTAssertEqual(model.fact, "1 is a good number.")
+  }
+
   func testFactClearsOut() async {
     let fact = AsyncStream.makeStream(of: String.self)
     
@@ -47,7 +77,24 @@ final class NumberFactModelTests: XCTestCase {
     await task.value
     XCTAssertEqual(model.fact, "0 is a good number.")
   }
-  
+
+  func testFactClearsOut_Combine() {
+    let fact = PassthroughSubject<String, Error>()
+
+    let model = withDependencies {
+      $0.mainQueue = .immediate
+      $0.numberFact.factPublisher = { _ in fact.eraseToAnyPublisher() }
+    } operation: {
+      CombineNumberFactModel()
+    }
+    model.fact = "An old fact about 0."
+
+    model.getFactButtonTapped()
+    XCTAssertEqual(model.fact, nil)
+    fact.send("0 is a good number.")
+    XCTAssertEqual(model.fact, "0 is a good number.")
+  }
+
   func testFactClearsOut_MainSerialExecutor() async {
     swift_task_enqueueGlobal_hook = { job, _ in
       MainActor.shared.enqueue(job)
@@ -87,7 +134,25 @@ final class NumberFactModelTests: XCTestCase {
     XCTAssertEqual(model.fact, "0 is a good number.")
     XCTAssertEqual(model.isLoading, false)
   }
-  
+
+  func testFactIsLoading_Combine() async {
+    let fact = PassthroughSubject<String, Error>()
+
+    let model = withDependencies {
+      $0.mainQueue = .immediate
+      $0.numberFact.factPublisher = { _ in fact.eraseToAnyPublisher() }
+    } operation: {
+      CombineNumberFactModel()
+    }
+    model.fact = "An old fact about 0."
+
+    model.getFactButtonTapped()
+    XCTAssertEqual(model.isLoading, true)
+    fact.send("0 is a good number.")
+    XCTAssertEqual(model.fact, "0 is a good number.")
+    XCTAssertEqual(model.isLoading, false)
+  }
+
   func testFactIsLoading_MainSerialExecutor() async {
     swift_task_enqueueGlobal_hook = { job, _ in
       MainActor.shared.enqueue(job)
@@ -138,7 +203,34 @@ final class NumberFactModelTests: XCTestCase {
     await task1.value
     XCTAssertEqual(model.fact, "0 is a great number.")
   }
-  
+
+  func testBackToBackGetFact_Combine() {
+    let fact0 = PassthroughSubject<String, Error>()
+    let fact1 = PassthroughSubject<String, Error>()
+    let callCount = LockIsolated(0)
+
+    let model = withDependencies {
+      $0.mainQueue = .immediate
+      $0.numberFact.factPublisher = { number in
+        callCount.withValue { $0 += 1 }
+        if callCount.value == 1 {
+          return fact0.eraseToAnyPublisher()
+        } else if callCount.value == 2 {
+          return fact1.eraseToAnyPublisher()
+        } else {
+          fatalError()
+        }
+      }
+    } operation: {
+      CombineNumberFactModel()
+    }
+
+    model.getFactButtonTapped()
+    model.getFactButtonTapped()
+    fact1.send("0 is a great number.")
+    fact0.send("0 is a better number.")
+    XCTAssertEqual(model.fact, "0 is a great number.")
+  }
   func testBackToBackGetFact_MainSerialExecutor() async throws {
     swift_task_enqueueGlobal_hook = { job, _ in
       MainActor.shared.enqueue(job)
@@ -169,7 +261,7 @@ final class NumberFactModelTests: XCTestCase {
     XCTAssertEqual(model.fact, "0 is a great number.")
   }
   
-  
+
   func testCancel() async {
     let model = withDependencies {
       $0.numberFact.fact = { _ in try await Task.never() }
@@ -182,7 +274,20 @@ final class NumberFactModelTests: XCTestCase {
     await task.value
     XCTAssertEqual(model.fact, nil)
   }
-  
+
+  func testCancel_Combine() {
+    let model = withDependencies {
+      $0.numberFact.factPublisher = { _ in Empty(completeImmediately: false).eraseToAnyPublisher() }
+    } operation: {
+      CombineNumberFactModel()
+    }
+    model.getFactButtonTapped()
+    model.cancelButtonTapped()
+    XCTAssertEqual(model.fact, nil)
+    XCTAssertNil(model.factCancellable)
+    XCTAssertEqual(model.isLoading, false)
+  }
+
   func testCancel_MainSerialExecutor() async {
     swift_task_enqueueGlobal_hook = { job, _ in
       MainActor.shared.enqueue(job)
@@ -204,23 +309,35 @@ final class NumberFactModelTests: XCTestCase {
     XCTAssertEqual(model.fact, nil)
   }
   
-  
+
   func testScreenshots() async {
     let model = NumberFactModel()
-    
+
     let task = Task { await model.onTask() }
-    
+
     await Task.megaYield()
     NotificationCenter.default.post(name: UIApplication.userDidTakeScreenshotNotification, object: nil)
     while model.count != 1 {
       await Task.yield()
     }
     XCTAssertEqual(model.count, 1)
-    
+
     NotificationCenter.default.post(name: UIApplication.userDidTakeScreenshotNotification, object: nil)
     while model.count != 2 {
       await Task.yield()
     }
+    XCTAssertEqual(model.count, 2)
+  }
+
+  func testScreenshots_Combine() {
+    let model = CombineNumberFactModel()
+
+    model.onTask()
+
+    NotificationCenter.default.post(name: UIApplication.userDidTakeScreenshotNotification, object: nil)
+    XCTAssertEqual(model.count, 1)
+
+    NotificationCenter.default.post(name: UIApplication.userDidTakeScreenshotNotification, object: nil)
     XCTAssertEqual(model.count, 2)
   }
 

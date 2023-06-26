@@ -32,6 +32,7 @@ extension DependencyValues {
 
 @MainActor
 class CombineNumberFactModel: ObservableObject {
+  @Dependency(\.mainQueue) var mainQueue
   @Dependency(\.numberFact) var numberFact
 
   @Published var count = 0
@@ -56,7 +57,7 @@ class CombineNumberFactModel: ObservableObject {
 
     self.fact = nil
     self.factCancellable = self.numberFact.factPublisher(self.count)
-      .receive(on: DispatchQueue.main)
+      .receive(on: self.mainQueue)
       .sink(
         receiveCompletion: { [weak self] _ in
           // TODO: Handle error
@@ -67,20 +68,6 @@ class CombineNumberFactModel: ObservableObject {
         }
       )
   }
-//  func getFactButtonTapped() async {
-//    self.factCancellable?.cancel()
-//
-//    self.fact = nil
-//    self.factCancellable = Task {
-//      try await self.numberFact.fact(self.count)
-//    }
-//    defer { self.factCancellable = nil }
-//    do {
-//      self.fact = try await self.factCancellable?.value
-//    } catch {
-//      // TODO: handle error
-//    }
-//  }
   func cancelButtonTapped() {
     self.factCancellable?.cancel()
     self.factCancellable = nil
