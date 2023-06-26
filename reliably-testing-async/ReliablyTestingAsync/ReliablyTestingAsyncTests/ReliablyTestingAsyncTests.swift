@@ -165,4 +165,38 @@ final class ReliablyTestingAsyncTests: XCTestCase {
     let (bytes, _) = try await URLSession.shared.bytes(from: URL(string: "https://www.google.com")!)
     for try await _ in bytes {}
   }
+
+  func testSomething() async {
+//    swift_task_enqueueGlobal_hook = { job, _ in
+//      MainActor.shared.enqueue(job)
+//    }
+    let toggle = Toggle()
+    await withTaskGroup(of: Void.self) { group in
+      for _ in 1...1000 {
+        group.addTask {
+          toggle.isOn.toggle()
+        }
+      }
+    }
+    XCTAssertEqual(toggle.isOn, false)
+  }
+}
+
+class Toggle: @unchecked Sendable {
+  @ThreadSafe var isOn = false
+}
+
+@propertyWrapper
+struct ThreadSafe<Value: Sendable>: Sendable {
+  private let lock = NSRecursiveLock()
+  private var _wrappedValue: Value
+
+  var wrappedValue: Value {
+    get { self.lock.withLock { self._wrappedValue } }
+    set { self.lock.withLock { self._wrappedValue = newValue } }
+  }
+
+  init(wrappedValue: Value) {
+    self._wrappedValue = wrappedValue
+  }
 }
