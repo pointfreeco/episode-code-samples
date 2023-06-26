@@ -1,8 +1,10 @@
+import Combine
 import Dependencies
 import SwiftUI
 
 struct NumberFactClient {
   var fact: @Sendable (Int) async throws -> String
+  var factPublisher: @Sendable (Int) -> AnyPublisher<String, Error>
 }
 
 extension NumberFactClient: DependencyKey {
@@ -12,6 +14,12 @@ extension NumberFactClient: DependencyKey {
       decoding: URLSession.shared.data(from: URL(string: "http://numbersapi.com/\(number)")!).0,
       as: UTF8.self
     )
+  } factPublisher: { number in
+    URLSession.shared.dataTaskPublisher(for: URL(string: "http://numbersapi.com/\(number)")!)
+//      .delay(for: 1, scheduler: DispatchQueue.main)
+      .map { data, _ in String(decoding: data, as: UTF8.self) }
+      .mapError { $0 as Error }
+      .eraseToAnyPublisher()
   }
 }
 
@@ -22,6 +30,69 @@ extension DependencyValues {
   }
 }
 
+@MainActor
+class CombineNumberFactModel: ObservableObject {
+  @Dependency(\.numberFact) var numberFact
+
+  @Published var count = 0
+  @Published var fact: String?
+  @Published var factCancellable: AnyCancellable?
+  var isLoading: Bool { self.factCancellable != nil }
+
+  func incrementButtonTapped() {
+    self.fact = nil
+    self.factCancellable?.cancel()
+    self.factCancellable = nil
+    self.count += 1
+  }
+  func decrementButtonTapped() {
+    self.fact = nil
+    self.factCancellable?.cancel()
+    self.factCancellable = nil
+    self.count -= 1
+  }
+  func getFactButtonTapped() {
+    self.factCancellable?.cancel()
+
+    self.fact = nil
+    self.factCancellable = self.numberFact.factPublisher(self.count)
+      .receive(on: DispatchQueue.main)
+      .sink(
+        receiveCompletion: { [weak self] _ in
+          // TODO: Handle error
+          self?.factCancellable = nil
+        },
+        receiveValue: { [weak self] fact in
+          self?.fact = fact
+        }
+      )
+  }
+//  func getFactButtonTapped() async {
+//    self.factCancellable?.cancel()
+//
+//    self.fact = nil
+//    self.factCancellable = Task {
+//      try await self.numberFact.fact(self.count)
+//    }
+//    defer { self.factCancellable = nil }
+//    do {
+//      self.fact = try await self.factCancellable?.value
+//    } catch {
+//      // TODO: handle error
+//    }
+//  }
+  func cancelButtonTapped() {
+    self.factCancellable?.cancel()
+    self.factCancellable = nil
+  }
+  var notificationCancellable: AnyCancellable?
+  func onTask() {
+    self.notificationCancellable = NotificationCenter.default.publisher(for:  UIApplication.userDidTakeScreenshotNotification)
+      .sink { [weak self] _ in
+        self?.count += 1
+      }
+  }
+}
 @MainActor
 class NumberFactModel: ObservableObject {
   @Dependency(\.numberFact) var numberFact
@@ -69,7 +140,7 @@ class NumberFactModel: ObservableObject {
 }
 
 struct ContentView: View {
-  @ObservedObject var model: NumberFactModel
+  @ObservedObject var model: CombineNumberFactModel
 
   var body: some View {
     Form {
@@ -109,6 +180,6 @@ struct ContentView: View {
 
 struct ContentPreviews: PreviewProvider {
   static var previews: some View {
-    ContentView(model: NumberFactModel())
+    ContentView(model: CombineNumberFactModel())
   }
 }
