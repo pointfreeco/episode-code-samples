@@ -240,3 +240,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Composable Stacks: Effect Cancellation](0236-composable-navigation-pt15)
 1. [Composable Stacks: Testing](0237-composable-navigation-pt16)
 1. [Reliable Async Tests: The Problem](0238-reliably-testing-async-pt1)
+1. [Reliable Async Tests: More Problems](0239-reliably-testing-async-pt2)
