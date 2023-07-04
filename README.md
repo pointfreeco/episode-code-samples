@@ -241,3 +241,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Composable Stacks: Testing](0237-composable-navigation-pt16)
 1. [Reliable Async Tests: The Problem](0238-reliably-testing-async-pt1)
 1. [Reliable Async Tests: More Problems](0239-reliably-testing-async-pt2)
+1. [Reliable Async Tests: 😳](0240-reliably-testing-async-pt3)

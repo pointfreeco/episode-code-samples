@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "1DBD9DAB-B1B3-419B-9A10-F5EDE94A2585",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:ReliablyTestingAsync.xcodeproj",
+        "identifier" : "CAC2DD8C2A30B829007675BD",
+        "name" : "ReliablyTestingAsyncTests"
+      }
+    }
+  ],
+  "version" : 1
+}
