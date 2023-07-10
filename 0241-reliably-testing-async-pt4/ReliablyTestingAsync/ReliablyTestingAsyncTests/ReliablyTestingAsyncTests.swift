@@ -14,8 +14,10 @@ final class ReliablyTestingAsyncTests: XCTestCase {
     let values = LockIsolated([Int]())
     let task = Task {
       values.withValue { $0.append(1) }
+      print(#line, { Thread.current }())
     }
     values.withValue { $0.append(2) }
+    print(#line, { Thread.current }())
     await task.value
     XCTAssertEqual(values.value, [2, 1])
   }
@@ -38,9 +40,11 @@ final class ReliablyTestingAsyncTests: XCTestCase {
     let values = LockIsolated([Int]())
     let task1 = Task {
       values.withValue { $0.append(1) }
+      print({ Thread.current }())
     }
     let task2 = Task {
       values.withValue { $0.append(2) }
+      print({ Thread.current }())
     }
     _ = await (task1.value, task2.value)
     XCTAssertEqual(values.value, [1, 2])
@@ -98,7 +102,11 @@ final class ReliablyTestingAsyncTests: XCTestCase {
     }
     for task in tasks { await task.value }
 
-    XCTAssertEqual(values.value, [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21])
+    XCTAssertEqual(
+      values.value,
+      Array(0...count).map { $0 * 2 }        // evens less than or equal to max
+      + Array(0...count).map { $0 * 2 + 1 }  // odds less than or equal to max
+    )
   }
 
   func testYieldScheduling_MainSerialExecutor() async {
@@ -117,28 +125,36 @@ final class ReliablyTestingAsyncTests: XCTestCase {
     }
     for task in tasks { await task.value }
 
-    XCTAssertEqual(values.value, [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21])
+    XCTAssertEqual(
+      values.value,
+      Array(0...count).map { $0 * 2 }        // evens less than or equal to max
+      + Array(0...count).map { $0 * 2 + 1 }  // odds less than or equal to max
+    )
   }
-
   /*
+
+   [task0, task1, task2]
+
    [{task0}, task1, task2]
    [0]
 
-   [task2, task0, task1]
+   [{task1}, task2, task0]
    [0, 2]
 
-   [task0, task1, task2]
+   [{task2}, task0, task1]
    [0, 2, 4]
 
-   [task1, task2]
+   [{task0}, task1, task2]
    [0, 2, 4, 1]
 
-   [task2]
+   [{task1}, task2]
    [0, 2, 4, 1, 3]
+
+   [{task2}]
+   [0, 2, 4, 1, 3, 5]
 
    []
    [0, 2, 4, 1, 3, 5]
-
    */
 
   @MainActor

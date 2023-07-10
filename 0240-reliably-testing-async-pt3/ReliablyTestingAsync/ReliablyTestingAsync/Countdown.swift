@@ -114,10 +114,6 @@ private let pointFreeColors = [
 
 struct CountdownDemo_Previews: PreviewProvider {
   static var previews: some View {
-    let _ = swift_task_enqueueGlobal_hook = { job, _ in
-      MainActor.shared.enqueue(job)
-    }
-
     CountdownDemo(clock: .immediate)
   }
 }
