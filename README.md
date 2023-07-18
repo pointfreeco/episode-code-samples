@@ -243,3 +243,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Reliable Async Tests: More Problems](0239-reliably-testing-async-pt2)
 1. [Reliable Async Tests: 😳](0240-reliably-testing-async-pt3)
 1. [Reliable Async Tests: 🥹](0241-reliably-testing-async-pt4)
+1. [Reliable Async Tests: The Point](0242-reliably-testing-async-pt5)
