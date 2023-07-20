@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2AED4B442A69D0280099BFE2 /* StandupForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AED4B432A69D0280099BFE2 /* StandupForm.swift */; };
 		4B2536EB2A69CB1600C012CC /* StandupsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2536EA2A69CB1600C012CC /* StandupsList.swift */; };
 		4B2536ED2A69CBB500C012CC /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2536EC2A69CBB500C012CC /* Models.swift */; };
 		CA6D66522A68263900B2A77A /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = CA6D66512A68263900B2A77A /* ComposableArchitecture */; };
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2AED4B432A69D0280099BFE2 /* StandupForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupForm.swift; sourceTree = "<group>"; };
 		4B2536EA2A69CB1600C012CC /* StandupsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupsList.swift; sourceTree = "<group>"; };
 		4B2536EC2A69CBB500C012CC /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		CA9CB7242A411ECD003BDB3B /* Standups.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Standups.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,6 +85,7 @@
 				CA9CB7292A411ECD003BDB3B /* ContentView.swift */,
 				4B2536EC2A69CBB500C012CC /* Models.swift */,
 				CA9CB7272A411ECD003BDB3B /* StandupsApp.swift */,
+				2AED4B432A69D0280099BFE2 /* StandupForm.swift */,
 				4B2536EA2A69CB1600C012CC /* StandupsList.swift */,
 				CA9CB72B2A411ECD003BDB3B /* Assets.xcassets */,
 				CA9CB72D2A411ECD003BDB3B /* Preview Content */,
@@ -214,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA9CB72A2A411ECD003BDB3B /* ContentView.swift in Sources */,
+				2AED4B442A69D0280099BFE2 /* StandupForm.swift in Sources */,
 				4B2536EB2A69CB1600C012CC /* StandupsList.swift in Sources */,
 				CA9CB7282A411ECD003BDB3B /* StandupsApp.swift in Sources */,
 				4B2536ED2A69CBB500C012CC /* Models.swift in Sources */,
