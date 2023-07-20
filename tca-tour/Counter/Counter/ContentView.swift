@@ -1,6 +1,24 @@
 import ComposableArchitecture
 import SwiftUI
 
+struct NumberFactClient {
+  var fetch: @Sendable (Int) async throws -> String
+}
+extension NumberFactClient: DependencyKey {
+  static let liveValue = Self { number in
+    let (data, _) = try await URLSession.shared.data(
+      from: URL(string: "http://www.numbersapi.com/\(number)")!
+    )
+    return String(decoding: data, as: UTF8.self)
+  }
+}
+extension DependencyValues {
+  var numberFact: NumberFactClient {
+    get { self[NumberFactClient.self] }
+    set { self[NumberFactClient.self] = newValue }
+  }
+}
+
 struct CounterFeature: Reducer {
   struct State: Equatable {
     var count = 0
@@ -20,7 +38,7 @@ struct CounterFeature: Reducer {
     case timer
   }
   @Dependency(\.continuousClock) var clock
-
+  @Dependency(\.numberFact) var numberFact
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
@@ -38,12 +56,7 @@ struct CounterFeature: Reducer {
         state.fact = nil
         state.isLoadingFact = true
         return .run { [count = state.count] send in
-          try await self.clock.sleep(for: .seconds(1))
-          let (data, _) = try await URLSession.shared.data(
-            from: URL(string: "http://www.numbersapi.com/\(count)")!
-          )
-          let fact = String(decoding: data, as: UTF8.self)
-          await send(.factResponse(fact))
+          try await send(.factResponse(self.numberFact.fetch(count)))
         }
 
       case .incrementButtonTapped:
