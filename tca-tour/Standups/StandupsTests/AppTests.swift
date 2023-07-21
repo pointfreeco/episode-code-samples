@@ -86,4 +86,47 @@ final class AppTests: XCTestCase {
       $0.standupsList.standups = []
     }
   }
+
+  func testTimerRunOutEndMeeting() async {
+    let standup = Standup(
+      id: UUID(),
+      attendees: [Attendee(id: UUID())],
+      duration: .seconds(1),
+      meetings: [],
+      theme: .bubblegum,
+      title: "Point-Free"
+    )
+    let store = TestStore(
+      initialState: AppFeature.State(
+        path: StackState([
+          .detail(StandupDetailFeature.State(standup: standup)),
+          .recordMeeting(RecordMeetingFeature.State(standup: standup)),
+        ]),
+        standupsList: StandupsListFeature.State(
+          standups: [standup]
+        )
+      )
+    ) {
+      AppFeature()
+    } withDependencies: {
+      $0.continuousClock = ImmediateClock()
+      $0.date.now = Date(timeIntervalSince1970: 1234567890)
+      $0.speechClient.requestAuthorization = { .denied }
+      $0.uuid = .incrementing
+    }
+    store.exhaustivity = .off
+    await store.send(.path(.element(id: 1, action: .recordMeeting(.onTask))))
+    await store.receive(.path(.element(id: 1, action: .recordMeeting(.delegate(.saveMeeting)))))
+    await store.receive(.path(.popFrom(id: 1)))
+    store.assert {
+      $0.path[id: 0, case: /AppFeature.Path.State.detail]?.standup.meetings = [
+        Meeting(
+          id: UUID(0),
+          date: Date(timeIntervalSince1970: 1234567890),
+          transcript: "N/A"
+        )
+      ]
+      XCTAssertEqual($0.path.count, 1)
+    }
+  }
 }
