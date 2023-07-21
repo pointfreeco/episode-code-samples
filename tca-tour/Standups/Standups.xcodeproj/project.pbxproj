@@ -15,6 +15,7 @@
 		4B2536EF2A69DB6400C012CC /* StandupFormTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2536EE2A69DB6400C012CC /* StandupFormTests.swift */; };
 		4B600A412A6AEB97002B665B /* StandupDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B600A402A6AEB97002B665B /* StandupDetail.swift */; };
 		4B600A432A6AF0D2002B665B /* StandupDetailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B600A422A6AF0D2002B665B /* StandupDetailTests.swift */; };
+		4BBA95892A6AFEC100301693 /* AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBA95882A6AFEC100301693 /* AppTests.swift */; };
 		CA6D66522A68263900B2A77A /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = CA6D66512A68263900B2A77A /* ComposableArchitecture */; };
 		CA9CB7282A411ECD003BDB3B /* StandupsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9CB7272A411ECD003BDB3B /* StandupsApp.swift */; };
 		CA9CB72C2A411ECD003BDB3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA9CB72B2A411ECD003BDB3B /* Assets.xcassets */; };
@@ -41,6 +42,7 @@
 		4B2536EE2A69DB6400C012CC /* StandupFormTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupFormTests.swift; sourceTree = "<group>"; };
 		4B600A402A6AEB97002B665B /* StandupDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupDetail.swift; sourceTree = "<group>"; };
 		4B600A422A6AF0D2002B665B /* StandupDetailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupDetailTests.swift; sourceTree = "<group>"; };
+		4BBA95882A6AFEC100301693 /* AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTests.swift; sourceTree = "<group>"; };
 		CA9CB7242A411ECD003BDB3B /* Standups.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Standups.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA9CB7272A411ECD003BDB3B /* StandupsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupsApp.swift; sourceTree = "<group>"; };
 		CA9CB72B2A411ECD003BDB3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 		CA9CB7372A411ECD003BDB3B /* StandupsTests */ = {
 			isa = PBXGroup;
 			children = (
+				4BBA95882A6AFEC100301693 /* AppTests.swift */,
 				4B600A422A6AF0D2002B665B /* StandupDetailTests.swift */,
 				4B2536EE2A69DB6400C012CC /* StandupFormTests.swift */,
 				2A4D5DCA2A69E97E0098984B /* StandupsListTests.swift */,
@@ -244,6 +247,7 @@
 				CA9CB7392A411ECD003BDB3B /* StandupsTests.swift in Sources */,
 				2A4D5DCB2A69E97E0098984B /* StandupsListTests.swift in Sources */,
 				4B2536EF2A69DB6400C012CC /* StandupFormTests.swift in Sources */,
+				4BBA95892A6AFEC100301693 /* AppTests.swift in Sources */,
 				4B600A432A6AF0D2002B665B /* StandupDetailTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

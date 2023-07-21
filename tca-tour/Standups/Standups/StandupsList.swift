@@ -6,7 +6,7 @@ struct StandupsListFeature: Reducer {
     @PresentationState var addStandup: StandupFormFeature.State?
     var standups: IdentifiedArrayOf<Standup> = []
   }
-  enum Action {
+  enum Action: Equatable {
     case addButtonTapped
     case addStandup(PresentationAction<StandupFormFeature.Action>)
     case cancelStandupButtonTapped

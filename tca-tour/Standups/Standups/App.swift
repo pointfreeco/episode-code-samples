@@ -2,20 +2,20 @@ import ComposableArchitecture
 import SwiftUI
 
 struct AppFeature: Reducer {
-  struct State {
+  struct State: Equatable {
     var path = StackState<Path.State>()
     var standupsList = StandupsListFeature.State()
   }
-  enum Action {
+  enum Action: Equatable {
     case path(StackAction<Path.State, Path.Action>)
     case standupsList(StandupsListFeature.Action)
   }
 
   struct Path: Reducer {
-    enum State {
+    enum State: Equatable {
       case detail(StandupDetailFeature.State)
     }
-    enum Action {
+    enum Action: Equatable {
       case detail(StandupDetailFeature.Action)
     }
     var body: some ReducerOf<Self> {
