@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A4D5DCB2A69E97E0098984B /* StandupsListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4D5DCA2A69E97E0098984B /* StandupsListTests.swift */; };
 		2AED4B442A69D0280099BFE2 /* StandupForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AED4B432A69D0280099BFE2 /* StandupForm.swift */; };
 		4B2536EB2A69CB1600C012CC /* StandupsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2536EA2A69CB1600C012CC /* StandupsList.swift */; };
 		4B2536ED2A69CBB500C012CC /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2536EC2A69CBB500C012CC /* Models.swift */; };
@@ -30,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2A4D5DCA2A69E97E0098984B /* StandupsListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupsListTests.swift; sourceTree = "<group>"; };
 		2AED4B432A69D0280099BFE2 /* StandupForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupForm.swift; sourceTree = "<group>"; };
 		4B2536EA2A69CB1600C012CC /* StandupsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupsList.swift; sourceTree = "<group>"; };
 		4B2536EC2A69CBB500C012CC /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -106,9 +108,10 @@
 		CA9CB7372A411ECD003BDB3B /* StandupsTests */ = {
 			isa = PBXGroup;
 			children = (
-				CA9CB7512A411EF4003BDB3B /* Standups.xctestplan */,
-				CA9CB7382A411ECD003BDB3B /* StandupsTests.swift */,
 				4B2536EE2A69DB6400C012CC /* StandupFormTests.swift */,
+				2A4D5DCA2A69E97E0098984B /* StandupsListTests.swift */,
+				CA9CB7382A411ECD003BDB3B /* StandupsTests.swift */,
+				CA9CB7512A411EF4003BDB3B /* Standups.xctestplan */,
 			);
 			path = StandupsTests;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA9CB7392A411ECD003BDB3B /* StandupsTests.swift in Sources */,
+				2A4D5DCB2A69E97E0098984B /* StandupsListTests.swift in Sources */,
 				4B2536EF2A69DB6400C012CC /* StandupFormTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
