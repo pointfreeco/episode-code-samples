@@ -3,80 +3,87 @@ import SwiftUI
 
 struct StandupDetailFeature: Reducer {
   struct State: Equatable {
-    @PresentationState var alert: AlertState<Action.Alert>?
-    @PresentationState var editStandup: StandupFormFeature.State?
-//    @PresentationState
-//    @PresentationState
-//    @PresentationState
+    @PresentationState var destination: Destination.State?
     var standup: Standup
   }
   enum Action: Equatable {
-    case alert(PresentationAction<Alert>)
     case cancelEditStandupButtonTapped
     case delegate(Delegate)
     case deleteButtonTapped
     case deleteMeetings(atOffsets: IndexSet)
+    case destination(PresentationAction<Destination.Action>)
     case editButtonTapped
-    case editStandup(PresentationAction<StandupFormFeature.Action>)
     case saveStandupButtonTapped
-    enum Alert {
-      case confirmDeletion
-    }
     enum Delegate: Equatable {
       case standupUpdated(Standup)
     }
   }
+
+  struct Destination: Reducer {
+    enum State: Equatable {
+      case alert(AlertState<Action.Alert>)
+      case editStandup(StandupFormFeature.State)
+    }
+    enum Action: Equatable {
+      case alert(Alert)
+      case editStandup(StandupFormFeature.Action)
+      enum Alert {
+        case confirmDeletion
+      }
+    }
+    var body: some ReducerOf<Self> {
+      Scope(state: /State.editStandup, action: /Action.editStandup) {
+        StandupFormFeature()
+      }
+    }
+  }
+
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .alert(.presented(.confirmDeletion)):
-        // TODO: Delete this standup
-        return .none
-
-      case .alert(.dismiss):
-        return .none
-
       case .cancelEditStandupButtonTapped:
-        state.editStandup = nil
+        state.destination = nil
         return .none
 
       case .delegate:
         return .none
 
       case .deleteButtonTapped:
-        if state.editStandup == nil && state.alert == nil {
-          // DO Something
-        }
-//        state.editStandup = …
-        state.alert = AlertState {
-          TextState("Are you sure you want to delete?")
-        } actions: {
-          ButtonState(role: .destructive, action: .confirmDeletion) {
-            TextState("Delete")
+        state.destination = .alert(
+          AlertState {
+            TextState("Are you sure you want to delete?")
+          } actions: {
+            ButtonState(role: .destructive, action: .confirmDeletion) {
+              TextState("Delete")
+            }
           }
-        }
+        )
         return .none
 
       case .deleteMeetings(atOffsets: let indices):
         state.standup.meetings.remove(atOffsets: indices)
         return .none
 
-      case .editButtonTapped:
-        state.editStandup = StandupFormFeature.State(standup: state.standup)
+      case .destination(.presented(.alert(.confirmDeletion))):
+        // TODO: Delete this standup
         return .none
-      case .editStandup:
+
+      case .destination:
+        return .none
+
+      case .editButtonTapped:
+        state.destination = .editStandup(StandupFormFeature.State(standup: state.standup))
         return .none
       case .saveStandupButtonTapped:
-        guard let standup = state.editStandup?.standup
+        guard case let .editStandup(standupForm) = state.destination
         else { return .none }
-        state.standup = standup
-        state.editStandup = nil
+        state.standup = standupForm.standup
+        state.destination = nil
         return .none
       }
     }
-    .ifLet(\.$alert, action: /Action.alert)
-    .ifLet(\.$editStandup, action: /Action.editStandup) {
-      StandupFormFeature()
+    .ifLet(\.$destination, action: /Action.destination) {
+      Destination()
     }
     .onChange(of: \.standup) { oldValue, newValue in
       Reduce { state, action in
@@ -162,8 +169,16 @@ struct StandupDetailView: View {
           viewStore.send(.editButtonTapped)
         }
       }
-      .alert(store: self.store.scope(state: \.$alert, action: { .alert($0) }))
-      .sheet(store: self.store.scope(state: \.$editStandup, action: { .editStandup($0) })) { store in
+      .alert(
+        store: self.store.scope(state: \.$destination, action: { .destination($0) }),
+        state: /StandupDetailFeature.Destination.State.alert,
+        action: StandupDetailFeature.Destination.Action.alert
+      )
+      .sheet(
+        store: self.store.scope(state: \.$destination, action: { .destination($0) }),
+        state: /StandupDetailFeature.Destination.State.editStandup,
+        action: StandupDetailFeature.Destination.Action.editStandup
+      ) { store in
         NavigationStack {
           StandupFormView(store: store)
             .navigationTitle("Edit standup")
