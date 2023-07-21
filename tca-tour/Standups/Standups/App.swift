@@ -34,6 +34,10 @@ struct AppFeature: Reducer {
       switch action {
       case let .path(.element(id: _, action: .detail(.delegate(action)))):
         switch action {
+        case let .deleteStandup(id: id):
+          state.standupsList.standups.remove(id: id)
+          return .none
+
         case let .standupUpdated(standup):
           state.standupsList.standups[id: standup.id] = standup
           return .none
