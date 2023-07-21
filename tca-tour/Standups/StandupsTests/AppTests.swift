@@ -129,4 +129,85 @@ final class AppTests: XCTestCase {
       XCTAssertEqual($0.path.count, 1)
     }
   }
+
+  func testEndMeetingEarlyDiscard() async {
+    let standup = Standup(
+      id: UUID(),
+      attendees: [Attendee(id: UUID())],
+      duration: .seconds(1),
+      meetings: [],
+      theme: .bubblegum,
+      title: "Point-Free"
+    )
+    let store = TestStore(
+      initialState: AppFeature.State(
+        path: StackState([
+          .detail(StandupDetailFeature.State(standup: standup)),
+          .recordMeeting(RecordMeetingFeature.State(standup: standup)),
+        ]),
+        standupsList: StandupsListFeature.State(
+          standups: [standup]
+        )
+      )
+    ) {
+      AppFeature()
+    } withDependencies: {
+      $0.continuousClock = ImmediateClock()
+      $0.speechClient.requestAuthorization = { .denied }
+    }
+    store.exhaustivity = .off
+    await store.send(.path(.element(id: 1, action: .recordMeeting(.onTask))))
+    await store.send(.path(.element(id: 1, action: .recordMeeting(.endMeetingButtonTapped))))
+    await store.send(.path(.element(id: 1, action: .recordMeeting(.alert(.presented(.confirmDiscard))))))
+    await store.skipReceivedActions()
+
+    store.assert {
+      $0.path[id: 0, case: /AppFeature.Path.State.detail]?.standup.meetings = []
+      XCTAssertEqual($0.path.count, 1)
+    }
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
