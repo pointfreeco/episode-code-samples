@@ -5,12 +5,13 @@ import SwiftUI
 struct StandupsApp: App {
   var body: some Scene {
     WindowGroup {
-      var editedStandup = Standup.mock
-      let _ = editedStandup.title += " Morning Sync"
-
       AppView(
         store: Store(
           initialState: AppFeature.State(
+            path: StackState([
+//              .detail(StandupDetailFeature.State(standup: .mock)),
+//              .recordMeeting(RecordMeetingFeature.State()),
+            ]),
             standupsList: StandupsListFeature.State(standups: [.mock])
           )
         ) {
