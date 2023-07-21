@@ -3,10 +3,15 @@ import SwiftUI
 
 struct StandupDetailFeature: Reducer {
   struct State: Equatable {
+    @PresentationState var alert: AlertState<Action.Alert>?
     @PresentationState var editStandup: StandupFormFeature.State?
+//    @PresentationState
+//    @PresentationState
+//    @PresentationState
     var standup: Standup
   }
   enum Action: Equatable {
+    case alert(PresentationAction<Alert>)
     case cancelEditStandupButtonTapped
     case delegate(Delegate)
     case deleteButtonTapped
@@ -14,6 +19,9 @@ struct StandupDetailFeature: Reducer {
     case editButtonTapped
     case editStandup(PresentationAction<StandupFormFeature.Action>)
     case saveStandupButtonTapped
+    enum Alert {
+      case confirmDeletion
+    }
     enum Delegate: Equatable {
       case standupUpdated(Standup)
     }
@@ -21,15 +29,34 @@ struct StandupDetailFeature: Reducer {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .alert(.presented(.confirmDeletion)):
+        // TODO: Delete this standup
+        return .none
+
+      case .alert(.dismiss):
+        return .none
+
       case .cancelEditStandupButtonTapped:
-        state.editStandup
+        state.editStandup = nil
         return .none
 
       case .delegate:
         return .none
 
       case .deleteButtonTapped:
+        if state.editStandup == nil && state.alert == nil {
+          // DO Something
+        }
+//        state.editStandup = …
+        state.alert = AlertState {
+          TextState("Are you sure you want to delete?")
+        } actions: {
+          ButtonState(role: .destructive, action: .confirmDeletion) {
+            TextState("Delete")
+          }
+        }
         return .none
+
       case .deleteMeetings(atOffsets: let indices):
         state.standup.meetings.remove(atOffsets: indices)
         return .none
@@ -47,6 +74,7 @@ struct StandupDetailFeature: Reducer {
         return .none
       }
     }
+    .ifLet(\.$alert, action: /Action.alert)
     .ifLet(\.$editStandup, action: /Action.editStandup) {
       StandupFormFeature()
     }
@@ -134,6 +162,7 @@ struct StandupDetailView: View {
           viewStore.send(.editButtonTapped)
         }
       }
+      .alert(store: self.store.scope(state: \.$alert, action: { .alert($0) }))
       .sheet(store: self.store.scope(state: \.$editStandup, action: { .editStandup($0) })) { store in
         NavigationStack {
           StandupFormView(store: store)
@@ -158,6 +187,7 @@ struct StandupDetailView: View {
       StandupDetailView(
         store: Store(initialState: StandupDetailFeature.State(standup: .mock)) {
           StandupDetailFeature()
+            ._printChanges()
         }
       )
     }
