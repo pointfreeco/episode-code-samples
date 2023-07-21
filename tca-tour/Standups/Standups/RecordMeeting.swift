@@ -13,28 +13,41 @@ struct RecordMeetingFeature: Reducer {
     }
   }
   enum Action: Equatable {
+    case delegate(Delegate)
     case endMeetingButtonTapped
     case nextButtonTapped
     case onTask
     case timerTicked
+    enum Delegate {
+      case saveMeeting
+    }
   }
   @Dependency(\.continuousClock) var clock
+  @Dependency(\.dismiss) var dismiss
+  @Dependency(\.speechClient) var speechClient
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .delegate:
+        return .none
+
       case .endMeetingButtonTapped:
         return .none
 
       case .nextButtonTapped:
+        guard state.speakerIndex < state.standup.attendees.count - 1
+        else {
+          // TODO: Alert to end meeting
+          return .none
+        }
+        state.speakerIndex += 1
+        state.secondsElapsed =
+        state.speakerIndex * Int(state.standup.durationPerAttendee.components.seconds)
         return .none
 
       case .onTask:
         return .run { send in
-          let status = await withUnsafeContinuation { continuation in
-            SFSpeechRecognizer.requestAuthorization { status in
-              continuation.resume(with: .success(status))
-            }
-          }
+          let status = await self.speechClient.requestAuthorization()
           for await _ in self.clock.timer(interval: .seconds(1)) {
             await send(.timerTicked)
           }
@@ -42,6 +55,16 @@ struct RecordMeetingFeature: Reducer {
 
       case .timerTicked:
         state.secondsElapsed += 1
+        let secondsPerAttendee = Int(state.standup.durationPerAttendee.components.seconds)
+          if state.secondsElapsed.isMultiple(of: secondsPerAttendee) {
+            if state.speakerIndex == state.standup.attendees.count - 1 {
+              return .run { send in
+                await send(.delegate(.saveMeeting))
+                await self.dismiss()
+              }
+            }
+            state.speakerIndex += 1
+          }
         return .none
       }
     }
