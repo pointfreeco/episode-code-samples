@@ -9,7 +9,7 @@ final class AppTests: XCTestCase {
     let store = TestStore(
       initialState: AppFeature.State(
         standupsList: StandupsListFeature.State(
-          standups: [standup]
+//          standups: [standup]
         )
       )
     ) {
@@ -36,13 +36,13 @@ final class AppTests: XCTestCase {
       $0.standupsList.standups[0].title = "Point-Free Morning Sync"
     }
   }
-
+  
   func testEdit_NonExhaustive() async {
     let standup = Standup.mock
     let store = TestStore(
       initialState: AppFeature.State(
         standupsList: StandupsListFeature.State(
-          standups: [standup]
+//          standups: [standup]
         )
       )
     ) {
@@ -60,8 +60,8 @@ final class AppTests: XCTestCase {
       $0.standupsList.standups[0].title = "Point-Free Morning Sync"
     }
   }
-
-
+  
+  
   func testDeletion_NonExhaustive() async {
     let standup = Standup.mock
     let store = TestStore(
@@ -70,14 +70,14 @@ final class AppTests: XCTestCase {
           .detail(StandupDetailFeature.State(standup: standup))
         ]),
         standupsList: StandupsListFeature.State(
-          standups: [standup]
+//          standups: [standup]
         )
       )
     ) {
       AppFeature()
     }
     store.exhaustivity = .off
-
+    
     await store.send(.path(.element(id: 0, action: .detail(.deleteButtonTapped)))) 
     await store.send(.path(.element(id: 0, action: .detail(.destination(.presented(.alert(.confirmDeletion)))))))
     await store.skipReceivedActions()
@@ -86,7 +86,7 @@ final class AppTests: XCTestCase {
       $0.standupsList.standups = []
     }
   }
-
+  
   func testTimerRunOutEndMeeting() async {
     let standup = Standup(
       id: UUID(),
@@ -103,7 +103,7 @@ final class AppTests: XCTestCase {
           .recordMeeting(RecordMeetingFeature.State(standup: standup)),
         ]),
         standupsList: StandupsListFeature.State(
-          standups: [standup]
+//          standups: [standup]
         )
       )
     ) {
@@ -129,7 +129,7 @@ final class AppTests: XCTestCase {
       XCTAssertEqual($0.path.count, 1)
     }
   }
-
+  
   func testTimerRunOutEndMeeting_WithSpeechRecognizer() async {
     let standup = Standup(
       id: UUID(),
@@ -146,7 +146,7 @@ final class AppTests: XCTestCase {
           .recordMeeting(RecordMeetingFeature.State(standup: standup)),
         ]),
         standupsList: StandupsListFeature.State(
-          standups: [standup]
+//          standups: [standup]
         )
       )
     ) {
@@ -157,12 +157,12 @@ final class AppTests: XCTestCase {
       $0.speechClient.requestAuthorization = { .authorized }
       $0.speechClient.start = {
         AsyncThrowingStream {
-//          $0.yield("This")
-//          $0.yield("This was a")
-//          $0.yield("This was a really good ")
+          //          $0.yield("This")
+          //          $0.yield("This was a")
+          //          $0.yield("This was a really good ")
           $0.yield("This was a really good meeting!")
-//          struct SomeError: Error {}
-//          $0.finish(throwing: SomeError())
+          //          struct SomeError: Error {}
+          //          $0.finish(throwing: SomeError())
         }
       }
       $0.uuid = .incrementing
@@ -182,7 +182,7 @@ final class AppTests: XCTestCase {
       XCTAssertEqual($0.path.count, 1)
     }
   }
-
+  
   func testEndMeetingEarlyDiscard() async {
     let standup = Standup(
       id: UUID(),
@@ -199,7 +199,7 @@ final class AppTests: XCTestCase {
           .recordMeeting(RecordMeetingFeature.State(standup: standup)),
         ]),
         standupsList: StandupsListFeature.State(
-          standups: [standup]
+//          standups: [standup]
         )
       )
     ) {
@@ -213,10 +213,35 @@ final class AppTests: XCTestCase {
     await store.send(.path(.element(id: 1, action: .recordMeeting(.endMeetingButtonTapped))))
     await store.send(.path(.element(id: 1, action: .recordMeeting(.alert(.presented(.confirmDiscard))))))
     await store.skipReceivedActions()
-
+    
     store.assert {
       $0.path[id: 0, case: /AppFeature.Path.State.detail]?.standup.meetings = []
       XCTAssertEqual($0.path.count, 1)
+    }
+  }
+  
+  func testAdd() async {
+    let store = TestStore(
+      initialState: AppFeature.State(
+        standupsList: StandupsListFeature.State()
+      )
+    ) {
+      AppFeature()
+    } withDependencies: {
+      $0.uuid = .incrementing
+      $0.continuousClock = ImmediateClock()
+    }
+    store.exhaustivity = .off
+    
+    await store.send(.standupsList(.addButtonTapped))
+    await store.send(.standupsList(.saveStandupButtonTapped))
+    store.assert {
+      $0.standupsList.standups = [
+        Standup(
+          id: UUID(0),
+          attendees: [Attendee(id: UUID(1))]
+        )
+      ]
     }
   }
 }

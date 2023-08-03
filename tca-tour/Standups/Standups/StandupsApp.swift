@@ -16,7 +16,9 @@ struct StandupsApp: App {
 //              .recordMeeting(RecordMeetingFeature.State(standup: standup)),
 //              .recordMeeting(RecordMeetingFeature.State(standup: standup)),
             ]),
-            standupsList: StandupsListFeature.State(standups: [standup])
+            standupsList: StandupsListFeature.State(
+//              standups: [standup]
+            )
           )
         ) {
           AppFeature()

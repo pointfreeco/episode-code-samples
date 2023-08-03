@@ -34,6 +34,8 @@ struct AppFeature: Reducer {
     }
   }
 
+  @Dependency(\.continuousClock) var clock
+
   var body: some ReducerOf<Self> {
     Scope(state: \.standupsList, action: /Action.standupsList) {
       StandupsListFeature()
@@ -84,6 +86,16 @@ struct AppFeature: Reducer {
     .forEach(\.path, action: /Action.path) {
       Path()
     }
+
+    Reduce { state, _ in
+      .run { [standups = state.standupsList.standups] _ in
+        enum CancelID { case saveDebounce }
+        try await withTaskCancellation(id: CancelID.saveDebounce, cancelInFlight: true) {
+          try await self.clock.sleep(for: .seconds(1))
+          try JSONEncoder().encode(standups).write(to: .standups)
+        }
+      }
+    }
   }
 }
 
@@ -121,11 +133,17 @@ struct AppView: View {
   }
 }
 
+extension URL {
+  static let standups = Self.documentsDirectory.appending(component: "standups.json")
+}
+
 #Preview {
   AppView(
     store: Store(
       initialState: AppFeature.State(
-        standupsList: StandupsListFeature.State(standups: [.mock])
+        standupsList: StandupsListFeature.State(
+//          standups: [.mock]
+        )
       )
     ) {
       AppFeature()
@@ -145,7 +163,9 @@ struct AppView: View {
           .detail(StandupDetailFeature.State(standup: standup)),
           .recordMeeting(RecordMeetingFeature.State(standup: standup))
         ]),
-        standupsList: StandupsListFeature.State(standups: [standup])
+        standupsList: StandupsListFeature.State(
+//          standups: [standup]
+        )
       )
     ) {
       AppFeature()

@@ -5,6 +5,16 @@ struct StandupsListFeature: Reducer {
   struct State: Equatable {
     @PresentationState var addStandup: StandupFormFeature.State?
     var standups: IdentifiedArrayOf<Standup> = []
+    init(
+      addStandup: StandupFormFeature.State? = nil
+    ) {
+      self.addStandup = addStandup
+      do {
+        self.standups = try JSONDecoder().decode(IdentifiedArrayOf<Standup>.self, from: Data(contentsOf: .standups))
+      } catch {
+        self.standups = []
+      }
+    }
   }
   enum Action: Equatable {
     case addButtonTapped
@@ -127,7 +137,7 @@ extension LabelStyle where Self == TrailingIconLabelStyle {
       StandupsListView(
         store: Store(
           initialState: StandupsListFeature.State(
-            standups: [.mock]
+//            standups: [.mock]
           )
         ) {
           StandupsListFeature()
