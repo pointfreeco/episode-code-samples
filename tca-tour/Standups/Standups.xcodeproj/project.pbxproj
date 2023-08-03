@@ -11,6 +11,7 @@
 		2A4D5DCB2A69E97E0098984B /* StandupsListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4D5DCA2A69E97E0098984B /* StandupsListTests.swift */; };
 		2AB309192A6AF37C00FCC600 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AB309182A6AF37C00FCC600 /* App.swift */; };
 		2ACFFB4E2A7C292F00EDEB7F /* Meeting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACFFB4D2A7C292F00EDEB7F /* Meeting.swift */; };
+		2ACFFB502A7C384E00EDEB7F /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACFFB4F2A7C384E00EDEB7F /* DataManager.swift */; };
 		2AED4B442A69D0280099BFE2 /* StandupForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AED4B432A69D0280099BFE2 /* StandupForm.swift */; };
 		4B2536EB2A69CB1600C012CC /* StandupsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2536EA2A69CB1600C012CC /* StandupsList.swift */; };
 		4B2536ED2A69CBB500C012CC /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2536EC2A69CBB500C012CC /* Models.swift */; };
@@ -23,7 +24,6 @@
 		CA9CB7282A411ECD003BDB3B /* StandupsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9CB7272A411ECD003BDB3B /* StandupsApp.swift */; };
 		CA9CB72C2A411ECD003BDB3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA9CB72B2A411ECD003BDB3B /* Assets.xcassets */; };
 		CA9CB72F2A411ECD003BDB3B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA9CB72E2A411ECD003BDB3B /* Preview Assets.xcassets */; };
-		CA9CB7392A411ECD003BDB3B /* StandupsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9CB7382A411ECD003BDB3B /* StandupsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +41,7 @@
 		2A4D5DCA2A69E97E0098984B /* StandupsListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupsListTests.swift; sourceTree = "<group>"; };
 		2AB309182A6AF37C00FCC600 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		2ACFFB4D2A7C292F00EDEB7F /* Meeting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meeting.swift; sourceTree = "<group>"; };
+		2ACFFB4F2A7C384E00EDEB7F /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		2AED4B432A69D0280099BFE2 /* StandupForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupForm.swift; sourceTree = "<group>"; };
 		4B2536EA2A69CB1600C012CC /* StandupsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupsList.swift; sourceTree = "<group>"; };
 		4B2536EC2A69CBB500C012CC /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -55,7 +56,6 @@
 		CA9CB72B2A411ECD003BDB3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CA9CB72E2A411ECD003BDB3B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CA9CB7342A411ECD003BDB3B /* StandupsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StandupsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CA9CB7382A411ECD003BDB3B /* StandupsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandupsTests.swift; sourceTree = "<group>"; };
 		CA9CB7512A411EF4003BDB3B /* Standups.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Standups.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -101,6 +101,7 @@
 			children = (
 				4BBA958C2A6B189200301693 /* Info.plist */,
 				2AB309182A6AF37C00FCC600 /* App.swift */,
+				2ACFFB4F2A7C384E00EDEB7F /* DataManager.swift */,
 				2ACFFB4D2A7C292F00EDEB7F /* Meeting.swift */,
 				4B2536EC2A69CBB500C012CC /* Models.swift */,
 				4BBA958A2A6B129400301693 /* RecordMeeting.swift */,
@@ -130,7 +131,6 @@
 				4B600A422A6AF0D2002B665B /* StandupDetailTests.swift */,
 				4B2536EE2A69DB6400C012CC /* StandupFormTests.swift */,
 				2A4D5DCA2A69E97E0098984B /* StandupsListTests.swift */,
-				CA9CB7382A411ECD003BDB3B /* StandupsTests.swift */,
 				CA9CB7512A411EF4003BDB3B /* Standups.xctestplan */,
 			);
 			path = StandupsTests;
@@ -243,6 +243,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2AED4B442A69D0280099BFE2 /* StandupForm.swift in Sources */,
+				2ACFFB502A7C384E00EDEB7F /* DataManager.swift in Sources */,
 				2ACFFB4E2A7C292F00EDEB7F /* Meeting.swift in Sources */,
 				4B600A412A6AEB97002B665B /* StandupDetail.swift in Sources */,
 				4B2536EB2A69CB1600C012CC /* StandupsList.swift in Sources */,
@@ -258,7 +259,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA9CB7392A411ECD003BDB3B /* StandupsTests.swift in Sources */,
 				2A4D5DCB2A69E97E0098984B /* StandupsListTests.swift in Sources */,
 				4B2536EF2A69DB6400C012CC /* StandupFormTests.swift in Sources */,
 				4BBA95892A6AFEC100301693 /* AppTests.swift in Sources */,

@@ -10,7 +10,8 @@ struct StandupsListFeature: Reducer {
     ) {
       self.addStandup = addStandup
       do {
-        self.standups = try JSONDecoder().decode(IdentifiedArrayOf<Standup>.self, from: Data(contentsOf: .standups))
+        @Dependency(\.dataManager.load) var loadData
+        self.standups = try JSONDecoder().decode(IdentifiedArrayOf<Standup>.self, from: loadData(.standups))
       } catch {
         self.standups = []
       }
