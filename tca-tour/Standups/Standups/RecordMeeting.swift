@@ -8,6 +8,7 @@ struct RecordMeetingFeature: Reducer {
     var secondsElapsed = 0
     var speakerIndex = 0
     let standup: Standup
+    var transcript = ""
 
     var durationRemaining: Duration {
       self.standup.duration - .seconds(self.secondsElapsed)
@@ -19,6 +20,7 @@ struct RecordMeetingFeature: Reducer {
     case endMeetingButtonTapped
     case nextButtonTapped
     case onTask
+    case speechResult(String)
     case timerTicked
     enum Alert {
       case confirmDiscard
@@ -69,11 +71,12 @@ struct RecordMeetingFeature: Reducer {
 
       case .onTask:
         return .run { send in
-          let status = await self.speechClient.requestAuthorization()
-          for await _ in self.clock.timer(interval: .seconds(1)) {
-            await send(.timerTicked)
-          }
+          await self.onTask(send: send)
         }
+
+      case let .speechResult(transcript):
+        state.transcript = transcript
+        return .none
 
       case .timerTicked:
         guard state.alert == nil
@@ -94,6 +97,30 @@ struct RecordMeetingFeature: Reducer {
       }
     }
     .ifLet(\.$alert, action: /Action.alert)
+  }
+
+  private func onTask(send: Send<Action>) async {
+    await withTaskGroup(of: Void.self) { group in
+      group.addTask {
+        let status = await self.speechClient.requestAuthorization()
+
+        if status == .authorized {
+          do {
+            for try await transcript in self.speechClient.start() {
+              await send(.speechResult(transcript))
+            }
+          } catch {
+            // TODO: Handle error
+          }
+        }
+      }
+
+      group.addTask {
+        for await _ in self.clock.timer(interval: .seconds(1)) {
+          await send(.timerTicked)
+        }
+      }
+    }
   }
 }
 
