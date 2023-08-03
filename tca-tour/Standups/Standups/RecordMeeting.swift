@@ -26,8 +26,8 @@ struct RecordMeetingFeature: Reducer {
       case confirmDiscard
       case confirmSave
     }
-    enum Delegate {
-      case saveMeeting
+    enum Delegate: Equatable {
+      case saveMeeting(transcript: String)
     }
   }
   @Dependency(\.continuousClock) var clock
@@ -43,8 +43,8 @@ struct RecordMeetingFeature: Reducer {
         }
 
       case .alert(.presented(.confirmSave)):
-        return .run { send in
-          await send(.delegate(.saveMeeting))
+        return .run { [transcript = state.transcript] send in
+          await send(.delegate(.saveMeeting(transcript: transcript)))
           await self.dismiss()
         }
 
@@ -86,8 +86,8 @@ struct RecordMeetingFeature: Reducer {
         let secondsPerAttendee = Int(state.standup.durationPerAttendee.components.seconds)
           if state.secondsElapsed.isMultiple(of: secondsPerAttendee) {
             if state.speakerIndex == state.standup.attendees.count - 1 {
-              return .run { send in
-                await send(.delegate(.saveMeeting))
+              return .run { [transcript = state.transcript] send in
+                await send(.delegate(.saveMeeting(transcript: transcript)))
                 await self.dismiss()
               }
             }
@@ -339,12 +339,32 @@ struct MeetingFooterView: View {
   }
 }
 
+//struct MyContainerView: View {
+//  @State var …
+//  @Binding var …
+//  @ObservedObject var …
+//  var body: some View {
+//    MyCoreView(…, …, …)
+//  }
+//}
+//struct MyCoreView: View {
+//  let …
+//  let …
+//  let …
+//  var body: some View {
+//    …
+//  }
+//}
+
 #Preview {
   MainActor.assumeIsolated {
     NavigationStack {
       RecordMeetingView(
-        store: Store(initialState: RecordMeetingFeature.State(standup: .mock)) {
-          RecordMeetingFeature()
+        store: Store(initialState: RecordMeetingFeature.State(
+          secondsElapsed: 9,
+          standup: .mock)
+        ) {
+//          RecordMeetingFeature()
         }
       )
     }

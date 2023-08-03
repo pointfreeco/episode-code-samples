@@ -136,9 +136,7 @@ struct StandupDetailView: View {
         if !viewStore.standup.meetings.isEmpty {
           Section {
             ForEach(viewStore.standup.meetings) { meeting in
-              NavigationLink {
-                /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Do something@*//*@END_MENU_TOKEN@*/
-              } label: {
+              NavigationLink(state: AppFeature.Path.State.meeting(meeting, standup: viewStore.standup)) {
                 HStack {
                   Image(systemName: "calendar")
                   Text(meeting.date, style: .date)
@@ -207,7 +205,8 @@ struct StandupDetailView: View {
   MainActor.assumeIsolated {
     NavigationStack {
       StandupDetailView(
-        store: Store(initialState: StandupDetailFeature.State(standup: .mock)) {
+        store: Store(initialState: StandupDetailFeature.State(
+          standup: .mock)) {
           StandupDetailFeature()
             ._printChanges()
         }
