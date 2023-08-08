@@ -245,3 +245,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Reliable Async Tests: 🥹](0241-reliably-testing-async-pt4)
 1. [Reliable Async Tests: The Point](0242-reliably-testing-async-pt5)
 1. [Tour of the Composable Architecture 1.0: The Basics](0243-tca-tour-pt1)
+1. [Tour of the Composable Architecture 1.0: Introducing Standups](0244-tca-tour-pt2)
