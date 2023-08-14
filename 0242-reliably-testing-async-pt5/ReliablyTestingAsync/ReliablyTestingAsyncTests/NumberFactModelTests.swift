@@ -149,6 +149,7 @@ final class NumberFactModelTests: XCTestCase {
     model.getFactButtonTapped()
     XCTAssertEqual(model.isLoading, true)
     fact.send("0 is a good number.")
+    fact.send(completion: .finished)
     XCTAssertEqual(model.fact, "0 is a good number.")
     XCTAssertEqual(model.isLoading, false)
   }
