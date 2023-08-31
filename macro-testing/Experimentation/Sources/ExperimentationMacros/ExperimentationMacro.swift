@@ -26,7 +26,7 @@ public struct StringifyMacro: ExpressionMacro {
       throw SomeError()
     }
 
-    return "(\nvalue: \(argument),\nstring: \(literal: argument.description)\n)"
+    return "(\(argument), \(literal: argument.description))"
   }
 }
 
