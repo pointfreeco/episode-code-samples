@@ -7,40 +7,62 @@ import XCTest
 import ExperimentationMacros
 
 let testMacros: [String: Macro.Type] = [
-    "stringify": StringifyMacro.self,
+  "stringify": StringifyMacro.self,
 ]
 #endif
 
 final class ExperimentationTests: XCTestCase {
-    func testMacro() throws {
-        #if canImport(ExperimentationMacros)
-        assertMacroExpansion(
+  func testMacro() throws {
+#if canImport(ExperimentationMacros)
+    assertMacroExpansion(
             """
             #stringify(a + b)
             """,
             expandedSource: """
-            (a + b, "a + b)
+            (
+                value: a + b,
+                string: "a + b"
+            )
             """,
             macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
+    )
+#else
+    throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
+  }
 
-    func testMacroWithStringLiteral() throws {
-        #if canImport(ExperimentationMacros)
-        assertMacroExpansion(
+  func testMacro_LongArgumentDiagnostic() throws {
+    assertMacroExpansion(
+      """
+      #stringify((a + b) * (a - b) * (b - a))
+      """,
+      expandedSource: """
+      #stringify((a + b) * (a - b) * (b - a))
+      """,
+      diagnostics: [
+        DiagnosticSpec(message: "SomeError()", line: 1, column: 1),
+        DiagnosticSpec(message: "SomeError()", line: 1, column: 1),
+      ],
+      macros: testMacros
+    )
+  }
+
+  func testMacroWithStringLiteral() throws {
+#if canImport(ExperimentationMacros)
+    assertMacroExpansion(
             #"""
             #stringify("Hello, \(name)")
             """#,
             expandedSource: #"""
-            ("Hello, \(name)", #""Hello, \(name)""#)
+            (
+                value: "Hello, \(name)",
+                string: #""Hello, \(name)""#
+            )
             """#,
             macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
+    )
+#else
+    throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
+  }
 }
