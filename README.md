@@ -249,3 +249,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Tour of the Composable Architecture 1.0: Navigation](0245-tca-tour-pt3)
 1. [Tour of the Composable Architecture 1.0: Stacks](0246-tca-tour-pt4)
 1. [Tour of the Composable Architecture 1.0: Correctness](0247-tca-tour-pt5)
+1. [Tour of the Composable Architecture 1.0: Dependencies](0248-tca-tour-pt6)
+1. [Tour of the Composable Architecture 1.0: Persistence](0249-tca-tour-pt7)
