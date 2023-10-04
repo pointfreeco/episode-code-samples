@@ -17,6 +17,7 @@
 		2AD14E512ACDFA3C0015EB20 /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD14E502ACDFA3C0015EB20 /* ListView.swift */; };
 		4B9F507A2ACDD172003E17D0 /* CounterView_State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9F50792ACDD172003E17D0 /* CounterView_State.swift */; };
 		4B9F507C2ACDD5C0003E17D0 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9F507B2ACDD5C0003E17D0 /* AppView.swift */; };
+		4B9F507F2ACE019A003E17D0 /* CustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 4B9F507E2ACE019A003E17D0 /* CustomDump */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B9F507F2ACE019A003E17D0 /* CustomDump in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,6 +132,9 @@
 			dependencies = (
 			);
 			name = ObservationExplorations;
+			packageProductDependencies = (
+				4B9F507E2ACE019A003E17D0 /* CustomDump */,
+			);
 			productName = ObservationExplorations;
 			productReference = 2AD14E1C2ACDC3EC0015EB20 /* ObservationExplorations.app */;
 			productType = "com.apple.product-type.application";
@@ -180,6 +185,9 @@
 				Base,
 			);
 			mainGroup = 2AD14E132ACDC3EC0015EB20;
+			packageReferences = (
+				4B9F507D2ACE019A003E17D0 /* XCRemoteSwiftPackageReference "swift-custom-dump" */,
+			);
 			productRefGroup = 2AD14E1D2ACDC3EC0015EB20 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -385,6 +393,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.ObservationExplorations;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -413,6 +422,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.ObservationExplorations;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -487,6 +497,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4B9F507D2ACE019A003E17D0 /* XCRemoteSwiftPackageReference "swift-custom-dump" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-custom-dump.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4B9F507E2ACE019A003E17D0 /* CustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B9F507D2ACE019A003E17D0 /* XCRemoteSwiftPackageReference "swift-custom-dump" */;
+			productName = CustomDump;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2AD14E142ACDC3EC0015EB20 /* Project object */;
 }

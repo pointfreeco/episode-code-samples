@@ -20,7 +20,23 @@ struct Angle {
 }
 
 @Observable
-class CounterModel: Identifiable {
+class CounterModel: Identifiable, Hashable {
+  static func == (lhs: CounterModel, rhs: CounterModel) -> Bool {
+//    lhs.count == rhs.count
+//    && lhs.isDisplayingSecondsElapsed == rhs.isDisplayingSecondsElapsed
+//    && lhs.secondsElapsed == rhs.secondsElapsed
+//    && (lhs.timerTask != nil) == (rhs.timerTask != nil)
+    lhs === rhs
+  }
+
+  func hash(into hasher: inout Hasher) {
+//    hasher.combine(self.count)
+//    hasher.combine(self.isDisplayingSecondsElapsed)
+//    hasher.combine(self.secondsElapsed)
+//    hasher.combine(self.timerTask != nil)
+    hasher.combine(ObjectIdentifier(self))
+  }
+
   var count: Int = 0
   var isDisplayingSecondsElapsed = true
   var secondsElapsed = 0

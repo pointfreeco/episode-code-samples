@@ -1,36 +1,45 @@
-//
-//  ObservationExplorationsTests.swift
-//  ObservationExplorationsTests
-//
-//  Created by Point-Free on 10/4/23.
-//
-
+import CustomDump
 import XCTest
 @testable import ObservationExplorations
 
+struct User: Equatable {
+  let id = UUID()
+  var name = ""
+  var bio = ""
+  var age: Int?
+  var friends: [User] = []
+}
+
 final class ObservationExplorationsTests: XCTestCase {
+  func testBasics() {
+    var before = User()
+//    var after = before
+//    after.name = "Blob"
+//    XCTAssertNoDifference(before, after)
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func doSomething(_ user: inout User) {
+      // Complex feature logic
+      user.name = "Blob"
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    XCTAssertDifference(before) {
+      doSomething(&before)
+    } changes: {
+      $0.name = "Blob"
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
+//    store.send(.incrementButtonTapped) {
+//      $0.count = 1
+//    }
+  }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+  func testReference() {
+    let before = CounterModel()
+//    let after = before
+//    after.count = 1
+//    XCTAssertNoDifference(before, after)
 
+    before.incrementButtonTapped()
+    XCTAssertEqual(before.count, 1)
+  }
 }
