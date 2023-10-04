@@ -4,7 +4,7 @@ import SwiftUI
 class AppModel {
   let tab1 = CounterModel()
   let tab2 = CounterModel()
-  let tab3 = CounterModel()
+  let tab3 = ListModel()
 }
 
 struct AppView: View {
@@ -29,10 +29,11 @@ struct AppView: View {
       .tabItem { Text("Counter 2") }
 
       NavigationStack {
-        CounterView(model: self.model.tab3)
+        ListView(model: self.model.tab3)
           .navigationTitle(Text("Counter 3"))
       }
-      .badge(self.model.tab3.count)
+      //.badge(self.model.tab3.counters.count)
+      .badge(self.model.tab3.counters.first?.count ?? 0)
       .tabItem { Text("Counter 3") }
     }
   }

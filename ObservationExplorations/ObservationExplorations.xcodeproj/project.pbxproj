@@ -14,6 +14,7 @@
 		2AD14E312ACDC3ED0015EB20 /* ObservationExplorationsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD14E302ACDC3ED0015EB20 /* ObservationExplorationsTests.swift */; };
 		2AD14E4D2ACDDA7C0015EB20 /* CounterView_ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD14E4C2ACDDA7C0015EB20 /* CounterView_ObservableObject.swift */; };
 		2AD14E4F2ACDDD640015EB20 /* AppView_ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD14E4E2ACDDD640015EB20 /* AppView_ObservableObject.swift */; };
+		2AD14E512ACDFA3C0015EB20 /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD14E502ACDFA3C0015EB20 /* ListView.swift */; };
 		4B9F507A2ACDD172003E17D0 /* CounterView_State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9F50792ACDD172003E17D0 /* CounterView_State.swift */; };
 		4B9F507C2ACDD5C0003E17D0 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9F507B2ACDD5C0003E17D0 /* AppView.swift */; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 		2AD14E492ACDC40B0015EB20 /* ObservationExplorations.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = ObservationExplorations.xctestplan; sourceTree = "<group>"; };
 		2AD14E4C2ACDDA7C0015EB20 /* CounterView_ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView_ObservableObject.swift; sourceTree = "<group>"; };
 		2AD14E4E2ACDDD640015EB20 /* AppView_ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView_ObservableObject.swift; sourceTree = "<group>"; };
+		2AD14E502ACDFA3C0015EB20 /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
 		4B9F50792ACDD172003E17D0 /* CounterView_State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView_State.swift; sourceTree = "<group>"; };
 		4B9F507B2ACDD5C0003E17D0 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,11 +84,12 @@
 		2AD14E1E2ACDC3EC0015EB20 /* ObservationExplorations */ = {
 			isa = PBXGroup;
 			children = (
-				4B9F507B2ACDD5C0003E17D0 /* AppView.swift */,
 				2AD14E4E2ACDDD640015EB20 /* AppView_ObservableObject.swift */,
+				4B9F507B2ACDD5C0003E17D0 /* AppView.swift */,
+				2AD14E4C2ACDDA7C0015EB20 /* CounterView_ObservableObject.swift */,
 				4B9F50792ACDD172003E17D0 /* CounterView_State.swift */,
 				2AD14E212ACDC3EC0015EB20 /* CounterView.swift */,
-				2AD14E4C2ACDDA7C0015EB20 /* CounterView_ObservableObject.swift */,
+				2AD14E502ACDFA3C0015EB20 /* ListView.swift */,
 				2AD14E1F2ACDC3EC0015EB20 /* ObservationExplorationsApp.swift */,
 				2AD14E232ACDC3ED0015EB20 /* Assets.xcassets */,
 				2AD14E252ACDC3ED0015EB20 /* Preview Content */,
@@ -214,6 +217,7 @@
 				4B9F507C2ACDD5C0003E17D0 /* AppView.swift in Sources */,
 				4B9F507A2ACDD172003E17D0 /* CounterView_State.swift in Sources */,
 				2AD14E4F2ACDDD640015EB20 /* AppView_ObservableObject.swift in Sources */,
+				2AD14E512ACDFA3C0015EB20 /* ListView.swift in Sources */,
 				2AD14E222ACDC3EC0015EB20 /* CounterView.swift in Sources */,
 				2AD14E4D2ACDDA7C0015EB20 /* CounterView_ObservableObject.swift in Sources */,
 				2AD14E202ACDC3EC0015EB20 /* ObservationExplorationsApp.swift in Sources */,

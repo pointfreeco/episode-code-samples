@@ -20,14 +20,8 @@ struct Angle {
 }
 
 @Observable
-class CounterModel {
-  // private var _count
+class CounterModel: Identifiable {
   var count: Int = 0
-//  {
-//    didSet {
-//      print("Count changed to", self.count)
-//    }
-//  }
   var isDisplayingSecondsElapsed = true
   var secondsElapsed = 0
   private var timerTask: Task<Void, Error>?
@@ -48,7 +42,7 @@ class CounterModel {
         observe()
       }
     }
-    observe()
+    //observe()
   }
 
   func decrementButtonTapped() {
