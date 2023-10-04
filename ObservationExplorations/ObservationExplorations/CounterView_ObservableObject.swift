@@ -1,12 +1,9 @@
-import Observation
 import SwiftUI
 
-@Observable
-class CounterModel {
-  var count = 0
-  var isDisplayingSecondsElapsed = true
-  var secondsElapsed = 0
-  private var timerTask: Task<Void, Error>?
+class CounterModel_ObservableObject: ObservableObject {
+  @Published var count = 0
+  @Published var secondsElapsed = 0
+  @Published private var timerTask: Task<Void, Error>?
   var isTimerOn: Bool {
     self.timerTask != nil
   }
@@ -35,8 +32,8 @@ class CounterModel {
   }
 }
 
-struct CounterView: View {
-  @Bindable var model: CounterModel
+struct CounterView_ObservableObject: View {
+  @ObservedObject var model: CounterModel_ObservableObject
 
   var body: some View {
     let _ = Self._printChanges()
@@ -49,9 +46,7 @@ struct CounterView: View {
         Text("Counter")
       }
       Section {
-        if self.model.isDisplayingSecondsElapsed {
-          Text("Seconds elapsed: \(self.model.secondsElapsed)")
-        }
+        //Text("Seconds elapsed: \(self.model.secondsElapsed)")
         if !self.model.isTimerOn {
           Button("Start timer") {
             self.model.startTimerButtonTapped()
@@ -67,9 +62,6 @@ struct CounterView: View {
             }
           }
         }
-        Toggle(isOn: self.$model.isDisplayingSecondsElapsed) {
-          Text("Observe seconds elapsed")
-        }
       } header: {
         Text("Timer")
       }
@@ -78,5 +70,5 @@ struct CounterView: View {
 }
 
 #Preview {
-  CounterView(model: CounterModel())
+  CounterView_ObservableObject(model: CounterModel_ObservableObject())
 }
