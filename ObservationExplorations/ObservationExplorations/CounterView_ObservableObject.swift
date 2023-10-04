@@ -23,7 +23,7 @@ class CounterModel_ObservableObject: ObservableObject {
 
   func startTimerButtonTapped() {
     self.timerTask?.cancel()
-    self.timerTask = Task { @MainActor in
+    self.timerTask = Task {
       while true {
         try await Task.sleep(for: .seconds(1))
         self.secondsElapsed += 1

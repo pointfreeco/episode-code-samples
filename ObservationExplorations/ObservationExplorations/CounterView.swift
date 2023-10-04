@@ -22,11 +22,12 @@ struct Angle {
 @Observable
 class CounterModel {
   // private var _count
-  var count: Int = 0 {
-    didSet {
-      print("Count changed to", self.count)
-    }
-  }
+  var count: Int = 0
+//  {
+//    didSet {
+//      print("Count changed to", self.count)
+//    }
+//  }
   var isDisplayingSecondsElapsed = true
   var secondsElapsed = 0
   private var timerTask: Task<Void, Error>?
@@ -40,14 +41,14 @@ class CounterModel {
     @Sendable func observe() {
       withObservationTracking {
         _ = self.count
-      } onChange: {
-        Task {
+      } onChange: { /*keyPath in*/
+        Task { @MainActor in
           print("Count changed to", self.count)
         }
         observe()
       }
     }
-//    observe()
+    observe()
   }
 
   func decrementButtonTapped() {
@@ -59,7 +60,7 @@ class CounterModel {
 
   func startTimerButtonTapped() {
     self.timerTask?.cancel()
-    self.timerTask = Task { @MainActor in
+    self.timerTask = Task { /*@MainActor in*/
       while true {
         try await Task.sleep(for: .seconds(1))
         self.secondsElapsed += 1
