@@ -1,9 +1,9 @@
 import SwiftUI
 
-class CounterModel {
-  var count = 0
-  var secondsElapsed = 0
-  private var timerTask: Task<Void, Error>?
+class CounterModel: ObservableObject {
+  @Published var count = 0
+  @Published var secondsElapsed = 0
+  @Published private var timerTask: Task<Void, Error>?
   var isTimerOn: Bool {
     self.timerTask != nil
   }
@@ -17,7 +17,7 @@ class CounterModel {
 
   func startTimerButtonTapped() {
     self.timerTask?.cancel()
-    self.timerTask = Task {
+    self.timerTask = Task { @MainActor in
       while true {
         try await Task.sleep(for: .seconds(1))
         self.secondsElapsed += 1
@@ -33,7 +33,7 @@ class CounterModel {
 }
 
 struct CounterView: View {
-  @State var model = CounterModel()
+  @ObservedObject var model: CounterModel
 
   var body: some View {
     let _ = Self._printChanges()
@@ -46,7 +46,7 @@ struct CounterView: View {
         Text("Counter")
       }
       Section {
-        Text("Seconds elapsed: \(self.model.secondsElapsed)")
+        //Text("Seconds elapsed: \(self.model.secondsElapsed)")
         if !self.model.isTimerOn {
           Button("Start timer") {
             self.model.startTimerButtonTapped()
