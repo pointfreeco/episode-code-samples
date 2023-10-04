@@ -1,41 +1,59 @@
 import SwiftUI
 
+class CounterModel {
+  var count = 0
+  var secondsElapsed = 0
+  private var timerTask: Task<Void, Error>?
+  var isTimerOn: Bool {
+    self.timerTask != nil
+  }
+
+  func decrementButtonTapped() {
+    self.count -= 1
+  }
+  func incrementButtonTapped() {
+    self.count += 1
+  }
+
+  func startTimerButtonTapped() {
+    self.timerTask?.cancel()
+    self.timerTask = Task {
+      while true {
+        try await Task.sleep(for: .seconds(1))
+        self.secondsElapsed += 1
+        print("secondsElapsed", self.secondsElapsed)
+      }
+    }
+  }
+
+  func stopTimerButtonTapped() {
+    self.timerTask?.cancel()
+    self.timerTask = nil
+  }
+}
+
 struct CounterView: View {
-  @State var count = 0
-  @State var isDisplayingSecondsElapsed = false
-  @State var secondsElapsed = 0
-  @State var timerTask: Task<Void, Error>?
+  @State var model = CounterModel()
 
   var body: some View {
     let _ = Self._printChanges()
     Form {
       Section {
-        Text(self.count.description)
-        Button("Decrement") { self.count -= 1 }
-        Button("Increment") { self.count += 1 }
+        Text(self.model.count.description)
+        Button("Decrement") { self.model.decrementButtonTapped() }
+        Button("Increment") { self.model.incrementButtonTapped() }
       } header: {
         Text("Counter")
       }
       Section {
-        if self.isDisplayingSecondsElapsed {
-          Text("Seconds elapsed: \(self.secondsElapsed)")
-        }
-        if self.timerTask == nil {
+        Text("Seconds elapsed: \(self.model.secondsElapsed)")
+        if !self.model.isTimerOn {
           Button("Start timer") {
-            self.secondsElapsed = 0
-            self.timerTask?.cancel()
-            self.timerTask = Task {
-              while true {
-                try await Task.sleep(for: .seconds(1))
-                print("secondsElapsed", self.secondsElapsed)
-                self.secondsElapsed += 1
-              }
-            }
+            self.model.startTimerButtonTapped()
           }
         } else {
           Button {
-            self.timerTask?.cancel()
-            self.timerTask = nil
+            self.model.stopTimerButtonTapped()
           } label: {
             HStack {
               Text("Stop timer")
@@ -43,9 +61,6 @@ struct CounterView: View {
               ProgressView().id(UUID())
             }
           }
-        }
-        Toggle(isOn: self.$isDisplayingSecondsElapsed) {
-          Text("Display seconds")
         }
       } header: {
         Text("Timer")
@@ -55,5 +70,5 @@ struct CounterView: View {
 }
 
 #Preview {
-  CounterView()
+  CounterView(model: CounterModel())
 }

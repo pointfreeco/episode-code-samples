@@ -4,7 +4,7 @@ import SwiftUI
 struct ObservationExplorationsApp: App {
   var body: some Scene {
     WindowGroup {
-      CounterView()
+      CounterView(model: CounterModel())
     }
   }
 }
