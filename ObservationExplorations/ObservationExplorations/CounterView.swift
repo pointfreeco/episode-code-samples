@@ -3,12 +3,30 @@ import SwiftUI
 
 @Observable
 class CounterModel {
-  var count = 0
+  var count = 0 {
+    didSet {
+      print("Count changed to", self.count)
+    }
+  }
   var isDisplayingSecondsElapsed = true
   var secondsElapsed = 0
   private var timerTask: Task<Void, Error>?
   var isTimerOn: Bool {
     self.timerTask != nil
+  }
+
+  init() {
+    @Sendable func observe() {
+      withObservationTracking {
+        _ = self.count
+      } onChange: {
+        Task {
+          print("Count changed to", self.count)
+        }
+        observe()
+      }
+    }
+//    observe()
   }
 
   func decrementButtonTapped() {
@@ -79,4 +97,17 @@ struct CounterView: View {
 
 #Preview {
   CounterView(model: CounterModel())
+}
+
+struct ObservedView<Content: View>: View {
+  @State var id = UUID()
+  let content: () -> Content
+
+  var body: some View {
+    withObservationTracking {
+      content()
+    } onChange: {
+      self.id = UUID()
+    }
+  }
 }

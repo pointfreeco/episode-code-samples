@@ -8,6 +8,12 @@ class CounterModel_ObservableObject: ObservableObject {
     self.timerTask != nil
   }
 
+//  init() {
+//    self.$count.sink { count in
+//      self.count != count
+//    }
+//  }
+
   func decrementButtonTapped() {
     self.count -= 1
   }
