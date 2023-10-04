@@ -19,6 +19,41 @@ struct Angle {
   }
 }
 
+struct CounterState: Observable {
+  private var _count  = 0
+  var count: Int {
+    @storageRestrictions(initializes: _count )
+    init(initialValue) {
+      _count  = initialValue
+    }
+
+    get {
+      access(keyPath: \.count )
+      return _count
+    }
+
+    set {
+      withMutation(keyPath: \.count ) {
+        _count  = newValue
+      }
+    }
+  }
+  private let _$observationRegistrar = Observation.ObservationRegistrar()
+
+  internal nonisolated func access<Member>(
+      keyPath: KeyPath<CounterState , Member>
+  ) {
+    _$observationRegistrar.access(self, keyPath: keyPath)
+  }
+
+  internal nonisolated func withMutation<Member, MutationResult>(
+    keyPath: KeyPath<CounterState , Member>,
+    _ mutation: () throws -> MutationResult
+  ) rethrows -> MutationResult {
+    try _$observationRegistrar.withMutation(of: self, keyPath: keyPath, mutation)
+  }
+}
+
 @Observable
 class CounterModel: Identifiable, Hashable {
   static func == (lhs: CounterModel, rhs: CounterModel) -> Bool {

@@ -1,3 +1,4 @@
+import ConcurrencyExtras
 import CustomDump
 import XCTest
 @testable import ObservationExplorations
@@ -41,5 +42,88 @@ final class ObservationExplorationsTests: XCTestCase {
 
     before.incrementButtonTapped()
     XCTAssertEqual(before.count, 1)
+  }
+
+  func testObservableStruct() {
+    var state = CounterState()
+    var copy = state
+    let stateChanges = LockIsolated<[String]>([])
+    let copyChanges = LockIsolated<[String]>([])
+    withObservationTracking {
+      _ = state.count
+    } onChange: {
+      stateChanges.withValue { $0.append("State is changing") }
+    }
+    withObservationTracking {
+      _ = copy.count
+    } onChange: {
+      copyChanges.withValue { $0.append("Copy is changing") }
+    }
+    state.count += 1
+    XCTAssertEqual(stateChanges.value, ["State is changing"])
+    XCTAssertEqual(copyChanges.value, [])
+    copy.count += 1
+    XCTAssertEqual(stateChanges.value, ["State is changing"])
+    XCTAssertEqual(copyChanges.value, ["Copy is changing"])
+  }
+
+  func testObservableStruct_AssignCopy() {
+    var state = CounterState()
+    var copy = state
+    let stateChanges = LockIsolated<[String]>([])
+    let copyChanges = LockIsolated<[String]>([])
+    withObservationTracking {
+      _ = state.count
+    } onChange: {
+      stateChanges.withValue { $0.append("State is changing") }
+    }
+    withObservationTracking {
+      _ = copy.count
+    } onChange: {
+      copyChanges.withValue { $0.append("Copy is changing") }
+    }
+    copy.count += 1
+    XCTAssertEqual(stateChanges.value, [])
+    XCTAssertEqual(copyChanges.value, ["Copy is changing"])
+    state = copy
+    XCTAssertEqual(stateChanges.value, ["State is changing"])
+    XCTAssertEqual(copyChanges.value, ["Copy is changing"])
+  }
+
+}
+
+//@Observable
+struct CounterState: Observable {
+  private var _count  = 0
+  var count: Int {
+    @storageRestrictions(initializes: _count )
+    init(initialValue) {
+      _count  = initialValue
+    }
+
+    get {
+      access(keyPath: \.count )
+      return _count
+    }
+
+    set {
+      withMutation(keyPath: \.count ) {
+        _count  = newValue
+      }
+    }
+  }
+  private let _$observationRegistrar = Observation.ObservationRegistrar()
+
+  internal nonisolated func access<Member>(
+      keyPath: KeyPath<CounterState , Member>
+  ) {
+    _$observationRegistrar.access(self, keyPath: keyPath)
+  }
+
+  internal nonisolated func withMutation<Member, MutationResult>(
+    keyPath: KeyPath<CounterState , Member>,
+    _ mutation: () throws -> MutationResult
+  ) rethrows -> MutationResult {
+    try _$observationRegistrar.withMutation(of: self, keyPath: keyPath, mutation)
   }
 }

@@ -18,6 +18,7 @@
 		4B9F507A2ACDD172003E17D0 /* CounterView_State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9F50792ACDD172003E17D0 /* CounterView_State.swift */; };
 		4B9F507C2ACDD5C0003E17D0 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9F507B2ACDD5C0003E17D0 /* AppView.swift */; };
 		4B9F507F2ACE019A003E17D0 /* CustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 4B9F507E2ACE019A003E17D0 /* CustomDump */; };
+		4B9F50822ACE0E6C003E17D0 /* ConcurrencyExtras in Frameworks */ = {isa = PBXBuildFile; productRef = 4B9F50812ACE0E6C003E17D0 /* ConcurrencyExtras */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B9F507F2ACE019A003E17D0 /* CustomDump in Frameworks */,
+				4B9F50822ACE0E6C003E17D0 /* ConcurrencyExtras in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,6 +136,7 @@
 			name = ObservationExplorations;
 			packageProductDependencies = (
 				4B9F507E2ACE019A003E17D0 /* CustomDump */,
+				4B9F50812ACE0E6C003E17D0 /* ConcurrencyExtras */,
 			);
 			productName = ObservationExplorations;
 			productReference = 2AD14E1C2ACDC3EC0015EB20 /* ObservationExplorations.app */;
@@ -187,6 +190,7 @@
 			mainGroup = 2AD14E132ACDC3EC0015EB20;
 			packageReferences = (
 				4B9F507D2ACE019A003E17D0 /* XCRemoteSwiftPackageReference "swift-custom-dump" */,
+				4B9F50802ACE0E6C003E17D0 /* XCRemoteSwiftPackageReference "swift-concurrency-extras" */,
 			);
 			productRefGroup = 2AD14E1D2ACDC3EC0015EB20 /* Products */;
 			projectDirPath = "";
@@ -507,6 +511,14 @@
 				minimumVersion = 1.1.0;
 			};
 		};
+		4B9F50802ACE0E6C003E17D0 /* XCRemoteSwiftPackageReference "swift-concurrency-extras" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-concurrency-extras.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -514,6 +526,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4B9F507D2ACE019A003E17D0 /* XCRemoteSwiftPackageReference "swift-custom-dump" */;
 			productName = CustomDump;
+		};
+		4B9F50812ACE0E6C003E17D0 /* ConcurrencyExtras */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B9F50802ACE0E6C003E17D0 /* XCRemoteSwiftPackageReference "swift-concurrency-extras" */;
+			productName = ConcurrencyExtras;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
