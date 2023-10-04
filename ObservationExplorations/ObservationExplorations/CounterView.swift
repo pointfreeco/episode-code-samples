@@ -1,9 +1,28 @@
 import Observation
 import SwiftUI
 
+struct Angle {
+  var radians: Double
+  var degrees: Double {
+    @storageRestrictions(initializes: radians)
+    init(initialValue) {
+      self.radians = initialValue * .pi / 180
+    }
+    get { self.radians * 180 / .pi }
+    set { self.radians = newValue * .pi / 180 }
+  }
+  init(radians: Double) {
+    self.radians = radians
+  }
+  init(degrees: Double) {
+    self.degrees = degrees
+  }
+}
+
 @Observable
 class CounterModel {
-  var count = 0 {
+  // private var _count
+  var count: Int = 0 {
     didSet {
       print("Count changed to", self.count)
     }
@@ -16,6 +35,8 @@ class CounterModel {
   }
 
   init() {
+    self.count = 0
+
     @Sendable func observe() {
       withObservationTracking {
         _ = self.count
