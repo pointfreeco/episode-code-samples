@@ -253,3 +253,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Tour of the Composable Architecture 1.0: Persistence](0249-tca-tour-pt7)
 1. [Testing & Debugging Macros: Part 1](0250-macro-testing-pt1)
 1. [Testing & Debugging Macros: Part 2](0251-macro-testing-pt2)
+1. [Observation: The Past](0252-observation-pt2)
