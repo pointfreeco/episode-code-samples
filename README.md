@@ -254,3 +254,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Testing & Debugging Macros: Part 1](0250-macro-testing-pt1)
 1. [Testing & Debugging Macros: Part 2](0251-macro-testing-pt2)
 1. [Observation: The Past](0252-observation-pt2)
+1. [Observation: The Present](0253-observation-pt3)
