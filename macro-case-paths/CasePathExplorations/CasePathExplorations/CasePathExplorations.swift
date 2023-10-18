@@ -75,12 +75,57 @@ enum Loading {
   case loaded(String)
 }
 
-\Loading.loaded  // WritableKeyPath<Loading, String?>
+let extractLoaded: (Loading) -> String? = {
+  guard case let .loaded(value) = $0
+  else { return nil }
+  return value
+}
+let embedLoaded: (String) -> Loading = Loading.loaded
+
+//struct CasePath<Root, Value> {
+//  let extract: (Root) -> Value?
+//  let embed: (Value) -> Root
+//}
+
+//\Loading.loaded  // WritableKeyPath<Loading, String?>
 
 func h() {
   var value = Loading.inProgress
-  value[keyPath: \.loaded]  // nil
-
-  value[keyPath: \.loaded] = 1  // ???
-  value[keyPath: \.loaded] = nil  // ???
+//  value[keyPath: \.loaded]  // nil
+//
+//  value[keyPath: \.loaded] = 1  // ???
+//  value[keyPath: \.loaded] = nil  // ???
 }
+
+import CasePaths
+
+let loadedCasePath = /Loading.loaded
+let nameKeyPath = \User.name
+
+func j() throws {
+  var value = Loading.loaded("Hello")
+  (/Loading.loaded).extract(from: value)      // "Hello"
+  (/Loading.inProgress).extract(from: value)  // nil
+  (/Loading.loaded).embed("Hello")
+
+  //user[keyPath: \.name] = "Blob"
+
+  try (/Loading.loaded).modify(&value) {
+    $0 += "!!!"
+  }
+
+  if case let .loaded(string) = value {
+    value = .loaded(string + "!!!")
+  }
+}
+
+// CasePath<Loading, String>(Loading.loaded)
+
+//CasePath(
+//  embed: Loading.loaded,
+//  extract: {
+//    guard case let .loaded(value) = $0
+//    else { return nil }
+//    return value
+//  }
+//)

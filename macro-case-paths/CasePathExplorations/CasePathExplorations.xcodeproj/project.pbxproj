@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2ACE49492AE07B320044CA12 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 2ACE49482AE07B320044CA12 /* CasePaths */; };
 		4B42AE762AE070FB00FE1D22 /* CasePathExplorationsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B42AE752AE070FB00FE1D22 /* CasePathExplorationsApp.swift */; };
 		4B42AE7A2AE070FC00FE1D22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B42AE792AE070FC00FE1D22 /* Assets.xcassets */; };
 		4B42AE7D2AE070FC00FE1D22 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B42AE7C2AE070FC00FE1D22 /* Preview Assets.xcassets */; };
@@ -51,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2ACE49492AE07B320044CA12 /* CasePaths in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +145,9 @@
 			dependencies = (
 			);
 			name = CasePathExplorations;
+			packageProductDependencies = (
+				2ACE49482AE07B320044CA12 /* CasePaths */,
+			);
 			productName = CasePathExplorations;
 			productReference = 4B42AE722AE070FB00FE1D22 /* CasePathExplorations.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +220,9 @@
 				Base,
 			);
 			mainGroup = 4B42AE692AE070FB00FE1D22;
+			packageReferences = (
+				2ACE49472AE07B320044CA12 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
+			);
 			productRefGroup = 4B42AE732AE070FB00FE1D22 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -582,6 +590,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2ACE49472AE07B320044CA12 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-case-paths.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2ACE49482AE07B320044CA12 /* CasePaths */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2ACE49472AE07B320044CA12 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
+			productName = CasePaths;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4B42AE6A2AE070FB00FE1D22 /* Project object */;
 }
