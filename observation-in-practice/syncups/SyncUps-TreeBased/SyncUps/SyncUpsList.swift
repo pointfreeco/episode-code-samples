@@ -5,17 +5,35 @@ import SwiftUI
 import SwiftUINavigation
 
 @MainActor
-final class SyncUpsListModel: ObservableObject {
-  @Published var destination: Destination? {
+@Observable
+final class SyncUpsListModel {
+  var destination: Destination? {
     didSet { self.bind() }
   }
-  @Published var syncUps: IdentifiedArrayOf<SyncUp>
+  private var saveDebouncedTask: Task<Void, Error>?
+  var syncUps: IdentifiedArrayOf<SyncUp> {
+    didSet {
+      self.saveDebouncedTask?.cancel()
+      self.saveDebouncedTask = Task {
+        try await self.clock.sleep(for: .seconds(1))
+        try self.dataManager.save(
+          JSONEncoder().encode(self.syncUps),
+          .syncUps
+        )
+      }
+    }
+  }
 
   private var destinationCancellable: AnyCancellable?
   private var cancellables: Set<AnyCancellable> = []
 
+  @ObservationIgnored
   @Dependency(\.dataManager) var dataManager
-  @Dependency(\.mainQueue) var mainQueue
+  @ObservationIgnored
+  @Dependency(\.continuousClock) var clock
+//  @ObservationIgnored
+//  @Dependency(\.mainQueue) var mainQueue
+  @ObservationIgnored
   @Dependency(\.uuid) var uuid
 
   enum Destination {
@@ -44,13 +62,13 @@ final class SyncUpsListModel: ObservableObject {
     } catch {
     }
 
-    self.$syncUps
-      .dropFirst()
-      .debounce(for: .seconds(1), scheduler: self.mainQueue)
-      .sink { [weak self] syncUps in
-        try? self?.dataManager.save(JSONEncoder().encode(syncUps), .syncUps)
-      }
-      .store(in: &self.cancellables)
+//    self.$syncUps
+//      .dropFirst()
+//      .debounce(for: .seconds(1), scheduler: self.mainQueue)
+//      .sink { [weak self] syncUps in
+//        try? self?.dataManager.save(JSONEncoder().encode(syncUps), .syncUps)
+//      }
+//      .store(in: &self.cancellables)
   }
 
   func addSyncUpButtonTapped() {
@@ -99,10 +117,27 @@ final class SyncUpsListModel: ObservableObject {
         }
       }
 
-      self.destinationCancellable = syncUpDetailModel.$syncUp
-        .sink { [weak self] syncUp in
-          self?.syncUps[id: syncUp.id] = syncUp
-        }
+//      self.destinationCancellable = syncUpDetailModel.$syncUp
+//        .sink { [weak self] syncUp in
+//          self?.syncUps[id: syncUp.id] = syncUp
+//        }
+//      func observe() {
+//        withObservationTracking {
+//          _ = syncUpDetailModel.syncUp
+//        } onChange: { [weak self, weak syncUpDetailModel] in
+//          guard let syncUpDetailModel else { return }
+//          Task { @MainActor in
+//            self?.syncUps[id: syncUpDetailModel.syncUp.id] = syncUpDetailModel.syncUp
+//            observe()
+//          }
+//        }
+//      }
+//      observe()
+
+      syncUpDetailModel.onSyncUpUpdated = { [weak self] syncUp in
+        self?.syncUps[id: syncUp.id] = syncUp
+      }
+
 
     case .add, .alert, .none:
       break
@@ -145,7 +180,7 @@ extension AlertState where Action == SyncUpsListModel.AlertAction {
 }
 
 struct SyncUpsList: View {
-  @ObservedObject var model: SyncUpsListModel
+  @Bindable var model: SyncUpsListModel
 
   var body: some View {
     NavigationStack {

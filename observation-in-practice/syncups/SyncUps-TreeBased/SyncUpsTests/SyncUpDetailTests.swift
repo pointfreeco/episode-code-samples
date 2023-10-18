@@ -110,6 +110,11 @@ final class SyncUpDetailTests: BaseTestCase {
         )
       )
     }
+    let onSyncUpUpdatedExpectation = self.expectation(description: "onSyncUpUpdated")
+    defer { self.wait(for: [onSyncUpUpdatedExpectation], timeout: 0) }
+    model.onSyncUpUpdated = { _ in
+      onSyncUpUpdatedExpectation.fulfill()
+    }
 
     let recordModel = try XCTUnwrap(model.destination, case: /SyncUpDetailModel.Destination.record)
 
@@ -140,6 +145,11 @@ final class SyncUpDetailTests: BaseTestCase {
           title: "Engineering"
         )
       )
+    }
+    let onSyncUpUpdatedExpectation = self.expectation(description: "onSyncUpUpdated")
+    defer { self.wait(for: [onSyncUpUpdatedExpectation], timeout: 0) }
+    model.onSyncUpUpdated = { _ in
+      onSyncUpUpdatedExpectation.fulfill()
     }
 
     model.editButtonTapped()

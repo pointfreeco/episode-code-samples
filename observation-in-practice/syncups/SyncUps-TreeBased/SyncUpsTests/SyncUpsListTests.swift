@@ -8,7 +8,7 @@ import XCTest
 
 @MainActor
 final class SyncUpListTests: BaseTestCase {
-  let mainQueue = DispatchQueue.test
+  let clock = TestClock()
 
   func testAdd() async throws {
     let savedData = LockIsolated(Data?.none)
@@ -16,7 +16,7 @@ final class SyncUpListTests: BaseTestCase {
     let model = withDependencies {
       $0.dataManager = .mock()
       $0.dataManager.save = { data, _ in savedData.setValue(data) }
-      $0.mainQueue = .immediate
+      $0.continuousClock = ImmediateClock()
       $0.uuid = .incrementing
     } operation: {
       SyncUpsListModel()
@@ -58,7 +58,7 @@ final class SyncUpListTests: BaseTestCase {
   func testAdd_ValidatedAttendees() async throws {
     let model = withDependencies {
       $0.dataManager = .mock()
-      $0.mainQueue = .immediate
+      $0.continuousClock = ImmediateClock()
       $0.uuid = .incrementing
     } operation: {
       SyncUpsListModel(
@@ -102,7 +102,7 @@ final class SyncUpListTests: BaseTestCase {
       $0.dataManager = .mock(
         initialData: try JSONEncoder().encode([SyncUp.mock])
       )
-      $0.mainQueue = .immediate
+      $0.continuousClock = ImmediateClock()
     } operation: {
       SyncUpsListModel()
     }
@@ -136,7 +136,7 @@ final class SyncUpListTests: BaseTestCase {
           )
         ])
       )
-      $0.mainQueue = .immediate
+      $0.continuousClock = ImmediateClock()
     } operation: {
       SyncUpsListModel()
     }
@@ -170,7 +170,7 @@ final class SyncUpListTests: BaseTestCase {
 
   func testLoadingDataDecodingFailed() async throws {
     let model = withDependencies {
-      $0.mainQueue = .immediate
+      $0.continuousClock = ImmediateClock()
       $0.dataManager = .mock(
         initialData: Data("!@#$ BAD DATA %^&*()".utf8)
       )
@@ -210,7 +210,7 @@ final class SyncUpListTests: BaseTestCase {
         savedData.setValue(data)
         expectation.fulfill()
       }
-      $0.mainQueue = self.mainQueue.eraseToAnyScheduler()
+      $0.continuousClock = self.clock
     } operation: {
       SyncUpsListModel(
         destination: .add(SyncUpFormModel(syncUp: .mock))
@@ -218,7 +218,7 @@ final class SyncUpListTests: BaseTestCase {
     }
 
     model.confirmAddSyncUpButtonTapped()
-    await self.mainQueue.advance(by: .seconds(1))
+    await self.clock.advance(by: .seconds(1))
     XCTAssertEqual(
       try JSONDecoder().decode([SyncUp].self, from: savedData.value),
       [.mock]

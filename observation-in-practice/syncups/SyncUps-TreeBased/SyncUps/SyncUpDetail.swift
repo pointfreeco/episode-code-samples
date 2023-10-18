@@ -6,20 +6,31 @@ import SwiftUINavigation
 import XCTestDynamicOverlay
 
 @MainActor
-class SyncUpDetailModel: ObservableObject {
-  @Published var destination: Destination? {
+@Observable
+class SyncUpDetailModel {
+  var destination: Destination? {
     didSet { self.bind() }
   }
-  @Published var isDismissed = false
-  @Published var syncUp: SyncUp
+  var isDismissed = false
+  var syncUp: SyncUp {
+    didSet {
+      self.onSyncUpUpdated(self.syncUp)
+    }
+  }
 
+  @ObservationIgnored
   @Dependency(\.continuousClock) var clock
+  @ObservationIgnored
   @Dependency(\.date.now) var now
+  @ObservationIgnored
   @Dependency(\.openSettings) var openSettings
+  @ObservationIgnored
   @Dependency(\.speechClient.authorizationStatus) var authorizationStatus
+  @ObservationIgnored
   @Dependency(\.uuid) var uuid
 
   var onConfirmDeletion: () -> Void = unimplemented("SyncUpDetailModel.onConfirmDeletion")
+  var onSyncUpUpdated: (SyncUp) -> Void = unimplemented("SyncUpDetailModel.onSyncUpUpdated")
 
   enum Destination {
     case alert(AlertState<AlertAction>)
@@ -143,7 +154,7 @@ class SyncUpDetailModel: ObservableObject {
 
 struct SyncUpDetailView: View {
   @Environment(\.dismiss) var dismiss
-  @ObservedObject var model: SyncUpDetailModel
+  @Bindable var model: SyncUpDetailModel
 
   var body: some View {
     List {
