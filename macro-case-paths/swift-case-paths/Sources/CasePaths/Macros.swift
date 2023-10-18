@@ -7,7 +7,8 @@
 ////  static let cases
 //}
 
-@attached(member)
+@attached(member, names: named(Cases), named(cases))
+@attached(extension, conformances: CasePathable)
 public macro CasePathable() = #externalMacro(
   module: "CasePathsMacros", type: "CasePathableMacro"
 )

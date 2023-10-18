@@ -52,6 +52,7 @@ let package = Package(
     .testTarget(
       name: "CasePathsMacrosTests",
       dependencies: [
+        "CasePaths",
         "CasePathsMacros",
         .product(name: "MacroTesting", package: "swift-macro-testing"),
       ]
