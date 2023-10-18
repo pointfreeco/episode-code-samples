@@ -6,3 +6,10 @@ public protocol CasePathable {
 public typealias CaseKeyPath<Root: CasePathable, Value> =
   KeyPath<Root.Cases, CasePath<Root, Value>>
 
+extension CasePathable {
+  public subscript<Value>(
+    dynamicMember keyPath: CaseKeyPath<Self, Value>
+  ) -> Value? {
+    Self.cases[keyPath: keyPath].extract(from: self)
+  }
+}

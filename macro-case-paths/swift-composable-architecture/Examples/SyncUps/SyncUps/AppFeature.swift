@@ -1,58 +1,16 @@
 import ComposableArchitecture
 import SwiftUI
 
-protocol CasePathable {
-  associatedtype Cases
-  static var cases: Cases { get }
-}
-
-typealias CaseKeyPath<Root: CasePathable, Value> =
-  KeyPath<Root.Cases, CasePath<Root, Value>>
-
-struct NewScope<ParentState, ParentAction: CasePathable, Child: Reducer>: Reducer {
-  let state: WritableKeyPath<ParentState, Child.State>
-  let action: CaseKeyPath<ParentAction, Child.Action>
-  let child: () -> Child
-  var body: some Reducer<ParentState, ParentAction> {
-    let actionCasePath = ParentAction.cases[keyPath: self.action]
-    Scope(state: self.state, action: actionCasePath, child: child)
-  }
-}
-
 struct AppFeature: Reducer {
   struct State: Equatable {
     var path = StackState<Path.State>()
     var syncUpsList = SyncUpsList.State()
   }
 
-  enum Action: Equatable, CasePathable {
+  @CasePathable
+  enum Action: Equatable {
     case path(StackAction<Path.State, Path.Action>)
     case syncUpsList(SyncUpsList.Action)
-
-    static let cases = Cases()
-
-    struct Cases {
-      let syncUpsList = CasePath<Action, SyncUpsList.Action>(
-        embed: Action.syncUpsList,
-        extract: {
-          guard case let .syncUpsList(value) = $0
-          else { return nil }
-          return value
-        }
-      )
-      let path = CasePath<Action, StackAction<Path.State, Path.Action>>(
-        embed: Action.path,
-        extract: {
-          guard case let .path(value) = $0
-          else { return nil }
-          return value
-        }
-      )
-    }
-
-    func foo() {
-      let _: KeyPath<Action.Cases, CasePath<Action, SyncUpsList.Action>> = \Action.Cases.syncUpsList
-    }
   }
 
   @Dependency(\.continuousClock) var clock
@@ -65,7 +23,7 @@ struct AppFeature: Reducer {
   }
 
   var body: some ReducerOf<Self> {
-    NewScope(state: \.syncUpsList, action: \.syncUpsList) {
+    Scope(state: \.syncUpsList, action: \.syncUpsList) {
       SyncUpsList()
     }
     Reduce { state, action in

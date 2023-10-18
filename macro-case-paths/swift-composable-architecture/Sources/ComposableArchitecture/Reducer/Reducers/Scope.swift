@@ -159,6 +159,19 @@ public struct Scope<ParentState, ParentAction, Child: Reducer>: Reducer {
     )
   }
 
+  @inlinable
+  public init<ChildState, ChildAction>(
+    state toChildState: WritableKeyPath<ParentState, ChildState>,
+    action toChildAction: CaseKeyPath<ParentAction, ChildAction>,
+    @ReducerBuilder<ChildState, ChildAction> child: () -> Child
+  ) where ChildState == Child.State, ChildAction == Child.Action {
+    self.init(
+      toChildState: .keyPath(toChildState),
+      toChildAction: ParentAction.cases[keyPath: toChildAction],
+      child: child()
+    )
+  }
+
   /// Initializes a reducer that runs the given child reducer against a slice of parent state and
   /// actions.
   ///

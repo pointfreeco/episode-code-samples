@@ -28,6 +28,8 @@ struct SyncUpDetail: Reducer {
   @Dependency(\.speechClient.authorizationStatus) var authorizationStatus
 
   struct Destination: Reducer {
+    @CasePathable
+    @dynamicMemberLookup
     enum State: Equatable {
       case alert(AlertState<Action.Alert>)
       case edit(SyncUpForm.State)
@@ -210,13 +212,11 @@ struct SyncUpDetailView: View {
       }
       .alert(
         store: self.store.scope(state: \.$destination, action: { .destination($0) }),
-        state: /SyncUpDetail.Destination.State.alert,
-        action: SyncUpDetail.Destination.Action.alert
+        state: \.alert, action: { .alert($0) }
       )
       .sheet(
         store: self.store.scope(state: \.$destination, action: { .destination($0) }),
-        state: /SyncUpDetail.Destination.State.edit,
-        action: SyncUpDetail.Destination.Action.edit
+        state: \.edit, action: { .edit($0) }
       ) { store in
         NavigationStack {
           SyncUpFormView(store: store)
