@@ -20,7 +20,7 @@ extension SoundEffectClient: DependencyKey {
       play: {
         player.withValue {
           $0.seek(to: .zero)
-          $0.play()
+//          $0.play()
         }
       }
     )

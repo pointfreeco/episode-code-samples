@@ -2,10 +2,12 @@ import Dependencies
 import SwiftUI
 import SwiftUINavigation
 
-class SyncUpFormModel: ObservableObject {
-  @Published var focus: Field?
-  @Published var syncUp: SyncUp
+@Observable
+class SyncUpFormModel {
+  var focus: Field?
+  var syncUp: SyncUp
 
+  @ObservationIgnored
   @Dependency(\.uuid) var uuid
 
   enum Field: Hashable {
@@ -44,7 +46,7 @@ class SyncUpFormModel: ObservableObject {
 
 struct SyncUpFormView: View {
   @FocusState var focus: SyncUpFormModel.Field?
-  @ObservedObject var model: SyncUpFormModel
+  @Bindable var model: SyncUpFormModel
 
   var body: some View {
     Form {

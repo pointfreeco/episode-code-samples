@@ -6,16 +6,20 @@ import SwiftUINavigation
 import XCTestDynamicOverlay
 
 @MainActor
-class RecordMeetingModel: ObservableObject {
-  @Published var destination: Destination?
-  @Published var isDismissed = false
-  @Published var secondsElapsed = 0
-  @Published var speakerIndex = 0
+@Observable
+class RecordMeetingModel {
+  var destination: Destination?
+  var isDismissed = false
+  var secondsElapsed = 0
+  var speakerIndex = 0
   let syncUp: SyncUp
   private var transcript = ""
 
+  @ObservationIgnored
   @Dependency(\.continuousClock) var clock
+  @ObservationIgnored
   @Dependency(\.soundEffectClient) var soundEffectClient
+  @ObservationIgnored
   @Dependency(\.speechClient) var speechClient
 
   var onMeetingFinished: (String) async -> Void = unimplemented(
@@ -179,7 +183,7 @@ extension AlertState where Action == RecordMeetingModel.AlertAction {
 
 struct RecordMeetingView: View {
   @Environment(\.dismiss) var dismiss
-  @ObservedObject var model: RecordMeetingModel
+  @Bindable var model: RecordMeetingModel
 
   var body: some View {
     ZStack {

@@ -98,7 +98,7 @@ final class SyncUpsListUITests: XCTestCase {
 
     XCTAssertEqual(self.app.staticTexts["Design"].exists, true)
     XCTAssertEqual(self.app.staticTexts["February 13, 2009"].exists, true)
-    XCTAssertEqual(self.app.staticTexts["6:31 PM"].exists, true)
+    XCTAssertEqual(self.app.staticTexts["3:31 PM"].exists, true)
 
     self.app.staticTexts["February 13, 2009"].tap()
     self.app.staticTexts["Hello world!"].tap()
