@@ -3,6 +3,19 @@ import SwiftUI
 
 @main
 struct SyncUpsApp: App {
+  let model = AppModel(
+    //            path: [
+    //              .detail(SyncUpDetailModel(syncUp: .mock)),
+    //              .record(
+    //                RecordMeetingModel(
+    //                  //destination: .alert(.endMeeting(isDiscardable: true)),
+    //                  syncUp: .mock
+    //                )
+    //              )
+    //            ],
+                syncUpsList: SyncUpsListModel()
+              )
+
   var body: some Scene {
     WindowGroup {
       // NB: This conditional is here only to facilitate UI testing so that we can mock out certain
@@ -13,18 +26,7 @@ struct SyncUpsApp: App {
         UITestingView(testName: testName)
       } else {
         AppView(
-          model: AppModel(
-//            path: [
-//              .detail(SyncUpDetailModel(syncUp: .mock)),
-//              .record(
-//                RecordMeetingModel(
-//                  //destination: .alert(.endMeeting(isDiscardable: true)),
-//                  syncUp: .mock
-//                )
-//              )
-//            ],
-            syncUpsList: SyncUpsListModel()
-          )
+          model: self.model
         )
       }
     }

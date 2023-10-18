@@ -99,6 +99,11 @@ final class SyncUpDetailTests: BaseTestCase {
         )
       )
     }
+    let onSyncUpUpdatedExpectation = self.expectation(description: "onSyncUpUpdated")
+    defer { self.wait(for: [onSyncUpUpdatedExpectation], timeout: 0) }
+    model.onSyncUpUpdated = { _ in
+      onSyncUpUpdatedExpectation.fulfill()
+    }
 
     model.editButtonTapped()
 

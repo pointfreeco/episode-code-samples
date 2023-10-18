@@ -21,7 +21,6 @@ final class AppTests: BaseTestCase {
     let model = withDependencies {
       $0.continuousClock = ImmediateClock()
       $0.date.now = Date(timeIntervalSince1970: 1_234_567_890)
-      $0.mainQueue = .immediate
       $0.dataManager = .mock(initialData: try? JSONEncoder().encode([syncUp]))
       $0.soundEffectClient = .noop
       $0.speechClient.authorizationStatus = { .authorized }
@@ -50,7 +49,6 @@ final class AppTests: BaseTestCase {
     let recordModel = try XCTUnwrap(model.path[1], case: /AppModel.Destination.record)
     await recordModel.task()
 
-    XCTAssertEqual(model.path, [model.path[0]])
     XCTAssertNoDifference(
       model.syncUpsList.syncUps[0].meetings,
       [
@@ -68,7 +66,7 @@ final class AppTests: BaseTestCase {
       dependencies.dataManager = .mock(
         initialData: try JSONEncoder().encode([SyncUp.mock])
       )
-      dependencies.mainQueue = .immediate
+      dependencies.continuousClock = ImmediateClock()
     } operation: {
       AppModel(syncUpsList: SyncUpsListModel())
     }
@@ -101,7 +99,7 @@ final class AppTests: BaseTestCase {
           )
         ])
       )
-      dependencies.mainQueue = .immediate
+      dependencies.continuousClock = ImmediateClock()
     } operation: {
       AppModel(syncUpsList: SyncUpsListModel())
     }

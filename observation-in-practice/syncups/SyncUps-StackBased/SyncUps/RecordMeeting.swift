@@ -6,21 +6,31 @@ import SwiftUINavigation
 import XCTestDynamicOverlay
 
 @MainActor
-class RecordMeetingModel: Hashable, ObservableObject {
-  @Published var destination: Destination?
-  @Published var secondsElapsed = 0
-  @Published var speakerIndex = 0
+@Observable
+class RecordMeetingModel: Hashable {
+  var destination: Destination?
+  var isDismissed = false
+  var secondsElapsed = 0
+  var speakerIndex = 0
   let syncUp: SyncUp
   private var transcript = ""
 
+  nonisolated static func == (lhs: RecordMeetingModel, rhs: RecordMeetingModel) -> Bool {
+    lhs === rhs
+  }
+  nonisolated func hash(into hasher: inout Hasher) {
+    hasher.combine(ObjectIdentifier(self))
+  }
+
+  @ObservationIgnored
   @Dependency(\.continuousClock) var clock
+  @ObservationIgnored
   @Dependency(\.soundEffectClient) var soundEffectClient
+  @ObservationIgnored
   @Dependency(\.speechClient) var speechClient
 
   var onMeetingFinished: (String) async -> Void = unimplemented(
     "RecordMeetingModel.onMeetingFinished")
-  var onDiscardMeeting: () -> Void = unimplemented(
-    "RecordMeetingModel.onDiscardMeeting")
 
   enum Destination {
     case alert(AlertState<AlertAction>)
@@ -37,13 +47,8 @@ class RecordMeetingModel: Hashable, ObservableObject {
   ) {
     self.destination = destination
     self.syncUp = syncUp
-  }
 
-  nonisolated static func == (lhs: RecordMeetingModel, rhs: RecordMeetingModel) -> Bool {
-    lhs === rhs
-  }
-  nonisolated func hash(into hasher: inout Hasher) {
-    hasher.combine(ObjectIdentifier(self))
+    
   }
 
   var durationRemaining: Duration {
@@ -79,9 +84,9 @@ class RecordMeetingModel: Hashable, ObservableObject {
   func alertButtonTapped(_ action: AlertAction?) async {
     switch action {
     case .confirmSave?:
-      await self.onMeetingFinished(self.transcript)
+      await self.finishMeeting()
     case .confirmDiscard?:
-      self.onDiscardMeeting()
+      self.isDismissed = true
     case nil:
       break
     }
@@ -107,6 +112,11 @@ class RecordMeetingModel: Hashable, ObservableObject {
     }
   }
 
+  private func finishMeeting() async {
+    self.isDismissed = true
+    await self.onMeetingFinished(self.transcript)
+  }
+
   private func startSpeechRecognition() async {
     do {
       let speechTask = await self.speechClient.startTask(SFSpeechAudioBufferRecognitionRequest())
@@ -123,12 +133,15 @@ class RecordMeetingModel: Hashable, ObservableObject {
 
   private func startTimer() async {
     for await _ in self.clock.timer(interval: .seconds(1)) where !self.isAlertOpen {
+      guard !self.isDismissed
+      else { break }
+
       self.secondsElapsed += 1
 
       let secondsPerAttendee = Int(self.syncUp.durationPerAttendee.components.seconds)
       if self.secondsElapsed.isMultiple(of: secondsPerAttendee) {
         if self.speakerIndex == self.syncUp.attendees.count - 1 {
-          await self.onMeetingFinished(self.transcript)
+          await self.finishMeeting()
           break
         }
         self.speakerIndex += 1
@@ -178,7 +191,8 @@ extension AlertState where Action == RecordMeetingModel.AlertAction {
 }
 
 struct RecordMeetingView: View {
-  @ObservedObject var model: RecordMeetingModel
+  @Environment(\.dismiss) var dismiss
+  @Bindable var model: RecordMeetingModel
 
   var body: some View {
     ZStack {
@@ -220,6 +234,7 @@ struct RecordMeetingView: View {
       await self.model.alertButtonTapped(action)
     }
     .task { await self.model.task() }
+    .onChange(of: self.model.isDismissed) { _, _ in self.dismiss() }
   }
 }
 
@@ -399,3 +414,4 @@ struct RecordMeeting_Previews: PreviewProvider {
     .previewDisplayName("Speech failure after 2 secs")
   }
 }
+

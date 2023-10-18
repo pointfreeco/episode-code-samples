@@ -5,15 +5,32 @@ import SwiftUI
 import SwiftUINavigation
 
 @MainActor
-final class SyncUpsListModel: ObservableObject {
-  @Published var destination: Destination?
-  @Published var syncUps: IdentifiedArrayOf<SyncUp>
+@Observable
+final class SyncUpsListModel {
+  var destination: Destination?
+  private var saveDebouncedTask: Task<Void, Error>?
+  var syncUps: IdentifiedArrayOf<SyncUp> {
+    didSet {
+      self.saveDebouncedTask?.cancel()
+      self.saveDebouncedTask = Task {
+        try await self.clock.sleep(for: .seconds(1))
+        try self.dataManager.save(
+          JSONEncoder().encode(self.syncUps),
+          .syncUps
+        )
+      }
+    }
+  }
+
 
   private var destinationCancellable: AnyCancellable?
   private var cancellables: Set<AnyCancellable> = []
 
+  @ObservationIgnored
   @Dependency(\.dataManager) var dataManager
-  @Dependency(\.mainQueue) var mainQueue
+  @ObservationIgnored
+  @Dependency(\.continuousClock) var clock
+  @ObservationIgnored
   @Dependency(\.uuid) var uuid
 
   var onSyncUpTapped: (SyncUp) -> Void = unimplemented("SyncUpsListModel.onSyncUpTapped")
@@ -29,26 +46,26 @@ final class SyncUpsListModel: ObservableObject {
   init(
     destination: Destination? = nil
   ) {
-    self.destination = destination
-    self.syncUps = []
+    self._destination = destination
+    self._syncUps = []
 
     do {
-      self.syncUps = try JSONDecoder().decode(
+      self._syncUps = try JSONDecoder().decode(
         IdentifiedArray.self,
         from: self.dataManager.load(.syncUps)
       )
     } catch is DecodingError {
-      self.destination = .alert(.dataFailedToLoad)
+      self._destination = .alert(.dataFailedToLoad)
     } catch {
     }
 
-    self.$syncUps
-      .dropFirst()
-      .debounce(for: .seconds(1), scheduler: self.mainQueue)
-      .sink { [weak self] syncUps in
-        try? self?.dataManager.save(JSONEncoder().encode(syncUps), .syncUps)
-      }
-      .store(in: &self.cancellables)
+//    self.$syncUps
+//      .dropFirst()
+//      .debounce(for: .seconds(1), scheduler: self.mainQueue)
+//      .sink { [weak self] syncUps in
+//        try? self?.dataManager.save(JSONEncoder().encode(syncUps), .syncUps)
+//      }
+//      .store(in: &self.cancellables)
   }
 
   func addSyncUpButtonTapped() {
@@ -119,7 +136,7 @@ extension AlertState where Action == SyncUpsListModel.AlertAction {
 }
 
 struct SyncUpsList: View {
-  @ObservedObject var model: SyncUpsListModel
+  @Bindable var model: SyncUpsListModel
 
   var body: some View {
     List {

@@ -3,16 +3,20 @@ import Dependencies
 import SwiftUI
 
 @MainActor
-class AppModel: ObservableObject {
-  @Published var path: [Destination] {
+@Observable
+class AppModel {
+  var path: [Destination] {
     didSet { self.bind() }
   }
-  @Published var syncUpsList: SyncUpsListModel {
+  var syncUpsList: SyncUpsListModel {
     didSet { self.bind() }
   }
 
+  @ObservationIgnored
   @Dependency(\.continuousClock) var clock
+  @ObservationIgnored
   @Dependency(\.date.now) var now
+  @ObservationIgnored
   @Dependency(\.uuid) var uuid
 
   private var detailCancellable: AnyCancellable?
@@ -27,20 +31,20 @@ class AppModel: ObservableObject {
     path: [Destination] = [],
     syncUpsList: SyncUpsListModel
   ) {
-    self.path = path
-    self.syncUpsList = syncUpsList
+    self._path = path
+    self._syncUpsList = syncUpsList
     self.bind()
   }
 
   private func bind() {
-    self.syncUpsList.onSyncUpTapped = { [weak self] syncUp in
+    self._syncUpsList.onSyncUpTapped = { [weak self] syncUp in
       guard let self else { return }
       withDependencies(from: self) {
         self.path.append(.detail(SyncUpDetailModel(syncUp: syncUp)))
       }
     }
 
-    for destination in self.path {
+    for destination in self._path {
       switch destination {
       case let .detail(detailModel):
         self.bindDetail(model: detailModel)
@@ -77,17 +81,16 @@ class AppModel: ObservableObject {
       self?.path.append(.meeting(meeting, syncUp: model.syncUp))
     }
 
-    self.detailCancellable = model.$syncUp
-      .sink { [weak self] syncUp in
-        self?.syncUpsList.syncUps[id: syncUp.id] = syncUp
-      }
+    model.onSyncUpUpdated = { [weak self] syncUp in
+      self?.syncUpsList.syncUps[id: syncUp.id] = syncUp
+    }
+//    self.detailCancellable = model.$syncUp
+//      .sink { [weak self] syncUp in
+//        self?.syncUpsList.syncUps[id: syncUp.id] = syncUp
+//      }
   }
 
   private func bindRecord(model: RecordMeetingModel) {
-    model.onDiscardMeeting = { [weak self] in
-      self?.path.removeLast()
-    }
-
     model.onMeetingFinished = { [weak self] transcript in
       guard let self else { return }
 
@@ -103,7 +106,6 @@ class AppModel: ObservableObject {
         transcript: transcript
       )
 
-      self.path.removeLast()
       let didCancel = (try? await self.clock.sleep(for: .milliseconds(400))) == nil
       _ = withAnimation(didCancel ? nil : .default) {
         detailModel.syncUp.meetings.insert(meeting, at: 0)
@@ -113,7 +115,7 @@ class AppModel: ObservableObject {
 }
 
 struct AppView: View {
-  @ObservedObject var model: AppModel
+  @Bindable var model: AppModel
 
   var body: some View {
     NavigationStack(path: self.$model.path) {

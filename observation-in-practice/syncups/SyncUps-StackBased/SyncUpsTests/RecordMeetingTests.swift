@@ -158,11 +158,6 @@ final class RecordMeetingTests: BaseTestCase {
       RecordMeetingModel(syncUp: .mock)
     }
 
-    let onDiscardMeetingExpectation = self.expectation(description: "onDiscardMeeting")
-    model.onDiscardMeeting = {
-      onDiscardMeetingExpectation.fulfill()
-    }
-
     let task = Task {
       await model.task()
     }
@@ -177,7 +172,7 @@ final class RecordMeetingTests: BaseTestCase {
 
     task.cancel()
     await task.value
-    await self.fulfillment(of: [onDiscardMeetingExpectation])
+    XCTAssertEqual(model.isDismissed, true)
   }
 
   func testNextSpeaker() async throws {
@@ -322,11 +317,6 @@ final class RecordMeetingTests: BaseTestCase {
       )
     }
 
-    let onDiscardMeetingExpectation = self.expectation(description: "onDiscardMeeting")
-    model.onDiscardMeeting = {
-      onDiscardMeetingExpectation.fulfill()
-    }
-
     Task {
       await model.task()
     }
@@ -343,6 +333,6 @@ final class RecordMeetingTests: BaseTestCase {
     await model.alertButtonTapped(.confirmDiscard)
     model.destination = nil  // NB: Simulate SwiftUI closing alert.
 
-    await self.fulfillment(of: [onDiscardMeetingExpectation])
+    XCTAssertEqual(model.isDismissed, true)
   }
 }
