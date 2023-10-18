@@ -29,13 +29,14 @@ struct ObservationExplorationsApp: App {
 
   var body: some Scene {
     WindowGroup {
-      AppView(model: self.model)
-        .onAppear {
-          DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            model.tab3.numbers = []
-            model.tab3.counters = []
-          }
-        }
+      CounterView_StructState(store: CounterStateStore(state: CounterState()))
+//      AppView(model: self.model)
+//        .onAppear {
+//          DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+//            model.tab3.numbers = []
+//            model.tab3.counters = []
+//          }
+//        }
 //      CounterView(model: CounterModel())
 //      CounterView_ObservableObject(model: CounterModel_ObservableObject())
     }
