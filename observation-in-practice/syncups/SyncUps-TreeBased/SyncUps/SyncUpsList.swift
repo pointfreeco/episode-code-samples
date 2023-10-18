@@ -1,6 +1,7 @@
 import Combine
 import Dependencies
 import IdentifiedCollections
+import Observation
 import SwiftUI
 import SwiftUINavigation
 
@@ -48,17 +49,18 @@ final class SyncUpsListModel {
   init(
     destination: Destination? = nil
   ) {
+    print("\(Self.self).init")
     defer { self.bind() }
-    self.destination = destination
-    self.syncUps = []
+    self._destination = destination
+    self._syncUps = []
 
     do {
-      self.syncUps = try JSONDecoder().decode(
+      self._syncUps = try JSONDecoder().decode(
         IdentifiedArray.self,
         from: self.dataManager.load(.syncUps)
       )
     } catch is DecodingError {
-      self.destination = .alert(.dataFailedToLoad)
+      self._destination = .alert(.dataFailedToLoad)
     } catch {
     }
 
@@ -108,7 +110,7 @@ final class SyncUpsListModel {
   }
 
   private func bind() {
-    switch self.destination {
+    switch self._destination {
     case let .detail(syncUpDetailModel):
       syncUpDetailModel.onConfirmDeletion = { [weak self, id = syncUpDetailModel.syncUp.id] in
         withAnimation {
