@@ -24,6 +24,9 @@ func f() {
   ]
 //  let names = users.map { $0.name }
   let names = users.map(\.name)
+
+  let loadings = [Loading.inProgress, Loading.loaded("Blob")]
+  let loadeds = loadings.compactMap(\.loaded)
 }
 
 extension Binding {
