@@ -256,3 +256,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Observation: The Past](0252-observation-pt1)
 1. [Observation: The Present](0253-observation-pt2)
 1. [Observation: The Gotchas](0254-observation-pt3)
+1. [Observation: The Future](0255-observation-pt4)
+1. [Observation in Practice](0256-observation-in-practice)
