@@ -258,3 +258,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Observation: The Gotchas](0254-observation-pt3)
 1. [Observation: The Future](0255-observation-pt4)
 1. [Observation in Practice](0256-observation-in-practice)
+1. [Macro Case Paths: Part 1](0257-macro-case-paths-pt1)
