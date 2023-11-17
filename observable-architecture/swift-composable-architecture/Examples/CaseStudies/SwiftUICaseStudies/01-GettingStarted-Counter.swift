@@ -13,7 +13,10 @@ private let readMe = """
 
 @Reducer
 struct Counter {
-  struct State: Equatable, Observable {
+  //@ObservableState
+  struct State: Equatable, ObservableState {
+    let _$id = UUID()
+
     private var _count = 0
     var count: Int {
       @storageRestrictions(initializes: _count)

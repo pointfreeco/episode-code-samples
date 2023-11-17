@@ -3,18 +3,28 @@ import Observation
 extension Store {
   var observableState: State {
     get {
-      self._$observationRegistrar.access(self, keyPath: \.observableState)
+      if State.self is ObservableState.Type {
+        self._$observationRegistrar.access(self, keyPath: \.observableState)
+      }
       return self.stateSubject.value
     }
     set {
-      self._$observationRegistrar.withMutation(of: self, keyPath: \.observableState) {
+      if
+        let old = self.stateSubject.value as? ObservableState,
+        let new = newValue as? ObservableState,
+        old._$id == new._$id
+      {
         self.stateSubject.value = newValue
+      } else {
+        self._$observationRegistrar.withMutation(of: self, keyPath: \.observableState) {
+          self.stateSubject.value = newValue
+        }
       }
     }
   }
 }
 
-extension Store where State: Observable {
+extension Store where State: ObservableState {
   public var state: State {
     self.observableState
   }
@@ -25,3 +35,9 @@ extension Store where State: Observable {
 }
 
 extension Store: Observable {}
+
+import Foundation
+
+public protocol ObservableState: Observable {
+  var _$id: UUID { get }
+}
