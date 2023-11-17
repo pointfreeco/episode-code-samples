@@ -12,4 +12,8 @@ extension CasePathable {
   ) -> Value? {
     Self.cases[keyPath: keyPath].extract(from: self)
   }
+
+  public func `is`<Value>(_ keyPath: CaseKeyPath<Self, Value>) -> Bool {
+    Self.cases[keyPath: keyPath].extract(from: self) != nil
+  }
 }
