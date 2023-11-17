@@ -13,47 +13,10 @@ private let readMe = """
 
 @Reducer
 struct Counter {
-  //@ObservableState
-  struct State: Equatable, ObservableState {
-    let _$id = UUID()
-
-    private var _count = 0
-    var count: Int {
-      @storageRestrictions(initializes: _count)
-      init(initialValue) {
-        _count = initialValue
-      }
-      get {
-        self._$observationRegistrar.access(self, keyPath: \.count)
-        return _count
-      }
-      set {
-        self._$observationRegistrar.withMutation(of: self, keyPath: \.count) {
-          _count = newValue
-        }
-      }
-    }
-    private var _isDisplayingCount = true
-    var isDisplayingCount: Bool {
-      @storageRestrictions(initializes: _isDisplayingCount)
-      init(initialValue) {
-        _isDisplayingCount = initialValue
-      }
-      get {
-        self._$observationRegistrar.access(self, keyPath: \.isDisplayingCount)
-        return _isDisplayingCount
-      }
-      set {
-        self._$observationRegistrar.withMutation(of: self, keyPath: \.isDisplayingCount) {
-          _isDisplayingCount  = newValue
-        }
-      }
-    }
-    init(count: Int = 0, isDisplayingCount: Bool = true) {
-      self._count = count
-      self._isDisplayingCount = isDisplayingCount
-    }
-    private let _$observationRegistrar = Observation.ObservationRegistrar()
+  @ObservableState
+  struct State: Equatable {
+    var count = 0
+    var isDisplayingCount = true
   }
 
   enum Action {

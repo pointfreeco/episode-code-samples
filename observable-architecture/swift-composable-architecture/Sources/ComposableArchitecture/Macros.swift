@@ -155,4 +155,19 @@
     #externalMacro(
       module: "ComposableArchitectureMacros", type: "ReducerMacro"
     )
+
+@attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(_$id))
+@attached(memberAttribute)
+@attached(extension, conformances: ObservableState)
+public macro ObservableState() =
+  #externalMacro(module: "ComposableArchitectureMacros", type: "ObservableStateMacro")
+
+@attached(accessor, names: named(init), named(get), named(set))
+@attached(peer, names: prefixed(_))
+public macro ObservationStateTracked() =
+  #externalMacro(module: "ComposableArchitectureMacros", type: "ObservationStateTrackedMacro")
+
+@attached(accessor, names: named(willSet))
+public macro ObservationStateIgnored() =
+  #externalMacro(module: "ComposableArchitectureMacros", type: "ObservationStateIgnoredMacro")
 #endif
