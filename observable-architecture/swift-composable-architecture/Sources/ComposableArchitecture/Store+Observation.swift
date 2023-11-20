@@ -41,3 +41,28 @@ import Foundation
 public protocol ObservableState: Observable {
   var _$id: UUID { get }
 }
+
+extension Store where State: ObservableState {
+  public func scope<ChildState, ChildAction>(
+    state: KeyPath<State, ChildState?>,
+    action: CaseKeyPath<Action, ChildAction>
+  ) -> Store<ChildState, ChildAction>? {
+
+    guard let childState = self.state[keyPath: state]
+    else { return nil }
+
+    return self.scope(
+      state: {
+        $0[keyPath: state] ?? childState
+      },
+      id: { _ in [state, action] as [AnyHashable] },
+      action: {
+        action($0)
+      },
+      isInvalid: {
+        $0[keyPath: state] == nil
+      },
+      removeDuplicates: nil
+    )
+  }
+}

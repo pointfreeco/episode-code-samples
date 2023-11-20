@@ -16,18 +16,26 @@ private let readMe = """
 
 @Reducer
 struct OptionalBasics {
+  @ObservableState
   struct State: Equatable {
+    var nonOptionalCounter = Counter.State()
     var optionalCounter: Counter.State?
   }
 
   enum Action {
+    case nonOptionalCounter(Counter.Action)
     case optionalCounter(Counter.Action)
     case toggleCounterButtonTapped
   }
 
   var body: some Reducer<State, Action> {
+    Scope(state: \.nonOptionalCounter, action: \.nonOptionalCounter) {
+      Counter()
+    }
     Reduce { state, action in
       switch action {
+      case .nonOptionalCounter:
+        return .none
       case .toggleCounterButtonTapped:
         state.optionalCounter =
           state.optionalCounter == nil
@@ -52,6 +60,7 @@ struct OptionalBasicsView: View {
   }
 
   var body: some View {
+    let _ = Self._printChanges()
     Form {
       Section {
         AboutView(readMe: readMe)
@@ -61,15 +70,29 @@ struct OptionalBasicsView: View {
         self.store.send(.toggleCounterButtonTapped)
       }
 
-      IfLetStore(
-        self.store.scope(state: \.optionalCounter, action: \.optionalCounter)
-      ) { store in
+      if let store = self.store.scope(state: \.optionalCounter, action: \.optionalCounter) {
         Text(template: "`Counter.State` is non-`nil`")
         CounterView(store: store)
           .buttonStyle(.borderless)
           .frame(maxWidth: .infinity)
-      } else: {
+      } else {
         Text(template: "`Counter.State` is `nil`")
+      }
+
+      Section {
+        CounterView(
+          store: self.store.scope(state: \.nonOptionalCounter, action: \.nonOptionalCounter)
+        )
+        .buttonStyle(.borderless)
+        .frame(maxWidth: .infinity)
+      }
+
+      Section {
+        Text(
+          ((self.store.optionalCounter?.count ?? 0) + self.store.nonOptionalCounter.count).description
+        )
+      } header: {
+        Text("Sum")
       }
     }
     .navigationTitle("Optional state")
