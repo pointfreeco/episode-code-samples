@@ -91,6 +91,578 @@ struct PresentationView: View {
       }
       .presentationDetents([.medium])
     }
+
+    .fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }
+
+    .fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }
+
+    .fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }
+
+    .fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }
+
+    .fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }
+
+    .fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }.fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }.fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }.fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }.fullScreenCover(
+      item: self.$store.scope(
+        state: \.destination?.fullScreenCover, action: \.destination.fullScreenCover
+      )
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Full-screen cover"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .popover(
+      item: self.$store.scope(state: \.destination?.popover, action: \.destination.popover)
+    ) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Popver"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+        }
+      }
+    }
+    .sheet(item: self.$store.scope(state: \.sheet, action: \.sheet)) { store in
+      NavigationStack {
+        Form {
+          BasicsView(store: store)
+        }
+        .navigationTitle(Text("Sheet"))
+        .toolbar {
+          ToolbarItem {
+            Button("Dismiss") {
+              self.store.send(.dismissButtonTapped)
+            }
+          }
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Observe child count") {
+              self.store.send(.toggleObserveChildCountButtonTapped)
+            }
+          }
+        }
+      }
+      .presentationDetents([.medium])
+    }
   }
 
   @Reducer

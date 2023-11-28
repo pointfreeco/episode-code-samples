@@ -1,4 +1,30 @@
 import Observation
+import SwiftUI
+
+extension Binding {
+  public func scope<State: ObservableState, Action, ChildState, ChildAction>(
+    state: KeyPath<State, ChildState?>,
+    action: CaseKeyPath<Action, PresentationAction<ChildAction>>
+  )
+  -> Binding<Store<ChildState, ChildAction>?>
+  where
+    Value == Store<State, Action>
+  {
+    Binding<Store<ChildState, ChildAction>?>(
+      get: {
+        self.wrappedValue.scope(
+          state: state,
+          action: action.appending(path: \.presented)
+        )
+      },
+      set: { childStore in
+        if childStore == nil {
+          self.wrappedValue.send(action(.dismiss))
+        }
+      }
+    )
+  }
+}
 
 extension Store {
   var observableState: State {
