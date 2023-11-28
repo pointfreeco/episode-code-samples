@@ -1,5 +1,6 @@
 @_spi(Reflection) import CasePaths
 import Combine
+import Observation
 
 /// A property wrapper for state that can be presented.
 ///
@@ -47,7 +48,7 @@ import Combine
 /// using optionals and enums.
 @dynamicMemberLookup
 @propertyWrapper
-public struct PresentationState<State> {
+public struct PresentationState<State>: Observable {
   private class Storage: @unchecked Sendable {
     var state: State?
     init(state: State?) {
@@ -55,6 +56,7 @@ public struct PresentationState<State> {
     }
   }
 
+  private let _$observationRegistrar = ObservationRegistrar()
   private var storage: Storage
   @usableFromInline var presentedID: NavigationIDPath?
 
@@ -63,13 +65,31 @@ public struct PresentationState<State> {
   }
 
   public var wrappedValue: State? {
-    get { self.storage.state }
+    get {
+      self._$observationRegistrar.access(self, keyPath: \.wrappedValue)
+      return self.storage.state
+    }
     set {
-      if !isKnownUniquelyReferenced(&self.storage) {
-        self.storage = Storage(state: newValue)
+      if
+        let old = self.storage.state as? any ObservableState,
+        let new = newValue as? any ObservableState,
+        old._$id == new._$id
+      {
+        if !isKnownUniquelyReferenced(&self.storage) {
+          self.storage = Storage(state: newValue)
+        } else {
+          self.storage.state = newValue
+        }
       } else {
-        self.storage.state = newValue
+        self._$observationRegistrar.withMutation(of: self, keyPath: \.wrappedValue) {
+          if !isKnownUniquelyReferenced(&self.storage) {
+            self.storage = Storage(state: newValue)
+          } else {
+            self.storage.state = newValue
+          }
+        }
       }
+
     }
   }
 

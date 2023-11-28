@@ -5,17 +5,16 @@ struct BasicsView: View {
   let store: StoreOf<Feature>
 
   var body: some View {
-    WithViewStore(self.store, observe: { $0 }) { viewStore in
-      let _ = Logger.shared.log("\(Self.self).body")
-      Text(viewStore.count.description)
-      Button("Decrement") { self.store.send(.decrementButtonTapped) }
-      Button("Increment") { self.store.send(.incrementButtonTapped) }
-      Button("Dismiss") { self.store.send(.dismissButtonTapped) }
-    }
+    let _ = Logger.shared.log("\(Self.self).body")
+    Text(self.store.count.description)
+    Button("Decrement") { self.store.send(.decrementButtonTapped) }
+    Button("Increment") { self.store.send(.incrementButtonTapped) }
+    Button("Dismiss") { self.store.send(.dismissButtonTapped) }
   }
 
   @Reducer
   struct Feature {
+    @ObservableState
     struct State: Equatable, Identifiable {
       let id = UUID()
       var count = 0

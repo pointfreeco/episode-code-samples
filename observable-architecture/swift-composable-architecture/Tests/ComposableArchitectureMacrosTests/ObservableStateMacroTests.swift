@@ -71,4 +71,38 @@ final class ObservableStateMacroTests: XCTestCase {
       """#
     }
   }
+
+  func testPresentationState() {
+    assertMacro {
+      """
+      @ObservableState
+      struct State {
+        @PresentationState var destination: Child.State?
+      }
+      """
+    } expansion: {
+      """
+      struct State {
+        @PresentationState var destination: Child.State?
+
+        public let _$id = UUID()
+
+        private let _$observationRegistrar = Observation.ObservationRegistrar()
+
+        internal nonisolated func access<Member>(
+          keyPath: KeyPath<State, Member>
+        ) {
+          _$observationRegistrar.access(self, keyPath: keyPath)
+        }
+
+        internal nonisolated func withMutation<Member, MutationResult>(
+          keyPath: KeyPath<State, Member>,
+          _ mutation: () throws -> MutationResult
+        ) rethrows -> MutationResult {
+          try _$observationRegistrar.withMutation(of: self, keyPath: keyPath, mutation)
+        }
+      }
+      """
+    }
+  }
 }

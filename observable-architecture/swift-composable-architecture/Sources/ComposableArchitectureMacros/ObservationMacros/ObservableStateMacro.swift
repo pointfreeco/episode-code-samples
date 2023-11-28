@@ -246,7 +246,9 @@ extension ObservableStateMacro: MemberAttributeMacro {
 
     // dont apply to ignored properties or properties that are already flagged as tracked
     if property.hasMacroApplication(ObservableStateMacro.ignoredMacroName) ||
-       property.hasMacroApplication(ObservableStateMacro.trackedMacroName) {
+       property.hasMacroApplication(ObservableStateMacro.trackedMacroName) ||
+       property.hasMacroApplication("PresentationState")
+    {
       return []
     }
     
@@ -299,7 +301,10 @@ public struct ObservationStateTrackedMacro: AccessorMacro {
       return []
     }
 
-    if property.hasMacroApplication(ObservableStateMacro.ignoredMacroName) {
+    if 
+      property.hasMacroApplication(ObservableStateMacro.ignoredMacroName) ||
+      property.hasMacroApplication("PresentationState")
+    {
       return []
     }
 
@@ -355,7 +360,9 @@ extension ObservationStateTrackedMacro: PeerMacro {
     }
     
     if property.hasMacroApplication(ObservableStateMacro.ignoredMacroName) ||
-       property.hasMacroApplication(ObservableStateMacro.trackedMacroName) {
+       property.hasMacroApplication(ObservableStateMacro.trackedMacroName) ||
+       property.hasMacroApplication("PresentationState")
+    {
       return []
     }
     

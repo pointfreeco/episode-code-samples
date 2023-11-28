@@ -34,31 +34,56 @@ struct EnumView: View {
           }
         }
       }
-      if let store = self.store.scope(state: \.$destination, action: \.destination) {
-        switch store.state {
-        case .feature1:
-          if let store = store.scope(state: \.feature1, action: \.feature1) {
-            Section {
-              BasicsView(store: store)
-            } header: {
-              Text("Feature 1")
+      if let store = self.store.scope(state: \.destination, action: \.destination.presented) {
+        SwitchStore(store) {
+          switch $0 {
+          case .feature1:
+            CaseLet(
+              \Feature.Destination.State.feature1, action: Feature.Destination.Action.feature1
+            ) { store in
+              Section {
+                BasicsView(store: store)
+              } header: {
+                Text("Feature 1")
+              }
             }
-          }
-        case .feature2:
-          if let store = store.scope(state: \.feature2, action: \.feature2) {
-            Section {
-              BasicsView(store: store)
-            } header: {
-              Text("Feature 2")
+          case .feature2:
+            CaseLet(
+              \Feature.Destination.State.feature2, action: Feature.Destination.Action.feature2
+            ) { store in
+              Section {
+                BasicsView(store: store)
+              } header: {
+                Text("Feature 2")
+              }
             }
           }
         }
+//        switch store.state {
+//        case .feature1:
+//          if let store = store.scope(state: \.feature1, action: \.feature1) {
+//            Section {
+//              BasicsView(store: store)
+//            } header: {
+//              Text("Feature 1")
+//            }
+//          }
+//        case .feature2:
+//          if let store = store.scope(state: \.feature2, action: \.feature2) {
+//            Section {
+//              BasicsView(store: store)
+//            } header: {
+//              Text("Feature 2")
+//            }
+//          }
+//        }
       }
     }
   }
 
   @Reducer
   struct Feature {
+    @ObservableState
     struct State: Equatable {
       @PresentationState var destination: Destination.State?
     }
