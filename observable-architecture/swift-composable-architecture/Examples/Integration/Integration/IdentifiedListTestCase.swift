@@ -6,52 +6,39 @@ struct IdentifiedListView: View {
     Feature()
   }
 
-  struct ViewState: Equatable {
-    var firstCount: Int?
-    init(state: Feature.State) {
-      self.firstCount = state.rows.first?.count
-    }
-  }
-
   var body: some View {
-    WithViewStore(self.store, observe: ViewState.init) { viewStore in
-      let _ = Logger.shared.log("\(Self.self).body")
-      List {
-        Section {
-          if let firstCount = viewStore.firstCount {
-            HStack {
-              Button("Increment First") {
-                self.store.send(.incrementFirstButtonTapped)
-              }
-              Spacer()
-              Text("Count: \(firstCount)")
+    let _ = Logger.shared.log("\(Self.self).body")
+    List {
+      Section {
+        if let firstCount = self.store.rows.first?.count {
+          HStack {
+            Button("Increment First") {
+              self.store.send(.incrementFirstButtonTapped)
             }
-          }
-        }
-        ForEachStore(self.store.scope(state: \.rows, action: \.rows)) { store in
-          let _ = Logger.shared.log("\(Self.self).body.ForEachStore")
-          let idStore = store.scope(state: \.id, action: \.self)
-          WithViewStore(idStore, observe: { $0 }) { viewStore in
-            let _ = Logger.shared.log("\(type(of: idStore))")
-            Section {
-              HStack {
-                VStack {
-                  BasicsView(store: store)
-                }
-                Spacer()
-                Button(action: { self.store.send(.removeButtonTapped(id: viewStore.state)) }) {
-                  Image(systemName: "trash")
-                }
-              }
-            }
-            .buttonStyle(.borderless)
+            Spacer()
+            Text("Count: \(firstCount)")
           }
         }
       }
-      .toolbar {
-        ToolbarItem {
-          Button("Add") { self.store.send(.addButtonTapped) }
+      ForEach(self.store.scope(state: \.rows, action: \.rows)) { store in
+        let _ = Logger.shared.log("\(Self.self).body.ForEachStore")
+        Section {
+          HStack {
+            VStack {
+              BasicsView(store: store)
+            }
+            Spacer()
+            Button(action: { self.store.send(.removeButtonTapped(id: store.state.id)) }) {
+              Image(systemName: "trash")
+            }
+          }
         }
+        .buttonStyle(.borderless)
+      }
+    }
+    .toolbar {
+      ToolbarItem {
+        Button("Add") { self.store.send(.addButtonTapped) }
       }
     }
   }
