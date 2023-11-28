@@ -92,3 +92,19 @@ extension Store where State: ObservableState {
 }
 
 extension Store: Identifiable {}
+
+public func _$isIdentityEqual<T>(_ lhs: T, _ rhs: T) -> Bool {
+  if let lhs = lhs as? ObservableState,
+     let rhs = rhs as? ObservableState {
+    return lhs._$id == rhs._$id
+  } else {
+    return false
+  }
+}
+
+public func _$isIdentityEqual<T>(
+  _ lhs: IdentifiedArrayOf<T>,
+  _ rhs: IdentifiedArrayOf<T>
+) -> Bool {
+  areOrderedSetsDuplicates(lhs.ids, rhs.ids)
+}

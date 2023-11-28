@@ -37,11 +37,7 @@ final class ObservableStateMacroTests: XCTestCase {
             return _count
           }
           set {
-            if
-              let old = _count as? ObservableState,
-              let new = newValue as? ObservableState,
-              old._$id == new._$id
-            {
+            if _$isIdentityEqual(_count, newValue) {
               _count = newValue
             } else {
               withMutation(keyPath: \.count) {
