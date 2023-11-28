@@ -70,19 +70,10 @@ struct EnumView: View {
     }
     @Reducer
     struct Destination {
-//      @ObservableState
-      enum State: Equatable, ObservableState {
+      @ObservableState
+      enum State: Equatable {
         case feature1(BasicsView.Feature.State)
         case feature2(BasicsView.Feature.State)
-
-        var _$id: UUID {
-          switch self {
-          case let .feature1(state):
-            return state._$id
-          case let .feature2(state):
-            return state._$id
-          }
-        }
       }
       enum Action {
         case feature1(BasicsView.Feature.Action)

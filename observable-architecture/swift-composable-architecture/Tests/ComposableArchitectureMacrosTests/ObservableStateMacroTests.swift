@@ -105,4 +105,32 @@ final class ObservableStateMacroTests: XCTestCase {
       """
     }
   }
+
+  func testEnum() {
+    assertMacro {
+      """
+      @ObservableState
+      enum State {
+        case feature1(Feature1.State)
+        case feature2(Feature2.State)
+      }
+      """
+    } expansion: {
+      """
+      enum State {
+        case feature1(Feature1.State)
+        case feature2(Feature2.State)
+
+        var _$id: UUID {
+          switch self {
+          case let .feature1(state):
+          return state._$id
+          case let .feature2(state):
+            return state._$id
+          }
+        }
+      }
+      """
+    }
+  }
 }

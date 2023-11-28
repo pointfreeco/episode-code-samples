@@ -205,9 +205,13 @@ extension ObservableStateMacro: MemberMacro {
     let observableType = identified.name.trimmed
     
     if declaration.isEnum {
-      // enumerations cannot store properties
-      throw DiagnosticsError(syntax: node, message: "'@Observable' cannot be applied to enumeration type '\(observableType.text)'", id: .invalidApplication)
+      return try enumExpansion(of: node, providingMembersOf: declaration, in: context)
     }
+
+//    if declaration.isEnum {
+//      // enumerations cannot store properties
+//      throw DiagnosticsError(syntax: node, message: "'@Observable' cannot be applied to enumeration type '\(observableType.text)'", id: .invalidApplication)
+//    }
 //    if declaration.isStruct {
 //      // structs are not yet supported; copying/mutation semantics tbd
 //      throw DiagnosticsError(syntax: node, message: "'@Observable' cannot be applied to struct type '\(observableType.text)'", id: .invalidApplication)
@@ -225,6 +229,39 @@ extension ObservableStateMacro: MemberMacro {
     declaration.addIfNeeded(ObservableStateMacro.withMutationFunction(observableType), to: &declarations)
 
     return declarations
+  }
+}
+
+extension ObservableStateMacro {
+  public static func enumExpansion<
+    Declaration: DeclGroupSyntax,
+    Context: MacroExpansionContext
+  >(
+    of node: AttributeSyntax,
+    providingMembersOf declaration: Declaration,
+    in context: Context
+  ) throws -> [DeclSyntax] {
+
+    let enumCaseDecls = declaration.memberBlock.members
+      .flatMap { $0.decl.as(EnumCaseDeclSyntax.self)?.elements ?? [] }
+
+    let caseLets = enumCaseDecls
+      .map { enumCaseDecl in
+        """
+        case let .\(enumCaseDecl.name.text)(state):
+          return state._$id
+        """
+      }
+
+    return [
+      """
+      var _$id: UUID {
+        switch self {
+        \(raw: caseLets.joined(separator: "\n"))
+        }
+      }
+      """
+    ]
   }
 }
 

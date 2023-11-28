@@ -6,14 +6,9 @@ struct PresentationView: View {
     Feature()
   }
 
-  struct ViewState: Equatable {
-    var sheetCount: Int?
-    init(state: Feature.State) {
-      self.sheetCount = state.isObservingChildCount ? state.sheet?.count : nil
-    }
-  }
-
   var body: some View {
+    let _ = Logger.shared.log("\(Self.self).body")
+    
     Form {
       Section {
         Button("Present full-screen cover") {
@@ -29,11 +24,11 @@ struct PresentationView: View {
         Button("Present sheet") {
           self.store.send(.presentSheetButtonTapped)
         }
-        WithViewStore(self.store, observe: ViewState.init) { viewStore in
-          let _ = Logger.shared.log("\(Self.self).body")
-          if let count = viewStore.sheetCount {
-            Text("Count: \(count)")
-          }
+        if
+          self.store.isObservingChildCount,
+          let count = self.store.sheet?.count
+        {
+          Text("Count: \(count)")
         }
       } header: {
         Text("Optional")
@@ -100,6 +95,7 @@ struct PresentationView: View {
 
   @Reducer
   struct Feature {
+    @ObservableState
     struct State: Equatable {
       var isObservingChildCount = false
       @PresentationState var destination: Destination.State?
@@ -116,6 +112,7 @@ struct PresentationView: View {
     }
     @Reducer
     struct Destination {
+      @ObservableState
       enum State: Equatable {
         case fullScreenCover(BasicsView.Feature.State)
         case popover(BasicsView.Feature.State)
