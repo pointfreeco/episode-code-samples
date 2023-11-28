@@ -35,48 +35,24 @@ struct EnumView: View {
         }
       }
       if let store = self.store.scope(state: \.destination, action: \.destination.presented) {
-        SwitchStore(store) {
-          switch $0 {
-          case .feature1:
-            CaseLet(
-              \Feature.Destination.State.feature1, action: Feature.Destination.Action.feature1
-            ) { store in
-              Section {
-                BasicsView(store: store)
-              } header: {
-                Text("Feature 1")
-              }
+        switch store.state {
+        case .feature1:
+          if let store = store.scope(state: \.feature1, action: \.feature1) {
+            Section {
+              BasicsView(store: store)
+            } header: {
+              Text("Feature 1")
             }
-          case .feature2:
-            CaseLet(
-              \Feature.Destination.State.feature2, action: Feature.Destination.Action.feature2
-            ) { store in
-              Section {
-                BasicsView(store: store)
-              } header: {
-                Text("Feature 2")
-              }
+          }
+        case .feature2:
+          if let store = store.scope(state: \.feature2, action: \.feature2) {
+            Section {
+              BasicsView(store: store)
+            } header: {
+              Text("Feature 2")
             }
           }
         }
-//        switch store.state {
-//        case .feature1:
-//          if let store = store.scope(state: \.feature1, action: \.feature1) {
-//            Section {
-//              BasicsView(store: store)
-//            } header: {
-//              Text("Feature 1")
-//            }
-//          }
-//        case .feature2:
-//          if let store = store.scope(state: \.feature2, action: \.feature2) {
-//            Section {
-//              BasicsView(store: store)
-//            } header: {
-//              Text("Feature 2")
-//            }
-//          }
-//        }
       }
     }
   }
@@ -94,9 +70,19 @@ struct EnumView: View {
     }
     @Reducer
     struct Destination {
-      enum State: Equatable {
+//      @ObservableState
+      enum State: Equatable, ObservableState {
         case feature1(BasicsView.Feature.State)
         case feature2(BasicsView.Feature.State)
+
+        var _$id: UUID {
+          switch self {
+          case let .feature1(state):
+            return state._$id
+          case let .feature2(state):
+            return state._$id
+          }
+        }
       }
       enum Action {
         case feature1(BasicsView.Feature.Action)
