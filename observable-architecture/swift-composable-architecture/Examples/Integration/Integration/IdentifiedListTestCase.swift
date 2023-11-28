@@ -45,6 +45,7 @@ struct IdentifiedListView: View {
 
   @Reducer
   struct Feature {
+    @ObservableState
     struct State: Equatable {
       var rows: IdentifiedArrayOf<BasicsView.Feature.State> = []
     }

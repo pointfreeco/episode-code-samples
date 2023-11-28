@@ -66,3 +66,29 @@ extension Store where State: ObservableState {
     )
   }
 }
+
+extension Store where State: ObservableState {
+  public func scope<ElementID, ElementState, ElementAction>(
+    state: KeyPath<State, IdentifiedArray<ElementID, ElementState>>,
+    action: CaseKeyPath<Action, IdentifiedAction<ElementID, ElementAction>>
+  ) -> [Store<ElementState, ElementAction>] {
+
+    return self.state[keyPath: state].ids.map { id in
+      self.scope(
+        state: {
+          $0[keyPath: state][id: id]!
+        },
+        id: { _ in [id, state, action] as [AnyHashable] },
+        action: {
+          action(.element(id: id, action: $0))
+        },
+        isInvalid: {
+          !$0[keyPath: state].ids.contains(id)
+        },
+        removeDuplicates: nil
+      )
+    }
+  }
+}
+
+extension Store: Identifiable {}
