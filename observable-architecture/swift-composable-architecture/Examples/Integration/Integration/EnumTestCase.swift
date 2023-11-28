@@ -6,73 +6,50 @@ struct EnumView: View {
     Feature()
   }
 
-  struct ViewState: Equatable {
-    enum Tag { case feature1, feature2, none }
-    let tag: Tag
-    init(state: Feature.State) {
-      switch state.destination {
-      case .feature1:
-        self.tag = .feature1
-      case .feature2:
-        self.tag = .feature2
-      case .none:
-        self.tag = .none
-      }
-    }
-  }
-
   var body: some View {
     Form {
-      WithViewStore(self.store, observe: ViewState.init) { viewStore in
-        let _ = Logger.shared.log("\(Self.self).body")
-        Section {
-          switch viewStore.tag {
-          case .feature1:
-            Button("Toggle feature 1 off") {
-              self.store.send(.toggle1ButtonTapped)
-            }
-            Button("Toggle feature 2 on") {
-              self.store.send(.toggle2ButtonTapped)
-            }
-          case .feature2:
-            Button("Toggle feature 1 on") {
-              self.store.send(.toggle1ButtonTapped)
-            }
-            Button("Toggle feature 2 off") {
-              self.store.send(.toggle2ButtonTapped)
-            }
-          case .none:
-            Button("Toggle feature 1 on") {
-              self.store.send(.toggle1ButtonTapped)
-            }
-            Button("Toggle feature 2 on") {
-              self.store.send(.toggle2ButtonTapped)
-            }
+      let _ = Logger.shared.log("\(Self.self).body")
+      Section {
+        switch self.store.destination {
+        case .feature1:
+          Button("Toggle feature 1 off") {
+            self.store.send(.toggle1ButtonTapped)
+          }
+          Button("Toggle feature 2 on") {
+            self.store.send(.toggle2ButtonTapped)
+          }
+        case .feature2:
+          Button("Toggle feature 1 on") {
+            self.store.send(.toggle1ButtonTapped)
+          }
+          Button("Toggle feature 2 off") {
+            self.store.send(.toggle2ButtonTapped)
+          }
+        case .none:
+          Button("Toggle feature 1 on") {
+            self.store.send(.toggle1ButtonTapped)
+          }
+          Button("Toggle feature 2 on") {
+            self.store.send(.toggle2ButtonTapped)
           }
         }
       }
-      IfLetStore(self.store.scope(state: \.$destination, action: \.destination)) { store in
-        SwitchStore(store) {
-          switch $0 {
-          case .feature1:
-            CaseLet(
-              \Feature.Destination.State.feature1, action: Feature.Destination.Action.feature1
-            ) { store in
-              Section {
-                BasicsView(store: store)
-              } header: {
-                Text("Feature 1")
-              }
+      if let store = self.store.scope(state: \.$destination, action: \.destination) {
+        switch store.state {
+        case .feature1:
+          if let store = store.scope(state: \.feature1, action: \.feature1) {
+            Section {
+              BasicsView(store: store)
+            } header: {
+              Text("Feature 1")
             }
-          case .feature2:
-            CaseLet(
-              \Feature.Destination.State.feature2, action: Feature.Destination.Action.feature2
-            ) { store in
-              Section {
-                BasicsView(store: store)
-              } header: {
-                Text("Feature 2")
-              }
+          }
+        case .feature2:
+          if let store = store.scope(state: \.feature2, action: \.feature2) {
+            Section {
+              BasicsView(store: store)
+            } header: {
+              Text("Feature 2")
             }
           }
         }
@@ -144,13 +121,6 @@ struct EnumView: View {
 }
 
 struct EnumTestCase_Previews: PreviewProvider {
-  static var previews: some View {
-    let _ = Logger.shared.isEnabled = true
-    EnumView()
-  }
-}
-
-struct EnumPreviews: PreviewProvider {
   static var previews: some View {
     let _ = Logger.shared.isEnabled = true
     EnumView()
