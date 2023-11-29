@@ -60,6 +60,47 @@ extension Store where State: ObservableState {
   }
 }
 
+extension Store
+where
+  State: ObservableState,
+  Action: BindableAction,
+  Action.State == State
+{
+  public subscript<Member: Equatable>(dynamicMember keyPath: WritableKeyPath<State, Member>) -> Member {
+    get {
+      self.state[keyPath: keyPath]
+    }
+    set {
+      self.send(.binding(.set(keyPath, newValue)))
+    }
+  }
+}
+
+extension BindingAction {
+  public static func set<Value: Equatable & Sendable>(
+    _ keyPath: WritableKeyPath<Root, Value>,
+    _ value: Value
+  ) -> Self
+  where Root: ObservableState
+  {
+    return .init(
+      keyPath: keyPath,
+      set: { $0[keyPath: keyPath] = value },
+      value: AnySendable(value),
+      valueIsEqualTo: {
+        ($0 as? AnySendable)?.base as? Value == value
+      }
+    )
+  }
+
+  public static func ~= <Value>(
+    keyPath: WritableKeyPath<Root, Value>,
+    bindingAction: Self
+  ) -> Bool {
+    keyPath == bindingAction.keyPath
+  }
+}
+
 extension Store: Observable {}
 
 import Foundation
