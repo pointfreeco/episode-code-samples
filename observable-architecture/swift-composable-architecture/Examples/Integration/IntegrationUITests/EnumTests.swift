@@ -9,7 +9,7 @@ final class EnumTests: BaseIntegrationTests {
     self.app.buttons["iOS 16"].tap()
     self.app.buttons["Enum"].tap()
     self.clearLogs()
-    // SnapshotTesting.isRecording = true
+    //SnapshotTesting.isRecording = true
   }
 
   func testBasics() {
@@ -19,36 +19,8 @@ final class EnumTests: BaseIntegrationTests {
       """
       BasicsView.body
       EnumView.body
-      PresentationStoreOf<EnumView.Feature.Destination>.scope
       StoreOf<BasicsView.Feature>.init
-      StoreOf<BasicsView.Feature>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
       StoreOf<EnumView.Feature.Destination>.init
-      StoreOf<EnumView.Feature.Destination>.init
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature>.scope
-      StoreOf<EnumView.Feature>.scope
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.init
-      ViewStore<BasicsView.Feature.State?, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State?, BasicsView.Feature.Action>.init
-      ViewStore<EnumView.Feature.Destination.State, EnumView.Feature.Destination.Action>.deinit
-      ViewStore<EnumView.Feature.Destination.State, EnumView.Feature.Destination.Action>.init
-      ViewStore<EnumView.Feature.Destination.State?, EnumView.Feature.Destination.Action>.deinit
-      ViewStore<EnumView.Feature.Destination.State?, EnumView.Feature.Destination.Action>.init
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.deinit
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.init
-      ViewStoreOf<BasicsView.Feature>.init
-      ViewStoreOf<BasicsView.Feature?>.init
-      ViewStoreOf<EnumView.Feature.Destination>.init
-      WithViewStore<EnumView.ViewState, EnumView.Feature.Action>.body
-      WithViewStoreOf<BasicsView.Feature>.body
-      WithViewStoreOf<BasicsView.Feature?>.body
-      WithViewStoreOf<EnumView.Feature.Destination>.body
-      WithViewStoreOf<EnumView.Feature.Destination?>.body
       """
     }
     self.app.buttons["Increment"].tap()
@@ -56,14 +28,6 @@ final class EnumTests: BaseIntegrationTests {
     self.assertLogs {
       """
       BasicsView.body
-      StoreOf<BasicsView.Feature>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature>.scope
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.init
-      WithViewStoreOf<BasicsView.Feature>.body
       """
     }
   }
@@ -77,24 +41,7 @@ final class EnumTests: BaseIntegrationTests {
     self.assertLogs {
       """
       EnumView.body
-      PresentationStoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<BasicsView.Feature>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature>.scope
-      StoreOf<EnumView.Feature>.scope
-      ViewStore<EnumView.Feature.Destination.State?, EnumView.Feature.Destination.Action>.deinit
-      ViewStore<EnumView.Feature.Destination.State?, EnumView.Feature.Destination.Action>.init
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.deinit
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.init
-      WithViewStore<EnumView.ViewState, EnumView.Feature.Action>.body
-      WithViewStoreOf<EnumView.Feature.Destination?>.body
+      StoreOf<EnumView.Feature.Destination>.deinit
       """
     }
   }
@@ -109,46 +56,8 @@ final class EnumTests: BaseIntegrationTests {
       """
       BasicsView.body
       EnumView.body
-      PresentationStoreOf<EnumView.Feature.Destination>.scope
       StoreOf<BasicsView.Feature>.init
-      StoreOf<BasicsView.Feature>.init
-      StoreOf<BasicsView.Feature>.scope
-      StoreOf<BasicsView.Feature?>.deinit
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
       StoreOf<EnumView.Feature>.scope
-      StoreOf<EnumView.Feature>.scope
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.init
-      ViewStore<BasicsView.Feature.State?, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State?, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State?, BasicsView.Feature.Action>.init
-      ViewStore<BasicsView.Feature.State?, BasicsView.Feature.Action>.init
-      ViewStore<EnumView.Feature.Destination.State, EnumView.Feature.Destination.Action>.deinit
-      ViewStore<EnumView.Feature.Destination.State, EnumView.Feature.Destination.Action>.init
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.deinit
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.init
-      ViewStoreOf<BasicsView.Feature>.init
-      ViewStoreOf<BasicsView.Feature?>.deinit
-      ViewStoreOf<BasicsView.Feature?>.init
-      ViewStoreOf<BasicsView.Feature?>.init
-      WithViewStore<EnumView.ViewState, EnumView.Feature.Action>.body
-      WithViewStoreOf<BasicsView.Feature>.body
-      WithViewStoreOf<BasicsView.Feature?>.body
-      WithViewStoreOf<BasicsView.Feature?>.body
-      WithViewStoreOf<EnumView.Feature.Destination>.body
       """
     }
   }
@@ -168,59 +77,9 @@ final class EnumTests: BaseIntegrationTests {
       """
       BasicsView.body
       EnumView.body
-      PresentationStoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<BasicsView.Feature>.deinit
       StoreOf<BasicsView.Feature>.deinit
       StoreOf<BasicsView.Feature>.init
-      StoreOf<BasicsView.Feature>.init
-      StoreOf<BasicsView.Feature>.scope
-      StoreOf<BasicsView.Feature?>.deinit
-      StoreOf<BasicsView.Feature?>.deinit
-      StoreOf<BasicsView.Feature?>.deinit
-      StoreOf<BasicsView.Feature?>.deinit
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.init
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<EnumView.Feature.Destination>.deinit
-      StoreOf<EnumView.Feature.Destination>.deinit
       StoreOf<EnumView.Feature.Destination>.init
-      StoreOf<EnumView.Feature.Destination>.init
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination?>.deinit
-      StoreOf<EnumView.Feature.Destination?>.init
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature>.scope
-      StoreOf<EnumView.Feature>.scope
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.init
-      ViewStore<BasicsView.Feature.State?, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State?, BasicsView.Feature.Action>.init
-      ViewStore<EnumView.Feature.Destination.State, EnumView.Feature.Destination.Action>.deinit
-      ViewStore<EnumView.Feature.Destination.State, EnumView.Feature.Destination.Action>.init
-      ViewStore<EnumView.Feature.Destination.State?, EnumView.Feature.Destination.Action>.deinit
-      ViewStore<EnumView.Feature.Destination.State?, EnumView.Feature.Destination.Action>.init
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.deinit
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.init
-      ViewStoreOf<BasicsView.Feature>.deinit
-      ViewStoreOf<BasicsView.Feature>.init
-      ViewStoreOf<BasicsView.Feature?>.deinit
-      ViewStoreOf<BasicsView.Feature?>.init
-      ViewStoreOf<EnumView.Feature.Destination>.deinit
-      ViewStoreOf<EnumView.Feature.Destination>.init
-      WithViewStore<EnumView.ViewState, EnumView.Feature.Action>.body
-      WithViewStoreOf<BasicsView.Feature>.body
-      WithViewStoreOf<BasicsView.Feature?>.body
-      WithViewStoreOf<EnumView.Feature.Destination>.body
-      WithViewStoreOf<EnumView.Feature.Destination?>.body
       """
     }
   }
@@ -234,29 +93,7 @@ final class EnumTests: BaseIntegrationTests {
     self.assertLogs {
       """
       EnumView.body
-      PresentationStoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<BasicsView.Feature>.scope
-      StoreOf<BasicsView.Feature>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<BasicsView.Feature?>.scope
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature.Destination?>.scope
-      StoreOf<EnumView.Feature>.scope
-      StoreOf<EnumView.Feature>.scope
-      StoreOf<EnumView.Feature>.scope
-      ViewStore<EnumView.Feature.Destination.State?, EnumView.Feature.Destination.Action>.deinit
-      ViewStore<EnumView.Feature.Destination.State?, EnumView.Feature.Destination.Action>.init
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.deinit
-      ViewStore<EnumView.ViewState, EnumView.Feature.Action>.init
-      WithViewStore<EnumView.ViewState, EnumView.Feature.Action>.body
-      WithViewStoreOf<EnumView.Feature.Destination?>.body
+      StoreOf<EnumView.Feature.Destination>.deinit
       """
     }
   }

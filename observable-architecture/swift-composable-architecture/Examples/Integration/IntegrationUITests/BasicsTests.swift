@@ -17,20 +17,12 @@ final class BasicsTests: BaseIntegrationTests {
     self.assertLogs {
       """
       BasicsView.body
-      StoreOf<BasicsView.Feature>.scope
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.init
-      WithViewStoreOf<BasicsView.Feature>.body
       """
     }
     self.app.buttons["Decrement"].tap()
     self.assertLogs {
       """
       BasicsView.body
-      StoreOf<BasicsView.Feature>.scope
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.deinit
-      ViewStore<BasicsView.Feature.State, BasicsView.Feature.Action>.init
-      WithViewStoreOf<BasicsView.Feature>.body
       """
     }
   }

@@ -34,6 +34,7 @@ struct EnumView: View {
           }
         }
       }
+//      IfLetStore(self.store.scope(state: \.$destination, action: \.destination))
       if let store = self.store.scope(state: \.destination, action: \.destination.presented) {
         switch store.state {
         case .feature1:
