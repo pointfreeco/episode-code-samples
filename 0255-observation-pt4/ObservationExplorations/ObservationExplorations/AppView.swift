@@ -32,8 +32,7 @@ struct AppView: View {
         ListView(model: self.model.tab3)
           .navigationTitle(Text("Counter 3"))
       }
-      //.badge(self.model.tab3.counters.count)
-      .badge(self.model.tab3.counters.first?.count ?? 0)
+      .badge(self.model.tab3.numbers.first ?? 0)
       .tabItem { Text("Counter 3") }
     }
   }

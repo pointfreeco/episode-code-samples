@@ -27,16 +27,16 @@ struct ListView: View {
           .buttonStyle(.plain)
         }
       }
-      Section {
-        ForEach(self.model.counters) { counterModel in
-          HStack {
-            Button("-") { counterModel.decrementButtonTapped() }
-            Text(counterModel.count.description)
-            Button("+") { counterModel.incrementButtonTapped() }
-          }
-          .buttonStyle(.plain)
-        }
-      }
+//      Section {
+//        ForEach(self.model.counters) { counterModel in
+//          HStack {
+//            Button("-") { counterModel.decrementButtonTapped() }
+//            Text(counterModel.count.description)
+//            Button("+") { counterModel.incrementButtonTapped() }
+//          }
+//          .buttonStyle(.plain)
+//        }
+//      }
     }
     .toolbar {
       ToolbarItem {

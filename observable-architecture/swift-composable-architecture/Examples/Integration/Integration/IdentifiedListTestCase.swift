@@ -20,21 +20,56 @@ struct IdentifiedListView: View {
           }
         }
       }
-      ForEach(self.store.scope(state: \.rows, action: \.rows)) { store in
-        let _ = Logger.shared.log("\(Self.self).body.ForEachStore")
+
+      if !self.store.rows.isEmpty {
         Section {
-          HStack {
-            VStack {
-              BasicsView(store: store)
+          ForEach(
+            self.store.scope(state: \.rows, action: \.rows)
+              .prefix(3)
+          ) { store in
+            let _ = Logger.shared.log("\(Self.self).body.ForEachStore")
+            Section {
+              HStack {
+                VStack {
+                  BasicsView(store: store)
+                }
+                Spacer()
+                Button(action: { self.store.send(.removeButtonTapped(id: store.state.id)) }) {
+                  Image(systemName: "trash")
+                }
+              }
             }
-            Spacer()
-            Button(action: { self.store.send(.removeButtonTapped(id: store.state.id)) }) {
-              Image(systemName: "trash")
-            }
+            .buttonStyle(.borderless)
           }
+        } header: {
+          Text("Top picks")
         }
-        .buttonStyle(.borderless)
       }
+
+//      if self.store.rows.count > 3 {
+//        Section {
+//          ForEach(
+//            self.store.scope(state: \.rows, action: \.rows)
+//              .dropFirst(3)
+//          ) { store in
+//            let _ = Logger.shared.log("\(Self.self).body.ForEachStore")
+//            Section {
+//              HStack {
+//                VStack {
+//                  BasicsView(store: store)
+//                }
+//                Spacer()
+//                Button(action: { self.store.send(.removeButtonTapped(id: store.state.id)) }) {
+//                  Image(systemName: "trash")
+//                }
+//              }
+//            }
+//            .buttonStyle(.borderless)
+//          }
+//        } header: {
+//          Text("You might also like")
+//        }
+//      }
     }
     .toolbar {
       ToolbarItem {

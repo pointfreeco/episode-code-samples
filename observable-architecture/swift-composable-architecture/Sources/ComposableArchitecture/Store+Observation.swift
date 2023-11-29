@@ -67,27 +67,51 @@ extension Store where State: ObservableState {
   }
 }
 
+import OrderedCollections
+public struct StoreCollection<ID: Hashable, State, Action>: RandomAccessCollection {
+  private let store: Store<
+    IdentifiedArray<ID, State>,
+    IdentifiedAction<ID, Action>
+  >
+  private let ids: OrderedSet<ID>
+  init(store: Store<IdentifiedArray<ID, State>, IdentifiedAction<ID, Action>>) {
+    self.store = store
+    self.ids = store.stateSubject.value.ids
+  }
+
+  public var startIndex: Int {
+    self.ids.startIndex
+  }
+  public var endIndex: Int {
+    self.ids.endIndex
+  }
+
+  public subscript(position: Int) -> Store<State, Action> {
+    let id = self.ids[position]
+    return self.store.scope(
+      state: {
+        $0[id: id]!
+      },
+      id: { _ in id },
+      action: {
+        .element(id: id, action: $0)
+      },
+      isInvalid: {
+        !$0.ids.contains(id)
+      },
+      removeDuplicates: nil
+    )
+  }
+}
+
 extension Store where State: ObservableState {
   public func scope<ElementID, ElementState, ElementAction>(
     state: KeyPath<State, IdentifiedArray<ElementID, ElementState>>,
     action: CaseKeyPath<Action, IdentifiedAction<ElementID, ElementAction>>
-  ) -> [Store<ElementState, ElementAction>] {
+  //) -> [Store<ElementState, ElementAction>] {
+  ) -> StoreCollection<ElementID, ElementState, ElementAction> {
 
-    return self.state[keyPath: state].ids.map { id in
-      self.scope(
-        state: {
-          $0[keyPath: state][id: id]!
-        },
-        id: { _ in [id, state, action] as [AnyHashable] },
-        action: {
-          action(.element(id: id, action: $0))
-        },
-        isInvalid: {
-          !$0[keyPath: state].ids.contains(id)
-        },
-        removeDuplicates: nil
-      )
-    }
+    StoreCollection(store: self.scope(state: state, action: action))
   }
 }
 
