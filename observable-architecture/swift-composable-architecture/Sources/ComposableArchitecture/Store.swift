@@ -140,7 +140,7 @@ public final class Store<State, Action> {
   private var isSending = false
   var parentCancellable: AnyCancellable?
   private let reducer: any Reducer<State, Action>
-  @_spi(Internals) public var stateSubject: CurrentValueSubject<State, Never>
+  @_spi(Internals) public var stateSubject: CurrentValueSubject<State, Never>!
   #if DEBUG
     private let mainThreadChecksEnabled: Bool
   #endif
@@ -175,6 +175,14 @@ public final class Store<State, Action> {
         mainThreadChecksEnabled: true
       )
     }
+  }
+
+  fileprivate init() {
+    self._isInvalidated = { true }
+    self.reducer = EmptyReducer()
+    #if DEBUG
+      self.mainThreadChecksEnabled = true
+    #endif
   }
 
   deinit {
@@ -513,6 +521,11 @@ public final class Store<State, Action> {
   ) -> Store<ChildState, ChildAction> {
     self.threadCheck(status: .scope)
 
+    guard isInvalid.map({ $0(self.stateSubject.value) == false }) ?? true
+    else {
+      return Store<ChildState, ChildAction>()
+    }
+
     let id = id?(self.stateSubject.value)
     if let id = id,
       let childStore = self.children[id] as? Store<ChildState, ChildAction>
@@ -539,7 +552,8 @@ public final class Store<State, Action> {
     ) {
       Reduce(internal: { [weak self] childState, childAction in
         guard let self = self else { return .none }
-        if isInvalid(), let id = id {
+        let isInvalid = isInvalid()
+        if isInvalid, let id = id {
           self.invalidateChild(id: id)
         }
         guard let action = fromChildAction(childAction)
@@ -547,7 +561,9 @@ public final class Store<State, Action> {
         isSending = true
         defer { isSending = false }
         let task = self.send(action)
-        childState = toChildState(self.stateSubject.value)
+        if !isInvalid || childState is _OptionalProtocol {
+          childState = toChildState(self.stateSubject.value)
+        }
         if let task = task.rawValue {
           return .run { _ in await task.cancellableValue }
         } else {
