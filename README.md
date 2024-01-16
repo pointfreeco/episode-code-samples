@@ -265,3 +265,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Observable Architecture: Observing Optionals](0261-observable-architecture-pt3)
 1. [Observable Architecture: Observing Enums](0262-observable-architecture-pt4)
 1. [Observable Architecture: Observing Collections](0263-observable-architecture-pt5)
+1. [Observable Architecture: Observing Navigation](0264-observable-architecture-pt6)
