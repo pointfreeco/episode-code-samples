@@ -9,9 +9,11 @@ enum Filter: LocalizedStringKey, CaseIterable, Hashable {
 
 @Reducer
 struct Todos {
+  @ObservableState
   struct State: Equatable {
-    @BindingState var editMode: EditMode = .inactive
-    @BindingState var filter: Filter = .all
+    var editMode: EditMode = .inactive
+    var filter: Filter = .all
+    var isExpandingAllCompletedTodos = false
     var todos: IdentifiedArrayOf<Todo.State> = []
 
     var filteredTodos: IdentifiedArrayOf<Todo.State> {
@@ -21,6 +23,10 @@ struct Todos {
       case .completed: return self.todos.filter(\.isComplete)
       }
     }
+
+    var isClearCompletedButtonDisabled: Bool {
+      !self.todos.contains(where: \.isComplete)
+    }
   }
 
   enum Action: BindableAction, Sendable {
@@ -29,6 +35,7 @@ struct Todos {
     case clearCompletedButtonTapped
     case delete(IndexSet)
     case move(IndexSet, Int)
+    case seeAllCompletedButtonTapped
     case sortCompletedTodos
     case todos(IdentifiedActionOf<Todo>)
   }
@@ -39,6 +46,13 @@ struct Todos {
 
   var body: some Reducer<State, Action> {
     BindingReducer()
+      .onChange(of: \.filter) { _, _ in
+        Reduce { state, _ in
+          state.isExpandingAllCompletedTodos = false
+          return .none
+        }
+      }
+
     Reduce { state, action in
       switch action {
       case .addTodoButtonTapped:
@@ -80,11 +94,15 @@ struct Todos {
           await send(.sortCompletedTodos)
         }
 
+      case .seeAllCompletedButtonTapped:
+        state.isExpandingAllCompletedTodos = true
+        return .none
+
       case .sortCompletedTodos:
         state.todos.sort { $1.isComplete && !$0.isComplete }
         return .none
 
-      case .todos(.element(id: _, action: .binding(\.$isComplete))):
+      case .todos(.element(id: _, action: .binding(\.isComplete))):
         return .run { send in
           try await self.clock.sleep(for: .seconds(1))
           await send(.sortCompletedTodos, animation: .default)
@@ -102,53 +120,54 @@ struct Todos {
 }
 
 struct AppView: View {
-  let store: StoreOf<Todos>
-
-  struct ViewState: Equatable {
-    @BindingViewState var editMode: EditMode
-    @BindingViewState var filter: Filter
-    let isClearCompletedButtonDisabled: Bool
-
-    init(store: BindingViewStore<Todos.State>) {
-      self._editMode = store.$editMode
-      self._filter = store.$filter
-      self.isClearCompletedButtonDisabled = !store.todos.contains(where: \.isComplete)
-    }
-  }
+  @State var store: StoreOf<Todos>
 
   var body: some View {
-    WithViewStore(self.store, observe: ViewState.init) { viewStore in
-      NavigationStack {
-        VStack(alignment: .leading) {
-          Picker("Filter", selection: viewStore.$filter.animation()) {
-            ForEach(Filter.allCases, id: \.self) { filter in
-              Text(filter.rawValue).tag(filter)
-            }
-          }
-          .pickerStyle(.segmented)
-          .padding(.horizontal)
-
-          List {
-            ForEachStore(self.store.scope(state: \.filteredTodos, action: \.todos)) { store in
-              TodoView(store: store)
-            }
-            .onDelete { viewStore.send(.delete($0)) }
-            .onMove { viewStore.send(.move($0, $1)) }
+    NavigationStack {
+      VStack(alignment: .leading) {
+        Picker("Filter", selection: $store.filter.animation()) {
+          ForEach(Filter.allCases, id: \.self) { filter in
+            Text(filter.rawValue).tag(filter)
           }
         }
-        .navigationTitle("Todos")
-        .navigationBarItems(
-          trailing: HStack(spacing: 20) {
-            EditButton()
-            Button("Clear Completed") {
-              viewStore.send(.clearCompletedButtonTapped, animation: .default)
-            }
-            .disabled(viewStore.isClearCompletedButtonDisabled)
-            Button("Add Todo") { viewStore.send(.addTodoButtonTapped, animation: .default) }
+        .pickerStyle(.segmented)
+        .padding(.horizontal)
+
+        List {
+          ForEach(
+            self.store.scope(state: \.filteredTodos, action: \.todos)
+              .prefix(store.filter == .completed && !store.isExpandingAllCompletedTodos ? 3 : .max)
+          ) { store in
+            TodoView(store: store)
           }
-        )
-        .environment(\.editMode, viewStore.$editMode)
+          .onDelete { store.send(.delete($0)) }
+          .onMove { store.send(.move($0, $1)) }
+
+          if
+            !store.isExpandingAllCompletedTodos,
+            store.filter == .completed,
+            store.filteredTodos.count > 3
+          {
+            Section {
+              Button("See all \(store.filteredTodos.count) completed todos") {
+                store.send(.seeAllCompletedButtonTapped)
+              }
+            }
+          }
+        }
       }
+      .navigationTitle("Todos")
+      .navigationBarItems(
+        trailing: HStack(spacing: 20) {
+          EditButton()
+          Button("Clear Completed") {
+            store.send(.clearCompletedButtonTapped, animation: .default)
+          }
+          .disabled(store.isClearCompletedButtonDisabled)
+          Button("Add Todo") { store.send(.addTodoButtonTapped, animation: .default) }
+        }
+      )
+      .environment(\.editMode, $store.editMode)
     }
   }
 }
@@ -167,6 +186,26 @@ extension IdentifiedArray where ID == Todo.State.ID, Element == Todo.State {
     ),
     Todo.State(
       description: "Call Mom",
+      id: UUID(),
+      isComplete: true
+    ),
+    Todo.State(
+      description: "Walk the dog",
+      id: UUID(),
+      isComplete: true
+    ),
+    Todo.State(
+      description: "Get haircut",
+      id: UUID(),
+      isComplete: true
+    ),
+    Todo.State(
+      description: "Edit episode",
+      id: UUID(),
+      isComplete: true
+    ),
+    Todo.State(
+      description: "Respond to open source questions",
       id: UUID(),
       isComplete: true
     ),
