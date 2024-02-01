@@ -6,25 +6,6 @@ import NewGameUIKit
 import SwiftUI
 import UIKit
 
-public struct UIKitAppView: UIViewControllerRepresentable {
-  let store: StoreOf<TicTacToe>
-
-  public init(store: StoreOf<TicTacToe>) {
-    self.store = store
-  }
-
-  public func makeUIViewController(context: Context) -> UIViewController {
-    AppViewController(store: store)
-  }
-
-  public func updateUIViewController(
-    _ uiViewController: UIViewController,
-    context: Context
-  ) {
-    // Nothing to do
-  }
-}
-
 class AppViewController: UINavigationController {
   let store: StoreOf<TicTacToe>
   private var cancellables: Set<AnyCancellable> = []
@@ -41,18 +22,37 @@ class AppViewController: UINavigationController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.store
+    store
       .scope(state: \.login, action: \.login)
       .ifLet { [weak self] loginStore in
         self?.setViewControllers([LoginViewController(store: loginStore)], animated: false)
       }
-      .store(in: &self.cancellables)
+      .store(in: &cancellables)
 
-    self.store
+    store
       .scope(state: \.newGame, action: \.newGame)
       .ifLet { [weak self] newGameStore in
         self?.setViewControllers([NewGameViewController(store: newGameStore)], animated: false)
       }
-      .store(in: &self.cancellables)
+      .store(in: &cancellables)
+  }
+}
+
+public struct UIKitAppView: UIViewControllerRepresentable {
+  let store: StoreOf<TicTacToe>
+
+  public init(store: StoreOf<TicTacToe>) {
+    self.store = store
+  }
+
+  public func makeUIViewController(context: Context) -> UIViewController {
+    AppViewController(store: store)
+  }
+
+  public func updateUIViewController(
+    _ uiViewController: UIViewController,
+    context: Context
+  ) {
+    // Nothing to do
   }
 }

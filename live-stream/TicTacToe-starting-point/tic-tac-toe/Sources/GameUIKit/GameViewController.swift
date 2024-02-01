@@ -19,10 +19,10 @@ public final class GameViewController: UIViewController {
   public override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.navigationItem.title = "Tic-Tac-Toe"
-    self.view.backgroundColor = .systemBackground
+    navigationItem.title = "Tic-Tac-Toe"
+    view.backgroundColor = .systemBackground
 
-    self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+    navigationItem.leftBarButtonItem = UIBarButtonItem(
       title: "Quit",
       style: .done,
       target: self,
@@ -90,12 +90,12 @@ public final class GameViewController: UIViewController {
     rootStackView.axis = .vertical
     rootStackView.spacing = 100
 
-    self.view.addSubview(rootStackView)
+    view.addSubview(rootStackView)
 
     NSLayoutConstraint.activate([
-      rootStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-      rootStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-      rootStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+      rootStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      rootStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      rootStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
     ])
 
     gameStackView.arrangedSubviews
@@ -108,16 +108,16 @@ public final class GameViewController: UIViewController {
         ])
       }
 
-    self.store.publisher.title
+    store.publisher.title
       .map(Optional.some)
       .assign(to: \.text, on: titleLabel)
-      .store(in: &self.cancellables)
+      .store(in: &cancellables)
 
-    self.store.publisher.isPlayAgainButtonHidden
+    store.publisher.isPlayAgainButtonHidden
       .assign(to: \.isHidden, on: playAgainButton)
-      .store(in: &self.cancellables)
+      .store(in: &cancellables)
 
-    self.store.publisher.map(\.rows, \.isGameEnabled)
+    store.publisher.map(\.rows, \.isGameEnabled)
       .removeDuplicates(by: ==)
       .sink { board, isGameEnabled in
         board.enumerated().forEach { rowIdx, row in
@@ -128,37 +128,37 @@ public final class GameViewController: UIViewController {
           }
         }
       }
-      .store(in: &self.cancellables)
+      .store(in: &cancellables)
   }
 
-  @objc private func gridCell11Tapped() { self.store.send(.cellTapped(row: 0, column: 0)) }
-  @objc private func gridCell12Tapped() { self.store.send(.cellTapped(row: 0, column: 1)) }
-  @objc private func gridCell13Tapped() { self.store.send(.cellTapped(row: 0, column: 2)) }
-  @objc private func gridCell21Tapped() { self.store.send(.cellTapped(row: 1, column: 0)) }
-  @objc private func gridCell22Tapped() { self.store.send(.cellTapped(row: 1, column: 1)) }
-  @objc private func gridCell23Tapped() { self.store.send(.cellTapped(row: 1, column: 2)) }
-  @objc private func gridCell31Tapped() { self.store.send(.cellTapped(row: 2, column: 0)) }
-  @objc private func gridCell32Tapped() { self.store.send(.cellTapped(row: 2, column: 1)) }
-  @objc private func gridCell33Tapped() { self.store.send(.cellTapped(row: 2, column: 2)) }
+  @objc private func gridCell11Tapped() { store.send(.cellTapped(row: 0, column: 0)) }
+  @objc private func gridCell12Tapped() { store.send(.cellTapped(row: 0, column: 1)) }
+  @objc private func gridCell13Tapped() { store.send(.cellTapped(row: 0, column: 2)) }
+  @objc private func gridCell21Tapped() { store.send(.cellTapped(row: 1, column: 0)) }
+  @objc private func gridCell22Tapped() { store.send(.cellTapped(row: 1, column: 1)) }
+  @objc private func gridCell23Tapped() { store.send(.cellTapped(row: 1, column: 2)) }
+  @objc private func gridCell31Tapped() { store.send(.cellTapped(row: 2, column: 0)) }
+  @objc private func gridCell32Tapped() { store.send(.cellTapped(row: 2, column: 1)) }
+  @objc private func gridCell33Tapped() { store.send(.cellTapped(row: 2, column: 2)) }
 
   @objc private func quitButtonTapped() {
-    self.store.send(.quitButtonTapped)
+    store.send(.quitButtonTapped)
   }
 
   @objc private func playAgainButtonTapped() {
-    self.store.send(.playAgainButtonTapped)
+    store.send(.playAgainButtonTapped)
   }
 }
 
 extension Game.State {
-  fileprivate var rows: Three<Three<String>> { self.board.map { $0.map { $0?.label ?? "" } } }
-  fileprivate var isGameEnabled: Bool { !self.board.hasWinner && !self.board.isFilled }
-  fileprivate var isPlayAgainButtonHidden: Bool { !self.board.hasWinner && !self.board.isFilled }
+  fileprivate var rows: Three<Three<String>> { board.map { $0.map { $0?.label ?? "" } } }
+  fileprivate var isGameEnabled: Bool { !board.hasWinner && !board.isFilled }
+  fileprivate var isPlayAgainButtonHidden: Bool { !board.hasWinner && !board.isFilled }
   fileprivate var title: String {
-    self.board.hasWinner
-      ? "Winner! Congrats \(self.currentPlayerName)!"
-      : self.board.isFilled
+    board.hasWinner
+      ? "Winner! Congrats \(currentPlayerName)!"
+      : board.isFilled
         ? "Tied game!"
-        : "\(self.currentPlayerName), place your \(self.currentPlayer.label)"
+        : "\(currentPlayerName), place your \(currentPlayer.label)"
   }
 }

@@ -20,9 +20,9 @@ public class NewGameViewController: UIViewController {
   public override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.navigationItem.title = "New Game"
+    navigationItem.title = "New Game"
 
-    self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+    navigationItem.rightBarButtonItem = UIBarButtonItem(
       title: "Logout",
       style: .done,
       target: self,
@@ -38,7 +38,8 @@ public class NewGameViewController: UIViewController {
     playerXTextField.placeholder = "Blob Sr."
     playerXTextField.setContentCompressionResistancePriority(.required, for: .horizontal)
     playerXTextField.addTarget(
-      self, action: #selector(playerXTextChanged(sender:)), for: .editingChanged)
+      self, action: #selector(playerXTextChanged(sender:)), for: .editingChanged
+    )
 
     let playerXRow = UIStackView(arrangedSubviews: [
       playerXLabel,
@@ -55,7 +56,8 @@ public class NewGameViewController: UIViewController {
     playerOTextField.placeholder = "Blob Jr."
     playerOTextField.setContentCompressionResistancePriority(.required, for: .horizontal)
     playerOTextField.addTarget(
-      self, action: #selector(playerOTextChanged(sender:)), for: .editingChanged)
+      self, action: #selector(playerOTextChanged(sender:)), for: .editingChanged
+    )
 
     let playerORow = UIStackView(arrangedSubviews: [
       playerOLabel,
@@ -78,64 +80,66 @@ public class NewGameViewController: UIViewController {
     rootStackView.axis = .vertical
     rootStackView.spacing = 24
 
-    self.view.addSubview(rootStackView)
+    view.addSubview(rootStackView)
 
     NSLayoutConstraint.activate([
-      rootStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-      rootStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-      rootStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+      rootStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      rootStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      rootStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
     ])
 
-    self.store.publisher.isLetsPlayButtonEnabled
+    store.publisher.isLetsPlayButtonEnabled
       .assign(to: \.isEnabled, on: letsPlayButton)
-      .store(in: &self.cancellables)
+      .store(in: &cancellables)
 
-    self.store.publisher.oPlayerName
+    store.publisher.oPlayerName
       .map(Optional.some)
       .assign(to: \.text, on: playerOTextField)
-      .store(in: &self.cancellables)
+      .store(in: &cancellables)
 
-    self.store.publisher.xPlayerName
+    store.publisher.xPlayerName
       .map(Optional.some)
       .assign(to: \.text, on: playerXTextField)
-      .store(in: &self.cancellables)
+      .store(in: &cancellables)
 
-    self.store
+    var gameController: GameViewController?
+
+    store
       .scope(state: \.game, action: \.game.presented)
       .ifLet(
         then: { [weak self] gameStore in
-          self?.navigationController?.pushViewController(
-            GameViewController(store: gameStore),
-            animated: true
-          )
+          guard gameController == nil else { return }
+          gameController = GameViewController(store: gameStore)
+          self?.navigationController?.pushViewController(gameController!, animated: true)
         },
         else: { [weak self] in
-          guard let self = self else { return }
-          self.navigationController?.popToViewController(self, animated: true)
+          guard let self else { return }
+          navigationController?.popToViewController(self, animated: true)
+          gameController = nil
         }
       )
-      .store(in: &self.cancellables)
+      .store(in: &cancellables)
   }
 
   @objc private func logoutButtonTapped() {
-    self.store.send(.logoutButtonTapped)
+    store.send(.logoutButtonTapped)
   }
 
   @objc private func playerXTextChanged(sender: UITextField) {
-    self.store.xPlayerName = sender.text ?? ""
+    store.xPlayerName = sender.text ?? ""
   }
 
   @objc private func playerOTextChanged(sender: UITextField) {
-    self.store.oPlayerName = sender.text ?? ""
+    store.oPlayerName = sender.text ?? ""
   }
 
   @objc private func letsPlayTapped() {
-    self.store.send(.letsPlayButtonTapped)
+    store.send(.letsPlayButtonTapped)
   }
 }
 
 extension NewGame.State {
   fileprivate var isLetsPlayButtonEnabled: Bool {
-    !self.oPlayerName.isEmpty && !self.xPlayerName.isEmpty
+    !oPlayerName.isEmpty && !xPlayerName.isEmpty
   }
 }
