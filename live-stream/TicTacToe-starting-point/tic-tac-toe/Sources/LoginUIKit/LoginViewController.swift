@@ -113,7 +113,7 @@ public class LoginViewController: UIViewController {
       .store(in: &cancellables)
 
     var alertController: UIAlertController?
-    var twoFactorViewController: TwoFactorViewController?
+    var twoFactorController: TwoFactorViewController?
 
     store.publisher.alert
       .sink { [weak self] alert in
@@ -138,14 +138,14 @@ public class LoginViewController: UIViewController {
       .scope(state: \.twoFactor, action: \.twoFactor.presented)
       .ifLet(
         then: { [weak self] twoFactorStore in
-          guard twoFactorViewController == nil else { return }
-          twoFactorViewController = TwoFactorViewController(store: twoFactorStore)
-          self?.navigationController?.pushViewController(twoFactorViewController!, animated: true)
+          guard twoFactorController == nil else { return }
+          twoFactorController = TwoFactorViewController(store: twoFactorStore)
+          self?.navigationController?.pushViewController(twoFactorController!, animated: true)
         },
         else: { [weak self] in
           guard let self else { return }
           navigationController?.popToViewController(self, animated: true)
-          twoFactorViewController = nil
+          twoFactorController = nil
         }
       )
       .store(in: &cancellables)
