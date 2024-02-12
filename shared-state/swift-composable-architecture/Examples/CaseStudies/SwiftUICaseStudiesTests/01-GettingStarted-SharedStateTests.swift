@@ -14,11 +14,13 @@ final class SharedStateTests: XCTestCase {
       $0.currentTab = .profile
       $0.counter.stats.increment()
       $0.profile.stats.increment()
+      $0.stats.increment()
     }
     await store.send(.selectTab(.counter)) {
       $0.currentTab = .counter
       $0.counter.stats.increment()
       $0.profile.stats.increment()
+      $0.stats.increment()
     }
   }
 
@@ -30,14 +32,17 @@ final class SharedStateTests: XCTestCase {
     await store.send(.counter(.incrementButtonTapped)) {
       $0.counter.stats.increment()
       $0.profile.stats.increment()
+      $0.stats.increment()
     }
     await store.send(.counter(.decrementButtonTapped)) {
       $0.counter.stats.decrement()
       $0.profile.stats.decrement()
+      $0.stats.decrement()
     }
     await store.send(.profile(.resetStatsButtonTapped)) {
       $0.counter.stats = Stats()
       $0.profile.stats = Stats()
+      $0.stats.increment()
     }
   }
 

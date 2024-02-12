@@ -153,8 +153,15 @@ struct SharedState {
   @ObservableState
   struct State: Equatable {
     var currentTab = Tab.counter
-    var counter = CounterTab.State()
-    var profile = ProfileTab.State()
+    var counter: CounterTab.State {
+      get { CounterTab.State(alert: <#T##AlertState<CounterTab.Action.Alert>?#>, stats: self.stats) }
+      set { self.stats = newValue.stats }
+    }
+    var profile: ProfileTab.State {
+      get { ProfileTab.State(stats: self.stats) }
+      set { self.stats = newValue.stats }
+    }
+    var stats = Stats()
   }
 
   enum Action {
@@ -179,24 +186,33 @@ struct SharedState {
           return .none
         case let .selectTab(tab):
           state.currentTab = tab
-          state.counter.stats.increment()
+          state.stats.increment()
+          //state.counter.stats.increment()
           //state.profile.stats.increment()
           return .none
         }
       }
-      }
-    .onChange(of: \.counter.stats) { _, stats in
-      Reduce { state, _ in
-        state.profile.stats = stats
-        return .none
-      }
     }
-    .onChange(of: \.profile.stats) { _, stats in
-      Reduce { state, _ in
-        state.counter.stats = stats
-        return .none
-      }
-    }
+//    .share(\.stats, with: \.profile.stats, \.counter.stats)
+//    .onChange(of: \.counter.stats) { _, stats in
+//      Reduce { state, _ in
+//        state.stats = stats
+//        return .none
+//      }
+//    }
+//    .onChange(of: \.profile.stats) { _, stats in
+//      Reduce { state, _ in
+//        state.stats = stats
+//        return .none
+//      }
+//    }
+//    .onChange(of: \.stats) { _, stats in
+//      Reduce { state, _ in
+//        state.counter.stats = stats
+//        state.profile.stats = stats
+//        return .none
+//      }
+//    }
   }
 }
 
