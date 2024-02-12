@@ -164,32 +164,36 @@ struct SharedState {
   }
 
   var body: some Reducer<State, Action> {
-    Scope(state: \.counter, action: \.counter) {
-      CounterTab()
-    }
+    CombineReducers {
+      Scope(state: \.counter, action: \.counter) {
+        CounterTab()
+      }
+
+      Scope(state: \.profile, action: \.profile) {
+        ProfileTab()
+      }
+
+      Reduce { state, action in
+        switch action {
+        case .counter, .profile:
+          return .none
+        case let .selectTab(tab):
+          state.currentTab = tab
+          state.counter.stats.increment()
+          //state.profile.stats.increment()
+          return .none
+        }
+      }
+      }
     .onChange(of: \.counter.stats) { _, stats in
       Reduce { state, _ in
         state.profile.stats = stats
         return .none
       }
     }
-
-    Scope(state: \.profile, action: \.profile) {
-      ProfileTab()
-    }
     .onChange(of: \.profile.stats) { _, stats in
       Reduce { state, _ in
         state.counter.stats = stats
-        return .none
-      }
-    }
-
-    Reduce { state, action in
-      switch action {
-      case .counter, .profile:
-        return .none
-      case let .selectTab(tab):
-        state.currentTab = tab
         return .none
       }
     }
