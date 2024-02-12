@@ -80,13 +80,13 @@ struct SyncUpDetail {
         case .confirmDeletion:
           return .run { send in
             await send(.delegate(.deleteSyncUp), animation: .default)
-            await self.dismiss()
+            await dismiss()
           }
         case .continueWithoutRecording:
           return .send(.delegate(.startMeeting))
         case .openSettings:
           return .run { _ in
-            await self.openSettings()
+            await openSettings()
           }
         }
 
@@ -105,7 +105,7 @@ struct SyncUpDetail {
         return .none
 
       case .startMeetingButtonTapped:
-        switch self.authorizationStatus() {
+        switch authorizationStatus() {
         case .notDetermined, .authorized:
           return .send(.delegate(.startMeeting))
 

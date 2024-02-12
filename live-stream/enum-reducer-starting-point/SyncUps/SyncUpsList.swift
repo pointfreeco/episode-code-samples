@@ -61,7 +61,7 @@ struct SyncUpsList {
     Reduce { state, action in
       switch action {
       case .addSyncUpButtonTapped:
-        state.destination = .add(SyncUpForm.State(syncUp: SyncUp(id: SyncUp.ID(self.uuid()))))
+        state.destination = .add(SyncUpForm.State(syncUp: SyncUp(id: SyncUp.ID(uuid()))))
         return .none
 
       case .confirmAddSyncUpButtonTapped:
@@ -74,7 +74,7 @@ struct SyncUpsList {
         if syncUp.attendees.isEmpty {
           syncUp.attendees.append(
             editState.syncUp.attendees.first
-              ?? Attendee(id: Attendee.ID(self.uuid()))
+              ?? Attendee(id: Attendee.ID(uuid()))
           )
         }
         state.syncUps.append(syncUp)
@@ -176,19 +176,19 @@ struct CardView: View {
 
   var body: some View {
     VStack(alignment: .leading) {
-      Text(self.syncUp.title)
+      Text(syncUp.title)
         .font(.headline)
       Spacer()
       HStack {
-        Label("\(self.syncUp.attendees.count)", systemImage: "person.3")
+        Label("\(syncUp.attendees.count)", systemImage: "person.3")
         Spacer()
-        Label(self.syncUp.duration.formatted(.units()), systemImage: "clock")
+        Label(syncUp.duration.formatted(.units()), systemImage: "clock")
           .labelStyle(.trailingIcon)
       }
       .font(.caption)
     }
     .padding()
-    .foregroundColor(self.syncUp.theme.accentColor)
+    .foregroundColor(syncUp.theme.accentColor)
   }
 }
 

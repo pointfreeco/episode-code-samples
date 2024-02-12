@@ -12,17 +12,17 @@ public struct AppView: View {
   }
 
   public var body: some View {
-    switch self.store.state {
+    switch store.state {
     case .login:
-      if let store = self.store.scope(state: \.login, action: \.login) {
+      if let loginStore = store.scope(state: \.login, action: \.login) {
         NavigationStack {
-          LoginView(store: store)
+          LoginView(store: loginStore)
         }
       }
     case .newGame:
-      if let store = self.store.scope(state: \.newGame, action: \.newGame) {
+      if let newGameStore = store.scope(state: \.newGame, action: \.newGame) {
         NavigationStack {
-          NewGameView(store: store)
+          NewGameView(store: newGameStore)
         }
       }
     }

@@ -62,8 +62,8 @@ struct AppFeature {
 
           state.path[id: id, case: \.detail]?.syncUp.meetings.insert(
             Meeting(
-              id: Meeting.ID(self.uuid()),
-              date: self.now,
+              id: Meeting.ID(uuid()),
+              date: now,
               transcript: transcript
             ),
             at: 0
@@ -88,8 +88,8 @@ struct AppFeature {
     Reduce { state, action in
       return .run { [syncUps = state.syncUpsList.syncUps] _ in
         try await withTaskCancellation(id: CancelID.saveDebounce, cancelInFlight: true) {
-          try await self.clock.sleep(for: .seconds(1))
-          try await self.saveData(JSONEncoder().encode(syncUps), .syncUps)
+          try await clock.sleep(for: .seconds(1))
+          try await saveData(JSONEncoder().encode(syncUps), .syncUps)
         }
       } catch: { _, _ in
       }
@@ -128,7 +128,7 @@ struct AppView: View {
     WithPerceptionTracking {
       NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
         SyncUpsListView(
-          store: self.store.scope(state: \.syncUpsList, action: \.syncUpsList)
+          store: store.scope(state: \.syncUpsList, action: \.syncUpsList)
         )
       } destination: { store in
         switch store.state {

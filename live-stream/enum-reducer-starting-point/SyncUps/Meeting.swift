@@ -12,16 +12,16 @@ struct MeetingView: View {
           .padding(.bottom)
         Text("Attendees")
           .font(.headline)
-        ForEach(self.syncUp.attendees) { attendee in
+        ForEach(syncUp.attendees) { attendee in
           Text(attendee.name)
         }
         Text("Transcript")
           .font(.headline)
           .padding(.top)
-        Text(self.meeting.transcript)
+        Text(meeting.transcript)
       }
     }
-    .navigationTitle(Text(self.meeting.date, style: .date))
+    .navigationTitle(Text(meeting.date, style: .date))
     .padding()
   }
 }
