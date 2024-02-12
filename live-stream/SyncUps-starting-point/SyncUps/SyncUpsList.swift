@@ -59,7 +59,7 @@ struct SyncUpsList {
     Reduce { state, action in
       switch action {
       case .addSyncUpButtonTapped:
-        state.destination = .add(SyncUpForm.State(syncUp: SyncUp(id: SyncUp.ID(self.uuid()))))
+        state.destination = .add(SyncUpForm.State(syncUp: SyncUp(id: SyncUp.ID(uuid()))))
         return .none
 
       case .confirmAddSyncUpButtonTapped:
@@ -72,7 +72,7 @@ struct SyncUpsList {
         if syncUp.attendees.isEmpty {
           syncUp.attendees.append(
             editState.syncUp.attendees.first
-              ?? Attendee(id: Attendee.ID(self.uuid()))
+              ?? Attendee(id: Attendee.ID(uuid()))
           )
         }
         state.syncUps.append(syncUp)
@@ -105,7 +105,7 @@ struct SyncUpsListView: View {
   let store: StoreOf<SyncUpsList>
 
   var body: some View {
-    WithViewStore(self.store, observe: \.syncUps) { viewStore in
+    WithViewStore(store, observe: \.syncUps) { viewStore in
       List {
         ForEach(viewStore.state) { syncUp in
           NavigationLink(
@@ -124,9 +124,9 @@ struct SyncUpsListView: View {
         }
       }
       .navigationTitle("Daily Sync-ups")
-      .alert(store: self.store.scope(state: \.$destination.alert, action: \.destination.alert))
+      .alert(store: store.scope(state: \.$destination.alert, action: \.destination.alert))
       .sheet(
-        store: self.store.scope(state: \.$destination.add, action: \.destination.add)
+        store: store.scope(state: \.$destination.add, action: \.destination.add)
       ) { store in
         NavigationStack {
           SyncUpFormView(store: store)
@@ -174,19 +174,19 @@ struct CardView: View {
 
   var body: some View {
     VStack(alignment: .leading) {
-      Text(self.syncUp.title)
+      Text(syncUp.title)
         .font(.headline)
       Spacer()
       HStack {
-        Label("\(self.syncUp.attendees.count)", systemImage: "person.3")
+        Label("\(syncUp.attendees.count)", systemImage: "person.3")
         Spacer()
-        Label(self.syncUp.duration.formatted(.units()), systemImage: "clock")
+        Label(syncUp.duration.formatted(.units()), systemImage: "clock")
           .labelStyle(.trailingIcon)
       }
       .font(.caption)
     }
     .padding()
-    .foregroundColor(self.syncUp.theme.accentColor)
+    .foregroundColor(syncUp.theme.accentColor)
   }
 }
 

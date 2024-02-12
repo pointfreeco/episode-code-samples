@@ -78,13 +78,13 @@ struct SyncUpDetail {
         case .confirmDeletion:
           return .run { send in
             await send(.delegate(.deleteSyncUp), animation: .default)
-            await self.dismiss()
+            await dismiss()
           }
         case .continueWithoutRecording:
           return .send(.delegate(.startMeeting))
         case .openSettings:
           return .run { _ in
-            await self.openSettings()
+            await openSettings()
           }
         }
 
@@ -103,7 +103,7 @@ struct SyncUpDetail {
         return .none
 
       case .startMeetingButtonTapped:
-        switch self.authorizationStatus() {
+        switch authorizationStatus() {
         case .notDetermined, .authorized:
           return .send(.delegate(.startMeeting))
 
@@ -142,7 +142,7 @@ struct SyncUpDetailView: View {
   }
 
   var body: some View {
-    WithViewStore(self.store, observe: ViewState.init) { viewStore in
+    WithViewStore(store, observe: ViewState.init) { viewStore in
       List {
         Section {
           Button {
@@ -214,9 +214,9 @@ struct SyncUpDetailView: View {
           viewStore.send(.editButtonTapped)
         }
       }
-      .alert(store: self.store.scope(state: \.$destination.alert, action: \.destination.alert))
+      .alert(store: store.scope(state: \.$destination.alert, action: \.destination.alert))
       .sheet(
-        store: self.store.scope(state: \.$destination.edit, action: \.destination.edit)
+        store: store.scope(state: \.$destination.edit, action: \.destination.edit)
       ) { store in
         NavigationStack {
           SyncUpFormView(store: store)

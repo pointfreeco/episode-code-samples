@@ -36,7 +36,7 @@ struct SyncUpForm {
     Reduce { state, action in
       switch action {
       case .addAttendeeButtonTapped:
-        let attendee = Attendee(id: Attendee.ID(self.uuid()))
+        let attendee = Attendee(id: Attendee.ID(uuid()))
         state.syncUp.attendees.append(attendee)
         state.focus = .attendee(attendee.id)
         return .none
@@ -47,7 +47,7 @@ struct SyncUpForm {
       case let .deleteAttendees(atOffsets: indices):
         state.syncUp.attendees.remove(atOffsets: indices)
         if state.syncUp.attendees.isEmpty {
-          state.syncUp.attendees.append(Attendee(id: Attendee.ID(self.uuid())))
+          state.syncUp.attendees.append(Attendee(id: Attendee.ID(uuid())))
         }
         guard let firstIndex = indices.first
         else { return .none }
@@ -64,11 +64,11 @@ struct SyncUpFormView: View {
   @FocusState var focus: SyncUpForm.State.Field?
 
   var body: some View {
-    WithViewStore(self.store, observe: { $0 }) { viewStore in
+    WithViewStore(store, observe: { $0 }) { viewStore in
       Form {
         Section {
           TextField("Title", text: viewStore.$syncUp.title)
-            .focused(self.$focus, equals: .title)
+            .focused($focus, equals: .title)
           HStack {
             Slider(value: viewStore.$syncUp.duration.minutes, in: 5...30, step: 1) {
               Text("Length")
@@ -83,7 +83,7 @@ struct SyncUpFormView: View {
         Section {
           ForEach(viewStore.$syncUp.attendees) { $attendee in
             TextField("Name", text: $attendee.name)
-              .focused(self.$focus, equals: .attendee(attendee.id))
+              .focused($focus, equals: .attendee(attendee.id))
           }
           .onDelete { indices in
             viewStore.send(.deleteAttendees(atOffsets: indices))
@@ -96,7 +96,7 @@ struct SyncUpFormView: View {
           Text("Attendees")
         }
       }
-      .bind(viewStore.$focus, to: self.$focus)
+      .bind(viewStore.$focus, to: $focus)
     }
   }
 }
@@ -105,7 +105,7 @@ struct ThemePicker: View {
   @Binding var selection: Theme
 
   var body: some View {
-    Picker("Theme", selection: self.$selection) {
+    Picker("Theme", selection: $selection) {
       ForEach(Theme.allCases) { theme in
         ZStack {
           RoundedRectangle(cornerRadius: 4)
@@ -123,7 +123,7 @@ struct ThemePicker: View {
 
 extension Duration {
   fileprivate var minutes: Double {
-    get { Double(self.components.seconds / 60) }
+    get { Double(components.seconds / 60) }
     set { self = .seconds(newValue * 60) }
   }
 }
