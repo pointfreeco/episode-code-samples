@@ -27,9 +27,12 @@ struct CounterTab {
     case decrementButtonTapped
     case incrementButtonTapped
     case isPrimeButtonTapped
+    case onAppear
 
     enum Alert: Equatable {}
   }
+
+  @Dependency(StatsClient.self) var stats
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -49,14 +52,21 @@ struct CounterTab {
         state.alert = AlertState {
           TextState(
             isPrime(state.stats.count)
-              ? "👍 The number \(state.stats.count) is prime!"
-              : "👎 The number \(state.stats.count) is not prime :("
+            ? "👍 The number \(state.stats.count) is prime!"
+            : "👎 The number \(state.stats.count) is not prime :("
           )
         }
+        return .none
+
+      case .onAppear:
+        state.stats = stats.get()
         return .none
       }
     }
     .ifLet(\.$alert, action: \.alert)
+    .onChange(of: \.stats) { _, newStats in
+      let _ = stats.set(newStats)
+    }
   }
 }
 
@@ -91,6 +101,7 @@ struct CounterTabView: View {
     .buttonStyle(.borderless)
     .navigationTitle("Shared State Demo")
     .alert($store.scope(state: \.alert, action: \.alert))
+    .onAppear { store.send(.onAppear) }
   }
 }
 
@@ -102,8 +113,11 @@ struct ProfileTab {
   }
 
   enum Action {
+    case onAppear
     case resetStatsButtonTapped
   }
+
+  @Dependency(StatsClient.self) var stats
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -111,7 +125,13 @@ struct ProfileTab {
       case .resetStatsButtonTapped:
         state.stats.reset()
         return .none
+      case .onAppear:
+        state.stats = stats.get()
+        return .none
       }
+    }
+    .onChange(of: \.stats) { _, newStats in
+      let _ = stats.set(newStats)
     }
   }
 }
@@ -143,6 +163,7 @@ struct ProfileTabView: View {
     }
     .buttonStyle(.borderless)
     .navigationTitle("Profile")
+    .onAppear { store.send(.onAppear) }
   }
 }
 
@@ -163,6 +184,8 @@ struct SharedState {
     case selectTab(Tab)
   }
 
+  @Dependency(StatsClient.self) var stats
+
   var body: some Reducer<State, Action> {
     CombineReducers {
       Scope(state: \.counter, action: \.counter) {
@@ -179,24 +202,25 @@ struct SharedState {
           return .none
         case let .selectTab(tab):
           state.currentTab = tab
-          state.counter.stats.increment()
+          stats.modify { $0.increment() }
+          //state.counter.stats.increment()
           //state.profile.stats.increment()
           return .none
         }
       }
       }
-    .onChange(of: \.counter.stats) { _, stats in
-      Reduce { state, _ in
-        state.profile.stats = stats
-        return .none
-      }
-    }
-    .onChange(of: \.profile.stats) { _, stats in
-      Reduce { state, _ in
-        state.counter.stats = stats
-        return .none
-      }
-    }
+//    .onChange(of: \.counter.stats) { _, stats in
+//      Reduce { state, _ in
+//        state.profile.stats = stats
+//        return .none
+//      }
+//    }
+//    .onChange(of: \.profile.stats) { _, stats in
+//      Reduce { state, _ in
+//        state.counter.stats = stats
+//        return .none
+//      }
+//    }
   }
 }
 
@@ -221,6 +245,30 @@ struct SharedStateView: View {
       .tag(SharedState.Tab.profile)
       .tabItem { Text("Profile") }
     }
+  }
+}
+
+@dynamicMemberLookup
+struct StatsClient: DependencyKey {
+  var get: @Sendable () -> Stats
+  var set: @Sendable (Stats) -> Void
+  var stream: @Sendable () -> AsyncStream<Stats>
+
+  static var liveValue: StatsClient {
+    let stats = LockIsolated(Stats())
+    return StatsClient(
+      get: { stats.value },
+      set: { stats.setValue($0) }
+    )
+  }
+  static let testValue = liveValue
+  func modify(_ operation: (inout Stats) -> Void) {
+    var stats = self.get()
+    operation(&stats)
+    self.set(stats)
+  }
+  subscript<Value>(dynamicMember keyPath: KeyPath<Stats, Value>) -> Value {
+    self.get()[keyPath: keyPath]
   }
 }
 
