@@ -1,16 +1,27 @@
 import ComposableArchitecture
 import SwiftUI
 
+struct SignUpData: Equatable {
+  var email = ""
+  var firstName = ""
+  var lastName = ""
+  var password = ""
+  var passwordConfirmation = ""
+  var phoneNumber = ""
+}
+
 @Reducer
 struct SignUpFeature {
   @Reducer
   enum Path {
     case basics(BasicsFeature)
+    case personalInfo(PersonalInfoFeature)
   }
 
   @ObservableState
   struct State {
     var path = StackState<Path.State>()
+    @Shared var signUpData: SignUpData
   }
 
   enum Action {
@@ -27,7 +38,7 @@ struct SignUpFeature {
 }
 
 struct SignUpFlow: View {
-  @Bindable var store = Store(initialState: SignUpFeature.State()) {
+  @Bindable var store = Store(initialState: SignUpFeature.State(signUpData: Shared(SignUpData()))) {
     SignUpFeature()
       ._printChanges()
   }
@@ -41,7 +52,7 @@ struct SignUpFlow: View {
           Text("Welcome! Please sign up.")
           NavigationLink(
             "Sign up",
-            state: SignUpFeature.Path.State.basics(BasicsFeature.State())
+            state: SignUpFeature.Path.State.basics(BasicsFeature.State(signUpData: store.$signUpData))
           )
         }
       }
@@ -50,6 +61,8 @@ struct SignUpFlow: View {
       switch store.case {
       case let .basics(store):
         BasicsStep(store: store)
+      case let .personalInfo(store):
+        PersonalInfoStep(store: store)
       }
     }
   }
@@ -63,9 +76,7 @@ struct SignUpFlow: View {
 struct BasicsFeature {
   @ObservableState
   struct State {
-    var email = ""
-    var password = ""
-    var passwordConfirmation = ""
+    @Shared var signUpData: SignUpData
   }
 
   enum Action: BindableAction {
@@ -83,14 +94,61 @@ struct BasicsStep: View {
   var body: some View {
     Form {
       Section {
-        TextField("Email", text: $store.email)
+        TextField("Email", text: $store.signUpData.email)
       }
       Section {
-        SecureField("Password", text: $store.password)
-        SecureField("Password confirmation", text: $store.passwordConfirmation)
+        SecureField("Password", text: $store.signUpData.password)
+        SecureField("Password confirmation", text: $store.signUpData.passwordConfirmation)
       }
     }
     .navigationTitle("Basics")
+    .toolbar {
+      ToolbarItem {
+        NavigationLink(
+          "Next",
+          state: SignUpFeature.Path.State.personalInfo(PersonalInfoFeature.State(signUpData: store.$signUpData))
+        )
+      }
+    }
+  }
+}
+
+#Preview("Basics") {
+  NavigationStack {
+    BasicsStep(
+      store: Store(initialState: BasicsFeature.State(signUpData: Shared(SignUpData()))) {
+        BasicsFeature()
+      }
+    )
+  }
+}
+
+@Reducer
+struct PersonalInfoFeature {
+  @ObservableState
+  struct State {
+    @Shared var signUpData: SignUpData
+  }
+  enum Action: BindableAction {
+    case binding(BindingAction<State>)
+  }
+  var body: some ReducerOf<Self> {
+    BindingReducer()
+  }
+}
+
+struct PersonalInfoStep: View {
+  @Bindable var store: StoreOf<PersonalInfoFeature>
+
+  var body: some View {
+    Form {
+      Section {
+        TextField("First name", text: $store.signUpData.firstName)
+        TextField("Last name", text: $store.signUpData.lastName)
+        TextField("Phone number", text: $store.signUpData.phoneNumber)
+      }
+    }
+    .navigationTitle("Personal info")
     .toolbar {
       ToolbarItem {
         NavigationLink(
@@ -102,11 +160,11 @@ struct BasicsStep: View {
   }
 }
 
-#Preview("Basics") {
+#Preview("Personal info") {
   NavigationStack {
-    BasicsStep(
-      store: Store(initialState: BasicsFeature.State()) {
-        BasicsFeature()
+    PersonalInfoStep(
+      store: Store(initialState: PersonalInfoFeature.State(signUpData: Shared(SignUpData()))) {
+        PersonalInfoFeature()
       }
     )
   }

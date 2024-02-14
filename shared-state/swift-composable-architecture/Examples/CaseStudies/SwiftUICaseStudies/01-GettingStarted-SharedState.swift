@@ -242,6 +242,9 @@ final class Shared<Value> {
   init(_ wrappedValue: Value) {
     self.wrappedValue = wrappedValue
   }
+  var projectedValue: Shared {
+    self
+  }
 }
 extension Shared: Equatable where Value: Equatable {
   static func == (lhs: Shared, rhs: Shared) -> Bool {
