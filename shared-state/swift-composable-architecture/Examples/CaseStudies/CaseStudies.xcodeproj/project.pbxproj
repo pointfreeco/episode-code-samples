@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		433B8B762A49C9AF0035DEE4 /* 03-Navigation-Multiple-Destinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433B8B752A49C9AF0035DEE4 /* 03-Navigation-Multiple-Destinations.swift */; };
+		4BF4745D2B7D75F000A388C0 /* SignUpFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF4745C2B7D75F000A388C0 /* SignUpFlow.swift */; };
 		4F5AC11F24ECC7E4009DC50B /* 01-GettingStarted-SharedStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5AC11E24ECC7E4009DC50B /* 01-GettingStarted-SharedStateTests.swift */; };
 		CA0C51FB245389CC00A04EAB /* 04-HigherOrderReducers-ReusableOfflineDownloadsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0C51FA245389CC00A04EAB /* 04-HigherOrderReducers-ReusableOfflineDownloadsTests.swift */; };
 		CA25E5D224463AD700DA666A /* 01-GettingStarted-Bindings-Basics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA25E5D124463AD700DA666A /* 01-GettingStarted-Bindings-Basics.swift */; };
@@ -147,6 +148,7 @@
 
 /* Begin PBXFileReference section */
 		433B8B752A49C9AF0035DEE4 /* 03-Navigation-Multiple-Destinations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "03-Navigation-Multiple-Destinations.swift"; sourceTree = "<group>"; };
+		4BF4745C2B7D75F000A388C0 /* SignUpFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpFlow.swift; sourceTree = "<group>"; };
 		4F5AC11E24ECC7E4009DC50B /* 01-GettingStarted-SharedStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "01-GettingStarted-SharedStateTests.swift"; sourceTree = "<group>"; };
 		CA0C51FA245389CC00A04EAB /* 04-HigherOrderReducers-ReusableOfflineDownloadsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "04-HigherOrderReducers-ReusableOfflineDownloadsTests.swift"; sourceTree = "<group>"; };
 		CA25E5D124463AD700DA666A /* 01-GettingStarted-Bindings-Basics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "01-GettingStarted-Bindings-Basics.swift"; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 			isa = PBXGroup;
 			children = (
 				DC89C42424460F96006900B9 /* Info.plist */,
+				4BF4745C2B7D75F000A388C0 /* SignUpFlow.swift */,
 				DC89C41A24460F95006900B9 /* 00-RootView.swift */,
 				CAE962FC24A7F7BE00EFC025 /* 01-GettingStarted-AlertsAndConfirmationDialogs.swift */,
 				DC88D8A5245341EC0077F427 /* 01-GettingStarted-Animations.swift */,
@@ -726,6 +729,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BF4745D2B7D75F000A388C0 /* SignUpFlow.swift in Sources */,
 				DC3C87B029A48C4D004D9104 /* 03-NavigationStack.swift in Sources */,
 				DCC68EE12447C4630037F998 /* 01-GettingStarted-Composition-TwoCounters.swift in Sources */,
 				DC072322244663B1003A8B65 /* 03-Navigation-Sheet-LoadThenPresent.swift in Sources */,
