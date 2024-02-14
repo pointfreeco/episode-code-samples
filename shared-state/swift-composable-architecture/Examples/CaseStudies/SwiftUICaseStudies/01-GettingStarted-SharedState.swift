@@ -19,7 +19,7 @@ struct CounterTab {
   @ObservableState
   struct State: Equatable {
     @Presents var alert: AlertState<Action.Alert>?
-    var stats: Stats
+    @Shared var stats: Stats
   }
 
   enum Action {
@@ -98,7 +98,7 @@ struct CounterTabView: View {
 struct ProfileTab {
   @ObservableState
   struct State: Equatable {
-    var stats: Stats
+    @Shared var stats: Stats
   }
 
   enum Action {
@@ -155,18 +155,15 @@ struct SharedState {
     var currentTab = Tab.counter
     var counter: CounterTab.State
     var profile: ProfileTab.State
-    var stats: Stats
+    @Shared var stats: Stats
     init(
       currentTab: Tab = Tab.counter,
-      stats: Stats = Stats()
+      stats sharedStats: Shared<Stats> = Shared(Stats())
     ) {
       self.currentTab = currentTab
-      self.counter = CounterTab.State(stats: stats)
-      self.profile = ProfileTab.State(stats: stats)
-      self.stats = stats
-      DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-        stats.increment()
-      }
+      self.counter = CounterTab.State(stats: sharedStats)
+      self.profile = ProfileTab.State(stats: sharedStats)
+      self._stats = sharedStats
     }
   }
 
@@ -238,39 +235,37 @@ class CounterModel: ObservableObject {
   @Published var count = 0
 }
 
+@propertyWrapper
 @Observable
-class Stats: Equatable {
+final class Shared<Value> {
+  var wrappedValue: Value
+  init(_ wrappedValue: Value) {
+    self.wrappedValue = wrappedValue
+  }
+}
+extension Shared: Equatable where Value: Equatable {
+  static func == (lhs: Shared, rhs: Shared) -> Bool {
+    lhs.wrappedValue == rhs.wrappedValue
+  }
+}
+
+struct Stats: Equatable {
   private(set) var count = 0
   private(set) var maxCount = 0
   private(set) var minCount = 0
   private(set) var numberOfCounts = 0
-  func increment() {
+  mutating func increment() {
     count += 1
     numberOfCounts += 1
     maxCount = max(maxCount, count)
-    URLSession.shared
-      .dataTask(with: URLRequest(url: URL(string: "http://www.google.com")!)) { _, _, _ in
-        self.decrement()
-      }
-      .resume()
   }
-  func decrement() {
+  mutating func decrement() {
     count -= 1
     numberOfCounts += 1
     minCount = min(minCount, count)
   }
-  func reset() {
-    count = 0
-    maxCount = 0
-    minCount = 0
-    numberOfCounts = 0
-  }
-  static func == (lhs: Stats, rhs: Stats) -> Bool {
-//    lhs === rhs
-    lhs.count == rhs.count
-    && lhs.maxCount == rhs.maxCount
-    && lhs.minCount == rhs.minCount
-    && lhs.numberOfCounts == rhs.numberOfCounts
+  mutating func reset() {
+    self = Self()
   }
 }
 
