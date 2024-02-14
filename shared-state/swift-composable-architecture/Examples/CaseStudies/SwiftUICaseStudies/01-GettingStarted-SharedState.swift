@@ -19,7 +19,7 @@ struct CounterTab {
   @ObservableState
   struct State: Equatable {
     @Presents var alert: AlertState<Action.Alert>?
-    var stats = Stats()
+    var stats: Stats
   }
 
   enum Action {
@@ -27,12 +27,9 @@ struct CounterTab {
     case decrementButtonTapped
     case incrementButtonTapped
     case isPrimeButtonTapped
-    case onAppear
 
     enum Alert: Equatable {}
   }
-
-  @Dependency(StatsClient.self) var stats
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -52,21 +49,14 @@ struct CounterTab {
         state.alert = AlertState {
           TextState(
             isPrime(state.stats.count)
-            ? "👍 The number \(state.stats.count) is prime!"
-            : "👎 The number \(state.stats.count) is not prime :("
+              ? "👍 The number \(state.stats.count) is prime!"
+              : "👎 The number \(state.stats.count) is not prime :("
           )
         }
-        return .none
-
-      case .onAppear:
-        state.stats = stats.get()
         return .none
       }
     }
     .ifLet(\.$alert, action: \.alert)
-    .onChange(of: \.stats) { _, newStats in
-      let _ = stats.set(newStats)
-    }
   }
 }
 
@@ -101,7 +91,6 @@ struct CounterTabView: View {
     .buttonStyle(.borderless)
     .navigationTitle("Shared State Demo")
     .alert($store.scope(state: \.alert, action: \.alert))
-    .onAppear { store.send(.onAppear) }
   }
 }
 
@@ -109,15 +98,12 @@ struct CounterTabView: View {
 struct ProfileTab {
   @ObservableState
   struct State: Equatable {
-    var stats = Stats()
+    var stats: Stats
   }
 
   enum Action {
-    case onAppear
     case resetStatsButtonTapped
   }
-
-  @Dependency(StatsClient.self) var stats
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -125,13 +111,7 @@ struct ProfileTab {
       case .resetStatsButtonTapped:
         state.stats.reset()
         return .none
-      case .onAppear:
-        state.stats = stats.get()
-        return .none
       }
-    }
-    .onChange(of: \.stats) { _, newStats in
-      let _ = stats.set(newStats)
     }
   }
 }
@@ -163,7 +143,6 @@ struct ProfileTabView: View {
     }
     .buttonStyle(.borderless)
     .navigationTitle("Profile")
-    .onAppear { store.send(.onAppear) }
   }
 }
 
@@ -174,8 +153,21 @@ struct SharedState {
   @ObservableState
   struct State: Equatable {
     var currentTab = Tab.counter
-    var counter = CounterTab.State()
-    var profile = ProfileTab.State()
+    var counter: CounterTab.State
+    var profile: ProfileTab.State
+    var stats: Stats
+    init(
+      currentTab: Tab = Tab.counter,
+      stats: Stats = Stats()
+    ) {
+      self.currentTab = currentTab
+      self.counter = CounterTab.State(stats: stats)
+      self.profile = ProfileTab.State(stats: stats)
+      self.stats = stats
+      DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        stats.increment()
+      }
+    }
   }
 
   enum Action {
@@ -184,43 +176,37 @@ struct SharedState {
     case selectTab(Tab)
   }
 
-  @Dependency(StatsClient.self) var stats
-
   var body: some Reducer<State, Action> {
-    CombineReducers {
-      Scope(state: \.counter, action: \.counter) {
-        CounterTab()
-      }
-
-      Scope(state: \.profile, action: \.profile) {
-        ProfileTab()
-      }
-
-      Reduce { state, action in
-        switch action {
-        case .counter, .profile:
-          return .none
-        case let .selectTab(tab):
-          state.currentTab = tab
-          stats.modify { $0.increment() }
-          //state.counter.stats.increment()
-          //state.profile.stats.increment()
-          return .none
-        }
-      }
-      }
+    Scope(state: \.counter, action: \.counter) {
+      CounterTab()
+    }
 //    .onChange(of: \.counter.stats) { _, stats in
 //      Reduce { state, _ in
 //        state.profile.stats = stats
 //        return .none
 //      }
 //    }
+
+    Scope(state: \.profile, action: \.profile) {
+      ProfileTab()
+    }
 //    .onChange(of: \.profile.stats) { _, stats in
 //      Reduce { state, _ in
 //        state.counter.stats = stats
 //        return .none
 //      }
 //    }
+
+    Reduce { state, action in
+      switch action {
+      case .counter, .profile:
+        return .none
+      case let .selectTab(tab):
+        state.currentTab = tab
+        state.stats.increment()
+        return .none
+      }
+    }
   }
 }
 
@@ -248,47 +234,43 @@ struct SharedStateView: View {
   }
 }
 
-@dynamicMemberLookup
-struct StatsClient: DependencyKey {
-  var get: @Sendable () -> Stats
-  var set: @Sendable (Stats) -> Void
-  var stream: @Sendable () -> AsyncStream<Stats>
-
-  static var liveValue: StatsClient {
-    let stats = LockIsolated(Stats())
-    return StatsClient(
-      get: { stats.value },
-      set: { stats.setValue($0) }
-    )
-  }
-  static let testValue = liveValue
-  func modify(_ operation: (inout Stats) -> Void) {
-    var stats = self.get()
-    operation(&stats)
-    self.set(stats)
-  }
-  subscript<Value>(dynamicMember keyPath: KeyPath<Stats, Value>) -> Value {
-    self.get()[keyPath: keyPath]
-  }
+class CounterModel: ObservableObject {
+  @Published var count = 0
 }
 
-struct Stats: Equatable {
+@Observable
+class Stats: Equatable {
   private(set) var count = 0
   private(set) var maxCount = 0
   private(set) var minCount = 0
   private(set) var numberOfCounts = 0
-  mutating func increment() {
+  func increment() {
     count += 1
     numberOfCounts += 1
     maxCount = max(maxCount, count)
+    URLSession.shared
+      .dataTask(with: URLRequest(url: URL(string: "http://www.google.com")!)) { _, _, _ in
+        self.decrement()
+      }
+      .resume()
   }
-  mutating func decrement() {
+  func decrement() {
     count -= 1
     numberOfCounts += 1
     minCount = min(minCount, count)
   }
-  mutating func reset() {
-    self = Self()
+  func reset() {
+    count = 0
+    maxCount = 0
+    minCount = 0
+    numberOfCounts = 0
+  }
+  static func == (lhs: Stats, rhs: Stats) -> Bool {
+//    lhs === rhs
+    lhs.count == rhs.count
+    && lhs.maxCount == rhs.maxCount
+    && lhs.minCount == rhs.minCount
+    && lhs.numberOfCounts == rhs.numberOfCounts
   }
 }
 
