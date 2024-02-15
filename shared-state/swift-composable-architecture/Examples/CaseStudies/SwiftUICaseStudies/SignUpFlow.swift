@@ -164,6 +164,8 @@ struct PersonalInfoFeature {
 
 struct PersonalInfoStep: View {
   @Bindable var store: StoreOf<PersonalInfoFeature>
+  var isEditingFromSummary = false
+  @Environment(\.dismiss) var dismiss
 
   var body: some View {
     Form {
@@ -176,10 +178,16 @@ struct PersonalInfoStep: View {
     .navigationTitle("Personal info")
     .toolbar {
       ToolbarItem {
-        NavigationLink(
-          "Next",
-          state: SignUpFeature.Path.State.topics(TopicsFeature.State(signUpData: store.$signUpData))
-        )
+        if !isEditingFromSummary {
+          NavigationLink(
+            "Next",
+            state: SignUpFeature.Path.State.topics(TopicsFeature.State(signUpData: store.$signUpData))
+          )
+        } else {
+          Button("Done") {
+            dismiss()
+          }
+        }
       }
     }
   }
@@ -206,11 +214,13 @@ struct TopicsFeature {
     case alert(PresentationAction<Never>)
     case binding(BindingAction<State>)
     case delegate(Delegate)
+    case doneButtonTapped
     case nextButtonTapped
     enum Delegate {
       case stepFinished
     }
   }
+  @Dependency(\.dismiss) var dismiss
   var body: some ReducerOf<Self> {
     BindingReducer()
     Reduce { state, action in
@@ -221,6 +231,15 @@ struct TopicsFeature {
         return .none
       case .delegate:
         return .none
+      case .doneButtonTapped:
+        if state.signUpData.topics.isEmpty {
+          state.alert = AlertState {
+            TextState("Please choose at least one topic.")
+          }
+          return .none
+        } else {
+          return .run { _ in await dismiss() }
+        }
       case .nextButtonTapped:
         if state.signUpData.topics.isEmpty {
           state.alert = AlertState {
@@ -238,6 +257,7 @@ struct TopicsFeature {
 
 struct TopicsStep: View {
   @Bindable var store: StoreOf<TopicsFeature>
+  var isEditingFromSummary = false
 
   var body: some View {
     Form {
@@ -257,11 +277,18 @@ struct TopicsStep: View {
     .navigationTitle("Topics")
     .toolbar {
       ToolbarItem {
-        Button("Next") {
-          store.send(.nextButtonTapped)
+        if !isEditingFromSummary {
+          Button("Next") {
+            store.send(.nextButtonTapped)
+          }
+        } else {
+          Button("Done") {
+            store.send(.doneButtonTapped)
+          }
         }
       }
     }
+    .interactiveDismissDisabled(store.signUpData.topics.isEmpty)
   }
 }
 
@@ -290,17 +317,52 @@ extension Set {
 
 @Reducer
 struct SummaryFeature {
+  @Reducer
+  enum Destination {
+    case personalInfo(PersonalInfoFeature)
+    case topics(TopicsFeature)
+  }
+
   @ObservableState
   struct State {
+    @Presents var destination: Destination.State?
     @Shared var signUpData: SignUpData
   }
   enum Action {
+    case destination(PresentationAction<Destination.Action>)
+    case editPersonalInfoButtonTapped
+    case editFavoriteTopicsButtonTapped
     case submitButtonTapped
+  }
+  var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case .destination:
+        return .none
+      case .editPersonalInfoButtonTapped:
+        state.destination = .personalInfo(
+          PersonalInfoFeature.State(
+            signUpData: state.$signUpData
+          )
+        )
+        return .none
+      case .editFavoriteTopicsButtonTapped:
+        state.destination = .topics(
+          TopicsFeature.State(
+            signUpData: state.$signUpData
+          )
+        )
+        return .none
+      case .submitButtonTapped:
+        return .none
+      }
+    }
+    .ifLet(\.$destination, action: \.destination)
   }
 }
 
 struct SummaryStep: View {
-  let store: StoreOf<SummaryFeature>
+  @Bindable var store: StoreOf<SummaryFeature>
 
   var body: some View {
     Form {
@@ -316,7 +378,14 @@ struct SummaryStep: View {
         Text(store.signUpData.lastName)
         Text(store.signUpData.phoneNumber)
       } header: {
-        Text("Personal info")
+        HStack {
+          Text("Personal info")
+          Spacer()
+          Button("Edit") {
+            store.send(.editPersonalInfoButtonTapped)
+          }
+          .font(.caption)
+        }
       }
 
       Section {
@@ -324,7 +393,14 @@ struct SummaryStep: View {
           Text(topic.rawValue)
         }
       } header: {
-        Text("Favorite topics")
+        HStack {
+          Text("Favorite topics")
+          Spacer()
+          Button("Edit") {
+            store.send(.editFavoriteTopicsButtonTapped)
+          }
+          .font(.caption)
+        }
       }
 
       Section {
@@ -336,6 +412,22 @@ struct SummaryStep: View {
       }
     }
     .navigationTitle("Summary")
+    .sheet(
+      item: $store.scope(state: \.destination?.personalInfo, action: \.destination.personalInfo)
+    ) { store in
+      NavigationStack {
+        PersonalInfoStep(store: store, isEditingFromSummary: true)
+      }
+      .presentationDetents([.medium])
+    }
+    .sheet(
+      item: $store.scope(state: \.destination?.topics, action: \.destination.topics)
+    ) { store in
+      NavigationStack {
+        TopicsStep(store: store, isEditingFromSummary: true)
+      }
+      .presentationDetents([.medium])
+    }
   }
 }
 
