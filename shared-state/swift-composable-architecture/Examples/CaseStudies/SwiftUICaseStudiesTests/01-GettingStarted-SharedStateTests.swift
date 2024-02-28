@@ -12,18 +12,14 @@ final class SharedStateTests: XCTestCase {
 
     await store.send(.selectTab(.profile)) {
       $0.currentTab = .profile
+      //$0.stats.increment()
+      $0.counter.stats.increment()
     }
-    XCTAssertEqual(
-      store.state.stats,
-      Stats(count: 1, maxCount: 1, minCount: 0, numberOfCounts: 1)
-    )
     await store.send(.selectTab(.counter)) {
       $0.currentTab = .counter
+      //$0.stats.increment()
+      $0.profile.stats.increment()
     }
-    XCTAssertEqual(
-      store.state.stats,
-      Stats(count: 2, maxCount: 2, minCount: 0, numberOfCounts: 2)
-    )
   }
 
   func testSharedCounts() async {

@@ -235,23 +235,6 @@ class CounterModel: ObservableObject {
   @Published var count = 0
 }
 
-@propertyWrapper
-@Observable
-final class Shared<Value> {
-  var wrappedValue: Value
-  init(_ wrappedValue: Value) {
-    self.wrappedValue = wrappedValue
-  }
-  var projectedValue: Shared {
-    self
-  }
-}
-extension Shared: Equatable where Value: Equatable {
-  static func == (lhs: Shared, rhs: Shared) -> Bool {
-    lhs.wrappedValue == rhs.wrappedValue
-  }
-}
-
 struct Stats: Equatable {
   private(set) var count = 0
   private(set) var maxCount = 0

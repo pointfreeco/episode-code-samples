@@ -986,71 +986,72 @@ extension TestStore where State: Equatable {
     file: StaticString,
     line: UInt
   ) throws {
-    let current = expected
-    var expected = expected
+    try SharedLocals.$isAsserting.withValue(true) {
+      let current = expected
+      var expected = expected
 
-    let currentStackElementID = self.reducer.dependencies.stackElementID
-    let copiedStackElementID = currentStackElementID.incrementingCopy()
-    self.reducer.dependencies.stackElementID = copiedStackElementID
-    defer {
-      self.reducer.dependencies.stackElementID = currentStackElementID
-    }
-
-    let updateStateToExpectedResult = updateStateToExpectedResult.map { original in
-      { (state: inout State) in
-        try XCTModifyLocals.$isExhaustive.withValue(self.exhaustivity == .on) {
-          try original(&state)
-        }
-      }
-    }
-
-    switch self.exhaustivity {
-    case .on:
-      var expectedWhenGivenPreviousState = expected
-      if let updateStateToExpectedResult {
-        try Dependencies.withDependencies {
-          $0 = self.reducer.dependencies
-        } operation: {
-          try updateStateToExpectedResult(&expectedWhenGivenPreviousState)
-        }
-      }
-      expected = expectedWhenGivenPreviousState
-
-      if expectedWhenGivenPreviousState != actual {
-        expectationFailure(expected: expectedWhenGivenPreviousState)
-      } else {
-        tryUnnecessaryModifyFailure()
+      let currentStackElementID = self.reducer.dependencies.stackElementID
+      let copiedStackElementID = currentStackElementID.incrementingCopy()
+      self.reducer.dependencies.stackElementID = copiedStackElementID
+      defer {
+        self.reducer.dependencies.stackElementID = currentStackElementID
       }
 
-    case .off:
-      var expectedWhenGivenActualState = actual
-      if let updateStateToExpectedResult {
-        try Dependencies.withDependencies {
-          $0 = self.reducer.dependencies
-        } operation: {
-          try updateStateToExpectedResult(&expectedWhenGivenActualState)
+      let updateStateToExpectedResult = updateStateToExpectedResult.map { original in
+        { (state: inout State) in
+          try XCTModifyLocals.$isExhaustive.withValue(self.exhaustivity == .on) {
+            try original(&state)
+          }
         }
       }
-      expected = expectedWhenGivenActualState
 
-      if expectedWhenGivenActualState != actual {
-        self.withExhaustivity(.on) {
-          expectationFailure(expected: expectedWhenGivenActualState)
-        }
-      } else if self.exhaustivity == .off(showSkippedAssertions: true)
-        && expectedWhenGivenActualState == actual
-      {
-        var expectedWhenGivenPreviousState = current
+      switch self.exhaustivity {
+      case .on:
+        var expectedWhenGivenPreviousState = expected
         if let updateStateToExpectedResult {
-          XCTExpectFailure(strict: false) {
-            do {
-              try Dependencies.withDependencies {
-                $0 = self.reducer.dependencies
-              } operation: {
-                try updateStateToExpectedResult(&expectedWhenGivenPreviousState)
-              }
-            } catch {
-              XCTFail(
+          try Dependencies.withDependencies {
+            $0 = self.reducer.dependencies
+          } operation: {
+            try updateStateToExpectedResult(&expectedWhenGivenPreviousState)
+          }
+        }
+        expected = expectedWhenGivenPreviousState
+
+        if expectedWhenGivenPreviousState != actual {
+          expectationFailure(expected: expectedWhenGivenPreviousState)
+        } else {
+          tryUnnecessaryModifyFailure()
+        }
+
+      case .off:
+        var expectedWhenGivenActualState = actual
+        if let updateStateToExpectedResult {
+          try Dependencies.withDependencies {
+            $0 = self.reducer.dependencies
+          } operation: {
+            try updateStateToExpectedResult(&expectedWhenGivenActualState)
+          }
+        }
+        expected = expectedWhenGivenActualState
+
+        if expectedWhenGivenActualState != actual {
+          self.withExhaustivity(.on) {
+            expectationFailure(expected: expectedWhenGivenActualState)
+          }
+        } else if self.exhaustivity == .off(showSkippedAssertions: true)
+                    && expectedWhenGivenActualState == actual
+        {
+          var expectedWhenGivenPreviousState = current
+          if let updateStateToExpectedResult {
+            XCTExpectFailure(strict: false) {
+              do {
+                try Dependencies.withDependencies {
+                  $0 = self.reducer.dependencies
+                } operation: {
+                  try updateStateToExpectedResult(&expectedWhenGivenPreviousState)
+                }
+              } catch {
+                XCTFail(
                 """
                 Skipped assertions: …
 
@@ -1058,37 +1059,37 @@ extension TestStore where State: Equatable {
                 """,
                 file: file,
                 line: line
-              )
+                )
+              }
             }
           }
-        }
-        expected = expectedWhenGivenPreviousState
-        if expectedWhenGivenPreviousState != actual {
-          expectationFailure(expected: expectedWhenGivenPreviousState)
+          expected = expectedWhenGivenPreviousState
+          if expectedWhenGivenPreviousState != actual {
+            expectationFailure(expected: expectedWhenGivenPreviousState)
+          } else {
+            tryUnnecessaryModifyFailure()
+          }
         } else {
           tryUnnecessaryModifyFailure()
         }
-      } else {
-        tryUnnecessaryModifyFailure()
       }
-    }
 
-    func expectationFailure(expected: State) {
-      let difference =
+      func expectationFailure(expected: State) {
+        let difference =
         diff(expected, actual, format: .proportional)
-        .map { "\($0.indent(by: 4))\n\n(Expected: −, Actual: +)" }
-          ?? """
+          .map { "\($0.indent(by: 4))\n\n(Expected: −, Actual: +)" }
+        ?? """
           Expected:
           \(String(describing: expected).indent(by: 2))
 
           Actual:
           \(String(describing: actual).indent(by: 2))
           """
-      let messageHeading =
+        let messageHeading =
         updateStateToExpectedResult != nil
         ? "A state change does not match expectation"
         : "State was not expected to change, but a change occurred"
-      XCTFailHelper(
+        XCTFailHelper(
         """
         \(messageHeading): …
 
@@ -1096,17 +1097,17 @@ extension TestStore where State: Equatable {
         """,
         file: file,
         line: line
-      )
-    }
+        )
+      }
 
-    func tryUnnecessaryModifyFailure() {
-      guard
-        !skipUnnecessaryModifyFailure,
-        expected == current,
-        updateStateToExpectedResult != nil
-      else { return }
+      func tryUnnecessaryModifyFailure() {
+        guard
+          !skipUnnecessaryModifyFailure,
+          expected == current,
+          updateStateToExpectedResult != nil
+        else { return }
 
-      XCTFailHelper(
+        XCTFailHelper(
         """
         Expected state to change, but no change occurred.
 
@@ -1115,7 +1116,8 @@ extension TestStore where State: Equatable {
         """,
         file: file,
         line: line
-      )
+        )
+      }
     }
   }
 }
