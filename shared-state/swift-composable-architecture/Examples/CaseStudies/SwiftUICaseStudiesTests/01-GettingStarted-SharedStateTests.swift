@@ -13,16 +13,17 @@ final class SharedStateTests: XCTestCase {
     await store.send(.selectTab(.profile)) {
       $0.currentTab = .profile
     }
-    await store.send(.profile(.onAppear)) {
-      $0.profile.stats.increment()
-    }
+    XCTAssertEqual(
+      store.state.stats,
+      Stats(count: 1, maxCount: 1, minCount: 0, numberOfCounts: 1)
+    )
     await store.send(.selectTab(.counter)) {
       $0.currentTab = .counter
     }
-    await store.send(.counter(.onAppear)) {
-      $0.counter.stats.increment()
-      $0.counter.stats.increment()
-    }
+    XCTAssertEqual(
+      store.state.stats,
+      Stats(count: 2, maxCount: 2, minCount: 0, numberOfCounts: 2)
+    )
   }
 
   func testSharedCounts() async {
@@ -30,18 +31,33 @@ final class SharedStateTests: XCTestCase {
       SharedState()
     }
 
-    await store.send(.counter(.incrementButtonTapped)) {
-      $0.counter.stats.increment()
-      $0.profile.stats.increment()
-    }
-    await store.send(.counter(.decrementButtonTapped)) {
-      $0.counter.stats.decrement()
-      $0.profile.stats.decrement()
-    }
-    await store.send(.profile(.resetStatsButtonTapped)) {
-      $0.counter.stats = Stats()
-      $0.profile.stats = Stats()
-    }
+    await store.send(.counter(.incrementButtonTapped))
+    XCTAssertEqual(
+      store.state.stats,
+      Stats(count: 1, maxCount: 1, minCount: 0, numberOfCounts: 1)
+    )
+//    {
+//      $0.counter.stats.increment()
+//      $0.profile.stats.increment()
+//    }
+    await store.send(.counter(.decrementButtonTapped)) 
+    XCTAssertEqual(
+      store.state.stats,
+      Stats(count: 0, maxCount: 1, minCount: 0, numberOfCounts: 2)
+    )
+//    {
+//      $0.counter.stats.decrement()
+//      $0.profile.stats.decrement()
+//    }
+    await store.send(.profile(.resetStatsButtonTapped)) 
+//    {
+//      $0.counter.stats = Stats()
+//      $0.profile.stats = Stats()
+//    }
+    XCTAssertEqual(
+      store.state.stats,
+      Stats()
+    )
   }
 
   func testAlert() async {
