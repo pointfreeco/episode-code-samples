@@ -3,6 +3,7 @@ import Perception
 enum SharedLocals {
   @TaskLocal static var isAsserting = false
   @TaskLocal static var changeTracker: (() -> Void)? = nil
+  static var isTracking: Bool { self.changeTracker != nil }
 }
 
 @propertyWrapper
@@ -21,11 +22,11 @@ public final class Shared<Value> {
       if SharedLocals.isAsserting {
         self.snapshot = newValue
       } else {
-        if let changeTracker = SharedLocals.changeTracker, self.snapshot == nil {
+        if SharedLocals.isTracking, self.snapshot == nil {
           self.snapshot = self.currentValue
-          changeTracker()
         }
         self.currentValue = newValue
+        SharedLocals.changeTracker?()
       }
     }
   }
