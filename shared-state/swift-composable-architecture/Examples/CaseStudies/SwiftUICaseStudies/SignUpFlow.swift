@@ -23,7 +23,7 @@ struct SignUpData: Equatable {
 
 @Reducer
 struct SignUpFeature {
-  @Reducer
+  @Reducer(state: .equatable)
   enum Path {
     case basics(BasicsFeature)
     case personalInfo(PersonalInfoFeature)
@@ -32,7 +32,7 @@ struct SignUpFeature {
   }
 
   @ObservableState
-  struct State {
+  struct State: Equatable {
     var path = StackState<Path.State>()
     @Shared var signUpData: SignUpData
   }
@@ -100,7 +100,7 @@ struct SignUpFlow: View {
 @Reducer
 struct BasicsFeature {
   @ObservableState
-  struct State {
+  struct State: Equatable {
     @Shared var signUpData: SignUpData
   }
 
@@ -151,7 +151,7 @@ struct BasicsStep: View {
 @Reducer
 struct PersonalInfoFeature {
   @ObservableState
-  struct State {
+  struct State: Equatable {
     @Shared var signUpData: SignUpData
   }
   enum Action: BindableAction {
@@ -206,7 +206,7 @@ struct PersonalInfoStep: View {
 @Reducer
 struct TopicsFeature {
   @ObservableState
-  struct State {
+  struct State: Equatable {
     @Presents var alert: AlertState<Never>?
     @Shared var signUpData: SignUpData
   }
@@ -216,6 +216,7 @@ struct TopicsFeature {
     case delegate(Delegate)
     case doneButtonTapped
     case nextButtonTapped
+    @CasePathable
     enum Delegate {
       case stepFinished
     }
@@ -317,14 +318,14 @@ extension Set {
 
 @Reducer
 struct SummaryFeature {
-  @Reducer
+  @Reducer(state: .equatable)
   enum Destination {
     case personalInfo(PersonalInfoFeature)
     case topics(TopicsFeature)
   }
 
   @ObservableState
-  struct State {
+  struct State: Equatable {
     @Presents var destination: Destination.State?
     @Shared var signUpData: SignUpData
   }

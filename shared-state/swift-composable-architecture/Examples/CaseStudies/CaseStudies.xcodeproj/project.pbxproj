@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2AA49B752B97AAC600F3690E /* SignUpFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA49B742B97AAC600F3690E /* SignUpFlowTests.swift */; };
 		433B8B762A49C9AF0035DEE4 /* 03-Navigation-Multiple-Destinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433B8B752A49C9AF0035DEE4 /* 03-Navigation-Multiple-Destinations.swift */; };
 		4BF4745D2B7D75F000A388C0 /* SignUpFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF4745C2B7D75F000A388C0 /* SignUpFlow.swift */; };
 		4F5AC11F24ECC7E4009DC50B /* 01-GettingStarted-SharedStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5AC11E24ECC7E4009DC50B /* 01-GettingStarted-SharedStateTests.swift */; };
@@ -147,6 +148,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2AA49B742B97AAC600F3690E /* SignUpFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpFlowTests.swift; sourceTree = "<group>"; };
 		433B8B752A49C9AF0035DEE4 /* 03-Navigation-Multiple-Destinations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "03-Navigation-Multiple-Destinations.swift"; sourceTree = "<group>"; };
 		4BF4745C2B7D75F000A388C0 /* SignUpFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpFlow.swift; sourceTree = "<group>"; };
 		4F5AC11E24ECC7E4009DC50B /* 01-GettingStarted-SharedStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "01-GettingStarted-SharedStateTests.swift"; sourceTree = "<group>"; };
@@ -425,6 +427,7 @@
 				CA34170724A4E89500FAF950 /* 01-GettingStarted-AnimationsTests.swift */,
 				DC27215525BF84FC00D9C8DB /* 01-GettingStarted-BindingBasicsTests.swift */,
 				4F5AC11E24ECC7E4009DC50B /* 01-GettingStarted-SharedStateTests.swift */,
+				2AA49B742B97AAC600F3690E /* SignUpFlowTests.swift */,
 				CAA9ADC324465AB00003A984 /* 02-Effects-BasicsTests.swift */,
 				CAA9ADC724465D950003A984 /* 02-Effects-CancellationTests.swift */,
 				CAA9ADCB2446615B0003A984 /* 02-Effects-LongLivingTests.swift */,
@@ -772,6 +775,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC27215625BF84FC00D9C8DB /* 01-GettingStarted-BindingBasicsTests.swift in Sources */,
+				2AA49B752B97AAC600F3690E /* SignUpFlowTests.swift in Sources */,
 				CA0C51FB245389CC00A04EAB /* 04-HigherOrderReducers-ReusableOfflineDownloadsTests.swift in Sources */,
 				DC634B252448D15B00DAA016 /* 04-HigherOrderReducers-ReusableFavoritingTests.swift in Sources */,
 				CAA9ADC824465D950003A984 /* 02-Effects-CancellationTests.swift in Sources */,
