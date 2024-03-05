@@ -129,7 +129,18 @@ struct CounterTabView: View {
             forKey: "isOn"
           )
         }
-      }  
+        Button("Write directly to stats.json") {
+          try? JSONEncoder().encode(
+            Stats(
+              count: .random(in: 1...1_000),
+              maxCount: .random(in: 1...1_000),
+              minCount: .random(in: 1...1_000),
+              numberOfCounts: .random(in: 1...1_000)
+            )
+          )
+          .write(to: .stats)
+        }
+      }
     }
     .buttonStyle(.borderless)
     .navigationTitle("Shared State Demo")
@@ -252,12 +263,12 @@ struct SharedStateView: View {
   var body: some View {
     TabView(selection: $store.currentTab.sending(\.selectTab)) {
       NavigationStack {
-        let _ = print(
-          CounterTabView(
-            store: self.store.scope(state: \.counter, action: \.counter)
-          )
-          .defaultAppStorage(UserDefaults(suiteName: "pointfree")!)
-        )
+//        let _ = print(
+//          CounterTabView(
+//            store: self.store.scope(state: \.counter, action: \.counter)
+//          )
+//          .defaultAppStorage(UserDefaults(suiteName: "pointfree")!)
+//        )
         CounterTabView(
           store: self.store.scope(state: \.counter, action: \.counter)
         )

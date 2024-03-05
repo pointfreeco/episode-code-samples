@@ -125,6 +125,7 @@ public final class FileStorageKey<Value: Codable>: PersistenceKey {
     self.saveWorkItem?.cancel()
     self.saveWorkItem = DispatchWorkItem { [weak self] in
       guard let self else { return }
+      print("SAVE!!!!")
       try? JSONEncoder().encode(value).write(to: self.url)
       self.saveWorkItem = nil
     }
@@ -132,7 +133,25 @@ public final class FileStorageKey<Value: Codable>: PersistenceKey {
   }
 
   public var updates: AsyncStream<Value> {
-    .finished
+    AsyncStream { continuation in
+      let source = DispatchSource.makeFileSystemObjectSource(
+        fileDescriptor: open(self.url.path, O_EVTONLY),
+        eventMask: .write,
+        queue: self.saveQueue
+      )
+      source.setEventHandler {
+        guard let value = self.load()
+        else {
+          return
+        }
+        continuation.yield(value)
+      }
+      source.resume()
+      continuation.onTermination = { _ in
+        source.cancel()
+        close(source.handle)
+      }
+    }
   }
 
   public static func == (lhs: FileStorageKey<Value>, rhs: FileStorageKey<Value>) -> Bool {

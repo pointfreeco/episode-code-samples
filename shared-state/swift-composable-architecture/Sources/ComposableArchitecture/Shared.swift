@@ -43,9 +43,15 @@ public struct Shared<Value> {
   @Perceptible
   final class Storage {
     let persistenceKey: (any PersistenceKey<Value>)?
+    var _currentValue: Value
+
     var currentValue: Value {
-      didSet {
-        self.persistenceKey?.save(self.currentValue)
+      get {
+        _currentValue
+      }
+      set {
+        _currentValue = newValue
+        self.persistenceKey?.save(newValue)
       }
     }
     var snapshot: Value?
@@ -53,12 +59,12 @@ public struct Shared<Value> {
       value: Value,
       persistenceKey: (any PersistenceKey<Value>)? = nil
     ) {
-      self.currentValue = persistenceKey?.load() ?? value
+      self._currentValue = persistenceKey?.load() ?? value
       self.persistenceKey = persistenceKey
       if let updates =  persistenceKey?.updates {
         Task { @MainActor in 
           for await value in updates {
-            self.currentValue = value
+            self._currentValue = value
           }
         }
       }
