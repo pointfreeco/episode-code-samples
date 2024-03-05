@@ -95,3 +95,27 @@ extension PersistenceKey {
     InMemoryKey(key: key)
   }
 }
+
+public struct FileStorageKey<Value: Codable>: PersistenceKey {
+  let url: URL
+
+  public func load() -> Value? {
+    try? JSONDecoder().decode(Value.self, from: Data(contentsOf: self.url))
+  }
+
+  public func save(_ value: Value) {
+    try? JSONEncoder().encode(value).write(to: self.url)
+  }
+
+  public var updates: AsyncStream<Value> {
+    .finished
+  }
+}
+
+extension PersistenceKey {
+  public static func fileStorage<Value>(
+    _ url: URL
+  ) -> Self where Self == FileStorageKey<Value> {
+    Self(url: url)
+  }
+}

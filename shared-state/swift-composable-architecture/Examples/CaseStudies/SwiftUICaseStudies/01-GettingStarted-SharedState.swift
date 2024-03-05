@@ -14,13 +14,24 @@ private let readMe = """
   can be reset from the other tab.
   """
 
+extension PersistenceKey where Self == FileStorageKey<Stats> {
+  static var stats: Self {
+    .fileStorage(.stats)
+  }
+}
+extension PersistenceKey where Self == AppStorageKey<Bool> {
+  static var isOn: Self {
+    .appStorage("isOn")
+  }
+}
+
 @Reducer
 struct CounterTab {
   @ObservableState
   struct State: Equatable {
     @Presents var alert: AlertState<Action.Alert>?
-    @Shared(.inMemory("stats")) var stats = Stats()
-    @Shared(.appStorage("isOn")) var isOn = false
+    @Shared(.stats) var stats = Stats()
+    @Shared(.isOn) var isOn = false
   }
 
   enum Action {
@@ -130,8 +141,8 @@ struct CounterTabView: View {
 struct ProfileTab {
   @ObservableState
   struct State: Equatable {
-    @Shared(.inMemory("stats")) var stats = Stats()
-    @Shared(.appStorage("isOn")) var isOn = false
+    @Shared(.stats) var stats = Stats()
+    @Shared(.isOn) var isOn = false
   }
 
   enum Action {
@@ -192,7 +203,7 @@ struct SharedState {
     var currentTab = Tab.counter
     var counter = CounterTab.State()
     var profile = ProfileTab.State()
-    @Shared(.inMemory("stats")) var stats = Stats()
+    @Shared(.stats) var stats = Stats()
   }
 
   enum Action {
@@ -266,7 +277,11 @@ struct SharedStateView: View {
   }
 }
 
-struct Stats: Equatable {
+extension URL {
+  static let stats = URL.documentsDirectory.appending(path: "stats.json")
+}
+
+struct Stats: Codable, Equatable {
   private(set) var count = 0
   private(set) var maxCount = 0
   private(set) var minCount = 0
