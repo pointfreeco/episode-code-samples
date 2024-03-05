@@ -12,12 +12,10 @@ final class SharedStateTests: XCTestCase {
 
     await store.send(.selectTab(.profile)) {
       $0.currentTab = .profile
-      //$0.stats.increment()
       $0.counter.stats.increment()
     }
     await store.send(.selectTab(.counter)) {
       $0.currentTab = .counter
-      //$0.stats.increment()
       $0.profile.stats.increment()
     }
   }

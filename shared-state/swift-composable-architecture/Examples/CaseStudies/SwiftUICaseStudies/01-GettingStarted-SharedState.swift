@@ -19,7 +19,7 @@ struct CounterTab {
   @ObservableState
   struct State: Equatable {
     @Presents var alert: AlertState<Action.Alert>?
-    @Shared var stats: Stats
+    @Shared("stats") var stats = Stats()
   }
 
   enum Action {
@@ -98,7 +98,7 @@ struct CounterTabView: View {
 struct ProfileTab {
   @ObservableState
   struct State: Equatable {
-    @Shared var stats: Stats
+    @Shared("stats") var stats = Stats()
   }
 
   enum Action {
@@ -153,18 +153,9 @@ struct SharedState {
   @ObservableState
   struct State: Equatable {
     var currentTab = Tab.counter
-    var counter: CounterTab.State
-    var profile: ProfileTab.State
-    @Shared var stats: Stats
-    init(
-      currentTab: Tab = Tab.counter,
-      stats sharedStats: Shared<Stats> = Shared(Stats())
-    ) {
-      self.currentTab = currentTab
-      self.counter = CounterTab.State(stats: sharedStats)
-      self.profile = ProfileTab.State(stats: sharedStats)
-      self._stats = sharedStats
-    }
+    var counter = CounterTab.State()
+    var profile = ProfileTab.State()
+    @Shared("stats") var stats = Stats()
   }
 
   enum Action {
