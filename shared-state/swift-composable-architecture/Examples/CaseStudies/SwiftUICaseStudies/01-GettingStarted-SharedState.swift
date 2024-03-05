@@ -103,15 +103,15 @@ struct CounterTabView: View {
       }
 
       Section {
-        Toggle(isOn: $isOn) {
-          Text("@AppStorage isOn: \(isOn.description)")
-        }
+//        Toggle(isOn: $isOn) {
+//          Text("@AppStorage isOn: \(isOn.description)")
+//        }
         Toggle(isOn: $store.isOn.sending(\.toggledIsOn)) {
           Text("Store.isOn: \(store.isOn.description)")
         }
-        Toggle(isOn: $model.isOn) {
-          Text("@Observable @AppStorage isOn: \(model.isOn.description)")
-        }
+//        Toggle(isOn: $model.isOn) {
+//          Text("@Observable @AppStorage isOn: \(model.isOn.description)")
+//        }
         Button("Toggle user defaults directly") {
           UserDefaults.standard.setValue(
             !UserDefaults.standard.bool(forKey: "isOn"),
@@ -131,6 +131,7 @@ struct ProfileTab {
   @ObservableState
   struct State: Equatable {
     @Shared(.inMemory("stats")) var stats = Stats()
+    @Shared(.appStorage("isOn")) var isOn = false
   }
 
   enum Action {
@@ -171,6 +172,10 @@ struct ProfileTabView: View {
         Text("Min count: \(store.stats.minCount)")
         Text("Total number of count events: \(store.stats.numberOfCounts)")
         Button("Reset") { store.send(.resetStatsButtonTapped) }
+      }
+
+      Section {
+        Text("Is on: \(store.isOn.description)")
       }
     }
     .buttonStyle(.borderless)

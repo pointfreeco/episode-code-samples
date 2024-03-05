@@ -55,6 +55,13 @@ public struct Shared<Value> {
     ) {
       self.currentValue = persistenceKey?.load() ?? value
       self.persistenceKey = persistenceKey
+      if let updates =  persistenceKey?.updates {
+        Task { @MainActor in 
+          for await value in updates {
+            self.currentValue = value
+          }
+        }
+      }
     }
     var value: Value {
       get {
