@@ -846,10 +846,8 @@ extension TestStore where State: Equatable {
       let expectedState = self.state
       let previousState = self.reducer.state
       let previousStackElementID = self.reducer.dependencies.stackElementID.incrementingCopy()
-      var sharedStateDidChange = false
-      let task = SharedLocals.$changeTracker.withValue({
-        sharedStateDidChange = true
-      }) {
+      let changeTracker = ChangeTracker()
+      let task = SharedLocals.$changeTracker.withValue(changeTracker) {
         self.store.send(
           .init(origin: .send(action), file: file, line: line),
           originatingFrom: nil
@@ -876,7 +874,7 @@ extension TestStore where State: Equatable {
           expected: expectedState,
           actual: currentState,
           updateStateToExpectedResult: updateStateToExpectedResult,
-          skipUnnecessaryModifyFailure: sharedStateDidChange,
+          skipUnnecessaryModifyFailure: changeTracker.didChange,
           file: file,
           line: line
         )

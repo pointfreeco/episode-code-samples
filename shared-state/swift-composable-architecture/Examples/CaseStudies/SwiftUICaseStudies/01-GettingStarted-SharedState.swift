@@ -269,6 +269,7 @@ private func isPrime(_ p: Int) -> Bool {
   SharedStateView(
     store: Store(initialState: SharedState.State()) {
       SharedState()
+        ._printChanges()
     }
   )
 }

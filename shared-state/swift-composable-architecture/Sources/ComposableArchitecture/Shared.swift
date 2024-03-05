@@ -1,8 +1,16 @@
 import Perception
 
+class ChangeTracker {
+  var onDeinit: () -> Void = {}
+  var didChange = false
+  deinit {
+    self.onDeinit()
+  }
+}
+
 enum SharedLocals {
   @TaskLocal static var isAsserting = false
-  @TaskLocal static var changeTracker: (() -> Void)? = nil
+  @TaskLocal static var changeTracker: ChangeTracker?
   static var isTracking: Bool { self.changeTracker != nil }
 }
 
@@ -24,9 +32,12 @@ public final class Shared<Value> {
       } else {
         if SharedLocals.isTracking, self.snapshot == nil {
           self.snapshot = self.currentValue
+          SharedLocals.changeTracker?.onDeinit = {
+            self.snapshot = nil
+          }
         }
         self.currentValue = newValue
-        SharedLocals.changeTracker?()
+        SharedLocals.changeTracker?.didChange = true
       }
     }
   }
