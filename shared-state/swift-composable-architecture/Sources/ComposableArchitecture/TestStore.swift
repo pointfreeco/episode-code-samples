@@ -305,7 +305,8 @@ import XCTestDynamicOverlay
 /// }
 ///
 /// // 1️⃣ Emulate user tapping on submit button.
-/// await store.send(.login(.submitButtonTapped)) {
+/// //    (You can use case key path syntax to send actions to deeply nested features.)
+/// await store.send(\.login.submitButtonTapped) {
 ///   // 2️⃣ Assert how all state changes in the login feature
 ///   $0.login?.isLoading = true
 ///   …
@@ -353,7 +354,7 @@ import XCTestDynamicOverlay
 /// }
 /// store.exhaustivity = .off  // ⬅️
 ///
-/// await store.send(.login(.submitButtonTapped))
+/// await store.send(\.login.submitButtonTapped)
 /// await store.receive(\.login.delegate.didLogin) {
 ///   $0.selectedTab = .activity
 /// }
@@ -375,7 +376,7 @@ import XCTestDynamicOverlay
 /// }
 /// store.exhaustivity = .off(showSkippedAssertions: true)  // ⬅️
 ///
-/// await store.send(.login(.submitButtonTapped))
+/// await store.send(\.login.submitButtonTapped)
 /// await store.receive(\.login.delegate.didLogin) {
 ///   $0.selectedTab = .profile
 /// }
@@ -514,43 +515,6 @@ public final class TestStore<State, Action> {
     R.State == State,
     R.Action == Action,
     State: Equatable
-  {
-    let reducer = XCTFailContext.$current.withValue(XCTFailContext(file: file, line: line)) {
-      Dependencies.withDependencies(prepareDependencies) {
-        TestReducer(Reduce(reducer()), initialState: initialState())
-      }
-    }
-    self.file = file
-    self.line = line
-    self.reducer = reducer
-    self.store = Store(initialState: reducer.state) { reducer }
-    self.timeout = 1 * NSEC_PER_SEC
-    self.useMainSerialExecutor = true
-  }
-
-  /// Creates a test store with an initial state and a reducer powering its runtime.
-  ///
-  /// See <doc:Testing> and the documentation of ``TestStore`` for more information on how to best
-  /// use a test store.
-  ///
-  /// - Parameters:
-  ///   - initialState: The state the feature starts in.
-  ///   - reducer: The reducer that powers the runtime of the feature.
-  ///   - prepareDependencies: A closure that can be used to override dependencies that will be
-  ///     accessed during the test. These dependencies will be used when producing the initial
-  ///     state.
-  @available(*, deprecated, message: "State must be equatable to perform assertions.")
-  public init<R: Reducer>(
-    initialState: @autoclosure () -> R.State,
-    @ReducerBuilder<State, Action> reducer: () -> R,
-    withDependencies prepareDependencies: (inout DependencyValues) -> Void = { _ in
-    },
-    file: StaticString = #file,
-    line: UInt = #line
-  )
-  where
-    R.State == State,
-    R.Action == Action
   {
     let reducer = XCTFailContext.$current.withValue(XCTFailContext(file: file, line: line)) {
       Dependencies.withDependencies(prepareDependencies) {
@@ -882,10 +846,15 @@ extension TestStore where State: Equatable {
       let expectedState = self.state
       let previousState = self.reducer.state
       let previousStackElementID = self.reducer.dependencies.stackElementID.incrementingCopy()
-      let task = self.store.send(
-        .init(origin: .send(action), file: file, line: line),
-        originatingFrom: nil
-      )
+      var sharedStateDidChange = false
+      let task = SharedLocals.$changeTracker.withValue({
+        sharedStateDidChange = true
+      }) {
+        self.store.send(
+          .init(origin: .send(action), file: file, line: line),
+          originatingFrom: nil
+        )
+      }
       if uncheckedUseMainSerialExecutor {
         await Task.yield()
       } else {
@@ -907,6 +876,7 @@ extension TestStore where State: Equatable {
           expected: expectedState,
           actual: currentState,
           updateStateToExpectedResult: updateStateToExpectedResult,
+          skipUnnecessaryModifyFailure: sharedStateDidChange,
           file: file,
           line: line
         )
@@ -939,7 +909,7 @@ extension TestStore where State: Equatable {
   ///
   /// ```swift
   /// store.exhaustivity = .off
-  /// await store.send(.child(.closeButtonTapped))
+  /// await store.send(\.child.closeButtonTapped)
   /// await store.finish()
   /// await store.skipReceivedActions()
   /// store.assert {
@@ -989,14 +959,14 @@ extension TestStore where State: Equatable {
     try SharedLocals.$isAsserting.withValue(true) {
       let current = expected
       var expected = expected
-
+      
       let currentStackElementID = self.reducer.dependencies.stackElementID
       let copiedStackElementID = currentStackElementID.incrementingCopy()
       self.reducer.dependencies.stackElementID = copiedStackElementID
       defer {
         self.reducer.dependencies.stackElementID = currentStackElementID
       }
-
+      
       let updateStateToExpectedResult = updateStateToExpectedResult.map { original in
         { (state: inout State) in
           try XCTModifyLocals.$isExhaustive.withValue(self.exhaustivity == .on) {
@@ -1004,7 +974,7 @@ extension TestStore where State: Equatable {
           }
         }
       }
-
+      
       switch self.exhaustivity {
       case .on:
         var expectedWhenGivenPreviousState = expected
@@ -1016,13 +986,13 @@ extension TestStore where State: Equatable {
           }
         }
         expected = expectedWhenGivenPreviousState
-
+        
         if expectedWhenGivenPreviousState != actual {
           expectationFailure(expected: expectedWhenGivenPreviousState)
         } else {
           tryUnnecessaryModifyFailure()
         }
-
+        
       case .off:
         var expectedWhenGivenActualState = actual
         if let updateStateToExpectedResult {
@@ -1033,7 +1003,7 @@ extension TestStore where State: Equatable {
           }
         }
         expected = expectedWhenGivenActualState
-
+        
         if expectedWhenGivenActualState != actual {
           self.withExhaustivity(.on) {
             expectationFailure(expected: expectedWhenGivenActualState)
@@ -1054,7 +1024,7 @@ extension TestStore where State: Equatable {
                 XCTFail(
                 """
                 Skipped assertions: …
-
+                
                 Threw error: \(error)
                 """,
                 file: file,
@@ -1073,7 +1043,7 @@ extension TestStore where State: Equatable {
           tryUnnecessaryModifyFailure()
         }
       }
-
+      
       func expectationFailure(expected: State) {
         let difference =
         diff(expected, actual, format: .proportional)
@@ -1081,7 +1051,7 @@ extension TestStore where State: Equatable {
         ?? """
           Expected:
           \(String(describing: expected).indent(by: 2))
-
+          
           Actual:
           \(String(describing: actual).indent(by: 2))
           """
@@ -1092,25 +1062,25 @@ extension TestStore where State: Equatable {
         XCTFailHelper(
         """
         \(messageHeading): …
-
+        
         \(difference)
         """,
         file: file,
         line: line
         )
       }
-
+      
       func tryUnnecessaryModifyFailure() {
         guard
           !skipUnnecessaryModifyFailure,
           expected == current,
           updateStateToExpectedResult != nil
         else { return }
-
+        
         XCTFailHelper(
         """
         Expected state to change, but no change occurred.
-
+        
         The trailing closure made no observable modifications to state. If no change to state is \
         expected, omit the trailing closure.
         """,
@@ -1933,6 +1903,83 @@ extension TestStore where State: Equatable {
         return
       }
     }
+  }
+}
+
+extension TestStore where State: Equatable {
+  /// Sends an action to the store and asserts when state changes.
+  ///
+  /// This method is similar to ``send(_:assert:file:line:)-2co21``, except it allows you to specify
+  /// a case key path to an action, which can be useful when testing the integration of features and
+  /// sending deeply nested actions. For example:
+  ///
+  /// ```swift
+  /// await store.send(.destination(.presented(.child(.tap))))
+  /// ```
+  ///
+  /// Can be simplified to:
+  ///
+  /// ```swift
+  /// await store.send(\.destination.child.tap)
+  /// ```
+  ///
+  /// - Parameters:
+  ///   - action: A case key path to an action.
+  ///   - updateStateToExpectedResult: A closure that asserts state changed by sending the action to
+  ///     the store. The mutable state sent to this closure must be modified to match the state of
+  ///     the store after processing the given action. Do not provide a closure if no change is
+  ///     expected.
+  /// - Returns: A ``TestStoreTask`` that represents the lifecycle of the effect executed when
+  ///   sending the action.
+  @MainActor
+  @discardableResult
+  @_disfavoredOverload
+  public func send(
+    _ action: CaseKeyPath<Action, Void>,
+    assert updateStateToExpectedResult: ((_ state: inout State) throws -> Void)? = nil,
+    file: StaticString = #file,
+    line: UInt = #line
+  ) async -> TestStoreTask {
+    await self.send(action(), assert: updateStateToExpectedResult, file: file, line: line)
+  }
+
+  /// Sends an action to the store and asserts when state changes.
+  ///
+  /// This method is similar to ``send(_:assert:file:line:)-1oopl``, except it allows
+  /// you to specify a value for the associated value of the action.
+  ///
+  /// It can be useful when sending nested action.  For example::
+  ///
+  /// ```swift
+  /// await store.send(.destination(.presented(.child(.emailChanged("blob@pointfree.co")))))
+  /// ```
+  ///
+  /// Can be simplified to:
+  ///
+  /// ```swift
+  /// await store.send(\.destination.child.emailChanged, "blob@pointfree.co")
+  /// ```
+  ///
+  /// - Parameters:
+  ///   - action: A case key path to an action.
+  ///   - value: A value to embed in `action`.
+  ///   - updateStateToExpectedResult: A closure that asserts state changed by sending the action to
+  ///     the store. The mutable state sent to this closure must be modified to match the state of
+  ///     the store after processing the given action. Do not provide a closure if no change is
+  ///     expected.
+  /// - Returns: A ``TestStoreTask`` that represents the lifecycle of the effect executed when
+  ///   sending the action.
+  @MainActor
+  @discardableResult
+  @_disfavoredOverload
+  public func send<Value>(
+    _ action: CaseKeyPath<Action, Value>,
+    _ value: Value,
+    assert updateStateToExpectedResult: ((_ state: inout State) throws -> Void)? = nil,
+    file: StaticString = #file,
+    line: UInt = #line
+  ) async -> TestStoreTask {
+    await self.send(action(value), assert: updateStateToExpectedResult, file: file, line: line)
   }
 }
 

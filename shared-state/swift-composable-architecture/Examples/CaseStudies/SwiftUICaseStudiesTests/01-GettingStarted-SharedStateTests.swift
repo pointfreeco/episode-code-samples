@@ -27,33 +27,15 @@ final class SharedStateTests: XCTestCase {
       SharedState()
     }
 
-    await store.send(.counter(.incrementButtonTapped))
-    XCTAssertEqual(
-      store.state.stats,
-      Stats(count: 1, maxCount: 1, minCount: 0, numberOfCounts: 1)
-    )
-//    {
-//      $0.counter.stats.increment()
-//      $0.profile.stats.increment()
-//    }
-    await store.send(.counter(.decrementButtonTapped)) 
-    XCTAssertEqual(
-      store.state.stats,
-      Stats(count: 0, maxCount: 1, minCount: 0, numberOfCounts: 2)
-    )
-//    {
-//      $0.counter.stats.decrement()
-//      $0.profile.stats.decrement()
-//    }
-    await store.send(.profile(.resetStatsButtonTapped)) 
-//    {
-//      $0.counter.stats = Stats()
-//      $0.profile.stats = Stats()
-//    }
-    XCTAssertEqual(
-      store.state.stats,
-      Stats()
-    )
+    await store.send(.counter(.incrementButtonTapped)) {
+      $0.stats.increment()
+    }
+    await store.send(.counter(.decrementButtonTapped)) {
+      $0.stats.decrement()
+    }
+    await store.send(.profile(.resetStatsButtonTapped)) {
+      $0.stats = Stats()
+    }
   }
 
   func testAlert() async {

@@ -2,6 +2,7 @@ import Perception
 
 enum SharedLocals {
   @TaskLocal static var isAsserting = false
+  @TaskLocal static var changeTracker: (() -> Void)? = nil
 }
 
 @propertyWrapper
@@ -20,8 +21,9 @@ public final class Shared<Value> {
       if SharedLocals.isAsserting {
         self.snapshot = newValue
       } else {
-        if self.snapshot == nil {
+        if let changeTracker = SharedLocals.changeTracker, self.snapshot == nil {
           self.snapshot = self.currentValue
+          changeTracker()
         }
         self.currentValue = newValue
       }
@@ -38,7 +40,7 @@ public final class Shared<Value> {
 extension Shared: Equatable where Value: Equatable {
   public static func == (lhs: Shared, rhs: Shared) -> Bool {
     if SharedLocals.isAsserting {
-      return lhs.snapshot == rhs.currentValue
+      return lhs.snapshot ?? lhs.currentValue == rhs.currentValue
     } else {
       return lhs.currentValue == rhs.currentValue
     }
