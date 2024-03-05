@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 public protocol PersistenceKey<Value>: Hashable {
   associatedtype Value
@@ -96,19 +97,49 @@ extension PersistenceKey {
   }
 }
 
-public struct FileStorageKey<Value: Codable>: PersistenceKey {
+public final class FileStorageKey<Value: Codable>: PersistenceKey {
   let url: URL
+  let saveQueue = DispatchQueue(label: "co.pointfree.save")
+  var saveWorkItem: DispatchWorkItem?
+  init(url: URL) {
+    self.url = url
+    NotificationCenter.default.addObserver(
+      forName: UIApplication.willResignActiveNotification,
+      object: nil,
+      queue: nil
+    ) { [weak self] _ in
+      guard let self, let saveWorkItem else { return }
+      saveQueue.async(execute: saveWorkItem)
+      saveQueue.async {
+        self.saveWorkItem?.cancel()
+        self.saveWorkItem = nil
+      }
+    }
+  }
 
   public func load() -> Value? {
     try? JSONDecoder().decode(Value.self, from: Data(contentsOf: self.url))
   }
 
   public func save(_ value: Value) {
-    try? JSONEncoder().encode(value).write(to: self.url)
+    self.saveWorkItem?.cancel()
+    self.saveWorkItem = DispatchWorkItem { [weak self] in
+      guard let self else { return }
+      try? JSONEncoder().encode(value).write(to: self.url)
+      self.saveWorkItem = nil
+    }
+    saveQueue.asyncAfter(deadline: .now() + 5, execute: self.saveWorkItem!)
   }
 
   public var updates: AsyncStream<Value> {
     .finished
+  }
+
+  public static func == (lhs: FileStorageKey<Value>, rhs: FileStorageKey<Value>) -> Bool {
+    lhs.url == rhs.url
+  }
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(self.url)
   }
 }
 
