@@ -28,11 +28,11 @@ public struct Shared<Value> {
     self.storage = Storage(value: wrappedValue)
   }
   // @Shared("stats") var stats = Stats()
-  public init(wrappedValue: Value, _ key: String) {
+  public init(wrappedValue: Value, _ key: some PersistenceKey<Value>) {
     if let shared = sharedStates[key] as? Shared<Value>.Storage {
       self.storage = shared
     } else {
-      self.storage = Storage(value: wrappedValue)
+      self.storage = Storage(value: wrappedValue, persistenceKey: key)
       sharedStates[key] = self.storage
     }
   }
@@ -42,10 +42,19 @@ public struct Shared<Value> {
 
   @Perceptible
   final class Storage {
-    var currentValue: Value
+    let persistenceKey: (any PersistenceKey<Value>)?
+    var currentValue: Value {
+      didSet {
+        self.persistenceKey?.save(self.currentValue)
+      }
+    }
     var snapshot: Value?
-    init(value: Value) {
-      self.currentValue = value
+    init(
+      value: Value,
+      persistenceKey: (any PersistenceKey<Value>)? = nil
+    ) {
+      self.currentValue = persistenceKey?.load() ?? value
+      self.persistenceKey = persistenceKey
     }
     var value: Value {
       get {
@@ -73,7 +82,7 @@ public struct Shared<Value> {
   }
 }
 
-private var sharedStates: [String: AnyObject] = [:]
+private var sharedStates: [AnyHashable: AnyObject] = [:]
 
 extension Shared.Storage: Equatable where Value: Equatable {
   static func == (lhs: Shared.Storage, rhs: Shared.Storage) -> Bool {

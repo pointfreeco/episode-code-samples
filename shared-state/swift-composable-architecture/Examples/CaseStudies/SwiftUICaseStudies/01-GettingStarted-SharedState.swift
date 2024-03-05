@@ -19,7 +19,8 @@ struct CounterTab {
   @ObservableState
   struct State: Equatable {
     @Presents var alert: AlertState<Action.Alert>?
-    @Shared("stats") var stats = Stats()
+    @Shared(.inMemory("stats")) var stats = Stats()
+    @Shared(.appStorage("isOn")) var isOn = false
   }
 
   enum Action {
@@ -27,6 +28,7 @@ struct CounterTab {
     case decrementButtonTapped
     case incrementButtonTapped
     case isPrimeButtonTapped
+    case toggledIsOn(Bool)
 
     enum Alert: Equatable {}
   }
@@ -54,18 +56,30 @@ struct CounterTab {
           )
         }
         return .none
+
+      case let .toggledIsOn(isOn):
+        state.isOn = isOn
+        return .none
       }
     }
     .ifLet(\.$alert, action: \.alert)
   }
 }
 
+@Observable
+class CounterModel {
+  @ObservationIgnored
+  @AppStorage("isOn") var isOn = false
+}
+
 struct CounterTabView: View {
   @Bindable var store: StoreOf<CounterTab>
+  @AppStorage("isOn") var isOn = false
+  @State var model = CounterModel()
 
   var body: some View {
     Form {
-      Text(template: readMe, .caption)
+      // Text(template: readMe, .caption)
 
       VStack(spacing: 16) {
         HStack {
@@ -87,6 +101,24 @@ struct CounterTabView: View {
 
         Button("Is this prime?") { store.send(.isPrimeButtonTapped) }
       }
+
+      Section {
+        Toggle(isOn: $isOn) {
+          Text("@AppStorage isOn: \(isOn.description)")
+        }
+        Toggle(isOn: $store.isOn.sending(\.toggledIsOn)) {
+          Text("Store.isOn: \(store.isOn.description)")
+        }
+        Toggle(isOn: $model.isOn) {
+          Text("@Observable @AppStorage isOn: \(model.isOn.description)")
+        }
+        Button("Toggle user defaults directly") {
+          UserDefaults.standard.setValue(
+            !UserDefaults.standard.bool(forKey: "isOn"),
+            forKey: "isOn"
+          )
+        }
+      }  
     }
     .buttonStyle(.borderless)
     .navigationTitle("Shared State Demo")
@@ -98,7 +130,7 @@ struct CounterTabView: View {
 struct ProfileTab {
   @ObservableState
   struct State: Equatable {
-    @Shared("stats") var stats = Stats()
+    @Shared(.inMemory("stats")) var stats = Stats()
   }
 
   enum Action {
@@ -155,7 +187,7 @@ struct SharedState {
     var currentTab = Tab.counter
     var counter = CounterTab.State()
     var profile = ProfileTab.State()
-    @Shared("stats") var stats = Stats()
+    @Shared(.inMemory("stats")) var stats = Stats()
   }
 
   enum Action {
@@ -220,10 +252,6 @@ struct SharedStateView: View {
       .tabItem { Text("Profile") }
     }
   }
-}
-
-class CounterModel: ObservableObject {
-  @Published var count = 0
 }
 
 struct Stats: Equatable {
