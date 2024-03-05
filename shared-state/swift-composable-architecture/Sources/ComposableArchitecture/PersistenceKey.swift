@@ -14,30 +14,54 @@ public struct InMemoryKey<Value>: PersistenceKey {
   public var updates: AsyncStream<Value> { .finished }
 }
 
+private enum DefaultAppStorageKey: DependencyKey {
+  static let liveValue = UncheckedSendable(UserDefaults.standard)
+  static var testValue: UncheckedSendable<UserDefaults> {
+    let suiteName = "pointfree.co"
+    let defaults = UserDefaults(suiteName: suiteName)!
+    defaults.removePersistentDomain(forName: suiteName)
+    return UncheckedSendable(defaults)
+  }
+}
+
+extension DependencyValues {
+  public var defaultAppStorage: UserDefaults {
+    get { self[DefaultAppStorageKey.self].value }
+    set { self[DefaultAppStorageKey.self].value = newValue }
+  }
+}
+
 public struct AppStorageKey<Value>: PersistenceKey {
+  @Dependency(\.defaultAppStorage) var defaultAppStorage
   let key: String
   public init(key: String) {
     self.key = key
   }
   public func load() -> Value? {
-    UserDefaults.standard.value(forKey: self.key) as? Value
+    defaultAppStorage.value(forKey: self.key) as? Value
   }
   public func save(_ value: Value) {
-    UserDefaults.standard.setValue(value, forKey: self.key)
+    defaultAppStorage.setValue(value, forKey: self.key)
   }
   public var updates: AsyncStream<Value> {
     AsyncStream { continuation in
       let observer = Observer(continuation: continuation)
-      UserDefaults.standard.addObserver(
+      defaultAppStorage.addObserver(
         observer,
         forKeyPath: self.key,
         options: [.new],
         context: nil
       )
       continuation.onTermination = { _ in
-        UserDefaults.standard.removeObserver(observer, forKeyPath: self.key)
+        defaultAppStorage.removeObserver(observer, forKeyPath: self.key)
       }
     }
+  }
+  public static func == (lhs: AppStorageKey, rhs: AppStorageKey) -> Bool {
+    lhs.key == rhs.key
+  }
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(self.key)
   }
 
   class Observer: NSObject {

@@ -47,4 +47,14 @@ final class SharedStateTests: XCTestCase {
       }
     }
   }
+
+  func testIsOn() async {
+    let store = TestStore(initialState: CounterTab.State()) {
+      CounterTab()
+    }
+
+    await store.send(.toggledIsOn(true)) {
+      $0.isOn = true
+    }
+  }
 }

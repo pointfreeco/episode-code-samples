@@ -103,9 +103,9 @@ struct CounterTabView: View {
       }
 
       Section {
-//        Toggle(isOn: $isOn) {
-//          Text("@AppStorage isOn: \(isOn.description)")
-//        }
+        Toggle(isOn: $isOn) {
+          Text("@AppStorage isOn: \(isOn.description)")
+        }
         Toggle(isOn: $store.isOn.sending(\.toggledIsOn)) {
           Text("Store.isOn: \(store.isOn.description)")
         }
@@ -241,9 +241,16 @@ struct SharedStateView: View {
   var body: some View {
     TabView(selection: $store.currentTab.sending(\.selectTab)) {
       NavigationStack {
+        let _ = print(
+          CounterTabView(
+            store: self.store.scope(state: \.counter, action: \.counter)
+          )
+          .defaultAppStorage(UserDefaults(suiteName: "pointfree")!)
+        )
         CounterTabView(
           store: self.store.scope(state: \.counter, action: \.counter)
         )
+        .defaultAppStorage(UserDefaults(suiteName: "pointfree")!)
       }
       .tag(SharedState.Tab.counter)
       .tabItem { Text("Counter") }
