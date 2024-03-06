@@ -97,7 +97,41 @@ extension PersistenceKey {
   }
 }
 
+struct DefaultFileStorage: DependencyKey {
+  var load: (URL) throws -> Data
+  var save: (Data, URL) throws -> Void
+
+  static let liveValue = DefaultFileStorage(
+    load: { try Data(contentsOf: $0) },
+    save: { try $0.write(to: $1) }
+  )
+  static var testValue: DefaultFileStorage {
+    let fileSystem = LockIsolated<[URL: Data]>([:])
+    return Self(
+      load: { url in
+        guard let data = fileSystem[url]
+        else {
+          struct LoadError: Error {}
+          throw LoadError()
+        }
+        return data
+      },
+      save: { data, url in
+        fileSystem.withValue { $0[url] = data }
+      }
+    )
+  }
+}
+
+extension DependencyValues {
+  var defaultFileStorage: DefaultFileStorage {
+    get { self[DefaultFileStorage.self] }
+    set { self[DefaultFileStorage.self] = newValue }
+  }
+}
+
 public final class FileStorageKey<Value: Codable>: PersistenceKey {
+  @Dependency(\.defaultFileStorage) var defaultFileStorage
   let url: URL
   let saveQueue = DispatchQueue(label: "co.pointfree.save")
   var saveWorkItem: DispatchWorkItem?
@@ -118,7 +152,7 @@ public final class FileStorageKey<Value: Codable>: PersistenceKey {
   }
 
   public func load() -> Value? {
-    try? JSONDecoder().decode(Value.self, from: Data(contentsOf: self.url))
+    try? JSONDecoder().decode(Value.self, from: defaultFileStorage.load(self.url))
   }
 
   public func save(_ value: Value) {
@@ -126,7 +160,7 @@ public final class FileStorageKey<Value: Codable>: PersistenceKey {
     self.saveWorkItem = DispatchWorkItem { [weak self] in
       guard let self else { return }
       print("SAVE!!!!")
-      try? JSONEncoder().encode(value).write(to: self.url)
+      try? defaultFileStorage.save(JSONEncoder().encode(value), self.url)
       self.saveWorkItem = nil
     }
     saveQueue.asyncAfter(deadline: .now() + 5, execute: self.saveWorkItem!)
