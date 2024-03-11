@@ -14,21 +14,41 @@ enum SharedLocals {
   static var isTracking: Bool { self.changeTracker != nil }
 }
 
+protocol StorageProtocol<Value>: AnyObject {
+  associatedtype Value
+  var value: Value { get set }
+  var currentValue: Value { get }
+  var snapshot: Value? { get }
+}
+
 @propertyWrapper
+@dynamicMemberLookup
 public struct Shared<Value> {
-//  private var currentValue: Value
-//  private var snapshot: Value?
-  let storage: Storage
+  let keyPath: AnyKeyPath
+  let storage: any StorageProtocol
 
   public var wrappedValue: Value {
-    get { self.storage.value }
-    set { self.storage.value = newValue }
+    get {
+      func open<Root>(_ storage: some StorageProtocol<Root>) -> Value {
+        storage.value[keyPath: self.keyPath] as! Value
+      }
+      return open(self.storage)
+    }
+    set {
+      func open<Root>(_ storage: some StorageProtocol<Root>) {
+        storage.value[keyPath: self.keyPath as! WritableKeyPath<Root, Value>] = newValue
+      }
+      open(self.storage)
+    }
   }
+  // @Shared var count: Int
   public init(_ wrappedValue: Value) {
+    self.keyPath = \Value.self
     self.storage = Storage(value: wrappedValue)
   }
   // @Shared("stats") var stats = Stats()
   public init(wrappedValue: Value, _ key: some PersistenceKey<Value>) {
+    self.keyPath = \Value.self
     if let shared = sharedStates[key] as? Shared<Value>.Storage {
       self.storage = shared
     } else {
@@ -36,12 +56,16 @@ public struct Shared<Value> {
       sharedStates[key] = self.storage
     }
   }
+  init(storage: some StorageProtocol, keyPath: AnyKeyPath) {
+    self.storage = storage
+    self.keyPath = keyPath
+  }
   public var projectedValue: Shared {
     self
   }
 
   @Perceptible
-  final class Storage {
+  final class Storage: StorageProtocol {
     let persistenceKey: (any PersistenceKey<Value>)?
     var _currentValue: Value
 
@@ -93,12 +117,36 @@ public struct Shared<Value> {
       }
     }
   }
+
+  public subscript<Member>(
+    dynamicMember keyPath: WritableKeyPath<Value, Member>
+  ) -> Shared<Member> {
+    Shared<Member>(
+      storage: self.storage,
+      keyPath: self.keyPath.appending(path: keyPath)!
+    )
+  }
 }
 
 private var sharedStates: [AnyHashable: AnyObject] = [:]
 
-extension Shared.Storage: Equatable where Value: Equatable {
-  static func == (lhs: Shared.Storage, rhs: Shared.Storage) -> Bool {
+extension Shared {
+  var snapshot: Value? {
+    func open<Root>(_ storage: some StorageProtocol<Root>) -> Value? {
+      storage.snapshot?[keyPath: self.keyPath] as? Value
+    }
+    return open(self.storage)
+  }
+  var currentValue: Value {
+    func open<Root>(_ storage: some StorageProtocol<Root>) -> Value {
+      storage.currentValue[keyPath: self.keyPath] as! Value
+    }
+    return open(self.storage)
+  }
+}
+
+extension Shared: Equatable where Value: Equatable {
+  public static func == (lhs: Shared, rhs: Shared) -> Bool {
     if SharedLocals.isAsserting {
       return lhs.snapshot ?? lhs.currentValue == rhs.currentValue
     } else {
@@ -106,7 +154,11 @@ extension Shared.Storage: Equatable where Value: Equatable {
     }
   }
 }
-extension Shared: Equatable where Value: Equatable {}
+//extension Shared: Equatable where Value: Equatable {
+//  public static func == (lhs: Shared<Value>, rhs: Shared<Value>) -> Bool {
+//    lhs.storage == rhs.storage
+//  }
+//}
 
 extension Shared.Storage: _CustomDiffObject {
   public var _customDiffValues: (Any, Any) {

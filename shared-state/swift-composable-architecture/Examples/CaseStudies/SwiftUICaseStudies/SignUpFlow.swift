@@ -181,7 +181,7 @@ struct PersonalInfoStep: View {
         if !isEditingFromSummary {
           NavigationLink(
             "Next",
-            state: SignUpFeature.Path.State.topics(TopicsFeature.State(signUpData: store.$signUpData))
+            state: SignUpFeature.Path.State.topics(TopicsFeature.State(topics: store.$signUpData.topics))
           )
         } else {
           Button("Done") {
@@ -208,7 +208,8 @@ struct TopicsFeature {
   @ObservableState
   struct State: Equatable {
     @Presents var alert: AlertState<Never>?
-    @Shared var signUpData: SignUpData
+    //@Shared var signUpData: SignUpData
+    @Shared var topics: Set<SignUpData.Topic>
   }
   enum Action: BindableAction {
     case alert(PresentationAction<Never>)
@@ -233,7 +234,7 @@ struct TopicsFeature {
       case .delegate:
         return .none
       case .doneButtonTapped:
-        if state.signUpData.topics.isEmpty {
+        if state.topics.isEmpty {
           state.alert = AlertState {
             TextState("Please choose at least one topic.")
           }
@@ -242,7 +243,7 @@ struct TopicsFeature {
           return .run { _ in await dismiss() }
         }
       case .nextButtonTapped:
-        if state.signUpData.topics.isEmpty {
+        if state.topics.isEmpty {
           state.alert = AlertState {
             TextState("Please choose at least one topic.")
           }
@@ -269,7 +270,7 @@ struct TopicsStep: View {
         ForEach(SignUpData.Topic.allCases) { topic in
           Toggle(
             topic.rawValue,
-            isOn: $store.signUpData.topics[contains: topic]
+            isOn: $store.topics[contains: topic]
           )
         }
       }
@@ -289,7 +290,7 @@ struct TopicsStep: View {
         }
       }
     }
-    .interactiveDismissDisabled(store.signUpData.topics.isEmpty)
+    .interactiveDismissDisabled(store.topics.isEmpty)
   }
 }
 
@@ -309,7 +310,7 @@ extension Set {
 #Preview("Topics") {
   NavigationStack {
     TopicsStep(
-      store: Store(initialState: TopicsFeature.State(signUpData: Shared(SignUpData()))) {
+      store: Store(initialState: TopicsFeature.State(topics: Shared([]))) {
         TopicsFeature()
       }
     )
@@ -350,7 +351,7 @@ struct SummaryFeature {
       case .editFavoriteTopicsButtonTapped:
         state.destination = .topics(
           TopicsFeature.State(
-            signUpData: state.$signUpData
+            topics: state.$signUpData.topics
           )
         )
         return .none
