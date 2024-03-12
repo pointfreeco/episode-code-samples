@@ -271,3 +271,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Point-Free Live: Observation in Practice](0267-pflive-observation-in-practice)
 1. [Shared State: The Problem](0268-shared-state-pt1)
 1. [Shared State: The Solution, Part 1](0269-shared-state-pt2)
+1. [Shared State: The Solution, Part 2](0270-shared-state-pt3)
