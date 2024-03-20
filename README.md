@@ -272,3 +272,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Shared State: The Problem](0268-shared-state-pt1)
 1. [Shared State: The Solution, Part 1](0269-shared-state-pt2)
 1. [Shared State: The Solution, Part 2](0270-shared-state-pt3)
+1. [Shared State: Testing, Part 1](0271-shared-state-pt4)
