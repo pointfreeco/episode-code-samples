@@ -76,9 +76,9 @@ struct SyncUpsListView: View {
 
   var body: some View {
     List {
-      ForEach(store.syncUps) { syncUp in
+      ForEach(store.$syncUps.elements) { $syncUp in
         NavigationLink(
-          state: AppFeature.Path.State.detail(SyncUpDetail.State(syncUp: syncUp))
+          state: AppFeature.Path.State.detail(SyncUpDetail.State(syncUp: $syncUp))
         ) {
           CardView(syncUp: syncUp)
         }

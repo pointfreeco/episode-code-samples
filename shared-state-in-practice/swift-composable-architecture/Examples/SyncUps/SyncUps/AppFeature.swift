@@ -44,10 +44,6 @@ struct AppFeature {
           state.syncUpsList.syncUps.remove(id: detailState.syncUp.id)
           return .none
 
-        case let .syncUpUpdated(syncUp):
-          state.syncUpsList.syncUps[id: syncUp.id] = syncUp
-          return .none
-
         case .startMeeting:
           state.path.append(.record(RecordMeeting.State(syncUp: detailState.syncUp)))
           return .none
