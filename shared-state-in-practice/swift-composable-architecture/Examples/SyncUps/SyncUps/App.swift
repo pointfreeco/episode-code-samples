@@ -3,12 +3,12 @@ import SwiftUI
 
 @main
 struct SyncUpsApp: App {
-  let store = Store(initialState: AppFeature.State()) {
+  static let store = Store(initialState: AppFeature.State()) {
     AppFeature()
       ._printChanges()
   } withDependencies: {
     if ProcessInfo.processInfo.environment["UITesting"] == "true" {
-      $0.dataManager = .mock()
+      $0.defaultFileStorage = InMemoryFileStorage()
     }
   }
 
@@ -22,7 +22,7 @@ struct SyncUpsApp: App {
         // NB: Don't run application when testing so that it doesn't interfere with tests.
         EmptyView()
       } else {
-        AppView(store: store)
+        AppView(store: Self.store)
       }
     }
   }

@@ -23,7 +23,6 @@ struct AppFeature {
 
   @Dependency(\.continuousClock) var clock
   @Dependency(\.date.now) var now
-  @Dependency(\.dataManager.save) var saveData
   @Dependency(\.uuid) var uuid
 
   private enum CancelID {
@@ -89,16 +88,6 @@ struct AppFeature {
       }
     }
     .forEach(\.path, action: \.path)
-
-    Reduce { state, action in
-      return .run { [syncUps = state.syncUpsList.syncUps] _ in
-        try await withTaskCancellation(id: CancelID.saveDebounce, cancelInFlight: true) {
-          try await self.clock.sleep(for: .seconds(1))
-          try await self.saveData(JSONEncoder().encode(syncUps), .syncUps)
-        }
-      } catch: { _, _ in
-      }
-    }
   }
 }
 

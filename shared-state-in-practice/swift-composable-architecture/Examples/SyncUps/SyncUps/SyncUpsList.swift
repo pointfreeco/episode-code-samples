@@ -1,35 +1,23 @@
 import ComposableArchitecture
 import SwiftUI
 
+extension PersistenceKey where Self == PersistenceKeyDefault<FileStorageKey<IdentifiedArrayOf<SyncUp>>> {
+  static var syncUps: Self {
+    PersistenceKeyDefault(.fileStorage(.syncUps), [])
+  }
+}
+
 @Reducer
 struct SyncUpsList {
   @Reducer(state: .equatable)
   enum Destination {
     case add(SyncUpForm)
-    case alert(AlertState<Alert>)
-
-    @CasePathable
-    enum Alert {
-      case confirmLoadMockData
-    }
   }
 
   @ObservableState
   struct State: Equatable {
     @Presents var destination: Destination.State?
-    var syncUps: IdentifiedArrayOf<SyncUp> = []
-
-    init(destination: Destination.State? = nil) {
-      self.destination = destination
-
-      do {
-        @Dependency(\.dataManager.load) var load
-        self.syncUps = try JSONDecoder().decode(IdentifiedArray.self, from: load(.syncUps))
-      } catch is DecodingError {
-        self.destination = .alert(.dataFailedToLoad)
-      } catch {
-      }
-    }
+    @Shared(.syncUps) var syncUps
   }
 
   enum Action {
@@ -65,14 +53,6 @@ struct SyncUpsList {
         }
         state.syncUps.append(syncUp)
         state.destination = nil
-        return .none
-
-      case .destination(.presented(.alert(.confirmLoadMockData))):
-        state.syncUps = [
-          .mock,
-          .designMock,
-          .engineeringMock,
-        ]
         return .none
 
       case .destination:
@@ -116,7 +96,6 @@ struct SyncUpsListView: View {
       }
     }
     .navigationTitle("Daily Sync-ups")
-    .alert($store.scope(state: \.destination?.alert, action: \.destination.alert))
     .sheet(item: $store.scope(state: \.destination?.add, action: \.destination.add)) { store in
       NavigationStack {
         SyncUpFormView(store: store)
@@ -135,26 +114,6 @@ struct SyncUpsListView: View {
           }
       }
     }
-  }
-}
-
-extension AlertState where Action == SyncUpsList.Destination.Alert {
-  static let dataFailedToLoad = Self {
-    TextState("Data failed to load")
-  } actions: {
-    ButtonState(action: .send(.confirmLoadMockData, animation: .default)) {
-      TextState("Yes")
-    }
-    ButtonState(role: .cancel) {
-      TextState("No")
-    }
-  } message: {
-    TextState(
-      """
-      Unfortunately your past data failed to load. Would you like to load some mock data to play \
-      around with?
-      """
-    )
   }
 }
 
@@ -193,41 +152,31 @@ extension LabelStyle where Self == TrailingIconLabelStyle {
 }
 
 #Preview {
-  SyncUpsListView(
-    store: Store(initialState: SyncUpsList.State()) {
-      SyncUpsList()
-    } withDependencies: {
-      $0.dataManager.load = { @Sendable _ in
-        try JSONEncoder().encode([
-          SyncUp.mock,
-          .designMock,
-          .engineeringMock,
-        ])
+  @Shared(.fileStorage(.syncUps)) var syncUps: IdentifiedArray = [
+    SyncUp.mock,
+    .designMock,
+    .engineeringMock,
+  ]
+  return NavigationStack {
+    SyncUpsListView(
+      store: Store(initialState: SyncUpsList.State()) {
+        SyncUpsList()
       }
-    }
-  )
-}
-
-#Preview("Load data failure") {
-  SyncUpsListView(
-    store: Store(initialState: SyncUpsList.State()) {
-      SyncUpsList()
-    } withDependencies: {
-      $0.dataManager = .mock(initialData: Data("!@#$% bad data ^&*()".utf8))
-    }
-  )
-  .previewDisplayName("Load data failure")
+    )
+  }
 }
 
 #Preview("Card") {
-  CardView(
-    syncUp: SyncUp(
-      id: SyncUp.ID(),
-      attendees: [],
-      duration: .seconds(60),
-      meetings: [],
-      theme: .bubblegum,
-      title: "Point-Free Morning Sync"
+  NavigationStack {
+    CardView(
+      syncUp: SyncUp(
+        id: SyncUp.ID(),
+        attendees: [],
+        duration: .seconds(60),
+        meetings: [],
+        theme: .bubblegum,
+        title: "Point-Free Morning Sync"
+      )
     )
-  )
+  }
 }
