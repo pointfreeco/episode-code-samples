@@ -26,9 +26,6 @@ final class AppFeatureTests: XCTestCase {
 
     await store.send(\.path[id:0].detail.destination.alert.confirmDeletion) {
       $0.path[id: 0]?.detail?.destination = nil
-    }
-
-    await store.receive(\.path[id:0].detail.delegate.deleteSyncUp) {
       $0.syncUpsList.syncUps = []
     }
     await store.receive(\.path.popFrom) {
@@ -92,7 +89,7 @@ final class AppFeatureTests: XCTestCase {
       initialState: AppFeature.State(
         path: StackState([
           .detail(SyncUpDetail.State(syncUp: sharedSyncUp)),
-          .record(RecordMeeting.State(syncUp: syncUp)),
+          .record(RecordMeeting.State(syncUp: sharedSyncUp)),
         ])
       )
     ) {
@@ -112,7 +109,10 @@ final class AppFeatureTests: XCTestCase {
     store.exhaustivity = .off
 
     await store.send(\.path[id:1].record.onTask)
-    await store.receive(\.path[id:1].record.delegate.save) {
+    await store.receive(\.path.popFrom) {
+      XCTAssertEqual($0.path.count, 1)
+    }
+    store.assert {
       $0.path[id: 0]?.detail?.syncUp.meetings = [
         Meeting(
           id: Meeting.ID(UUID(0)),
@@ -120,9 +120,6 @@ final class AppFeatureTests: XCTestCase {
           transcript: "I completed the project"
         )
       ]
-    }
-    await store.receive(\.path.popFrom) {
-      XCTAssertEqual($0.path.count, 1)
     }
   }
 }

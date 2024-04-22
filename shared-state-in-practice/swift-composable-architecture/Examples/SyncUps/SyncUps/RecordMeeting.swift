@@ -36,6 +36,8 @@ struct RecordMeeting {
   @Dependency(\.continuousClock) var clock
   @Dependency(\.dismiss) var dismiss
   @Dependency(\.speechClient) var speechClient
+  @Dependency(\.date.now) var now
+  @Dependency(\.uuid) var uuid
 
   var body: some ReducerOf<Self> {
     Reduce {
@@ -49,10 +51,10 @@ struct RecordMeeting {
         
       case .alert(.presented(.confirmSave)):
         state.syncUp.meetings.insert(
-          Meeting(id: Meeting.ID(), date: Date(), transcript: state.transcript),
+          Meeting(id: Meeting.ID(uuid()), date: now, transcript: state.transcript),
           at: 0
         )
-        return .run { send in
+        return .run { _ in
           await self.dismiss()
         }
 
@@ -103,10 +105,10 @@ struct RecordMeeting {
         if state.secondsElapsed.isMultiple(of: secondsPerAttendee) {
           if state.secondsElapsed == state.syncUp.duration.components.seconds {
             state.syncUp.meetings.insert(
-              Meeting(id: Meeting.ID(), date: Date(), transcript: state.transcript),
+              Meeting(id: Meeting.ID(uuid()), date: now, transcript: state.transcript),
               at: 0
             )
-            return .run { send in
+            return .run { _ in
               await self.dismiss()
             }
           }
