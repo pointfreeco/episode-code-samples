@@ -34,7 +34,6 @@ struct SyncUpDetail {
 
     @CasePathable
     enum Delegate {
-      case deleteSyncUp
       case startMeeting
     }
   }
@@ -64,8 +63,9 @@ struct SyncUpDetail {
       case let .destination(.presented(.alert(alertAction))):
         switch alertAction {
         case .confirmDeletion:
+          @Shared(.syncUps) var syncUps
+          syncUps.remove(id: state.syncUp.id)
           return .run { send in
-            await send(.delegate(.deleteSyncUp), animation: .default)
             await self.dismiss()
           }
         case .continueWithoutRecording:
