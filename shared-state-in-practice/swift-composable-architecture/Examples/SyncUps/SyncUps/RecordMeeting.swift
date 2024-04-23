@@ -9,7 +9,7 @@ struct RecordMeeting {
     @Presents var alert: AlertState<Action.Alert>?
     var secondsElapsed = 0
     var speakerIndex = 0
-    var syncUp: SyncUp
+    @Shared var syncUp: SyncUp
     var transcript = ""
 
     var durationRemaining: Duration {
@@ -19,7 +19,6 @@ struct RecordMeeting {
 
   enum Action {
     case alert(PresentationAction<Alert>)
-    case delegate(Delegate)
     case endMeetingButtonTapped
     case nextButtonTapped
     case onTask
@@ -32,10 +31,6 @@ struct RecordMeeting {
       case confirmDiscard
       case confirmSave
     }
-    @CasePathable
-    enum Delegate {
-      case save(transcript: String)
-    }
   }
 
   @Dependency(\.continuousClock) var clock
@@ -43,23 +38,25 @@ struct RecordMeeting {
   @Dependency(\.speechClient) var speechClient
 
   var body: some ReducerOf<Self> {
-    Reduce { state, action in
+    Reduce {
+      state,
+      action in
       switch action {
       case .alert(.presented(.confirmDiscard)):
         return .run { _ in
           await self.dismiss()
         }
-
+        
       case .alert(.presented(.confirmSave)):
-        return .run { [transcript = state.transcript] send in
-          await send(.delegate(.save(transcript: transcript)))
+        state.syncUp.meetings.insert(
+          Meeting(id: Meeting.ID(), date: Date(), transcript: state.transcript),
+          at: 0
+        )
+        return .run { send in
           await self.dismiss()
         }
 
       case .alert:
-        return .none
-
-      case .delegate:
         return .none
 
       case .endMeetingButtonTapped:
@@ -105,8 +102,11 @@ struct RecordMeeting {
         let secondsPerAttendee = Int(state.syncUp.durationPerAttendee.components.seconds)
         if state.secondsElapsed.isMultiple(of: secondsPerAttendee) {
           if state.secondsElapsed == state.syncUp.duration.components.seconds {
-            return .run { [transcript = state.transcript] send in
-              await send(.delegate(.save(transcript: transcript)))
+            state.syncUp.meetings.insert(
+              Meeting(id: Meeting.ID(), date: Date(), transcript: state.transcript),
+              at: 0
+            )
+            return .run { send in
               await self.dismiss()
             }
           }
@@ -382,7 +382,7 @@ struct MeetingFooterView: View {
 #Preview {
   NavigationStack {
     RecordMeetingView(
-      store: Store(initialState: RecordMeeting.State(syncUp: .mock)) {
+      store: Store(initialState: RecordMeeting.State(syncUp: Shared(.mock))) {
         RecordMeeting()
       }
     )

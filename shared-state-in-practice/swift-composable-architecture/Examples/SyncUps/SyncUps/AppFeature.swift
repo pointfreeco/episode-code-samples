@@ -40,39 +40,10 @@ struct AppFeature {
         else { return .none }
 
         switch delegateAction {
-        case .deleteSyncUp:
-          state.syncUpsList.syncUps.remove(id: detailState.syncUp.id)
-          return .none
-
         case .startMeeting:
-          state.path.append(.record(RecordMeeting.State(syncUp: detailState.syncUp)))
-          return .none
-        }
-
-      case let .path(.element(_, .record(.delegate(delegateAction)))):
-        switch delegateAction {
-        case let .save(transcript: transcript):
-          guard let id = state.path.ids.dropLast().last
-          else {
-            XCTFail(
-              """
-              Record meeting is the only element in the stack. A detail feature should precede it.
-              """
-            )
-            return .none
-          }
-
-          state.path[id: id]?.detail?.syncUp.meetings.insert(
-            Meeting(
-              id: Meeting.ID(self.uuid()),
-              date: self.now,
-              transcript: transcript
-            ),
-            at: 0
+          state.path.append(
+            .record(RecordMeeting.State(syncUp: detailState.$syncUp))
           )
-          guard let syncUp = state.path[id: id]?.detail?.syncUp
-          else { return .none }
-          state.syncUpsList.syncUps[id: syncUp.id] = syncUp
           return .none
         }
 
