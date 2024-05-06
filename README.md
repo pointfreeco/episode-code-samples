@@ -279,3 +279,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Shared State: File Storage, Part 1](0275-shared-state-pt8)
 1. [Shared State: File Storage, Part 2](0276-shared-state-pt9)
 1. [Shared State in Practice: SyncUps, Part 1](0277-shared-state-in-practice-pt1)
+1. [Shared State in Practice: SyncUps, Part 2](0278-shared-state-in-practice-pt2)
