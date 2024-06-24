@@ -284,4 +284,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Shared State in Practice: isowords, Part 2](0280-shared-state-in-practice-pt4)
 1. [Modern UIKit: Sneak Peek, Part 1](0281-modern-uikit-pt1)
 1. [Modern UIKit: Sneak Peek, Part 2](0282-modern-uikit-pt2)
-1. [Modern UIKit: Observation](0282-modern-uikit-pt3)
+1. [Modern UIKit: Observation](0283-modern-uikit-pt3)
+1. [Modern UIKit: Basics of Observation](0284-modern-uikit-pt4)
