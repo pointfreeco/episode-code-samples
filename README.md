@@ -289,3 +289,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Modern UIKit: Unified Navigation](0285-modern-uikit-pt5)
 1. [Modern UIKit: Tree-based Navigation](0286-modern-uikit-pt6)
 1. [Modern UIKit: Stack Navigation, Part 1](0287-modern-uikit-pt7)
+1. [Modern UIKit: Stack Navigation, Part 2](0288-modern-uikit-pt8)
+1. [Modern UIKit: UIControl Bindings](0289-modern-uikit-pt9)
