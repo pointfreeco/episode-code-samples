@@ -293,3 +293,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Modern UIKit: UIControl Bindings](0289-modern-uikit-pt9)
 1. [Cross-Platform Swift: View Paradigms](0290-cross-platform-pt1)
 1. [Cross-Platform Swift: WebAssembly](0291-cross-platform-pt2)
+1. [Cross-Platform Swift: Networking](0292-cross-platform-pt3)
