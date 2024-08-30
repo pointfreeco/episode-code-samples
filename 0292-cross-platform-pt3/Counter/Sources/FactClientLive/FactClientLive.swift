@@ -1,5 +1,6 @@
+import FactClient
 import Dependencies
-import DependenciesMacros
+
 #if canImport(JavaScriptKit)
   @preconcurrency import JavaScriptKit
 #endif
@@ -7,17 +8,8 @@ import DependenciesMacros
   import JavaScriptEventLoop
 #endif
 
-@DependencyClient
-struct FactClient: Sendable {
-  var fetch: @Sendable (Int) async throws -> String
-}
-
-extension FactClient: TestDependencyKey {
-  static let testValue = FactClient()
-}
-
 extension FactClient: DependencyKey {
-  static let liveValue = FactClient { number in
+  public static let liveValue = FactClient { number in
 #if canImport(JavaScriptKit) && canImport(JavaScriptEventLoop)
     let response = try await JSPromise(
       JSObject.global.fetch!("http://www.numberapi.com/\(number)").object!

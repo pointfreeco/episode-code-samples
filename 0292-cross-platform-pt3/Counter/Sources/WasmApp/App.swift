@@ -1,7 +1,24 @@
 import Counter
+import IssueReporting
 import JavaScriptEventLoop
 import JavaScriptKit
 import SwiftNavigation
+
+struct JavaScriptConsoleWarning: IssueReporter {
+  func reportIssue(
+    _ message: @autoclosure () -> String?,
+    fileID: StaticString,
+    filePath: StaticString,
+    line: UInt,
+    column: UInt
+  ) {
+    #if DEBUG
+    _ = JSObject.global.console.warn("""
+      \(fileID):\(line) - \(message() ?? "")
+      """)
+    #endif
+  }
+}
 
 @main
 @MainActor
@@ -9,6 +26,7 @@ struct App {
   static var tokens: Set<ObservationToken> = []
 
   static func main() {
+    IssueReporters.current = [JavaScriptConsoleWarning()]
     JavaScriptEventLoop.installGlobalExecutor()
 
     let model = CounterModel()
