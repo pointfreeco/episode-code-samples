@@ -295,3 +295,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Cross-Platform Swift: WebAssembly](0291-cross-platform-pt2)
 1. [Cross-Platform Swift: Networking](0292-cross-platform-pt3)
 1. [Cross-Platform Swift: Navigation](0293-cross-platform-pt4)
+1. [Cross-Platform Swift: UI Controls](0294-cross-platform-pt5)
