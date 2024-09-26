@@ -18,6 +18,14 @@ let package = Package(
       name: "FactClientLive",
       targets: ["FactClientLive"]
     ),
+    .library(
+      name: "StorageClient",
+      targets: ["StorageClient"]
+    ),
+    .library(
+      name: "StorageClientLive",
+      targets: ["StorageClientLive"]
+    ),
   ],
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.0.0"),
@@ -32,6 +40,7 @@ let package = Package(
       dependencies: [
         "Counter",
         "FactClientLive",
+        "StorageClientLive",
         .product(name: "SwiftNavigation", package: "swift-navigation"),
         .product(name: "JavaScriptEventLoop", package: "JavaScriptKit"),
         .product(name: "JavaScriptKit", package: "JavaScriptKit"),
@@ -41,6 +50,7 @@ let package = Package(
       name: "Counter",
       dependencies: [
         "FactClient",
+        "StorageClient",
         .product(name: "SwiftNavigation", package: "swift-navigation"),
         .product(name: "Perception", package: "swift-perception")
       ]
@@ -58,6 +68,20 @@ let package = Package(
         "FactClient",
         .product(name: "JavaScriptKit", package: "JavaScriptKit", condition: .when(platforms: [.wasi])),
         .product(name: "JavaScriptEventLoop", package: "JavaScriptKit", condition: .when(platforms: [.wasi])),
+      ]
+    ),
+    .target(
+      name: "StorageClient",
+      dependencies: [
+        .product(name: "Dependencies", package: "swift-dependencies"),
+        .product(name: "DependenciesMacros", package: "swift-dependencies"),
+      ]
+    ),
+    .target(
+      name: "StorageClientLive",
+      dependencies: [
+        "StorageClient",
+        .product(name: "JavaScriptKit", package: "JavaScriptKit", condition: .when(platforms: [.wasi])),
       ]
     )
   ],

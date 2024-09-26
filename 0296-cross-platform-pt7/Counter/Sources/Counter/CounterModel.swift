@@ -2,6 +2,7 @@ import Dependencies
 import FactClient
 import Foundation
 import Perception
+import StorageClient
 import SwiftNavigation
 
 @MainActor
@@ -11,6 +12,8 @@ public class CounterModel: HashableObject {
   @Dependency(FactClient.self) var factClient
   @PerceptionIgnored
   @Dependency(\.continuousClock) var clock
+  @PerceptionIgnored
+  @Dependency(StorageClient.self) var storageClient
 
   public var count = 0 {
     didSet {
@@ -24,7 +27,18 @@ public class CounterModel: HashableObject {
       print("isTextFocused", isTextFocused)
     }
   }
-  public var savedFacts: [String] = []
+  public var savedFacts: [String] = [] {
+    didSet {
+      do {
+        try storageClient.save(
+          JSONEncoder().encode(savedFacts),
+          to: .savedFactsKey
+        )
+      } catch {
+        //
+      }
+    }
+  }
   public var text = ""
   private var timerTask: Task<Void, Error>?
 
@@ -40,7 +54,14 @@ public class CounterModel: HashableObject {
     public var id: String { value }
   }
 
-  public init() {}
+  public init() {
+    do {
+      savedFacts = try JSONDecoder().decode([String].self, from: storageClient.load(.savedFactsKey))
+    } catch {
+      // TODO: error handling
+      savedFacts = []
+    }
+  }
 
   public func incrementButtonTapped() {
     count += 1
@@ -118,4 +139,8 @@ public class CounterModel: HashableObject {
       }
     }
   }
+}
+
+extension String {
+  fileprivate static let savedFactsKey = "saved-facts"
 }

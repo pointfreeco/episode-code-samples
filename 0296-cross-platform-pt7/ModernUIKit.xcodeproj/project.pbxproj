@@ -11,6 +11,7 @@
 		2A154CF22C5D56E1009FC7D9 /* CounterFeatureEpoxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A154CF12C5D56E1009FC7D9 /* CounterFeatureEpoxy.swift */; };
 		2A1CEB272BFD271600753A66 /* Perception in Frameworks */ = {isa = PBXBuildFile; productRef = 2A1CEB262BFD271600753A66 /* Perception */; };
 		2A6230292BFEA5C600930179 /* AppFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6230282BFEA5C600930179 /* AppFeature.swift */; };
+		2A7507FF2C7FB39E00CAF2BA /* StorageClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2A7507FE2C7FB39E00CAF2BA /* StorageClientLive */; };
 		4B530F5C2C7F91F200B8B2F4 /* Counter in Frameworks */ = {isa = PBXBuildFile; productRef = 4B530F5B2C7F91F200B8B2F4 /* Counter */; };
 		4B530F5E2C7F953D00B8B2F4 /* FactClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 4B530F5D2C7F953D00B8B2F4 /* FactClientLive */; };
 		4B54C2252BFD0D1900E95174 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54C2242BFD0D1900E95174 /* App.swift */; };
@@ -49,6 +50,7 @@
 				CA5C1D632C5932B500F8882D /* SwiftNavigation in Frameworks */,
 				CA5C1D672C5932B500F8882D /* UIKitNavigation in Frameworks */,
 				4B530F5C2C7F91F200B8B2F4 /* Counter in Frameworks */,
+				2A7507FF2C7FB39E00CAF2BA /* StorageClientLive in Frameworks */,
 				2A1CEB272BFD271600753A66 /* Perception in Frameworks */,
 				CA5C1D652C5932B500F8882D /* SwiftUINavigation in Frameworks */,
 			);
@@ -131,6 +133,7 @@
 				2A154CEF2C5D56C7009FC7D9 /* Epoxy */,
 				4B530F5B2C7F91F200B8B2F4 /* Counter */,
 				4B530F5D2C7F953D00B8B2F4 /* FactClientLive */,
+				2A7507FE2C7FB39E00CAF2BA /* StorageClientLive */,
 			);
 			productName = ModernUIKit;
 			productReference = 4B54C2212BFD0D1900E95174 /* ModernUIKit.app */;
@@ -442,6 +445,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2A1CEB252BFD271600753A66 /* XCRemoteSwiftPackageReference "swift-perception" */;
 			productName = Perception;
+		};
+		2A7507FE2C7FB39E00CAF2BA /* StorageClientLive */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StorageClientLive;
 		};
 		4B530F5B2C7F91F200B8B2F4 /* Counter */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -103,6 +103,7 @@ final class CounterViewController: UIViewController {
           self?.model.deleteFactButtonTapped(fact: fact)
         })
         deleteButton.setTitle("Delete", for: .normal)
+        deleteButton.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         let factStack = UIStackView(arrangedSubviews: [
           factLabel,
