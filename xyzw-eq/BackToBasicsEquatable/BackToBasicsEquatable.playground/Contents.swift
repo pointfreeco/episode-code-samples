@@ -6,8 +6,8 @@ struct User: Equatable {
   var name: String
 
   static func == (lhs: Self, rhs: Self) -> Bool {
-//    lhs.id == rhs.id && lhs.isAdmin == rhs.isAdmin && lhs.name == rhs.name
-    lhs.id == rhs.id
+    lhs.id == rhs.id && lhs.isAdmin == rhs.isAdmin && lhs.name == rhs.name
+//    lhs.id == rhs.id
 //    lhs.isAdmin == rhs.isAdmin && lhs.name == rhs.name
   }
 }
@@ -38,6 +38,31 @@ struct Mod12: Equatable {
   static func == (lhs: Self, rhs: Self) -> Bool {
     (rhs.value - lhs.value).isMultiple(of: 12)
   }
+
+  func add(to other: Self) -> Self {
+    Self(value + other.value)
+  }
+  var isBig: Bool {
+    value >= 100
+  }
+}
+func algorithm(lhs: Mod12, rhs: Mod12) {
+  let bothAreBig = lhs == rhs
+  ? lhs.isBig
+  : lhs.isBig && rhs.isBig
+}
+
+do {
+  let three = Mod12(3)
+  let fifteen = Mod12(15)
+  Mod12(2).add(to: three) == Mod12(2).add(to: fifteen)
+
+  Mod12(2) == Mod12(50)
+  Mod12(2).isBig == Mod12(50).isBig
+  Mod12(2) == Mod12(110)
+  Mod12(2).isBig == Mod12(110).isBig
+  Mod12(2).isBig
+  Mod12(110).isBig
 }
 
 Mod12(1) == Mod12(6)
@@ -129,3 +154,23 @@ extension Array where Element: Equatable {
 ]
   .uniques()
   .map(\.value)
+
+func f<A: Equatable>(_ a: A) -> Bool {
+  //
+  fatalError()
+}
+do {
+//  let x: Int
+//  let y: Int
+//  if x == y {
+//    f(x) == f(y)
+//  }
+}
+func algorithm<A: Equatable>(lhs: A, rhs: A) -> Bool {
+  if lhs == rhs {
+    // fast path using 'lhs'
+  } else {
+    // slow path using both 'lhs' and 'rhs'
+  }
+  fatalError()
+}
