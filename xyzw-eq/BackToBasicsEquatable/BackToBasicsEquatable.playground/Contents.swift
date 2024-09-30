@@ -174,3 +174,82 @@ func algorithm<A: Equatable>(lhs: A, rhs: A) -> Bool {
   }
   fatalError()
 }
+
+Double.nan
+
+Double.zero / .zero
+
+import Foundation
+
+sqrt(-1)
+Double.infinity * .zero
+
+let nanValue = Double.nan
+nanValue == nanValue
+
+let veryLargeNumber: Double = 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000
+veryLargeNumber == veryLargeNumber + 1
+
+Double.zero
+-Double.zero
+
+Double.zero == -.zero
+
+func isSpecialNumber(_ value: Double) -> Bool {
+  1 / value == .infinity
+}
+
+isSpecialNumber(.zero)
+isSpecialNumber(-.zero)
+
+do {
+  let name = "Blob"
+
+  let cafe = "Café"
+
+  name == name
+  cafe == name
+  name == cafe
+
+  let cafe1 = "Caf\u{e9}"
+  let cafe2 = "Cafe\u{301}"
+  cafe1 == cafe2
+
+  struct Flag: Equatable {
+    let id: UUID
+    var isEnabled = false
+  }
+
+  let dejavu = "déjà-vu"
+  let dejavu1 = "d\u{e9}j\u{e0}-vu"
+  let dejavu2 = "de\u{301}j\u{e0}-vu"
+  let dejavu3 = "d\u{e9}ja\u{300}-vu"
+  let dejavu4 = "de\u{301}ja\u{300}-vu"
+
+  dejavu1 == dejavu2
+  dejavu2 == dejavu3
+  dejavu3 == dejavu4
+  dejavu4 == dejavu1
+
+  Array(cafe1.unicodeScalars).description
+  Array(cafe2.unicodeScalars).description
+  cafe1.unicodeScalars.elementsEqual(cafe2.unicodeScalars)
+
+  Array(cafe1.utf8).description
+  Array(cafe2.utf8).description
+  cafe1.utf8.elementsEqual(cafe2.utf8)
+
+  func specialAlgorithm(_ str: String) -> Bool {
+    if str.utf8.count <= 5 {
+      // Fast path
+      return true
+    } else {
+      // Slow path
+      return false
+    }
+  }
+
+  specialAlgorithm(cafe1)
+  specialAlgorithm(cafe2)
+  cafe1 == cafe2
+}
