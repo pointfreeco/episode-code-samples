@@ -514,3 +514,6 @@ final class UserRef2: Hashable {
     hasher.combine(name)
   }
 }
+
+import SwiftUI
+Text(verbatim: "1") == Text(verbatim: "1")
