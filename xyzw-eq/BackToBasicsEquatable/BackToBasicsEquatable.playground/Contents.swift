@@ -473,6 +473,44 @@ do {
   users.contains(blobJr)
 }
 
-import UIKit
+actor Status: Hashable {
+  var isLoading = false
 
-UIViewController() == UIViewController()
+  static func == (lhs: Status, rhs: Status) -> Bool {
+    lhs === rhs
+  }
+  nonisolated func hash(into hasher: inout Hasher) {
+    hasher.combine(ObjectIdentifier(self))
+  }
+}
+
+let status = Status()
+ObjectIdentifier(status)
+status === status
+
+func operation(_ value: some Hashable) {
+  _ = value.hashValue
+}
+operation(status)
+
+
+final class UserRef2: Hashable {
+  let id: Int
+  let isAdmin: Bool
+  let name: String
+  init(id: Int, isAdmin: Bool, name: String) {
+    self.id = id
+    self.isAdmin = isAdmin
+    self.name = name
+  }
+  static func == (lhs: UserRef2, rhs: UserRef2) -> Bool {
+    lhs.id == rhs.id
+    && lhs.isAdmin == rhs.isAdmin
+    && lhs.name == rhs.name
+  }
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(id)
+    hasher.combine(isAdmin)
+    hasher.combine(name)
+  }
+}

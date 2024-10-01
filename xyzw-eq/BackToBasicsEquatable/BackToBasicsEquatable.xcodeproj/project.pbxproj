@@ -20,7 +20,6 @@
 
 /* Begin PBXFileReference section */
 		2A2B2E8E2CAC6AA1001A982B /* BackToBasicsEquatableTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BackToBasicsEquatableTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2A2B2E952CAC6C10001A982B /* BackToBasicsEquatable.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = BackToBasicsEquatable.xctestplan; path = BackToBasicsEquatableTests/BackToBasicsEquatable.xctestplan; sourceTree = "<group>"; };
 		4B7FD74D2CAB1B8100205C7D /* BackToBasicsEquatable */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BackToBasicsEquatable; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B7FD7572CAB1B9000205C7D /* BackToBasicsEquatable.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = BackToBasicsEquatable.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
@@ -59,7 +58,6 @@
 		4B7FD7442CAB1B8100205C7D = {
 			isa = PBXGroup;
 			children = (
-				2A2B2E952CAC6C10001A982B /* BackToBasicsEquatable.xctestplan */,
 				4B7FD7572CAB1B9000205C7D /* BackToBasicsEquatable.playground */,
 				4B7FD74F2CAB1B8100205C7D /* BackToBasicsEquatable */,
 				2A2B2E8F2CAC6AA1001A982B /* BackToBasicsEquatableTests */,
