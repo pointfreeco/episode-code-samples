@@ -1,18 +1,88 @@
 //let x: any Equatable
 
-struct User: Equatable {
+struct User: Equatable, Hashable {
   let id: Int
   var isAdmin = false
   var name: String
 
   static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.id == rhs.id && lhs.isAdmin == rhs.isAdmin && lhs.name == rhs.name
+    return lhs.id == rhs.id
+//    && lhs.isAdmin == rhs.isAdmin
+//    && lhs.name == rhs.name
 //    lhs.id == rhs.id
 //    lhs.isAdmin == rhs.isAdmin && lhs.name == rhs.name
   }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(id)
+    hasher.combine(isAdmin)
+    hasher.combine(name)
+  }
 }
 
-let blob = User(id: 42, isAdmin: false, name: "Blob")
+struct SlowDictionary<Key, Value> {
+  let keyValues: [(Key, Value)]
+
+  subscript(key: Key) -> Value? where Key: Equatable {
+    for (k, v) in keyValues {
+      if key == k {
+        return v
+      }
+    }
+    return nil
+  }
+}
+
+do {
+  let blob = User(id: 42, isAdmin: false, name: "Blob")
+  var friends: [User: [User]] = [:]
+
+  friends[blob] = [
+    User(id: 43, name: "Blob Jr."),
+    User(id: 44, name: "Blob Sr."),
+  ]
+
+  friends[blob]
+  blob.hashValue
+  let blobJr = User(id: 43, name: "Blob Jr.")
+  friends[blobJr]
+
+  blob.hashValue
+  blobJr.hashValue
+
+  let users = Set([
+    blob,
+    blob,
+    blob,
+    blob,
+    blobJr,
+    blobJr,
+    blobJr,
+  ])
+  users.contains(blob)
+  users.contains(User(id: 44, name: "Blob Sr."))
+
+  var blobDraft = blob
+  blobDraft.isAdmin.toggle()
+  blob == blobDraft
+  blob.hashValue == blobDraft.hashValue
+  friends[blob]
+  friends[blobDraft]
+
+//  friends[blobDraft] = []
+
+  var friendsSlow = SlowDictionary(
+    keyValues: [
+      (blob, [
+        User(id: 43, name: "Blob Jr."),
+        User(id: 44, name: "Blob Sr."),
+      ])
+    ]
+  )
+
+  friendsSlow[blob]
+  friendsSlow[blobDraft]
+}
 
 let id42Partition = [
   User(id: 42, isAdmin: true, name: "Blob"),
@@ -231,6 +301,11 @@ do {
   dejavu3 == dejavu4
   dejavu4 == dejavu1
 
+  dejavu1.hashValue
+  dejavu2.hashValue
+  dejavu3.hashValue
+  dejavu4.hashValue
+
   Array(cafe1.unicodeScalars).description
   Array(cafe2.unicodeScalars).description
   cafe1.unicodeScalars.elementsEqual(cafe2.unicodeScalars)
@@ -252,4 +327,15 @@ do {
   specialAlgorithm(cafe1)
   specialAlgorithm(cafe2)
   cafe1 == cafe2
+}
+
+do {
+//  let x: Hashable
+//  let y: Hashable
+//  if x == y {
+//    x.hashValue == y.hashValue
+//  }
+//  if x.hashValue == y.hashValue {
+//    x == y
+//  }
 }
