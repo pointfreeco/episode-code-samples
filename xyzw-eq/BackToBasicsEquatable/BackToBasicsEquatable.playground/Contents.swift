@@ -366,6 +366,10 @@ final class UserRef: Equatable, Hashable {
 
 do {
   let blob = User(id: 42, name: "Blob")
+  let blob2 = User(id: 42, name: "Blob")
+
+  blob == blob2
+
   var blobJr = User(id: 43, name: "Blob Jr.")
   var users = Set([
     blob,
@@ -392,7 +396,19 @@ do {
 
 do {
   let blob = UserRef(id: 42, name: "Blob")
+  let blob2 = UserRef(id: 42, name: "Blob")
+
+  blob === blob2
+
   let blobJr = UserRef(id: 43, name: "Blob Jr.")
+
+  ObjectIdentifier(blob)
+  ObjectIdentifier(blobJr)
+
+  blob === blob
+  blob === blobJr
+  blobJr === blob
+
   var users = Set([
     blob,
     blobJr,
@@ -403,6 +419,8 @@ do {
   users.count
 
   blobJr.name = "Blob II"
+
+  ObjectIdentifier(blobJr)
 
   users.map(\.name)
 
@@ -416,3 +434,45 @@ do {
   Set(Array(users))
 
 }
+
+final class UserRefCorrect: Equatable, Hashable {
+  let id: Int
+  var isAdmin = false
+  var name: String
+
+  init(id: Int, isAdmin: Bool = false, name: String) {
+    self.id = id
+    self.isAdmin = isAdmin
+    self.name = name
+  }
+
+  static func == (lhs: UserRefCorrect, rhs: UserRefCorrect) -> Bool {
+    lhs === rhs
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(ObjectIdentifier(self))
+  }
+}
+
+do {
+  let blob = UserRefCorrect(id: 42, name: "Blob")
+  let blobJr = UserRefCorrect(id: 43, name: "Blob Jr.")
+  var users = Set([
+    blob,
+    blobJr,
+  ])
+
+  users.contains(blob)
+  users.contains(blobJr)
+
+  blobJr.name = "Blob II"
+  users.map(\.name)
+
+  users.contains(blob)
+  users.contains(blobJr)
+}
+
+import UIKit
+
+UIViewController() == UIViewController()

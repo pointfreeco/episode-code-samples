@@ -27,11 +27,11 @@ import Foundation
 
 final class TimerNotifier: Hashable {
   static func == (lhs: TimerNotifier, rhs: TimerNotifier) -> Bool {
-    lhs.name == rhs.name
+    lhs === rhs
   }
 
   func hash(into hasher: inout Hasher) {
-    hasher.combine(name)
+    hasher.combine(ObjectIdentifier(self))
   }
 
   let name: String
