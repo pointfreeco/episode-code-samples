@@ -339,3 +339,80 @@ do {
 //    x == y
 //  }
 }
+
+final class UserRef: Equatable, Hashable {
+  let id: Int
+  var isAdmin = false
+  var name: String
+
+  init(id: Int, isAdmin: Bool = false, name: String) {
+    self.id = id
+    self.isAdmin = isAdmin
+    self.name = name
+  }
+
+  static func == (lhs: UserRef, rhs: UserRef) -> Bool {
+    lhs.id == rhs.id
+    && lhs.isAdmin == rhs.isAdmin
+    && lhs.name == rhs.name
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(id)
+    hasher.combine(isAdmin)
+    hasher.combine(name)
+  }
+}
+
+do {
+  let blob = User(id: 42, name: "Blob")
+  var blobJr = User(id: 43, name: "Blob Jr.")
+  var users = Set([
+    blob,
+    blobJr,
+  ])
+
+  users.contains(blob)
+  users.contains(blobJr)
+  users.count
+
+  blobJr.name = "Blob II"
+
+  users.map(\.name)
+
+  users.contains(blob)
+  users.contains(blobJr)
+  users.count
+
+  users.insert(blobJr)
+  users.contains(blobJr)
+  users.count
+
+}
+
+do {
+  let blob = UserRef(id: 42, name: "Blob")
+  let blobJr = UserRef(id: 43, name: "Blob Jr.")
+  var users = Set([
+    blob,
+    blobJr,
+  ])
+
+  users.contains(blob)
+  users.contains(blobJr)
+  users.count
+
+  blobJr.name = "Blob II"
+
+  users.map(\.name)
+
+  users.contains(blob)
+  users.contains(blobJr)
+  users.count
+
+  users.insert(blobJr)
+  users.count
+
+  Set(Array(users))
+
+}
