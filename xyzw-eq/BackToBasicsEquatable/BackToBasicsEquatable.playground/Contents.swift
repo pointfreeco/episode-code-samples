@@ -514,3 +514,46 @@ final class UserRef2: Hashable {
     hasher.combine(name)
   }
 }
+
+//do {
+//  let never: Never
+//  never == never
+//}
+
+import SwiftUI
+
+Animation.linear == .linear
+Animation.linear == .easeOut
+
+print(Animation.linear)
+print(Animation.easeOut)
+
+Animation.linear == .linear(duration: 0.35)
+Animation.linear == .linear(duration: 0.75)
+
+Color.white == .white
+Color.white == .red
+
+Color(white: 1) == .white
+
+Color(.displayP3, white: 1) == Color(.sRGB, white: 1)
+
+do {
+  var path = Path()
+  path.addLine(to: .init(x: 10, y: 10))
+  path.addLine(to: .init(x: 10, y: 0))
+  path.closeSubpath()
+
+  var path2 = Path()
+  path2.addLine(to: .init(x: 10, y: 0))
+  path2.addLine(to: .init(x: 10, y: 10))
+  path2.closeSubpath()
+
+  path == path2
+}
+
+Text("Hello") == Text("Hello")
+Text("Hello") == Text("Hello Blob")
+Text("Hello \("Blob")") == Text("Hello \("Blob")")
+let text = Text("Hello \("Blob")")
+text == text
