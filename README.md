@@ -296,3 +296,7 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Cross-Platform Swift: Networking](0292-cross-platform-pt3)
 1. [Cross-Platform Swift: Navigation](0293-cross-platform-pt4)
 1. [Cross-Platform Swift: UI Controls](0294-cross-platform-pt5)
+1. [Cross-Platform Swift: New Features](0295-cross-platform-pt6)
+1. [Cross-Platform Swift: Persistence](0296-cross-platform-pt7)
+1. [Back to Basics: Equatable](0297-back-to-basics-equatable-pt1)
+1. [Back to Basics: Hashable](0298-back-to-basics-equatable-pt2)
