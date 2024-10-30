@@ -557,3 +557,46 @@ Text("Hello") == Text("Hello Blob")
 Text("Hello \("Blob")") == Text("Hello \("Blob")")
 let text = Text("Hello \("Blob")")
 text == text
+
+let task1 = Task {}
+let task2 = Task {}
+task1 == task1
+task1 == task2
+
+\String.count == \String.count
+\String.count == \String.description
+
+(\String.count as AnyKeyPath) == \String.count
+
+\String.count == \[Int].count
+
+\[Int].count == \[String].count
+
+(\String.count).hashValue
+(\String.description).hashValue
+(\[String].count).hashValue
+(\[Int].count).hashValue
+
+var propertiesAccessed: Set<PartialKeyPath<UserRef>> = []
+propertiesAccessed.insert(\.name)
+propertiesAccessed.insert(\.id)
+propertiesAccessed
+
+extension Binding: Equatable where Value: Equatable {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.wrappedValue == rhs.wrappedValue
+  }
+}
+
+@Observable class Model {
+  var count = 0
+}
+do {
+  @Bindable var model = Model()
+  let count = $model.count
+
+  count.wrappedValue
+  count.wrappedValue += 1
+  count.wrappedValue
+  model.count
+}
