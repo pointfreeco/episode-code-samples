@@ -76,7 +76,30 @@ struct SQLiteExplorationsApp: App {
       "Finalize insert",
       sqlite3_finalize(statement) == SQLITE_OK
     )
-
+    statement = nil
+    sqlite3_prepare_v2(
+      db,
+      """
+      SELECT * FROM "players" WHERE "createdAt" > ?
+      """,
+      -1,
+      &statement,
+      nil
+    )
+    sqlite3_bind_int64(statement, 1, Int64(Date().addingTimeInterval(-10).timeIntervalSince1970))
+    while sqlite3_step(statement) == SQLITE_ROW {
+      struct Player {
+        let id: Int64
+        let name: String
+        let createdAt: Date
+      }
+      let id: Int64 = sqlite3_column_int64(statement, 0)
+      let name = String(cString: sqlite3_column_text(statement, 1))
+      let createdAt = Date(timeIntervalSince1970: Double(sqlite3_column_int64(statement, 2)))
+      let player = Player(id: id, name: name, createdAt: createdAt)
+      print(player)
+    }
+    sqlite3_finalize(statement)
   }
 
   var body: some Scene {
