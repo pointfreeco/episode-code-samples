@@ -10,38 +10,38 @@ struct SQLiteExplorationsApp: App {
       let databasePath = URL.documentsDirectory.appending(path: "db.sqlite")
         .path()
       print("open", databasePath)
-      let databaseQueue = try DatabaseQueue(path: databasePath)
+      var config = Configuration()
+      config.prepareDatabase {
+        $0.trace { print($0) }
+      }
+      let databaseQueue = try DatabaseQueue(
+        path: databasePath,
+        configuration: config
+      )
       var migrator = DatabaseMigrator()
       #if DEBUG
         migrator.eraseDatabaseOnSchemaChange = true
       #endif
       migrator.registerMigration("Create 'players' table") { db in
-        try db.create(table: "players") { table in
+        try db.create(table: Player.databaseTableName) { table in
           table.autoIncrementedPrimaryKey("id")
           table.column("name", .text).notNull()
           table.column("createdAt", .datetime).notNull()
         }
       }
       migrator.registerMigration("Add 'isInjured' to 'players'") { db in
-        try db.alter(table: "players") { table in
+        try db.alter(table: Player.databaseTableName) { table in
           table.add(column: "isInjured", .boolean).defaults(to: false)
         }
       }
       try migrator.migrate(databaseQueue)
 
-      //      withAnimation {
-      //        <#code#>
-      //      }
-      //      let count = Mutex(0)
-      //      count.withLock { n in
-      //        print(n)
-      //      }
-      //      enum Locals {
-      //        @TaskLocal static var count = 0
-      //      }
-      //      Locals.$count.withValue(1) {
-      //        print(Locals.count)
-      //      }
+      try databaseQueue.write { db in
+        var insertedPlayer = try Player(name: "Blob", createdAt: Date(), isInjured: true)
+            .inserted(db)
+        insertedPlayer.name += " Jr."
+        try insertedPlayer.update(db)
+      }
     } catch {
       fatalError(error.localizedDescription)
     }
