@@ -1,6 +1,7 @@
 import GRDB
 import SQLite3
 import SwiftUI
+import Synchronization
 
 @main
 struct SQLiteExplorationsApp: App {
@@ -8,7 +9,39 @@ struct SQLiteExplorationsApp: App {
     do {
       let databasePath = URL.documentsDirectory.appending(path: "db.sqlite")
         .path()
+      print("open", databasePath)
       let databaseQueue = try DatabaseQueue(path: databasePath)
+      var migrator = DatabaseMigrator()
+      #if DEBUG
+        migrator.eraseDatabaseOnSchemaChange = true
+      #endif
+      migrator.registerMigration("Create 'players' table") { db in
+        try db.create(table: "players") { table in
+          table.autoIncrementedPrimaryKey("id")
+          table.column("name", .text).notNull()
+          table.column("createdAt", .datetime).notNull()
+        }
+      }
+      migrator.registerMigration("Add 'isInjured' to 'players'") { db in
+        try db.alter(table: "players") { table in
+          table.add(column: "isInjured", .boolean).defaults(to: false)
+        }
+      }
+      try migrator.migrate(databaseQueue)
+
+      //      withAnimation {
+      //        <#code#>
+      //      }
+      //      let count = Mutex(0)
+      //      count.withLock { n in
+      //        print(n)
+      //      }
+      //      enum Locals {
+      //        @TaskLocal static var count = 0
+      //      }
+      //      Locals.$count.withValue(1) {
+      //        print(Locals.count)
+      //      }
     } catch {
       fatalError(error.localizedDescription)
     }
@@ -104,7 +137,8 @@ func sqlite3() {
     &statement,
     nil
   )
-  sqlite3_bind_int64(statement, 1, Int64(Date().addingTimeInterval(-10).timeIntervalSince1970))
+  sqlite3_bind_int64(
+    statement, 1, Int64(Date().addingTimeInterval(-10).timeIntervalSince1970))
   while sqlite3_step(statement) == SQLITE_ROW {
     struct Player {
       let id: Int64
@@ -113,7 +147,8 @@ func sqlite3() {
     }
     let id: Int64 = sqlite3_column_int64(statement, 0)
     let name = String(cString: sqlite3_column_text(statement, 1))
-    let createdAt = Date(timeIntervalSince1970: Double(sqlite3_column_int64(statement, 2)))
+    let createdAt = Date(
+      timeIntervalSince1970: Double(sqlite3_column_int64(statement, 2)))
     let player = Player(id: id, name: name, createdAt: createdAt)
     print(player)
   }
