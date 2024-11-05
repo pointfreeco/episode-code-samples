@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2AA9B3BD2CDAB9BD00BB83C0 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 2AA9B3BC2CDAB9BD00BB83C0 /* GRDB */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		2A2D2A8A2CD2BAD00071022C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -39,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AA9B3BD2CDAB9BD00BB83C0 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +95,7 @@
 			);
 			name = SQLiteExplorations;
 			packageProductDependencies = (
+				2AA9B3BC2CDAB9BD00BB83C0 /* GRDB */,
 			);
 			productName = SQLiteExplorations;
 			productReference = 2A2D2A792CD2BACC0071022C /* SQLiteExplorations.app */;
@@ -146,6 +152,9 @@
 			);
 			mainGroup = 2A2D2A702CD2BACC0071022C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2AA9B3BB2CDAB9BD00BB83C0 /* XCRemoteSwiftPackageReference "GRDB" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2A2D2A7A2CD2BACC0071022C /* Products */;
 			projectDirPath = "";
@@ -260,6 +269,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -315,6 +325,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -341,7 +352,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.SQLiteExplorations;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -368,7 +378,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.SQLiteExplorations;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -385,7 +394,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.SQLiteExplorationsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SQLiteExplorations.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SQLiteExplorations";
 			};
@@ -403,7 +411,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.SQLiteExplorationsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SQLiteExplorations.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SQLiteExplorations";
 			};
@@ -440,6 +447,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2AA9B3BB2CDAB9BD00BB83C0 /* XCRemoteSwiftPackageReference "GRDB" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "http://github.com/groue/GRDB.swift";
+			requirement = {
+				branch = "v7.0.0-beta.6";
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2AA9B3BC2CDAB9BD00BB83C0 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2AA9B3BB2CDAB9BD00BB83C0 /* XCRemoteSwiftPackageReference "GRDB" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2A2D2A712CD2BACC0071022C /* Project object */;
 }
