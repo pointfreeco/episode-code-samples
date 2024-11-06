@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2AA9B3BD2CDAB9BD00BB83C0 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 2AA9B3BC2CDAB9BD00BB83C0 /* GRDB */; };
+		4BBE003F2CDBFB1800EBD6F0 /* IssueReporting in Frameworks */ = {isa = PBXBuildFile; productRef = 4BBE003E2CDBFB1800EBD6F0 /* IssueReporting */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2AA9B3BD2CDAB9BD00BB83C0 /* GRDB in Frameworks */,
+				4BBE003F2CDBFB1800EBD6F0 /* IssueReporting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +98,7 @@
 			name = SQLiteExplorations;
 			packageProductDependencies = (
 				2AA9B3BC2CDAB9BD00BB83C0 /* GRDB */,
+				4BBE003E2CDBFB1800EBD6F0 /* IssueReporting */,
 			);
 			productName = SQLiteExplorations;
 			productReference = 2A2D2A792CD2BACC0071022C /* SQLiteExplorations.app */;
@@ -154,6 +157,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				2AA9B3BB2CDAB9BD00BB83C0 /* XCRemoteSwiftPackageReference "GRDB" */,
+				4BBE003D2CDBFB1800EBD6F0 /* XCRemoteSwiftPackageReference "xctest-dynamic-overlay" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2A2D2A7A2CD2BACC0071022C /* Products */;
@@ -457,6 +461,14 @@
 				kind = branch;
 			};
 		};
+		4BBE003D2CDBFB1800EBD6F0 /* XCRemoteSwiftPackageReference "xctest-dynamic-overlay" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/xctest-dynamic-overlay.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -464,6 +476,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2AA9B3BB2CDAB9BD00BB83C0 /* XCRemoteSwiftPackageReference "GRDB" */;
 			productName = GRDB;
+		};
+		4BBE003E2CDBFB1800EBD6F0 /* IssueReporting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BBE003D2CDBFB1800EBD6F0 /* XCRemoteSwiftPackageReference "xctest-dynamic-overlay" */;
+			productName = IssueReporting;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

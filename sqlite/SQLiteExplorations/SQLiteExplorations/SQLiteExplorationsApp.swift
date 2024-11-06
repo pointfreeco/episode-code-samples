@@ -5,51 +5,11 @@ import Synchronization
 
 @main
 struct SQLiteExplorationsApp: App {
-  init() {
-    do {
-      let databasePath = URL.documentsDirectory.appending(path: "db.sqlite")
-        .path()
-      print("open", databasePath)
-      var config = Configuration()
-      config.prepareDatabase {
-        $0.trace { print($0) }
-      }
-      let databaseQueue = try DatabaseQueue(
-        path: databasePath,
-        configuration: config
-      )
-      var migrator = DatabaseMigrator()
-      #if DEBUG
-        migrator.eraseDatabaseOnSchemaChange = true
-      #endif
-      migrator.registerMigration("Create 'players' table") { db in
-        try db.create(table: Player.databaseTableName) { table in
-          table.autoIncrementedPrimaryKey("id")
-          table.column("name", .text).notNull()
-          table.column("createdAt", .datetime).notNull()
-        }
-      }
-      migrator.registerMigration("Add 'isInjured' to 'players'") { db in
-        try db.alter(table: Player.databaseTableName) { table in
-          table.add(column: "isInjured", .boolean).defaults(to: false)
-        }
-      }
-      try migrator.migrate(databaseQueue)
-
-      try databaseQueue.write { db in
-        var insertedPlayer = try Player(name: "Blob", createdAt: Date(), isInjured: true)
-            .inserted(db)
-        insertedPlayer.name += " Jr."
-        try insertedPlayer.update(db)
-      }
-    } catch {
-      fatalError(error.localizedDescription)
-    }
-  }
+  static let databaseQueue = try! DatabaseQueue.appDatabase()
 
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(databaseQueue: Self.databaseQueue)
     }
   }
 }
