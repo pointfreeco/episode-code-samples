@@ -33,10 +33,14 @@ struct ContentView: View {
       }
       .presentationDetents([.medium])
     }
-    .onAppear {
+    .task {
+      let values = ValueObservation.tracking { db in
+        try Player.fetchAll(db)
+      }
+      .values(in: databaseQueue)
       do {
-        players = try databaseQueue.read { db in
-          try Player.fetchAll(db)
+        for try await players in values {
+          self.players = players
         }
       } catch {
         reportIssue(error)
@@ -47,18 +51,23 @@ struct ContentView: View {
 
 struct PlayerDetailView: View {
   let databaseQueue: DatabaseQueue
-  let player: Player
+  @State var player: Player
   @State var team: Team?
+  @Environment(\.dismiss) var dismiss
 
   var body: some View {
     Form {
       Section {
-        Text(player.name)
-        if player.isInjured {
-          Text("\(Image(systemName: "stethoscope")) Injured")
-            .foregroundStyle(.red)
-        } else {
-          Text("Not injured")
+        TextField("Name", text: $player.name)
+        Button {
+          player.isInjured.toggle()
+        } label: {
+          if player.isInjured {
+            Text("\(Image(systemName: "stethoscope")) Injured")
+              .foregroundStyle(.red)
+          } else {
+            Text("Not injured")
+          }
         }
       } header: {
         Text("Details")
@@ -87,6 +96,34 @@ struct PlayerDetailView: View {
         reportIssue(error)
       }
     }
+    .toolbar {
+      ToolbarItem(placement: .cancellationAction) {
+        Button("Cancel") {
+          dismiss()
+        }
+      }
+      ToolbarItem(placement: .primaryAction) {
+        Button("Save") {
+          do {
+            try databaseQueue.write { db in
+              try player.save(db)
+            }
+            dismiss()
+          } catch {
+            reportIssue(error)
+          }
+        }
+      }
+    }
+//    .onChange(of: player) {
+//      do {
+//        try databaseQueue.write { db in
+//          try player.save(db)
+//        }
+//      } catch {
+//        reportIssue(error)
+//      }
+//    }
   }
 }
 
@@ -105,12 +142,22 @@ struct PlayerDetailView: View {
 }
 
 #Preview("Player detail") {
-  PlayerDetailView(
-    databaseQueue: try! .appDatabase(),
-    player: Player(
-      name: "Blob",
-      createdAt: Date(),
-      teamID: 3
-    )
-  )
+  @Previewable @State var isPresented = true
+
+  Button("Present") {
+    isPresented = true
+  }
+  .sheet(isPresented: $isPresented) {
+    NavigationStack {
+      PlayerDetailView(
+        databaseQueue: try! .appDatabase(),
+        player: Player(
+          name: "Blob",
+          createdAt: Date(),
+          teamID: 3
+        )
+      )
+    }
+    .presentationDetents([.medium])
+  }
 }

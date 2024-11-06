@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-struct Player: MutablePersistableRecord, FetchableRecord, Codable, Identifiable {
+struct Player: MutablePersistableRecord, FetchableRecord, Codable, Identifiable, Equatable {
   static let databaseTableName = "players"
 
   var id: Int64?
