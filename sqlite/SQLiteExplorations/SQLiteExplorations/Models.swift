@@ -90,3 +90,9 @@ extension DatabaseQueue {
     return databaseQueue
   }
 }
+
+import SwiftUI
+
+extension EnvironmentValues {
+  @Entry var databaseQueue: DatabaseQueue = try! .appDatabase()
+}

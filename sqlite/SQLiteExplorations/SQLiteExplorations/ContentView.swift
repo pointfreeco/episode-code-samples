@@ -3,9 +3,26 @@ import IssueReporting
 import SwiftUI
 
 struct ContentView: View {
-  let databaseQueue: DatabaseQueue
+  @Environment(\.databaseQueue) var databaseQueue
   @State var players: [Player] = []
   @State var playerDetail: Player?
+  @State var order: Order = .created
+
+  enum Order: String, CaseIterable {
+    case created = "Created"
+    case isInjured = "Injured?"
+    case name = "Name"
+    var orderingTerm: any SQLOrderingTerm & Sendable {
+      switch self {
+      case .created:
+        Column("createdAt")
+      case .isInjured:
+        Column("isInjured").desc
+      case .name:
+        Column("Name")
+      }
+    }
+  }
 
   var body: some View {
     Form {
@@ -24,23 +41,40 @@ struct ContentView: View {
         }
       }
     }
+    .toolbar {
+      ToolbarItem(placement: .primaryAction) {
+        Picker(order.rawValue, selection: $order) {
+          Section {
+            ForEach(Order.allCases, id: \.self) { order in
+              Text(order.rawValue)
+                .tag(order)
+            }
+          } header: {
+            Text("Sort by")
+          }
+        }
+      }
+    }
     .sheet(item: $playerDetail) { player in
       NavigationStack {
         PlayerDetailView(
-          databaseQueue: databaseQueue,
           player: player
         )
       }
       .presentationDetents([.medium])
     }
-    .task {
-      let values = ValueObservation.tracking { db in
-        try Player.fetchAll(db)
+    .task(id: order) {
+      let values = ValueObservation.tracking { [orderingTerm = order.orderingTerm] db in
+        try Player
+          .order(orderingTerm)
+          .fetchAll(db)
       }
       .values(in: databaseQueue)
       do {
         for try await players in values {
-          self.players = players
+          withAnimation {
+            self.players = players
+          }
         }
       } catch {
         reportIssue(error)
@@ -50,7 +84,7 @@ struct ContentView: View {
 }
 
 struct PlayerDetailView: View {
-  let databaseQueue: DatabaseQueue
+  @Environment(\.databaseQueue) var databaseQueue
   @State var player: Player
   @State var team: Team?
   @Environment(\.dismiss) var dismiss
@@ -128,7 +162,7 @@ struct PlayerDetailView: View {
 }
 
 #Preview {
-  let databaseQueue = try! DatabaseQueue.appDatabase()
+  @Previewable @Environment(\.databaseQueue) var databaseQueue
   try! databaseQueue.write { db in
     for index in 1...10 {
       _ = try! Player(
@@ -138,7 +172,10 @@ struct PlayerDetailView: View {
       ).inserted(db)
     }
   }
-  return ContentView(databaseQueue: databaseQueue)
+  return NavigationStack {
+    ContentView()
+  }
+  .environment(\.databaseQueue, databaseQueue)
 }
 
 #Preview("Player detail") {
@@ -150,7 +187,6 @@ struct PlayerDetailView: View {
   .sheet(isPresented: $isPresented) {
     NavigationStack {
       PlayerDetailView(
-        databaseQueue: try! .appDatabase(),
         player: Player(
           name: "Blob",
           createdAt: Date(),

@@ -5,11 +5,9 @@ import Synchronization
 
 @main
 struct SQLiteExplorationsApp: App {
-  static let databaseQueue = try! DatabaseQueue.appDatabase()
-
   var body: some Scene {
     WindowGroup {
-      ContentView(databaseQueue: Self.databaseQueue)
+      ContentView()
     }
   }
 }
