@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "E46DF23E-B3AC-45B3-BD7C-8E13816520AA",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:BackToBasicsEquatable.xcodeproj",
+      "identifier" : "4B7FD74C2CAB1B8100205C7D",
+      "name" : "BackToBasicsEquatable"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:BackToBasicsEquatable.xcodeproj",
+        "identifier" : "2A2B2E8D2CAC6AA1001A982B",
+        "name" : "BackToBasicsEquatableTests"
+      }
+    }
+  ],
+  "version" : 1
+}

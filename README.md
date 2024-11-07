@@ -300,3 +300,6 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Cross-Platform Swift: Persistence](0296-cross-platform-pt7)
 1. [Back to Basics: Equatable](0297-back-to-basics-equatable-pt1)
 1. [Back to Basics: Hashable](0298-back-to-basics-equatable-pt2)
+1. [Back to Basics: Hashable References](0299-back-to-basics-equatable-pt3)
+1. [Back to Basics: Advanced Hashable](0300-back-to-basics-equatable-pt4)
+1. [SQLite: The C Library](0301-sqlite-pt1)
