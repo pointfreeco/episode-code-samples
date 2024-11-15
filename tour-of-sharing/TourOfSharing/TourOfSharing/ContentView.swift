@@ -2,7 +2,7 @@ import Sharing
 import SwiftUI
 
 struct ManyCountersView: View {
-  @Shared(.appStorage("count")) var count = 0
+  @Dependency(\.defaultAppStorage) var store
 
   var body: some View {
     Form {
@@ -33,11 +33,7 @@ struct ManyCountersView: View {
       Button(#"UserDefaults.set(0, "count")"#) {
         UIView.animate(withDuration: 0.35) {
           withAnimation {
-            $count.withLock { $0 = 0 }
-            //          UserDefaults.standard.set(
-            //            0,
-            //            forKey: "count"
-            //          )
+            store.set(0, forKey: "count")
           }
         }
       }
@@ -48,7 +44,7 @@ struct ManyCountersView: View {
 @Observable
 class CounterModel {
   @ObservationIgnored
-  @Shared(.appStorage("count")) var count = 0
+  @Shared(.count) var count
   //@AppStorage("co.pointfree.countermodel.count") var count = 0
 }
 
@@ -71,7 +67,7 @@ struct CounterView: View {
 }
 
 struct AnotherCounterView: View {
-  @Shared(.appStorage("count")) var count = 0
+  @Shared(.count) var count
 
   var body: some View {
     HStack {
@@ -88,8 +84,23 @@ struct AnotherCounterView: View {
   }
 }
 
+struct ToggleView: View {
+  @AppStorage(.count) var count = false
+  var body: some View {
+    HStack {
+      Text("\(count)")
+      Button("Toggle") { count.toggle() }
+    }
+  }
+}
+struct OtherView: View {
+  @AppStorage(.count) var count = 100
+  var body: some View { EmptyView() }
+}
+extension String { static var count: String { "count" } }
+
 struct AppStorageCounterView: View {
-  @AppStorage("count") var count = 0
+  @AppStorage(.count) var count = 0
 
   var body: some View {
     HStack {
@@ -103,6 +114,14 @@ struct AppStorageCounterView: View {
       }
     }
     .buttonStyle(.borderless)
+
+    ToggleView()
+  }
+}
+
+extension SharedKey where Self == AppStorageKey<Int>.Default {
+  static var count: Self {
+    Self[.appStorage("count"), default: 0]
   }
 }
 
@@ -110,14 +129,20 @@ struct AppStorageCounterView: View {
   CounterView()
 }
 
-#Preview("ManyCountersView") {
+import Dependencies
+#Preview(
+  "ManyCountersView"
+  //, traits: .dependency(\.defaultAppStorage, .standard)
+) {
+  @Dependency(\.defaultAppStorage) var store
   ManyCountersView()
+    .defaultAppStorage(store)
 }
 
 import Combine
 
 final class CounterViewController: UIViewController {
-  @Shared(.appStorage("count")) var count = 0
+  @Shared(.count) var count
   var cancellables: Set<AnyCancellable> = []
 
   struct Representable: UIViewControllerRepresentable {
@@ -209,4 +234,21 @@ struct AppStorageRaceCondition: View {
 
 #Preview("AppStorage race condition") {
   AppStorageRaceCondition()
+}
+
+#Preview("AppStorageCounterView: Large count") {
+  let _ = UserDefaults.standard.set(10_000, forKey: "count")
+  AppStorageCounterView()
+}
+#Preview("AppStorageCounterView: Version 2") {
+  let _ = UserDefaults.standard.set(0, forKey: "count")
+  AppStorageCounterView()
+}
+
+#Preview("CounterView: Large count") {
+  @Shared(.count) var count = 1_000_000
+  CounterView()
+}
+#Preview("CounterView: Version 2") {
+  CounterView()
 }
