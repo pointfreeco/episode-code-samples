@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2A6E8B342CE7E25E00319151 /* Sharing in Frameworks */ = {isa = PBXBuildFile; productRef = 2A6E8B332CE7E25E00319151 /* Sharing */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		2A5622DB2CE7D2E600FC29DB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A6E8B342CE7E25E00319151 /* Sharing in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = TourOfSharing;
 			packageProductDependencies = (
+				2A6E8B332CE7E25E00319151 /* Sharing */,
 			);
 			productName = TourOfSharing;
 			productReference = 2A5622CA2CE7D2E500FC29DB /* TourOfSharing.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 2A5622C12CE7D2E400FC29DB;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2A6E8B322CE7E25E00319151 /* XCRemoteSwiftPackageReference "swift-sharing" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2A5622CB2CE7D2E500FC29DB /* Products */;
 			projectDirPath = "";
@@ -546,6 +555,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2A6E8B322CE7E25E00319151 /* XCRemoteSwiftPackageReference "swift-sharing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-sharing";
+			requirement = {
+				branch = 1.0.0;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2A6E8B332CE7E25E00319151 /* Sharing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2A6E8B322CE7E25E00319151 /* XCRemoteSwiftPackageReference "swift-sharing" */;
+			productName = Sharing;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2A5622C22CE7D2E400FC29DB /* Project object */;
 }

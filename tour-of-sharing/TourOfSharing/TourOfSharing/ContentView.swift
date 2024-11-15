@@ -1,7 +1,8 @@
+import Sharing
 import SwiftUI
 
 struct ManyCountersView: View {
-  @AppStorage("count") var count = 0
+  @Shared(.appStorage("count")) var count = 0
 
   var body: some View {
     Form {
@@ -14,13 +15,12 @@ struct ManyCountersView: View {
       }
 
       Button(#"UserDefaults.set(0, "count")"#) {
-        // withTransaction {
-        // lock.withLock {
         withAnimation {
-          UserDefaults.standard.set(
-            0,
-            forKey: "count"
-          )
+          $count.withLock { $0 = 0 }
+//          UserDefaults.standard.set(
+//            0,
+//            forKey: "count"
+//          )
         }
       }
     }
@@ -30,35 +30,71 @@ struct ManyCountersView: View {
 @Observable
 class CounterModel {
   @ObservationIgnored
-  @AppStorage("count") var count = 0
+  @Shared(.appStorage("count")) var count = 0
+  //@AppStorage("co.pointfree.countermodel.count") var count = 0
 }
 
 struct CounterView: View {
-//  @Query(sort: \.startDate, order: .reverse) var allTrips: [Trip]
-//  @FileStorage(.documentsDirectory.appending(component: "trips.json")) var trips: [Trip] = []
-//  @GRDBQuery(sort: \.startDate, order: .reverse) var allTrips: [Trip]
-//  @RemoteConfig("largeCount") var isLargeCountEnabled = false
-
-  @AppStorage("count") var count = 0
+  @State var model = CounterModel()
 
   var body: some View {
-    Text("\(count)")
+    Text("\(model.count)")
       .font(.largeTitle)
     Button("Decrement") {
-      count -= 1
+      //model.count -= 1
+      model.$count.withLock { $0 -= 1 }
     }
     Button("Increment") {
-      count += 1
+      //model.count += 1
+      model.$count.withLock { $0 += 1 }
     }
+//    Button("Race!") {
+//      Task {
+//        await withTaskGroup(of: Void.self) { [sharedCount = model.$count] group in
+//          for _ in 1...1_000 {
+//            group.addTask {
+//              sharedCount.withLock { $0 += 1 }
+//            }
+//          }
+//        }
+//      }
+//    }
   }
 }
 
 #Preview("CounterView") {
-  let _ = UserDefaults.standard.set(10_000, forKey: "count")
   CounterView()
 }
 
 #Preview("ManyCountersView") {
-  let _ = UserDefaults.standard.set(0, forKey: "count")
   ManyCountersView()
+}
+
+
+
+struct AppStorageRaceCondition: View {
+  @AppStorage("racey-count") var count = 0
+  var body: some View {
+    Form {
+      Text("\(count)")
+      Button("Race!") {
+        Task {
+          await withTaskGroup(of: Void.self) { group in
+            for _ in 1...1_000 {
+              group.addTask {
+                await MainActor.run {
+                  count += 1
+                }
+                //_count.wrappedValue += 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#Preview("AppStorage race condition") {
+  AppStorageRaceCondition()
 }
