@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ManyCountersView: View {
+  @AppStorage("count") var count = 0
+
   var body: some View {
     Form {
       Section {
@@ -12,10 +14,14 @@ struct ManyCountersView: View {
       }
 
       Button(#"UserDefaults.set(0, "count")"#) {
-        UserDefaults.standard.set(
-          0,
-          forKey: "count"
-        )
+        // withTransaction {
+        // lock.withLock {
+        withAnimation {
+          UserDefaults.standard.set(
+            0,
+            forKey: "count"
+          )
+        }
       }
     }
   }
@@ -28,24 +34,31 @@ class CounterModel {
 }
 
 struct CounterView: View {
-  @State var model = CounterModel()
+//  @Query(sort: \.startDate, order: .reverse) var allTrips: [Trip]
+//  @FileStorage(.documentsDirectory.appending(component: "trips.json")) var trips: [Trip] = []
+//  @GRDBQuery(sort: \.startDate, order: .reverse) var allTrips: [Trip]
+//  @RemoteConfig("largeCount") var isLargeCountEnabled = false
+
+  @AppStorage("count") var count = 0
 
   var body: some View {
-    Text("\(model.count)")
+    Text("\(count)")
       .font(.largeTitle)
     Button("Decrement") {
-      model.count -= 1
+      count -= 1
     }
     Button("Increment") {
-      model.count += 1
+      count += 1
     }
   }
 }
 
 #Preview("CounterView") {
+  let _ = UserDefaults.standard.set(10_000, forKey: "count")
   CounterView()
 }
 
 #Preview("ManyCountersView") {
+  let _ = UserDefaults.standard.set(0, forKey: "count")
   ManyCountersView()
 }
