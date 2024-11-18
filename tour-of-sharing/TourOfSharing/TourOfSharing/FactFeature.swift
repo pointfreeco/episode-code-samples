@@ -11,6 +11,7 @@ struct Fact: Codable, Identifiable {
 }
 
 @Observable
+@MainActor
 class FactFeatureModel {
   @ObservationIgnored
   @Shared(.count) var count
@@ -62,37 +63,39 @@ class FactFeatureModel {
 }
 
 struct FactFeatureView: View {
-//  @AppStorage("favoriteFacts") var favoriteFacts: [String] = []
+  @State var model = FactFeatureModel()
 
   var body: some View {
     Form {
       Section {
-        Text(/*@START_MENU_TOKEN@*/"0"/*@END_MENU_TOKEN@*/)
-        Button("Decrement") { }
-        Button("Increment") { }
+        Text("\(model.count)")
+        Button("Decrement") { model.decrementButtonTapped() }
+        Button("Increment") { model.incrementButtonTapped() }
       }
       Section {
-        Button("Get fact") { }
-        if /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Is fact loaded?@*/true/*@END_MENU_TOKEN@*/ {
+        Button("Get fact") {
+          Task {
+            await model.getFactButtonTapped()
+          }
+        }
+        if let fact = model.fact {
           HStack {
-            Text(/*@START_MENU_TOKEN@*/"0 is a good number!"/*@END_MENU_TOKEN@*/)
+            Text(fact)
             Button {
+              model.favoriteFactButtonTapped()
             } label: {
-              if /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Is fact already saved?@*/false/*@END_MENU_TOKEN@*/ {
-                Image(systemName: "star.fill")
-              } else {
-                Image(systemName: "star")
-              }
+              Image(systemName: "star")
             }
           }
         }
       }
-      if /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Any saved facts?@*/true/*@END_MENU_TOKEN@*/ {
+      if !model.favoriteFacts.isEmpty {
         Section {
-          ForEach(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=facts@*/[1, 2, 3], id: \.self/*@END_MENU_TOKEN@*/) { fact in
-            Text(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=fact@*/"\(fact) is a good number"/*@END_MENU_TOKEN@*/)
+          ForEach(model.favoriteFacts) { fact in
+            Text(fact.value)
           }
           .onDelete { indexSet in
+            model.deleteFacts(indexSet: indexSet)
           }
         } header: {
           Text("Favorites")
@@ -104,10 +107,25 @@ struct FactFeatureView: View {
 
 extension SharedKey where Self == FileStorageKey<[Fact]>.Default {
   static var favoriteFacts: Self {
-    Self[.fileStorage(.documentsDirectory.appending(component: "favorite-facts.json")), default: []]
+    Self[.fileStorage(dump(.documentsDirectory.appending(component: "favorite-facts.json"))), default: []]
   }
 }
 
 #Preview {
+  @Shared(.count) var count = 101
+  @Shared(.favoriteFacts) var favoriteFacts = (1...100).map { index in
+    Fact(id: UUID(), number: index, savedAt: Date(), value: "\(index) is a really good number!")
+  }
+  FactFeatureView()
+}
+
+#Preview {
+  FactFeatureView()
+}
+
+#Preview(
+  "Live",
+  traits: .dependency(\.context, .live)
+) {
   FactFeatureView()
 }

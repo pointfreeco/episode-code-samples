@@ -4,7 +4,8 @@ import SwiftUI
 struct TourOfSharingApp: App {
   var body: some Scene {
     WindowGroup {
-      ManyCountersView()
+      FactFeatureView()
+      //ManyCountersView()
       //CounterView()
     }
   }

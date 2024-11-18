@@ -132,7 +132,6 @@ extension SharedKey where Self == AppStorageKey<Int>.Default {
 import Dependencies
 #Preview(
   "ManyCountersView"
-  //, traits: .dependency(\.defaultAppStorage, .standard)
 ) {
   @Dependency(\.defaultAppStorage) var store
   ManyCountersView()
