@@ -4,7 +4,7 @@ import Foundation
 import Testing
 @testable import TourOfSharing
 
-@Suite
+@Suite // (.serialized)
 @MainActor
 struct FactFeatureTests {
   @Test(
@@ -12,16 +12,16 @@ struct FactFeatureTests {
     .dependency(\.date.now, Date(timeIntervalSince1970: 1234567890)),
     .dependency(\.uuid, .incrementing)
   ) func basics() async {
-    let model = FactFeatureModel()
+    let model = FactFeatureModel(); print(#function)
 
-    model.incrementButtonTapped()
-    #expect(model.count == 1)
+    model.incrementButtonTapped(); print(#function)
+    #expect(model.count == 1); print(#function)
 
-    await model.getFactButtonTapped()
-    #expect(model.count == 1)
-    #expect(model.fact == "1 is a good number!")
+    await model.getFactButtonTapped(); print(#function)
+    #expect(model.count == 1); print(#function)
+    #expect(model.fact == "1 is a good number!"); print(#function)
 
-    model.favoriteFactButtonTapped()
+    model.favoriteFactButtonTapped(); print(#function)
     #expect(
       model.favoriteFacts == [Fact(
         id: UUID(0),
@@ -29,9 +29,38 @@ struct FactFeatureTests {
         savedAt: Date(timeIntervalSince1970: 1234567890),
         value: "1 is a good number!"
       )]
-    )
+    ); print(#function)
 
-    model.deleteFacts(indexSet: [0])
-    #expect(model.favoriteFacts == [])
+    model.deleteFacts(indexSet: [0]); print(#function)
+    #expect(model.favoriteFacts == []); print(#function)
+  }
+
+
+  @Test(
+    .dependency(FactClient.goodFacts),
+    .dependency(\.date.now, Date(timeIntervalSince1970: 1234567890)),
+    .dependency(\.uuid, .incrementing)
+  ) func anotherBasics() async {
+    let model = FactFeatureModel(); print(#function)
+
+    model.incrementButtonTapped(); print(#function)
+    #expect(model.count == 1); print(#function)
+
+    await model.getFactButtonTapped(); print(#function)
+    #expect(model.count == 1); print(#function)
+    #expect(model.fact == "1 is a good number!"); print(#function)
+
+    model.favoriteFactButtonTapped(); print(#function)
+    #expect(
+      model.favoriteFacts == [Fact(
+        id: UUID(0),
+        number: 1,
+        savedAt: Date(timeIntervalSince1970: 1234567890),
+        value: "1 is a good number!"
+      )]
+    ); print(#function)
+
+    model.deleteFacts(indexSet: [0]); print(#function)
+    #expect(model.favoriteFacts == []); print(#function)
   }
 }
