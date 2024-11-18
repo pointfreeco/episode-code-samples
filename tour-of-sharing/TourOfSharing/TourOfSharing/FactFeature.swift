@@ -3,7 +3,7 @@ import IssueReporting
 import Sharing
 import SwiftUI
 
-struct Fact: Codable, Identifiable {
+struct Fact: Codable, Equatable, Identifiable {
   let id: UUID
   var number: Int
   var savedAt: Date
@@ -23,6 +23,12 @@ class FactFeatureModel {
 
   @ObservationIgnored
   @Dependency(FactClient.self) var factClient
+
+  @ObservationIgnored
+  @Dependency(\.date.now) var now
+
+  @ObservationIgnored
+  @Dependency(\.uuid) var uuid
 
   func incrementButtonTapped() {
     $count.withLock { $0 += 1 }
@@ -50,7 +56,7 @@ class FactFeatureModel {
     withAnimation {
       self.fact = nil
       $favoriteFacts.withLock {
-        $0.insert(Fact(id: UUID(), number: count, savedAt: Date(), value: fact), at: 0)
+        $0.insert(Fact(id: uuid(), number: count, savedAt: now, value: fact), at: 0)
       }
     }
   }

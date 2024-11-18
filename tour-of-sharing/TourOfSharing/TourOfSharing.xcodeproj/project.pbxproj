@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2A6E8B342CE7E25E00319151 /* Sharing in Frameworks */ = {isa = PBXBuildFile; productRef = 2A6E8B332CE7E25E00319151 /* Sharing */; };
+		4B33B1232CEBF52200FABC68 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 4B33B1222CEBF52200FABC68 /* Dependencies */; };
+		4B33B1252CEBF52200FABC68 /* DependenciesTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 4B33B1242CEBF52200FABC68 /* DependenciesTestSupport */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +72,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2A6E8B342CE7E25E00319151 /* Sharing in Frameworks */,
+				4B33B1232CEBF52200FABC68 /* Dependencies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B33B1252CEBF52200FABC68 /* DependenciesTestSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +135,7 @@
 			name = TourOfSharing;
 			packageProductDependencies = (
 				2A6E8B332CE7E25E00319151 /* Sharing */,
+				4B33B1222CEBF52200FABC68 /* Dependencies */,
 			);
 			productName = TourOfSharing;
 			productReference = 2A5622CA2CE7D2E500FC29DB /* TourOfSharing.app */;
@@ -154,6 +159,7 @@
 			);
 			name = TourOfSharingTests;
 			packageProductDependencies = (
+				4B33B1242CEBF52200FABC68 /* DependenciesTestSupport */,
 			);
 			productName = TourOfSharingTests;
 			productReference = 2A5622DA2CE7D2E600FC29DB /* TourOfSharingTests.xctest */;
@@ -216,6 +222,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				2A6E8B322CE7E25E00319151 /* XCRemoteSwiftPackageReference "swift-sharing" */,
+				4B33B1212CEBF52200FABC68 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2A5622CB2CE7D2E500FC29DB /* Products */;
@@ -580,6 +587,14 @@
 				kind = branch;
 			};
 		};
+		4B33B1212CEBF52200FABC68 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -587,6 +602,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2A6E8B322CE7E25E00319151 /* XCRemoteSwiftPackageReference "swift-sharing" */;
 			productName = Sharing;
+		};
+		4B33B1222CEBF52200FABC68 /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B33B1212CEBF52200FABC68 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+		4B33B1242CEBF52200FABC68 /* DependenciesTestSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B33B1212CEBF52200FABC68 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = DependenciesTestSupport;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
