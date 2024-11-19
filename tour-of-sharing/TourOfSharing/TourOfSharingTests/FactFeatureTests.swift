@@ -33,6 +33,13 @@ struct FactFeatureTests {
 
     model.deleteFacts(indexSet: [0]); print(#function)
     #expect(model.favoriteFacts == []); print(#function)
+
+    #expect(model.events == [
+      "Increment Button Tapped",
+      "Get Fact Button Tapped",
+      "Favorite Fact Button Tapped",
+      "Delete Facts",
+    ])
   }
 
 
@@ -62,5 +69,12 @@ struct FactFeatureTests {
 
     model.deleteFacts(indexSet: [0]); print(#function)
     #expect(model.favoriteFacts == []); print(#function)
+
+    #expect(model.events == [
+      "Increment Button Tapped",
+      "Get Fact Button Tapped",
+      "Favorite Fact Button Tapped",
+      "Delete Facts",
+    ])
   }
 }

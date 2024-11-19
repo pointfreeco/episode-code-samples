@@ -4,7 +4,9 @@ import SwiftUI
 struct TourOfSharingApp: App {
   var body: some Scene {
     WindowGroup {
-      FactFeatureView()
+      NavigationStack {
+        FactFeatureView()
+      }
       //ManyCountersView()
       //CounterView()
     }

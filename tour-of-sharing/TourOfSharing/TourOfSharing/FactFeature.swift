@@ -16,6 +16,9 @@ class FactFeatureModel {
   @ObservationIgnored
   @Shared(.count) var count
 
+  @ObservationIgnored
+  @Shared(.events) var events
+
   var fact: String?
 
   @ObservationIgnored
@@ -31,16 +34,19 @@ class FactFeatureModel {
   @Dependency(\.uuid) var uuid
 
   func incrementButtonTapped() {
+    $events.withLock { $0.append("Increment Button Tapped") }
     $count.withLock { $0 += 1 }
     fact = nil
   }
 
   func decrementButtonTapped() {
+    $events.withLock { $0.append("Decrement Button Tapped") }
     $count.withLock { $0 -= 1 }
     fact = nil
   }
 
   func getFactButtonTapped() async {
+    $events.withLock { $0.append("Get Fact Button Tapped") }
     do {
       let fact = try await factClient.fetch(count)
       withAnimation {
@@ -52,6 +58,7 @@ class FactFeatureModel {
   }
 
   func favoriteFactButtonTapped() {
+    $events.withLock { $0.append("Favorite Fact Button Tapped") }
     guard let fact else { return }
     withAnimation {
       self.fact = nil
@@ -62,6 +69,7 @@ class FactFeatureModel {
   }
 
   func deleteFacts(indexSet: IndexSet) {
+    $events.withLock { $0.append("Delete Facts") }
     $favoriteFacts.withLock {
       $0.remove(atOffsets: indexSet)
     }
@@ -69,6 +77,7 @@ class FactFeatureModel {
 }
 
 struct FactFeatureView: View {
+  @State var eventsPresented = false
   @State var model = FactFeatureModel()
 
   var body: some View {
@@ -108,12 +117,40 @@ struct FactFeatureView: View {
         }
       }
     }
+    .sheet(isPresented: $eventsPresented) {
+      EventsView()
+    }
+    .toolbar {
+      ToolbarItem {
+        Button("Events") {
+          eventsPresented = true
+        }
+      }
+    }
+  }
+}
+
+struct EventsView: View {
+  @Shared(.events) var events
+
+  var body: some View {
+    Form {
+      ForEach(events.reversed(), id: \.self) { event in
+        Text(event)
+      }
+    }
   }
 }
 
 extension SharedKey where Self == FileStorageKey<[Fact]>.Default {
   static var favoriteFacts: Self {
     Self[.fileStorage(dump(.documentsDirectory.appending(component: "favorite-facts.json"))), default: []]
+  }
+}
+
+extension SharedKey where Self == InMemoryKey<[String]>.Default {
+  static var events: Self {
+    Self[.inMemory("events"), default: []]
   }
 }
 
