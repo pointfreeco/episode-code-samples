@@ -304,3 +304,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Back to Basics: Advanced Hashable](0300-back-to-basics-equatable-pt4)
 1. [SQLite: The C Library](0301-sqlite-pt1)
 1. [SQLite: GRDB](0302-sqlite-pt2)
+1. [SQLite: SwiftUI](0303-sqlite-pt3)
