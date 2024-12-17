@@ -306,5 +306,6 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [SQLite: GRDB](0302-sqlite-pt2)
 1. [SQLite: SwiftUI](0303-sqlite-pt3)
 1. [SQLite: Observation](0304-sqlite-pt4)
-1. [Tour of Sharing: App Storate, Part 1](0305-sharing-pt1)
-1. [Tour of Sharing: App Storate, Part 2](0306-sharing-pt2)
+1. [Tour of Sharing: App Storage, Part 1](0305-sharing-pt1)
+1. [Tour of Sharing: App Storage, Part 2](0306-sharing-pt2)
+1. [Tour of Sharing: File Storage, Part 1](0307-sharing-pt3)
