@@ -29,12 +29,15 @@ enum Ordering: String, CaseIterable {
 @MainActor
 class FactFeatureModel {
   var fact: String?
-  var favoriteFacts: [Fact] = []
+
+  @ObservationIgnored
+  @SharedReader
+  var favoriteFacts: [Fact]
 
   // @Shared(.favoriteFacts) var favoriteFacts
   // @Shared(.fileStorage(.documentsDirectory.appending(path: "favorite-facts.json"))) var favoriteFacts: [Fact] = []
 
-  // @Shared(.fetchAll(#"SELECT * FROM "facts""#)) var favoriteFacts: [Fact] = []
+  // @SharedReader(.fetchAll(#"SELECT * FROM "facts""#)) var favoriteFacts: [Fact] = []
   // @Shared(.fetchAll(sort: \Fact.number, order: .reverse, limit: 3, offset: 3)) var favoritesFacts
   // @Query(sort: \.number, order: .reverse) var favoriteFacts
 
@@ -49,23 +52,7 @@ class FactFeatureModel {
 
   init(database: DatabaseQueue) {
     self.database = database
-  }
-
-  func onTask() async {
-    let sequence = ValueObservation.tracking { [ordering] db in
-      try Fact
-        .all()
-        .order(ordering.orderingTerm)
-        .fetchAll(db)
-    }
-    .values(in: database)
-    do {
-      for try await facts in sequence {
-        favoriteFacts = facts
-      }
-    } catch {
-      reportIssue(error)
-    }
+    self._favoriteFacts = SharedReader(.fetchAll(#"SELECT * FROM "facts""#, database: database))
   }
 
   func incrementButtonTapped() {
@@ -167,9 +154,6 @@ struct FactFeatureView: View {
           }
         }
       }
-    }
-    .task(id: model.ordering) {
-      await model.onTask()
     }
   }
 }

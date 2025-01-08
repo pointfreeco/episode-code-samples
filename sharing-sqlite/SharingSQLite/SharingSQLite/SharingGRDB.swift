@@ -1,9 +1,27 @@
 import GRDB
 import Sharing
 
-struct FetchAllKey<Record: FetchableRecord & Sendable>: SharedKey {
+extension SharedReaderKey {
+  static func fetchAll<Record>(
+    _ sql: String,
+    database: DatabaseQueue
+  ) -> Self where Self == FetchAllKey<Record>.Default {
+    Self[FetchAllKey(database: database, sql: sql), default: []]
+  }
+}
+
+struct FetchAllKey<Record: FetchableRecord & Sendable>: SharedReaderKey {
   let database: DatabaseQueue
   let sql: String
+
+  struct ID: Hashable {
+    let databaseObjectIdentifier: ObjectIdentifier
+    let sql: String
+  }
+
+  var id: ID {
+    ID(databaseObjectIdentifier: ObjectIdentifier(database), sql: sql)
+  }
 
   func load(
     context: LoadContext<[Record]>,
@@ -32,12 +50,6 @@ struct FetchAllKey<Record: FetchableRecord & Sendable>: SharedKey {
     }
     return SharedSubscription {
       cancellable.cancel()
-    }
-  }
-
-  func save(_ value: [Record], context: SaveContext, continuation: SaveContinuation) {
-    try database.write { db in
-
     }
   }
 }
