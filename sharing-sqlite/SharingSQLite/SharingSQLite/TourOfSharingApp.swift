@@ -2,7 +2,7 @@ import SwiftUI
 
 @main
 struct SharingSQLiteApp: App {
-  let model = FactFeatureModel()
+  let model = FactFeatureModel(database: .appDatabase)
 
   var body: some Scene {
     WindowGroup {

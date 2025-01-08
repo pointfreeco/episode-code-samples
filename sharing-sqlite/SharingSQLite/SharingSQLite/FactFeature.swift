@@ -1,10 +1,11 @@
 import Combine
 import Dependencies
+import GRDB
 import IssueReporting
 import Sharing
 import SwiftUI
 
-struct Fact: Codable, Equatable, Identifiable {
+struct LegacyFact: Codable, Equatable, Identifiable {
   let id: UUID
   var number: Int
   var savedAt: Date
@@ -13,28 +14,51 @@ struct Fact: Codable, Equatable, Identifiable {
 
 enum Ordering: String, CaseIterable {
   case number = "Number", savedAt = "Saved at"
+
+  var orderingTerm: any SQLOrderingTerm {
+    switch self {
+    case .number:
+      Column("number")
+    case .savedAt:
+      Column("savedAt").desc
+    }
+  }
 }
 
 @Observable
 @MainActor
 class FactFeatureModel {
   var fact: String?
+  var favoriteFacts: [Fact] = []
 
   @ObservationIgnored @Shared(.count) var count
-  @ObservationIgnored @Shared(.favoriteFacts) var favoriteFacts
   @ObservationIgnored @Shared(.ordering) var ordering
+
+  let database: DatabaseQueue
 
   @ObservationIgnored @Dependency(FactClient.self) var factClient
   @ObservationIgnored @Dependency(\.date.now) var now
   @ObservationIgnored @Dependency(\.uuid) var uuid
 
-//  var cancellables: Set<AnyCancellable> = []
+  init(database: DatabaseQueue) {
+    self.database = database
+  }
 
-  init() {
-//    $ordering.publisher.sink { [weak self] ordering in
-//      self?.sortFavorites(ordering: ordering)
-//    }
-//    .store(in: &cancellables)
+  func onTask() async {
+    let sequence = ValueObservation.tracking { [ordering] db in
+      try Fact
+        .all()
+        .order(ordering.orderingTerm)
+        .fetchAll(db)
+    }
+    .values(in: database)
+    do {
+      for try await facts in sequence {
+        favoriteFacts = facts
+      }
+    } catch {
+      reportIssue(error)
+    }
   }
 
   func incrementButtonTapped() {
@@ -62,34 +86,24 @@ class FactFeatureModel {
     guard let fact else { return }
     withAnimation {
       self.fact = nil
-      $favoriteFacts.withLock {
-        $0.insert(Fact(id: uuid(), number: count, savedAt: now, value: fact), at: 0)
+      do {
+        try database.write { db in
+          _ = try Fact(number: count, savedAt: now, value: fact)
+            .inserted(db)
+        }
+      } catch {
+        reportIssue(error)
       }
-      //sortFavorites(ordering: ordering)
     }
   }
 
   func deleteFacts(indexSet: IndexSet) {
-    $favoriteFacts.withLock {
-      $0.remove(atOffsets: indexSet)
-    }
-  }
-
-//  private func sortFavorites(ordering: Ordering) {
-//    switch ordering {
-//    case .number:
-//      $favoriteFacts.withLock { $0.sort(by: { $0.number < $1.number })}
-//    case .savedAt:
-//      $favoriteFacts.withLock { $0.sort(by: { $0.savedAt > $1.savedAt })}
-//    }
-//  }
-
-  var sortedFavorites: [Fact] {
-    switch ordering {
-    case .number:
-      favoriteFacts.sorted(by: { $0.number < $1.number })
-    case .savedAt:
-      favoriteFacts.sorted(by: { $0.savedAt > $1.savedAt })
+    do {
+      try database.write { db in
+        _ = try Fact.deleteAll(db, ids: indexSet.map { favoriteFacts[$0].id })
+      }
+    } catch {
+      reportIssue(error)
     }
   }
 }
@@ -121,9 +135,9 @@ struct FactFeatureView: View {
           }
         }
       }
-      if !model.sortedFavorites.isEmpty {
+      if !model.favoriteFacts.isEmpty {
         Section {
-          ForEach(model.sortedFavorites) { fact in
+          ForEach(model.favoriteFacts) { fact in
             Text(fact.value)
           }
           .onDelete { indexSet in
@@ -131,7 +145,7 @@ struct FactFeatureView: View {
           }
         } header: {
           HStack {
-            Text("Favorites (\(model.sortedFavorites.count))")
+            Text("Favorites (\(model.favoriteFacts.count))")
             Spacer()
             Picker("Sort", selection: Binding(model.$ordering)) {
               Section {
@@ -147,6 +161,9 @@ struct FactFeatureView: View {
         }
       }
     }
+    .task(id: model.ordering) {
+      await model.onTask()
+    }
   }
 }
 
@@ -156,7 +173,7 @@ extension SharedKey where Self == AppStorageKey<Int>.Default {
   }
 }
 
-extension SharedKey where Self == FileStorageKey<[Fact]>.Default {
+extension SharedKey where Self == FileStorageKey<[LegacyFact]>.Default {
   static var favoriteFacts: Self {
     Self[.fileStorage(.documentsDirectory.appending(component: "favorite-facts.json")), default: []]
   }
@@ -169,5 +186,5 @@ extension SharedKey where Self == AppStorageKey<Ordering>.Default {
 }
 
 #Preview {
-  FactFeatureView(model: FactFeatureModel())
+  FactFeatureView(model: FactFeatureModel(database: .appDatabase))
 }

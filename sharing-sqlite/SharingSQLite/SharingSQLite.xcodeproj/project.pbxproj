@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2A6E8B342CE7E25E00319151 /* Sharing in Frameworks */ = {isa = PBXBuildFile; productRef = 2A6E8B332CE7E25E00319151 /* Sharing */; };
 		4B33B1232CEBF52200FABC68 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 4B33B1222CEBF52200FABC68 /* Dependencies */; };
+		4B7DEA6C2D2F0C39009CE4A3 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4B7DEA6B2D2F0C39009CE4A3 /* GRDB */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B7DEA6C2D2F0C39009CE4A3 /* GRDB in Frameworks */,
 				2A6E8B342CE7E25E00319151 /* Sharing in Frameworks */,
 				4B33B1232CEBF52200FABC68 /* Dependencies in Frameworks */,
 			);
@@ -87,6 +89,7 @@
 			packageProductDependencies = (
 				2A6E8B332CE7E25E00319151 /* Sharing */,
 				4B33B1222CEBF52200FABC68 /* Dependencies */,
+				4B7DEA6B2D2F0C39009CE4A3 /* GRDB */,
 			);
 			productName = TourOfSharing;
 			productReference = 2A5622CA2CE7D2E500FC29DB /* SharingSQLite.app */;
@@ -119,6 +122,7 @@
 			packageReferences = (
 				2A6E8B322CE7E25E00319151 /* XCRemoteSwiftPackageReference "swift-sharing" */,
 				4B33B1212CEBF52200FABC68 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				4B7DEA6A2D2F0C39009CE4A3 /* XCRemoteSwiftPackageReference "GRDB" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2A5622CB2CE7D2E500FC29DB /* Products */;
@@ -366,6 +370,14 @@
 				minimumVersion = 1.6.3;
 			};
 		};
+		4B7DEA6A2D2F0C39009CE4A3 /* XCRemoteSwiftPackageReference "GRDB" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift";
+			requirement = {
+				branch = "v7.0.0-beta.6";
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -378,6 +390,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4B33B1212CEBF52200FABC68 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
 			productName = Dependencies;
+		};
+		4B7DEA6B2D2F0C39009CE4A3 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B7DEA6A2D2F0C39009CE4A3 /* XCRemoteSwiftPackageReference "GRDB" */;
+			productName = GRDB;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
