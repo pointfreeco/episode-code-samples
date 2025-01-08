@@ -1,13 +1,21 @@
+import Dependencies
+import GRDB
 import SwiftUI
 
 @main
 struct SharingSQLiteApp: App {
-  let model = FactFeatureModel(database: .appDatabase)
+  static let model = FactFeatureModel()
+
+  init() {
+    prepareDependencies {
+      $0.defaultDatabase = .appDatabase
+    }
+  }
 
   var body: some Scene {
     WindowGroup {
       NavigationStack {
-        FactFeatureView(model: model)
+        FactFeatureView(model: Self.model)
       }
     }
   }

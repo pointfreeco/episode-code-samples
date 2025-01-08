@@ -30,8 +30,7 @@ enum Ordering: String, CaseIterable {
 class FactFeatureModel {
   var fact: String?
 
-  @ObservationIgnored
-  @SharedReader
+  @ObservationIgnored @SharedReader(.fetchAll(#"SELECT * FROM "facts""#))
   var favoriteFacts: [Fact]
 
   // @Shared(.favoriteFacts) var favoriteFacts
@@ -44,16 +43,10 @@ class FactFeatureModel {
   @ObservationIgnored @Shared(.count) var count
   @ObservationIgnored @Shared(.ordering) var ordering
 
-  let database: DatabaseQueue
-
   @ObservationIgnored @Dependency(FactClient.self) var factClient
+  @ObservationIgnored @Dependency(\.defaultDatabase) var database
   @ObservationIgnored @Dependency(\.date.now) var now
   @ObservationIgnored @Dependency(\.uuid) var uuid
-
-  init(database: DatabaseQueue) {
-    self.database = database
-    self._favoriteFacts = SharedReader(.fetchAll(#"SELECT * FROM "facts""#, database: database))
-  }
 
   func incrementButtonTapped() {
     $count.withLock { $0 += 1 }
@@ -177,5 +170,5 @@ extension SharedKey where Self == AppStorageKey<Ordering>.Default {
 }
 
 #Preview {
-  FactFeatureView(model: FactFeatureModel(database: .appDatabase))
+  FactFeatureView(model: FactFeatureModel())
 }

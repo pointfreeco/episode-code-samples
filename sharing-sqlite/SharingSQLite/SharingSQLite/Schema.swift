@@ -18,7 +18,7 @@ struct Fact: Codable, Equatable, Identifiable, FetchableRecord,
   }
 }
 
-extension DatabaseQueue {
+extension DatabaseWriter where Self == DatabaseQueue {
   static var appDatabase: DatabaseQueue {
     let databaseQueue: DatabaseQueue
     var configuration = Configuration()

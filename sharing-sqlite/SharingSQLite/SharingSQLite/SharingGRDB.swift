@@ -1,18 +1,43 @@
+import Dependencies
 import GRDB
+import IssueReporting
 import Sharing
+
+private enum DefaultDatabaseKey: DependencyKey {
+  static var liveValue: any DatabaseWriter {
+    reportIssue(
+      """
+      A blank, in-memory database is being used for the app. \
+      Override this dependency in the entry point of your app.
+      """
+    )
+    return try! DatabaseQueue()
+  }
+}
+extension DependencyValues {
+  var defaultDatabase: any DatabaseWriter {
+    get { self[DefaultDatabaseKey.self] }
+    set { self[DefaultDatabaseKey.self] = newValue }
+  }
+}
 
 extension SharedReaderKey {
   static func fetchAll<Record>(
-    _ sql: String,
-    database: DatabaseQueue
+    _ sql: String
   ) -> Self where Self == FetchAllKey<Record>.Default {
-    Self[FetchAllKey(database: database, sql: sql), default: []]
+    Self[FetchAllKey(sql: sql), default: []]
   }
 }
 
 struct FetchAllKey<Record: FetchableRecord & Sendable>: SharedReaderKey {
-  let database: DatabaseQueue
+  let database: any DatabaseReader
   let sql: String
+
+  init(sql: String) {
+    @Dependency(\.defaultDatabase) var database
+    self.database = database
+    self.sql = sql
+  }
 
   struct ID: Hashable {
     let databaseObjectIdentifier: ObjectIdentifier
