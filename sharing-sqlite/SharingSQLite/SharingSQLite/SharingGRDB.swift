@@ -22,6 +22,18 @@ extension DependencyValues {
 }
 
 extension SharedReaderKey {
+  static func fetch<Value>(
+    _ request: some FetchKeyRequest<Value>
+  ) -> Self where Self == FetchKey<Value> {
+    FetchKey(request: request)
+  }
+
+  static func fetch<Value: RangeReplaceableCollection>(
+    _ request: some FetchKeyRequest<Value>
+  ) -> Self where Self == FetchKey<Value>.Default {
+    Self[FetchKey(request: request), default: Value()]
+  }
+
   static func fetchAll<Record>(
     _ sql: String
   ) -> Self where Self == FetchAllKey<Record>.Default {
@@ -197,6 +209,69 @@ struct FetchAllQueryBuilderKey<Record: FetchableRecord & Sendable, Request: GRDB
     } onChange: { records in
       subscriber.yield(records)
     }
+    return SharedSubscription {
+      cancellable.cancel()
+    }
+  }
+}
+
+protocol FetchKeyRequest<Value>: Hashable, Sendable {
+  associatedtype Value
+  func fetch(_ db: Database) throws -> Value
+}
+
+struct FetchKey<Value: Sendable>: SharedReaderKey {
+  let database: any DatabaseReader
+  let request: any FetchKeyRequest<Value>
+
+  init(request: some FetchKeyRequest<Value>) {
+    @Dependency(\.defaultDatabase) var database
+    self.database = database
+    self.request = request
+  }
+
+  var id: ID {
+    ID(
+      databaseObjectIdentifier: ObjectIdentifier(database),
+      request: request
+    )
+  }
+
+  struct ID: Hashable {
+    let databaseObjectIdentifier: ObjectIdentifier
+    let request: AnyHashable
+    init(databaseObjectIdentifier: ObjectIdentifier, request: some FetchKeyRequest<Value>) {
+      self.databaseObjectIdentifier = databaseObjectIdentifier
+      self.request = request
+    }
+  }
+
+  func load(context: LoadContext<Value>, continuation: LoadContinuation<Value>) {
+    do {
+      continuation.resume(
+        returning:
+          try database.read { db in
+            try request.fetch(db)
+          }
+      )
+    } catch {
+      continuation.resume(throwing: error)
+    }
+  }
+
+  func subscribe(
+    context: LoadContext<Value>,
+    subscriber: SharedSubscriber<Value>
+  ) -> SharedSubscription {
+    let cancellable = ValueObservation.tracking { db in
+      try request.fetch(db)
+    }
+      .start(in: database, scheduling: .async(onQueue: .main)) { error in
+        subscriber.yield(throwing: error)
+      } onChange: { value in
+        subscriber.yield(value)
+      }
+
     return SharedSubscription {
       cancellable.cancel()
     }
