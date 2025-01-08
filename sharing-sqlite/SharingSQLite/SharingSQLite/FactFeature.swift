@@ -31,6 +31,13 @@ class FactFeatureModel {
   var fact: String?
   var favoriteFacts: [Fact] = []
 
+  // @Shared(.favoriteFacts) var favoriteFacts
+  // @Shared(.fileStorage(.documentsDirectory.appending(path: "favorite-facts.json"))) var favoriteFacts: [Fact] = []
+
+  // @Shared(.fetchAll(#"SELECT * FROM "facts""#)) var favoriteFacts: [Fact] = []
+  // @Shared(.fetchAll(sort: \Fact.number, order: .reverse, limit: 3, offset: 3)) var favoritesFacts
+  // @Query(sort: \.number, order: .reverse) var favoriteFacts
+
   @ObservationIgnored @Shared(.count) var count
   @ObservationIgnored @Shared(.ordering) var ordering
 
