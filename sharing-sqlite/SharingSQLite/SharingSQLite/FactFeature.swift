@@ -29,9 +29,16 @@ enum Ordering: String, CaseIterable {
 @MainActor
 class FactFeatureModel {
   var fact: String?
+  var isArchivedFactsPresented = false
 
-  @ObservationIgnored @SharedReader(.fetchAll(#"SELECT * FROM "facts" WHERE NOT "isArchived""#))
+  @ObservationIgnored @SharedReader(.fetchOne(#"SELECT count(*) FROM "facts" WHERE "isArchived""#))
+  var archivedFactsCount = 0
+
+  @ObservationIgnored @SharedReader(.fetchAll(#"SELECT * FROM "facts" WHERE NOT "isArchived" LIMIT 1"#))
   var favoriteFacts: [Fact]
+
+  @ObservationIgnored @SharedReader(.fetchOne(#"SELECT count(*) FROM "facts" WHERE NOT "isArchived""#))
+  var unarchivedFactsCount = 0
 
   // @Shared(.favoriteFacts) var favoriteFacts
   // @Shared(.fileStorage(.documentsDirectory.appending(path: "favorite-facts.json"))) var favoriteFacts: [Fact] = []
@@ -150,7 +157,7 @@ struct FactFeatureView: View {
           }
         } header: {
           HStack {
-            Text("Favorites (\(model.favoriteFacts.count))")
+            Text("Favorites (\(model.unarchivedFactsCount))")
             Spacer()
             Picker("Sort", selection: Binding(model.$ordering)) {
               Section {
@@ -165,6 +172,21 @@ struct FactFeatureView: View {
           }
         }
       }
+    }
+    .toolbar {
+      if model.archivedFactsCount > 0 {
+        ToolbarItem {
+          Button("Archived facts (\(model.archivedFactsCount))") {
+            model.isArchivedFactsPresented = true
+          }
+        }
+      }
+    }
+    .sheet(isPresented: $model.isArchivedFactsPresented) {
+      NavigationStack {
+        ArchivedFactsView()
+      }
+      .presentationDetents([.fraction(0.4), .fraction(0.9)])
     }
   }
 }

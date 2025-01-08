@@ -27,6 +27,12 @@ extension SharedReaderKey {
   ) -> Self where Self == FetchAllKey<Record>.Default {
     Self[FetchAllKey(sql: sql), default: []]
   }
+
+  static func fetchOne<Value>(
+    _ sql: String
+  ) -> Self where Self == FetchOneKey<Value> {
+    FetchOneKey(sql: sql)
+  }
 }
 
 struct FetchAllKey<Record: FetchableRecord & Sendable>: SharedReaderKey {
@@ -73,6 +79,68 @@ struct FetchAllKey<Record: FetchableRecord & Sendable>: SharedReaderKey {
     } onChange: { records in
       subscriber.yield(records)
     }
+    return SharedSubscription {
+      cancellable.cancel()
+    }
+  }
+}
+
+struct FetchOneKey<Value: DatabaseValueConvertible & Sendable>: SharedReaderKey {
+  let database: any DatabaseReader
+  let sql: String
+
+  init(sql: String) {
+    @Dependency(\.defaultDatabase) var database
+    self.database = database
+    self.sql = sql
+  }
+
+  var id: ID {
+    ID(
+      databaseObjectIdentifier: ObjectIdentifier(database),
+      sql: sql
+    )
+  }
+
+  struct ID: Hashable {
+    let databaseObjectIdentifier: ObjectIdentifier
+    let sql: String
+  }
+
+  struct NotFound: Error {}
+
+  func load(context: LoadContext<Value>, continuation: LoadContinuation<Value>) {
+    do {
+      let value = try database.read { db in
+        try Value.fetchOne(db, sql: sql)
+      }
+      if let value {
+        continuation.resume(returning: value)
+      } else {
+        continuation.resume(throwing: NotFound())
+      }
+    } catch {
+      continuation.resume(throwing: error)
+    }
+  }
+
+  func subscribe(
+    context: LoadContext<Value>,
+    subscriber: SharedSubscriber<Value>
+  ) -> SharedSubscription {
+    let cancellable = ValueObservation.tracking { db in
+      if let value = try Value.fetchOne(db, sql: sql) {
+        return value
+      } else {
+        throw NotFound()
+      }
+    }
+      .start(in: database, scheduling: .async(onQueue: .main)) { error in
+        subscriber.yield(throwing: error)
+      } onChange: { elements in
+        subscriber.yield(elements)
+      }
+
     return SharedSubscription {
       cancellable.cancel()
     }
