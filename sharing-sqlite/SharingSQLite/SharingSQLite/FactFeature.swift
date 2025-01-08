@@ -30,7 +30,7 @@ enum Ordering: String, CaseIterable {
 class FactFeatureModel {
   var fact: String?
 
-  @ObservationIgnored @SharedReader(.fetchAll(#"SELECT * FROM "facts""#))
+  @ObservationIgnored @SharedReader(.fetchAll(#"SELECT * FROM "facts" WHERE NOT "isArchived""#))
   var favoriteFacts: [Fact]
 
   // @Shared(.favoriteFacts) var favoriteFacts
@@ -84,10 +84,22 @@ class FactFeatureModel {
     }
   }
 
-  func deleteFacts(indexSet: IndexSet) {
+  func archive(fact: Fact) {
     do {
       try database.write { db in
-        _ = try Fact.deleteAll(db, ids: indexSet.map { favoriteFacts[$0].id })
+        var fact = fact
+        fact.isArchived = true
+        try fact.update(db)
+      }
+    } catch {
+      reportIssue(error)
+    }
+  }
+
+  func delete(fact: Fact) {
+    do {
+      try database.write { db in
+        _ = try fact.delete(db)
       }
     } catch {
       reportIssue(error)
@@ -126,9 +138,15 @@ struct FactFeatureView: View {
         Section {
           ForEach(model.favoriteFacts) { fact in
             Text(fact.value)
-          }
-          .onDelete { indexSet in
-            model.deleteFacts(indexSet: indexSet)
+              .swipeActions {
+                Button("Archive") {
+                  model.archive(fact: fact)
+                }
+                .tint(.blue)
+                Button("Delete", role: .destructive) {
+                  model.delete(fact: fact)
+                }
+              }
           }
         } header: {
           HStack {
@@ -170,5 +188,8 @@ extension SharedKey where Self == AppStorageKey<Ordering>.Default {
 }
 
 #Preview {
+  let _ = prepareDependencies {
+    $0.defaultDatabase = .appDatabase
+  }
   FactFeatureView(model: FactFeatureModel())
 }

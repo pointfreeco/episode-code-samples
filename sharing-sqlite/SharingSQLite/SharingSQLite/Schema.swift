@@ -9,6 +9,7 @@ struct Fact: Codable, Equatable, Identifiable, FetchableRecord,
   static let databaseTableName = "facts"
 
   var id: Int64?
+  var isArchived = false
   var number: Int
   var savedAt: Date
   var value: String
@@ -54,6 +55,11 @@ extension DatabaseWriter where Self == DatabaseQueue {
           """)
       }
       $legacyFacts.withLock { $0.removeAll() }
+    }
+    migrator.registerMigration("Add 'isArchived' to 'facts") { db in
+      try db.alter(table: Fact.databaseTableName) { table in
+        table.add(column: "isArchived", .boolean).notNull().defaults(to: false)
+      }
     }
     do {
       try migrator.migrate(databaseQueue)
