@@ -34,8 +34,7 @@ class FactFeatureModel {
   @ObservationIgnored @SharedReader(.fetchOne(#"SELECT count(*) FROM "facts" WHERE "isArchived""#))
   var archivedFactsCount = 0
 
-  @ObservationIgnored @SharedReader(.fetchAll(#"SELECT * FROM "facts" WHERE NOT "isArchived" LIMIT 1"#))
-  var favoriteFacts: [Fact]
+  @ObservationIgnored @SharedReader var favoriteFacts: [Fact]
 
   @ObservationIgnored @SharedReader(.fetchOne(#"SELECT count(*) FROM "facts" WHERE NOT "isArchived""#))
   var unarchivedFactsCount = 0
@@ -54,6 +53,22 @@ class FactFeatureModel {
   @ObservationIgnored @Dependency(\.defaultDatabase) var database
   @ObservationIgnored @Dependency(\.date.now) var now
   @ObservationIgnored @Dependency(\.uuid) var uuid
+
+  var cancellables: Set<AnyCancellable> = []
+
+  init() {
+    _favoriteFacts = .constant([])
+    $ordering.publisher.sink { [weak self] ordering in
+      guard let self else { return }
+      switch ordering {
+      case .number:
+        $favoriteFacts = SharedReader(.fetchAll(#"SELECT * FROM "facts" WHERE NOT "isArchived" ORDER BY "number" ASC"#))
+      case .savedAt:
+        $favoriteFacts = SharedReader(.fetchAll(#"SELECT * FROM "facts" WHERE NOT "isArchived" ORDER BY "savedAt" DESC"#))
+      }
+    }
+    .store(in: &cancellables)
+  }
 
   func incrementButtonTapped() {
     $count.withLock { $0 += 1 }
