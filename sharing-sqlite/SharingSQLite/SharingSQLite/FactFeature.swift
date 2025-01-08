@@ -60,10 +60,25 @@ class FactFeatureModel {
     _favoriteFacts = .constant([])
     $ordering.publisher.sink { [weak self] ordering in
       guard let self else { return }
+
+      let query: any GRDB.FetchRequest<Fact> = Fact.filter(!Column("isArchived")).order(ordering.orderingTerm)
+
+//      $favoriteFacts = SharedReader(
+//        .fetchAll(
+//          Fact
+//            .filter(!Column("isArchived"))
+//            .order(ordering.orderingTerm)
+//        )
+//      )
+
       switch ordering {
       case .number:
+        Fact.filter(!Column("isArchived")).order(Column("number").asc)
+
         $favoriteFacts = SharedReader(.fetchAll(#"SELECT * FROM "facts" WHERE NOT "isArchived" ORDER BY "number" ASC"#))
       case .savedAt:
+        Fact.filter(!Column("isArchived")).order(Column("savedAt").desc)
+
         $favoriteFacts = SharedReader(.fetchAll(#"SELECT * FROM "facts" WHERE NOT "isArchived" ORDER BY "savedAt" DESC"#))
       }
     }
