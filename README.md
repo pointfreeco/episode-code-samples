@@ -309,3 +309,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Tour of Sharing: App Storage, Part 1](0305-sharing-pt1)
 1. [Tour of Sharing: App Storage, Part 2](0306-sharing-pt2)
 1. [Tour of Sharing: File Storage, Part 1](0307-sharing-pt3)
+1. [Tour of Sharing: File Storage, Part 2](0308-sharing-pt4)
+1. [Sharing with SQLite: The Problems](0309-sqlite-sharing-pt1)

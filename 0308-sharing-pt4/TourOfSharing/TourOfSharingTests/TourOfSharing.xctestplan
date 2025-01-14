@@ -1,0 +1,36 @@
+{
+  "configurations" : [
+    {
+      "id" : "69DC1717-EC46-4A2A-9606-CA18185681E4",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:TourOfSharing.xcodeproj",
+      "identifier" : "2A5622C92CE7D2E500FC29DB",
+      "name" : "TourOfSharing"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:TourOfSharing.xcodeproj",
+        "identifier" : "2A5622D92CE7D2E600FC29DB",
+        "name" : "TourOfSharingTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TourOfSharing.xcodeproj",
+        "identifier" : "2A5622E32CE7D2E600FC29DB",
+        "name" : "TourOfSharingUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
