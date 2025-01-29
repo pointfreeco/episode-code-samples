@@ -312,3 +312,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Tour of Sharing: File Storage, Part 2](0308-sharing-pt4)
 1. [Sharing with SQLite: The Problems](0309-sqlite-sharing-pt1)
 1. [Sharing with SQLite: The Solution](0310-sqlite-sharing-pt2)
+1. [Sharing with SQLite: Advanced Queries](0311-sqlite-sharing-pt3)
