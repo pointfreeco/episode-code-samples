@@ -31,13 +31,16 @@ class FactFeatureModel {
   var fact: String?
   var isArchivedFactsPresented = false
 
-  @ObservationIgnored @SharedReader(.fetchOne(#"SELECT count(*) FROM "facts" WHERE "isArchived""#))
-  var archivedFactsCount = 0
+//  @ObservationIgnored @SharedReader(.fetchOne(#"SELECT count(*) FROM "facts" WHERE "isArchived""#))
+//  var archivedFactsCount = 0
+//
+//  @ObservationIgnored @SharedReader var favoriteFacts: [Fact]
+//
+//  @ObservationIgnored @SharedReader(.fetchOne(#"SELECT count(*) FROM "facts" WHERE NOT "isArchived""#))
+//  var unarchivedFactsCount = 0
 
-  @ObservationIgnored @SharedReader var favoriteFacts: [Fact]
-
-  @ObservationIgnored @SharedReader(.fetchOne(#"SELECT count(*) FROM "facts" WHERE NOT "isArchived""#))
-  var unarchivedFactsCount = 0
+  @ObservationIgnored
+  @SharedReader var state: Facts.State
 
   // @Shared(.favoriteFacts) var favoriteFacts
   // @Shared(.fileStorage(.documentsDirectory.appending(path: "favorite-facts.json"))) var favoriteFacts: [Fact] = []
@@ -57,10 +60,10 @@ class FactFeatureModel {
   var cancellables: Set<AnyCancellable> = []
 
   init() {
-    _favoriteFacts = .constant([])
+    _state = .constant(Facts.State())
     $ordering.publisher.sink { [weak self] ordering in
       guard let self else { return }
-      $favoriteFacts = SharedReader(.fetch(Facts(ordering: ordering)))
+      $state = SharedReader(wrappedValue: state, .fetch(Facts(ordering: ordering)))
     }
     .store(in: &cancellables)
   }
@@ -125,11 +128,20 @@ class FactFeatureModel {
 
   struct Facts: FetchKeyRequest {
     let ordering: Ordering
-    func fetch(_ db: Database) throws -> [Fact] {
-      try Fact
-        .filter(!Column("isArchived"))
-        .order(ordering.orderingTerm)
-        .fetchAll(db)
+    struct State {
+      var archivedFactsCount = 0
+      var favoriteFacts: [Fact] = []
+      var unarchivedFactsCount = 0
+    }
+    func fetch(_ db: Database) throws -> State {
+      try State(
+        archivedFactsCount: Fact.filter(Column("isArchived")).fetchCount(db),
+        favoriteFacts: Fact
+          .filter(!Column("isArchived"))
+          .order(ordering.orderingTerm)
+          .fetchAll(db),
+        unarchivedFactsCount: Fact.filter(!Column("isArchived")).fetchCount(db)
+      )
     }
   }
 }
@@ -161,9 +173,9 @@ struct FactFeatureView: View {
           }
         }
       }
-      if !model.favoriteFacts.isEmpty {
+      if !model.state.favoriteFacts.isEmpty {
         Section {
-          ForEach(model.favoriteFacts) { fact in
+          ForEach(model.state.favoriteFacts) { fact in
             Text(fact.value)
               .swipeActions {
                 Button("Archive") {
@@ -177,7 +189,7 @@ struct FactFeatureView: View {
           }
         } header: {
           HStack {
-            Text("Favorites (\(model.unarchivedFactsCount))")
+            Text("Favorites (\(model.state.unarchivedFactsCount))")
             Spacer()
             Picker("Sort", selection: Binding(model.$ordering)) {
               Section {
@@ -194,9 +206,9 @@ struct FactFeatureView: View {
       }
     }
     .toolbar {
-      if model.archivedFactsCount > 0 {
+      if model.state.archivedFactsCount > 0 {
         ToolbarItem {
-          Button("Archived facts (\(model.archivedFactsCount))") {
+          Button("Archived facts (\(model.state.archivedFactsCount))") {
             model.isArchivedFactsPresented = true
           }
         }
