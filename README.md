@@ -314,3 +314,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Sharing with SQLite: The Solution](0310-sqlite-sharing-pt2)
 1. [Sharing with SQLite: Advanced Queries](0311-sqlite-sharing-pt3)
 1. [Sharing with SQLite: Dynamic Queries](0312-sqlite-sharing-pt4)
+1. [Point-Free Live: SharingGRDB](0313-pf-live-sharing-grdb)
