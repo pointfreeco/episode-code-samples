@@ -10,6 +10,9 @@ struct Fact: Codable, Equatable, Identifiable, FetchableRecord,
 {
   static let databaseTableName = "facts"
 
+  static let archived = Self.where(\.isArchived)
+  static let unarchived = Self.where { !$0.isArchived }
+
   var id: Int64?
   var isArchived = false
   var number: Int

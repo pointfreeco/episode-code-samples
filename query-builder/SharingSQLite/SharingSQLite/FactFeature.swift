@@ -53,28 +53,62 @@ class FactFeatureModel {
     }
     .store(in: &cancellables)
 
-    // SELECT count(*) FROM "facts" WHERE "isArchived"
-    let query1 = Fact
-      .where(\.isArchived)
-      .count()
-    // SELECT count(*) FROM "facts" WHERE NOT "isArchived"
-    let query2 = Fact
-      .where { !$0.isArchived }
-      .count()
-    // Fact.filter(!Column("isArchived")).order(ordering.orderingTerm)
-    // Fact.order(ordering.orderingTerm)
-    $ordering.withLock { $0 = .savedAt }
-    let query3 = Fact
-      .where { !$0.isArchived }
-      .order {
-        switch ordering {
-        case .number:
-          ($0.number, $0.savedAt.descending())
-        case .savedAt:
-          $0.savedAt.descending()
-        }
+    _ = Fact.archived
+    _ = Fact.archived.count()
+    _ = Fact.unarchived.count()
+    _ = Fact.unarchived.order {
+      switch ordering {
+      case .number: ($0.number, $0.savedAt.descending())
+      case .savedAt: $0.savedAt.descending()
       }
-    print(query3.queryFragment)
+    }
+
+    print("===")
+    let query1 = Attendee.withSyncUp
+      .where { attendees, _ in attendees.name.collate(.nocase).contains("blob") }
+    print(query1.queryFragment)
+    print("---")
+    let query2 = SyncUp.withAttendeeCount
+      .where { syncUps, _ in syncUps.title.collate(.nocase).contains("morning") }
+    print(query2.queryFragment)
+  }
+
+  @Table
+  struct SyncUp {
+    static let withAttendeeCount = group(by: \.id)
+      .join(Attendee.all()) { $0.id == $1.syncUpID }
+      .select {
+        SyncUpWithAttendeeCount.Columns(
+          attendeeCount: $1.id.count(),
+          syncUp: $0
+        )
+      }
+
+    let id: Int
+    var duration: Int
+    var title: String
+  }
+
+  @Table
+  struct Attendee {
+    static let withSyncUp = join(SyncUp.all()) { $0.syncUpID == $1.id }
+      .select(AttendeeAndSyncUp.Columns.init)
+
+    let id: Int
+    var name: String
+    var syncUpID: Int
+  }
+
+  @Selection
+  struct AttendeeAndSyncUp {
+    let attendee: FactFeatureModel.Attendee
+    let syncUp: FactFeatureModel.SyncUp
+  }
+
+  @Selection
+  struct SyncUpWithAttendeeCount {
+    let attendeeCount: Int
+    let syncUp: FactFeatureModel.SyncUp
   }
 
   func incrementButtonTapped() {
