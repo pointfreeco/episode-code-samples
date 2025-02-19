@@ -4,7 +4,7 @@ import SharingGRDB
 import SwiftUI
 
 struct ArchivedFactsView: View {
-  @SharedReader(.fetchAll(sql: #"SELECT * FROM "facts" WHERE "isArchived""#))
+  @SharedReader(.fetchAll(sql: #"SELECT * FROM "facts" WHERE "isArchived""#, animation: .default))
   var archivedFacts: [Fact]
   @Dependency(\.defaultDatabase) var database
 

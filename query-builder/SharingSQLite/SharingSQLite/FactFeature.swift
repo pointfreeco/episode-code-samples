@@ -25,12 +25,12 @@ class FactFeatureModel {
   var fact: String?
   var isArchivedFactsPresented = false
 
-  @ObservationIgnored @SharedReader(.fetchOne(sql: #"SELECT count(*) FROM "facts" WHERE "isArchived""#))
+  @ObservationIgnored @SharedReader(.fetchOne(sql: #"SELECT count(*) FROM "facts" WHERE "isArchived""#, animation: .default))
   var archivedFactsCount = 0
 
-  @ObservationIgnored @SharedReader var favoriteFacts: [Fact]
+  @ObservationIgnored @SharedReader(value: []) var favoriteFacts: [Fact]
 
-  @ObservationIgnored @SharedReader(.fetchOne(sql: #"SELECT count(*) FROM "facts" WHERE NOT "isArchived""#))
+  @ObservationIgnored @SharedReader(.fetchOne(sql: #"SELECT count(*) FROM "facts" WHERE NOT "isArchived""#, animation: .default))
   var unarchivedFactsCount = 0
 
   @ObservationIgnored @Shared(.count) var count
@@ -44,10 +44,11 @@ class FactFeatureModel {
   var cancellables: Set<AnyCancellable> = []
 
   init() {
-    _favoriteFacts = .constant([])
     $ordering.publisher.sink { [weak self] ordering in
       guard let self else { return }
-      $favoriteFacts = SharedReader(.fetch(Facts(ordering: ordering)))
+      Task {
+        try await $favoriteFacts.load(.fetch(Facts(ordering: ordering), animation: .default))
+      }
     }
     .store(in: &cancellables)
   }
@@ -113,12 +114,15 @@ class FactFeatureModel {
   struct Facts: FetchKeyRequest {
     let ordering: Ordering
     func fetch(_ db: Database) throws -> [Fact] {
-      try Fact
-        .filter(!Column("isArchived"))
+      let query = Fact
+        .filter(!Column.isArchived) // Column("isArchived")
         .order(ordering.orderingTerm)
-        .fetchAll(db)
+      return try query.fetchAll(db)
     }
   }
+}
+extension Column {
+  static let isArchived = Column("isArchived")
 }
 
 struct FactFeatureView: View {

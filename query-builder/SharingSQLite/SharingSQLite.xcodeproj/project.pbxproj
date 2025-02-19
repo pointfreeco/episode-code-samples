@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2A6E8B342CE7E25E00319151 /* Sharing in Frameworks */ = {isa = PBXBuildFile; productRef = 2A6E8B332CE7E25E00319151 /* Sharing */; };
-		4B33B1232CEBF52200FABC68 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 4B33B1222CEBF52200FABC68 /* Dependencies */; };
+		2AD10A5D2D666E31008F8208 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 2AD10A5C2D666E31008F8208 /* Dependencies */; };
+		2AD10A622D666E5C008F8208 /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 2AD10A612D666E5C008F8208 /* SharingGRDB */; };
 		4B7DEA6C2D2F0C39009CE4A3 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4B7DEA6B2D2F0C39009CE4A3 /* GRDB */; };
-		CAAC62C72D39CDF40089EF0C /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CAAC62C62D39CDF40089EF0C /* SharingGRDB */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,10 +43,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AD10A5D2D666E31008F8208 /* Dependencies in Frameworks */,
 				4B7DEA6C2D2F0C39009CE4A3 /* GRDB in Frameworks */,
+				2AD10A622D666E5C008F8208 /* SharingGRDB in Frameworks */,
 				2A6E8B342CE7E25E00319151 /* Sharing in Frameworks */,
-				CAAC62C72D39CDF40089EF0C /* SharingGRDB in Frameworks */,
-				4B33B1232CEBF52200FABC68 /* Dependencies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,9 +90,9 @@
 			name = SharingSQLite;
 			packageProductDependencies = (
 				2A6E8B332CE7E25E00319151 /* Sharing */,
-				4B33B1222CEBF52200FABC68 /* Dependencies */,
 				4B7DEA6B2D2F0C39009CE4A3 /* GRDB */,
-				CAAC62C62D39CDF40089EF0C /* SharingGRDB */,
+				2AD10A5C2D666E31008F8208 /* Dependencies */,
+				2AD10A612D666E5C008F8208 /* SharingGRDB */,
 			);
 			productName = TourOfSharing;
 			productReference = 2A5622CA2CE7D2E500FC29DB /* SharingSQLite.app */;
@@ -124,9 +124,9 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				2A6E8B322CE7E25E00319151 /* XCRemoteSwiftPackageReference "swift-sharing" */,
-				4B33B1212CEBF52200FABC68 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 				4B7DEA6A2D2F0C39009CE4A3 /* XCRemoteSwiftPackageReference "GRDB" */,
-				CAAC62C52D39CDF40089EF0C /* XCRemoteSwiftPackageReference "sharing-grdb" */,
+				2AD10A5B2D666E31008F8208 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				2AD10A602D666E5C008F8208 /* XCRemoteSwiftPackageReference "sharing-grdb" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2A5622CB2CE7D2E500FC29DB /* Products */;
@@ -362,32 +362,32 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-sharing";
 			requirement = {
-				kind = upToNextMinorVersion;
+				kind = upToNextMajorVersion;
 				minimumVersion = 2.1.0;
 			};
 		};
-		4B33B1212CEBF52200FABC68 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+		2AD10A5B2D666E31008F8208 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-dependencies.git";
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.6.3;
+				minimumVersion = 1.7.0;
+			};
+		};
+		2AD10A602D666E5C008F8208 /* XCRemoteSwiftPackageReference "sharing-grdb" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/sharing-grdb";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
 			};
 		};
 		4B7DEA6A2D2F0C39009CE4A3 /* XCRemoteSwiftPackageReference "GRDB" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/groue/GRDB.swift";
 			requirement = {
-				branch = GRDB7;
-				kind = branch;
-			};
-		};
-		CAAC62C52D39CDF40089EF0C /* XCRemoteSwiftPackageReference "sharing-grdb" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "http://github.com/pointfreeco/sharing-grdb";
-			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -398,20 +398,20 @@
 			package = 2A6E8B322CE7E25E00319151 /* XCRemoteSwiftPackageReference "swift-sharing" */;
 			productName = Sharing;
 		};
-		4B33B1222CEBF52200FABC68 /* Dependencies */ = {
+		2AD10A5C2D666E31008F8208 /* Dependencies */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4B33B1212CEBF52200FABC68 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			package = 2AD10A5B2D666E31008F8208 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
 			productName = Dependencies;
+		};
+		2AD10A612D666E5C008F8208 /* SharingGRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2AD10A602D666E5C008F8208 /* XCRemoteSwiftPackageReference "sharing-grdb" */;
+			productName = SharingGRDB;
 		};
 		4B7DEA6B2D2F0C39009CE4A3 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4B7DEA6A2D2F0C39009CE4A3 /* XCRemoteSwiftPackageReference "GRDB" */;
 			productName = GRDB;
-		};
-		CAAC62C62D39CDF40089EF0C /* SharingGRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CAAC62C52D39CDF40089EF0C /* XCRemoteSwiftPackageReference "sharing-grdb" */;
-			productName = SharingGRDB;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
