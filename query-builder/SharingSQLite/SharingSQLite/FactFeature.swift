@@ -4,6 +4,7 @@ import GRDB
 import IssueReporting
 import Sharing
 import SharingGRDB
+import StructuredQueries
 import SwiftUI
 
 enum Ordering: String, CaseIterable {
@@ -51,6 +52,29 @@ class FactFeatureModel {
       }
     }
     .store(in: &cancellables)
+
+    // SELECT count(*) FROM "facts" WHERE "isArchived"
+    let query1 = Fact
+      .where(\.isArchived)
+      .count()
+    // SELECT count(*) FROM "facts" WHERE NOT "isArchived"
+    let query2 = Fact
+      .where { !$0.isArchived }
+      .count()
+    // Fact.filter(!Column("isArchived")).order(ordering.orderingTerm)
+    // Fact.order(ordering.orderingTerm)
+    $ordering.withLock { $0 = .savedAt }
+    let query3 = Fact
+      .where { !$0.isArchived }
+      .order {
+        switch ordering {
+        case .number:
+          ($0.number, $0.savedAt.descending())
+        case .savedAt:
+          $0.savedAt.descending()
+        }
+      }
+    print(query3.queryFragment)
   }
 
   func incrementButtonTapped() {
@@ -115,14 +139,11 @@ class FactFeatureModel {
     let ordering: Ordering
     func fetch(_ db: Database) throws -> [Fact] {
       let query = Fact
-        .filter(!Column.isArchived) // Column("isArchived")
+        .filter(!Column("isArchived"))
         .order(ordering.orderingTerm)
       return try query.fetchAll(db)
     }
   }
-}
-extension Column {
-  static let isArchived = Column("isArchived")
 }
 
 struct FactFeatureView: View {
