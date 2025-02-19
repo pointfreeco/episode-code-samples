@@ -2,7 +2,9 @@ import Foundation
 import GRDB
 import IssueReporting
 import Sharing
+import StructuredQueries
 
+@Table
 struct Fact: Codable, Equatable, Identifiable, FetchableRecord,
   MutablePersistableRecord
 {
@@ -11,8 +13,11 @@ struct Fact: Codable, Equatable, Identifiable, FetchableRecord,
   var id: Int64?
   var isArchived = false
   var number: Int
+  @Column(as: .iso8601)
   var savedAt: Date
   var value: String
+
+  var isNotArchived: Bool { !isArchived }
 
   mutating func didInsert(_ inserted: InsertionSuccess) {
     id = inserted.rowID
@@ -24,13 +29,13 @@ extension DatabaseWriter where Self == DatabaseQueue {
     let databaseQueue: DatabaseQueue
     var configuration = Configuration()
     configuration.prepareDatabase { db in
-      db.trace(options: .profile) {
-        #if DEBUG
-          print($0.expandedDescription)
-        #else
-          print($0)
-        #endif
-      }
+//      db.trace(options: .profile) {
+//        #if DEBUG
+//          print($0.expandedDescription)
+//        #else
+//          print($0)
+//        #endif
+//      }
     }
     if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == nil && !isTesting {
       let path = URL.documentsDirectory.appending(component: "db.sqlite").path()
