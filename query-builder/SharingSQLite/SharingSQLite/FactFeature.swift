@@ -9,15 +9,6 @@ import SwiftUI
 
 enum Ordering: String, CaseIterable {
   case number = "Number", savedAt = "Saved at"
-
-  var orderingTerm: any SQLOrderingTerm {
-    switch self {
-    case .number:
-      Column("number")
-    case .savedAt:
-      Column("savedAt").desc
-    }
-  }
 }
 
 @Observable
@@ -26,12 +17,12 @@ class FactFeatureModel {
   var fact: String?
   var isArchivedFactsPresented = false
 
-  @ObservationIgnored @SharedReader(.fetchOne(sql: #"SELECT count(*) FROM "facts" WHERE "isArchived""#, animation: .default))
+  @ObservationIgnored @SharedReader(.fetchOne(Fact.archived.count(), animation: .default))
   var archivedFactsCount = 0
 
   @ObservationIgnored @SharedReader(value: []) var favoriteFacts: [Fact]
 
-  @ObservationIgnored @SharedReader(.fetchOne(sql: #"SELECT count(*) FROM "facts" WHERE NOT "isArchived""#, animation: .default))
+  @ObservationIgnored @SharedReader(.fetchOne(Fact.unarchived.count(), animation: .default))
   var unarchivedFactsCount = 0
 
   @ObservationIgnored @Shared(.count) var count
@@ -48,67 +39,20 @@ class FactFeatureModel {
     $ordering.publisher.sink { [weak self] ordering in
       guard let self else { return }
       Task {
-        try await $favoriteFacts.load(.fetch(Facts(ordering: ordering), animation: .default))
+        try await $favoriteFacts.load(
+          .fetchAll(
+            Fact.unarchived.order {
+              switch ordering {
+              case .number: ($0.number, $0.savedAt.descending())
+              case .savedAt: $0.savedAt.descending()
+              }
+            },
+            animation: .default
+          )
+        )
       }
     }
     .store(in: &cancellables)
-
-    _ = Fact.archived
-    _ = Fact.archived.count()
-    _ = Fact.unarchived.count()
-    _ = Fact.unarchived.order {
-      switch ordering {
-      case .number: ($0.number, $0.savedAt.descending())
-      case .savedAt: $0.savedAt.descending()
-      }
-    }
-
-    print("===")
-    let query1 = Attendee.withSyncUp
-      .where { attendees, _ in attendees.name.collate(.nocase).contains("blob") }
-    print(query1.queryFragment)
-    print("---")
-    let query2 = SyncUp.withAttendeeCount
-      .where { syncUps, _ in syncUps.title.collate(.nocase).contains("morning") }
-    print(query2.queryFragment)
-  }
-
-  @Table
-  struct SyncUp {
-    static let withAttendeeCount = group(by: \.id)
-      .join(Attendee.all()) { $0.id == $1.syncUpID }
-      .select {
-        SyncUpWithAttendeeCount.Columns(
-          attendeeCount: $1.id.count(),
-          syncUp: $0
-        )
-      }
-
-    let id: Int
-    var duration: Int
-    var title: String
-  }
-
-  @Table
-  struct Attendee {
-    static let withSyncUp = join(SyncUp.all()) { $0.syncUpID == $1.id }
-      .select(AttendeeAndSyncUp.Columns.init)
-
-    let id: Int
-    var name: String
-    var syncUpID: Int
-  }
-
-  @Selection
-  struct AttendeeAndSyncUp {
-    let attendee: FactFeatureModel.Attendee
-    let syncUp: FactFeatureModel.SyncUp
-  }
-
-  @Selection
-  struct SyncUpWithAttendeeCount {
-    let attendeeCount: Int
-    let syncUp: FactFeatureModel.SyncUp
   }
 
   func incrementButtonTapped() {
@@ -166,16 +110,6 @@ class FactFeatureModel {
       }
     } catch {
       reportIssue(error)
-    }
-  }
-
-  struct Facts: FetchKeyRequest {
-    let ordering: Ordering
-    func fetch(_ db: Database) throws -> [Fact] {
-      let query = Fact
-        .filter(!Column("isArchived"))
-        .order(ordering.orderingTerm)
-      return try query.fetchAll(db)
     }
   }
 }

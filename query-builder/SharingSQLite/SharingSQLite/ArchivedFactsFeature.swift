@@ -5,16 +5,9 @@ import StructuredQueries
 import SwiftUI
 
 struct ArchivedFactsView: View {
-  @SharedReader(.fetchAll(sql: #"SELECT * FROM "facts" WHERE "isArchived""#, animation: .default))
+  @SharedReader(.fetchAll(Fact.archived, animation: .default))
   var archivedFacts: [Fact]
   @Dependency(\.defaultDatabase) var database
-
-  init() {
-    let query: some QueryExpression<[Fact]> = Fact
-      .where { !$0.isArchived && ($0.number >= 100 || $0.value.collate(.nocase).contains("atomic")) } // Column("isArchived")
-    print("---")
-    print(query.queryFragment)
-  }
 
   var body: some View {
     Form {
