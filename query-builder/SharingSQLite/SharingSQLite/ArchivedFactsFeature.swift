@@ -42,23 +42,3 @@ struct ArchivedFactsView: View {
   }
 }
 
-#Preview("Archived facts") {
-  let _ = prepareDependencies {
-    $0.defaultDatabase = .appDatabase
-    let _ = try! $0.defaultDatabase.write { db in
-      for index in 1...10 {
-        _ = try Fact(
-          isArchived: index.isMultiple(of: 2),
-          number: index,
-          savedAt: Date(),
-          value: "\(index) was a good number."
-        )
-        .inserted(db)
-      }
-    }
-  }
-
-  NavigationStack {
-    ArchivedFactsView()
-  }
-}

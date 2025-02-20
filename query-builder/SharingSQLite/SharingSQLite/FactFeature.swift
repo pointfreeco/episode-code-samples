@@ -82,8 +82,13 @@ class FactFeatureModel {
       self.fact = nil
       do {
         try database.write { db in
-          _ = try Fact(number: count, savedAt: now, value: fact)
-            .inserted(db)
+          let fact = try Fact.insert(
+            Fact.Draft(number: count, savedAt: now, value: fact)
+          )
+          .returning(\.self)
+          .fetchOne(db)!
+
+          print(fact)
         }
       } catch {
         reportIssue(error)
@@ -94,9 +99,10 @@ class FactFeatureModel {
   func archive(fact: Fact) {
     do {
       try database.write { db in
-        var fact = fact
-        fact.isArchived = true
-        try fact.update(db)
+        try Fact
+          .where { $0.id == fact.id }
+          .update { $0.isArchived = true }
+          .execute(db)
       }
     } catch {
       reportIssue(error)
@@ -106,7 +112,10 @@ class FactFeatureModel {
   func delete(fact: Fact) {
     do {
       try database.write { db in
-        _ = try fact.delete(db)
+        try Fact
+          .where { $0.id == fact.id }
+          .delete()
+          .execute(db)
       }
     } catch {
       reportIssue(error)

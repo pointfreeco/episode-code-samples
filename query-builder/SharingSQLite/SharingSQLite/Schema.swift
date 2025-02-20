@@ -13,7 +13,7 @@ struct Fact: Codable, Equatable, Identifiable, FetchableRecord,
   static let archived = Self.where(\.isArchived)
   static let unarchived = Self.where { !$0.isArchived }
 
-  var id: Int64?
+  let id: Int64
   var isArchived = false
   var number: Int
   @Column(as: .iso8601)
@@ -21,10 +21,6 @@ struct Fact: Codable, Equatable, Identifiable, FetchableRecord,
   var value: String
 
   var isNotArchived: Bool { !isArchived }
-
-  mutating func didInsert(_ inserted: InsertionSuccess) {
-    id = inserted.rowID
-  }
 }
 
 extension DatabaseWriter where Self == DatabaseQueue {
