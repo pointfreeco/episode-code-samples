@@ -1,12 +1,27 @@
-struct Select: QueryExpression {
+struct Select<From: Table>: QueryExpression {
   var columns: [String]
-  var from: String
+  var orders: [String] = []
 
   var queryString: String {
-    """
+    var sql = """
     SELECT \(columns.isEmpty ? "*" : columns.joined(separator: ", "))
-    FROM \(from)
+    FROM \(From.tableName)
     """
+    if !orders.isEmpty {
+      sql.append("\nORDER BY \(orders.joined(separator: ", "))")
+    }
+    return sql
+  }
+
+  func order<each OrderingTerm: QueryExpression>(
+    _ orders: (From.Columns) -> (repeat each OrderingTerm)
+  ) -> Select {
+    let orders = orders(From.columns)
+    var orderStrings: [String] = []
+    for order in repeat each orders {
+      orderStrings.append(order.queryString)
+    }
+    return Select(columns: columns, orders: orderStrings)
   }
 }
 
@@ -17,34 +32,32 @@ protocol Table {
 }
 
 extension Table {
-  static func select(_ columns: String...) -> Select {
-    Select(columns: columns, from: Self.tableName)
+  static func select(_ columns: String...) -> Select<Self> {
+    Select(columns: columns)
   }
-  static func select(_ columns: KeyPath<Columns, Column>...) -> Select {
+  static func select(_ columns: KeyPath<Columns, Column>...) -> Select<Self> {
     Select(
-      columns: columns.map { Self.columns[keyPath: $0].name },
-      from: tableName
+      columns: columns.map { Self.columns[keyPath: $0].name }
     )
   }
   static func select<each ResultColumn: QueryExpression>(
     //_: (any QueryExpression)...,
     _ columns: (Columns) -> (repeat each ResultColumn)
-  ) -> Select {
+  ) -> Select<Self> {
     let columns = columns(Self.columns)
     var columnStrings: [String] = []
     for column in repeat each columns {
       columnStrings.append(column.queryString)
     }
     return Select(
-      columns: columnStrings,
-      from: tableName
+      columns: columnStrings
     )
   }
-  static func all() -> Select {
-    Select(columns: [], from: Self.tableName)
+  static func all() -> Select<Self> {
+    Select(columns: [])
   }
-  static func count() -> Select {
-    Select(columns: ["count(*)"], from: Self.tableName)
+  static func count() -> Select<Self> {
+    Select(columns: ["count(*)"])
   }
 }
 

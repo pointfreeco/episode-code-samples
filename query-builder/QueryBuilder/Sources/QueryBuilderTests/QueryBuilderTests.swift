@@ -4,30 +4,6 @@ import Testing
 @testable import QueryBuilder
 
 @Suite(.snapshots(record: .failed)) struct QueryBuilderTests {
-  @Test func basics() {
-    assertInlineSnapshot(
-      of: Select(columns: ["id", "title"], from: "reminders"),
-      as: .sql
-    ) {
-      """
-      SELECT id, title
-      FROM reminders
-      """
-    }
-  }
-
-  @Test func emptyColumns() {
-    assertInlineSnapshot(
-      of: Select(columns: [], from: "reminders"),
-      as: .sql
-    ) {
-      """
-      SELECT *
-      FROM reminders
-      """
-    }
-  }
-
   @Test func selectWithColumns() {
     assertInlineSnapshot(
       of: Reminder.select("id", "title", "priority"),
@@ -184,6 +160,53 @@ import Testing
       """
     }
   }
+
+  @Test func selectOrder() {
+    assertInlineSnapshot(
+      of: Reminder.all().order { $0.title }, // ORDER BY title
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY title
+      """
+    }
+  }
+
+  @Test func selectOrderByMultipleColumns() {
+    assertInlineSnapshot(
+      of: Reminder.all().order { ($0.priority, $0.title) }, // ORDER BY priority, title
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY priority, title
+      """
+    }
+  }
+
+//  @Test func selectOrderByMultipleColumnsDesc() {
+//    assertInlineSnapshot(
+//      of: Reminder.all().order { ($0.priority.desc(), $0.title) }, // ORDER BY priority DESC, title
+//      as: .sql
+//    )
+//  }
+//
+//  @Test func selectOrderByMultipleColumnsDescNullsFirst() {
+//    assertInlineSnapshot(
+//      of: Reminder.all().order { ($0.priority.desc(nulls: .first), $0.title) }, // ORDER BY priority DESC NULLS FIRST, title
+//      as: .sql
+//    )
+//  }
+//
+//  @Test func selectOrderByExpression() {
+//    assertInlineSnapshot(
+//      of: Reminder.all().order { ($0.title.length(), $0.isCompleted.desc()) }, // ORDER BY length(title), isCompleted DESC
+//      as: .sql
+//    )
+//  }
 }
 
 struct Reminder: Table {
