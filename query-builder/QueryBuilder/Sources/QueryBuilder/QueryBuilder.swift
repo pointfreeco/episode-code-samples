@@ -67,21 +67,43 @@ extension Table {
 struct Column: QueryExpression {
   var name: String
   var queryString: String { name }
+}
 
+extension QueryExpression {
   func count(distinct: Bool = false) -> some QueryExpression {
-    CountFunction(column: self, isDistinct: distinct)
+    CountFunction(base: self, isDistinct: distinct)
   }
   func avg() -> some QueryExpression {
-    AvgFunction(column: self)
+    AvgFunction(base: self)
   }
   func groupConcat(separator: String? = nil) -> some QueryExpression {
-    GroupConcatFunction(column: self, separator: separator)
+    GroupConcatFunction(base: self, separator: separator)
   }
   func asc(nulls nullOrder: NullOrder? = nil) -> some QueryExpression {
-    OrderingTerm(isAscending: true, nullOrder: nullOrder, column: self)
+    OrderingTerm(isAscending: true, nullOrder: nullOrder, base: self)
   }
   func desc(nulls nullOrder: NullOrder? = nil) -> some QueryExpression {
-    OrderingTerm(isAscending: false, nullOrder: nullOrder, column: self)
+    OrderingTerm(isAscending: false, nullOrder: nullOrder, base: self)
+  }
+  func length() -> some QueryExpression {
+    LengthFunction(base: self)
+  }
+  func collate(_ collation: Collation) -> some QueryExpression {
+    Collate(collation: collation, base: self)
+  }
+}
+
+enum Collation: String {
+  case nocase = "NOCASE"
+  case binary = "BINARY"
+  case rtrim = "RTRIM"
+}
+
+struct Collate<Base: QueryExpression>: QueryExpression {
+  let collation: Collation
+  let base: Base
+  var queryString: String {
+    "\(base.queryString) COLLATE \(collation.rawValue)"
   }
 }
 
@@ -90,12 +112,12 @@ enum NullOrder: String {
   case last = "LAST"
 }
 
-struct OrderingTerm: QueryExpression {
+struct OrderingTerm<Base: QueryExpression>: QueryExpression {
   let isAscending: Bool
   let nullOrder: NullOrder?
-  let column: Column
+  let base: Base
   var queryString: String {
-    var sql = "\(column.queryString)\(isAscending ? " ASC" : " DESC")"
+    var sql = "\(base.queryString)\(isAscending ? " ASC" : " DESC")"
     if let nullOrder {
       sql.append(" NULLS \(nullOrder.rawValue)")
     }
@@ -103,26 +125,33 @@ struct OrderingTerm: QueryExpression {
   }
 }
 
-struct CountFunction: QueryExpression {
-  let column: Column
+struct CountFunction<Base: QueryExpression>: QueryExpression {
+  let base: Base
   let isDistinct: Bool
   var queryString: String {
-    "count(\(isDistinct ? "DISTINCT " : "")\(column.queryString))"
+    "count(\(isDistinct ? "DISTINCT " : "")\(base.queryString))"
   }
 }
 
-struct AvgFunction: QueryExpression {
-  let column: Column
+struct AvgFunction<Base: QueryExpression>: QueryExpression {
+  let base: Base
   var queryString: String {
-    "avg(\(column.queryString))"
+    "avg(\(base.queryString))"
   }
 }
 
-struct GroupConcatFunction: QueryExpression {
-  let column: Column
+struct LengthFunction<Base: QueryExpression>: QueryExpression {
+  let base: Base
+  var queryString: String {
+    "length(\(base.queryString))"
+  }
+}
+
+struct GroupConcatFunction<Base: QueryExpression>: QueryExpression {
+  let base: Base
   let separator: String?
   var queryString: String {
-    "group_concat(\(column.queryString)\(separator.map { ", '\($0)'" } ?? ""))"
+    "group_concat(\(base.queryString)\(separator.map { ", '\($0)'" } ?? ""))"
   }
 }
 

@@ -235,12 +235,31 @@ import Testing
     }
   }
 
-//  @Test func selectOrderByExpression() {
-//    assertInlineSnapshot(
-//      of: Reminder.all().order { ($0.title.length(), $0.isCompleted.desc()) }, // ORDER BY length(title), isCompleted DESC
-//      as: .sql
-//    )
-//  }
+  @Test func selectOrderByExpression() {
+    assertInlineSnapshot(
+      of: Reminder.all().order { ($0.title.length().desc(), $0.isCompleted.desc()) },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY length(title) DESC, isCompleted DESC
+      """
+    }
+  }
+
+  @Test func selectOrderByExpressionCollation() {
+    assertInlineSnapshot(
+      of: Reminder.all().order { $0.title.collate(.nocase).desc() },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY title COLLATE NOCASE DESC
+      """
+    }
+  }
 }
 
 struct Reminder: Table {
