@@ -8,9 +8,18 @@ let package = Package(
   products: [
     .library(name: "QueryBuilder", targets: ["QueryBuilder"])
   ],
+  dependencies: [
+    .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.0.0")
+  ],
   targets: [
     .target(name: "QueryBuilder"),
-    .testTarget(name: "QueryBuilderTests", dependencies: ["QueryBuilder"]),
+    .testTarget(
+      name: "QueryBuilderTests",
+      dependencies: [
+        "QueryBuilder",
+        .product(name: "InlineSnapshotTesting", package: "swift-snapshot-testing")
+      ]
+    ),
   ],
   swiftLanguageModes: [.v6]
 )

@@ -11,12 +11,20 @@ struct Select {
 }
 
 protocol Table {
+  associatedtype Columns
   static var tableName: String { get }
+  static var columns: Columns { get }
 }
 
 extension Table {
   static func select(_ columns: String...) -> Select {
     Select(columns: columns, from: Self.tableName)
+  }
+  static func select(_ columns: KeyPath<Columns, String>...) -> Select {
+    Select(
+      columns: columns.map { Self.columns[keyPath: $0] },
+      from: tableName
+    )
   }
   static func all() -> Select {
     Select(columns: [], from: Self.tableName)
