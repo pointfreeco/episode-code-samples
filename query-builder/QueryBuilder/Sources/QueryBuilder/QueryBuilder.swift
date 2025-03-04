@@ -1,4 +1,4 @@
-struct Select {
+struct Select: QueryExpression {
   var columns: [String]
   var from: String
 
@@ -26,6 +26,20 @@ extension Table {
       from: tableName
     )
   }
+  static func select<each ResultColumn: QueryExpression>(
+    //_: (any QueryExpression)...,
+    _ columns: (Columns) -> (repeat each ResultColumn)
+  ) -> Select {
+    let columns = columns(Self.columns)
+    var columnStrings: [String] = []
+    for column in repeat each columns {
+      columnStrings.append(column.queryString)
+    }
+    return Select(
+      columns: columnStrings,
+      from: tableName
+    )
+  }
   static func all() -> Select {
     Select(columns: [], from: Self.tableName)
   }
@@ -34,6 +48,11 @@ extension Table {
   }
 }
 
-struct Column {
+struct Column: QueryExpression {
   var name: String
+  var queryString: String { name }
+}
+
+protocol QueryExpression {
+  var queryString: String { get }
 }

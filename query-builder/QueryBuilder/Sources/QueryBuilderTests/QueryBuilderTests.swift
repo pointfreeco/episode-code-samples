@@ -77,10 +77,22 @@ import Testing
   }
 
   @Test func fancySelect() {
-//    assertInlineSnapshot(
-//      of: Reminder.select { ($0.id.count(distinct: true), $0.title.groupConcat(), $0.priority.avg(), Tag.count()) },
-//      as: .sql
-//    )
+    assertInlineSnapshot(
+      of: Reminder.select {
+        ($0.id, $0.title, $0.priority, $0.isCompleted)
+      },
+//        (
+//          $0.id.count(distinct: true),
+//          $0.title.groupConcat(),
+//          $0.priority.avg()
+//        )
+      as: .sql
+    ) {
+      """
+      SELECT id, title, priority, isCompleted
+      FROM reminders
+      """
+    }
   }
 }
 
