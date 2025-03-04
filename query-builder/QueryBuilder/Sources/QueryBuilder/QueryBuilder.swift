@@ -21,7 +21,10 @@ struct Select<From: Table>: QueryExpression {
     for order in repeat each orders {
       orderStrings.append(order.queryString)
     }
-    return Select(columns: columns, orders: orderStrings)
+    return Select(
+      columns: columns,
+      orders: self.orders + orderStrings
+    )
   }
 }
 
@@ -73,6 +76,30 @@ struct Column: QueryExpression {
   }
   func groupConcat(separator: String? = nil) -> some QueryExpression {
     GroupConcatFunction(column: self, separator: separator)
+  }
+  func asc(nulls nullOrder: NullOrder? = nil) -> some QueryExpression {
+    OrderingTerm(isAscending: true, nullOrder: nullOrder, column: self)
+  }
+  func desc(nulls nullOrder: NullOrder? = nil) -> some QueryExpression {
+    OrderingTerm(isAscending: false, nullOrder: nullOrder, column: self)
+  }
+}
+
+enum NullOrder: String {
+  case first = "FIRST"
+  case last = "LAST"
+}
+
+struct OrderingTerm: QueryExpression {
+  let isAscending: Bool
+  let nullOrder: NullOrder?
+  let column: Column
+  var queryString: String {
+    var sql = "\(column.queryString)\(isAscending ? " ASC" : " DESC")"
+    if let nullOrder {
+      sql.append(" NULLS \(nullOrder.rawValue)")
+    }
+    return sql
   }
 }
 

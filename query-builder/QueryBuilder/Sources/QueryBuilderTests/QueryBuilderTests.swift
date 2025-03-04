@@ -187,20 +187,54 @@ import Testing
     }
   }
 
-//  @Test func selectOrderByMultipleColumnsDesc() {
-//    assertInlineSnapshot(
-//      of: Reminder.all().order { ($0.priority.desc(), $0.title) }, // ORDER BY priority DESC, title
-//      as: .sql
-//    )
-//  }
-//
-//  @Test func selectOrderByMultipleColumnsDescNullsFirst() {
-//    assertInlineSnapshot(
-//      of: Reminder.all().order { ($0.priority.desc(nulls: .first), $0.title) }, // ORDER BY priority DESC NULLS FIRST, title
-//      as: .sql
-//    )
-//  }
-//
+  @Test func selectOrderByMultipleColumnsDesc() {
+    assertInlineSnapshot(
+      of: Reminder.all().order { ($0.priority.desc(), $0.title) }, // ORDER BY priority DESC, title
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY priority DESC, title
+      """
+    }
+  }
+
+  @Test func selectOrderByMultipleColumnsDescNullsFirst() {
+    assertInlineSnapshot(
+      of: Reminder.all().order {
+        (
+          $0.priority.desc(nulls: .first),
+          $0.title
+        )
+      },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY priority DESC NULLS FIRST, title
+      """
+    }
+  }
+
+  @Test func selectWithMultipleOrders() {
+    assertInlineSnapshot(
+      of: Reminder.all()
+        .order { $0.priority.desc(nulls: .first) }
+        .order { $0.title }
+        .order { $0.id }
+      ,
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY priority DESC NULLS FIRST, title, id
+      """
+    }
+  }
+
 //  @Test func selectOrderByExpression() {
 //    assertInlineSnapshot(
 //      of: Reminder.all().order { ($0.title.length(), $0.isCompleted.desc()) }, // ORDER BY length(title), isCompleted DESC
