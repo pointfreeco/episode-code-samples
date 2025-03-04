@@ -51,6 +51,39 @@ extension Table {
 struct Column: QueryExpression {
   var name: String
   var queryString: String { name }
+
+  func count(distinct: Bool = false) -> some QueryExpression {
+    CountFunction(column: self, isDistinct: distinct)
+  }
+  func avg() -> some QueryExpression {
+    AvgFunction(column: self)
+  }
+  func groupConcat(separator: String? = nil) -> some QueryExpression {
+    GroupConcatFunction(column: self, separator: separator)
+  }
+}
+
+struct CountFunction: QueryExpression {
+  let column: Column
+  let isDistinct: Bool
+  var queryString: String {
+    "count(\(isDistinct ? "DISTINCT " : "")\(column.queryString))"
+  }
+}
+
+struct AvgFunction: QueryExpression {
+  let column: Column
+  var queryString: String {
+    "avg(\(column.queryString))"
+  }
+}
+
+struct GroupConcatFunction: QueryExpression {
+  let column: Column
+  let separator: String?
+  var queryString: String {
+    "group_concat(\(column.queryString)\(separator.map { ", '\($0)'" } ?? ""))"
+  }
 }
 
 protocol QueryExpression {

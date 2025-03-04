@@ -81,15 +81,105 @@ import Testing
       of: Reminder.select {
         ($0.id, $0.title, $0.priority, $0.isCompleted)
       },
-//        (
-//          $0.id.count(distinct: true),
-//          $0.title.groupConcat(),
-//          $0.priority.avg()
-//        )
+      //        (
+      //          $0.id.count(distinct: true),
+      //          $0.title.groupConcat(),
+      //          $0.priority.avg()
+      //        )
       as: .sql
     ) {
       """
       SELECT id, title, priority, isCompleted
+      FROM reminders
+      """
+    }
+  }
+
+  @Test func selectCountColumn() {
+    assertInlineSnapshot(
+      of: Reminder.select { $0.id.count() }, // count(id)
+      as: .sql
+    ) {
+      """
+      SELECT count(id)
+      FROM reminders
+      """
+    }
+  }
+
+  @Test func selectCountDistinctColumn() {
+    assertInlineSnapshot(
+      of: Reminder.select { $0.id.count(distinct: true) }, // count(DISTINCT id)
+      as: .sql
+    ) {
+      """
+      SELECT count(DISTINCT id)
+      FROM reminders
+      """
+    }
+  }
+
+  @Test func selectAvg() {
+    assertInlineSnapshot(
+      of: Reminder.select { $0.priority.avg() }, // avg(priority)
+      as: .sql
+    ) {
+      """
+      SELECT avg(priority)
+      FROM reminders
+      """
+    }
+  }
+
+  @Test func selectAvgAndCount() {
+    assertInlineSnapshot(
+      of: Reminder.select { ($0.priority.avg(), $0.id.count()) }, // avg(priority), count(id)
+      as: .sql
+    ) {
+      """
+      SELECT avg(priority), count(id)
+      FROM reminders
+      """
+    }
+  }
+
+  @Test func selectGroupConcat() {
+    assertInlineSnapshot(
+      of: Reminder.select { $0.title.groupConcat() }, // group_concat(title)
+      as: .sql
+    ) {
+      """
+      SELECT group_concat(title)
+      FROM reminders
+      """
+    }
+  }
+
+  @Test func selectGroupConcatWithSeparator() {
+    assertInlineSnapshot(
+      of: Reminder.select { $0.title.groupConcat(separator: " - ") }, // group_concat(title)
+      as: .sql
+    ) {
+      """
+      SELECT group_concat(title, ' - ')
+      FROM reminders
+      """
+    }
+  }
+
+  @Test func selectAdvanced() {
+    assertInlineSnapshot(
+      of: Reminder.select {
+        (
+          $0.id.count(distinct: true),
+          $0.title.groupConcat(),
+          $0.priority.avg()
+        )
+      },
+      as: .sql
+    ) {
+      """
+      SELECT count(DISTINCT id), group_concat(title), avg(priority)
       FROM reminders
       """
     }
