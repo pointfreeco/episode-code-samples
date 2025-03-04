@@ -75,15 +75,22 @@ import Testing
       """
     }
   }
+
+  @Test func fancySelect() {
+//    assertInlineSnapshot(
+//      of: Reminder.select { ($0.id.count(distinct: true), $0.title.groupConcat(), $0.priority.avg(), Tag.count()) },
+//      as: .sql
+//    )
+  }
 }
 
 struct Reminder: Table {
   // -----
   struct Columns {
-    let id = "id"
-    let title = "title"
-    let isCompleted = "isCompleted"
-    let priority = "priority"
+    let id = Column(name: "id")
+    let title = Column(name: "title")
+    let isCompleted = Column(name: "isCompleted")
+    let priority = Column(name: "priority")
   }
   static let columns = Columns()
   static let tableName = "reminders"

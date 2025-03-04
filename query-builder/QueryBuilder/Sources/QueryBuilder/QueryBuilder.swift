@@ -20,9 +20,9 @@ extension Table {
   static func select(_ columns: String...) -> Select {
     Select(columns: columns, from: Self.tableName)
   }
-  static func select(_ columns: KeyPath<Columns, String>...) -> Select {
+  static func select(_ columns: KeyPath<Columns, Column>...) -> Select {
     Select(
-      columns: columns.map { Self.columns[keyPath: $0] },
+      columns: columns.map { Self.columns[keyPath: $0].name },
       from: tableName
     )
   }
@@ -32,4 +32,8 @@ extension Table {
   static func count() -> Select {
     Select(columns: ["count(*)"], from: Self.tableName)
   }
+}
+
+struct Column {
+  var name: String
 }
