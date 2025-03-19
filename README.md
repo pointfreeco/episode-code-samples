@@ -317,4 +317,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Point-Free Live: SharingGRDB](0313-pf-live-sharing-grdb)
 1. [SQL Builders: Sneak Peek, Part 1](0314-sql-building-pt1)
 1. [SQL Builders: Sneak Peek, Part 2](0315-sql-building-pt2)
-1. [SQL Builders: Select](0316-sql-building-pt3)
+1. [SQL Builders: Selects](0316-sql-building-pt3)
+1. [SQL Builders: Advanced Selects](0317-sql-building-pt4)
