@@ -339,6 +339,19 @@ import Testing
       """
     }
   }
+
+  @Test func whereClause() {
+    assertInlineSnapshot(
+      of: Reminder.all().where { $0.isCompleted },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      WHERE isCompleted
+      """
+    }
+  }
 }
 
 struct Reminder: Table {

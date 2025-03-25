@@ -1,12 +1,16 @@
 struct Select<From: Table>: QueryExpression {
   var columns: [String]
   var orders: [String] = []
+  var wheres: [String] = []
 
   var queryString: String {
     var sql = """
     SELECT \(columns.isEmpty ? "*" : columns.joined(separator: ", "))
     FROM \(From.tableName)
     """
+    if !wheres.isEmpty {
+      sql.append("\nWHERE \(wheres.joined(separator: " AND "))")
+    }
     if !orders.isEmpty {
       sql.append("\nORDER BY \(orders.joined(separator: ", "))")
     }
@@ -18,7 +22,8 @@ struct Select<From: Table>: QueryExpression {
   ) -> Select {
     Select(
       columns: columns,
-      orders: self.orders + orders(From.columns)
+      orders: self.orders + orders(From.columns),
+      wheres: wheres
     )
   }
 
@@ -32,7 +37,18 @@ struct Select<From: Table>: QueryExpression {
     }
     return Select(
       columns: columns,
-      orders: self.orders + orderStrings
+      orders: self.orders + orderStrings,
+      wheres: wheres
+    )
+  }
+
+  func `where`(
+    _ predicate: (From.Columns) -> some QueryExpression
+  ) -> Select {
+    Select(
+      columns: columns,
+      orders: orders,
+      wheres: wheres + [predicate(From.columns).queryString]
     )
   }
 }
