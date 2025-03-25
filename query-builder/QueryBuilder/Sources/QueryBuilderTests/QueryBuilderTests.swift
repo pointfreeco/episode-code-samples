@@ -352,6 +352,84 @@ import Testing
       """
     }
   }
+
+  @Test func whereClauseNegate() {
+    assertInlineSnapshot(
+      of: Reminder.all().where { !$0.isCompleted },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      WHERE NOT (isCompleted)
+      """
+    }
+  }
+
+  @Test func whereHighPriority() {
+    assertInlineSnapshot(
+      of: Reminder.all().where { $0.priority == 3 },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      WHERE (priority = 3)
+      """
+    }
+  }
+
+  @Test func whereTitleLengthEqual3() {
+    assertInlineSnapshot(
+      of: Reminder.all().where { $0.title.length() == 3 },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      WHERE (length(title) = 3)
+      """
+    }
+  }
+
+  @Test func whereTitleLengthEqualPriority() {
+    assertInlineSnapshot(
+      of: Reminder.all().where { $0.title.length() == $0.priority },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      WHERE (length(title) = priority)
+      """
+    }
+  }
+
+  @Test func whereIncompleteOrHighPriority() {
+    assertInlineSnapshot(
+      of: Reminder.all().where { !$0.isCompleted || $0.priority == 3 },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      WHERE (NOT (isCompleted) OR (priority = 3))
+      """
+    }
+  }
+
+  @Test func whereIncompleteAndHighPriority() {
+    assertInlineSnapshot(
+      of: Reminder.all().where { !$0.isCompleted && $0.priority == 3 },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      WHERE (NOT (isCompleted) AND (priority = 3))
+      """
+    }
+  }
 }
 
 struct Reminder: Table {

@@ -208,3 +208,54 @@ struct GroupConcatFunction<Base: QueryExpression>: QueryExpression {
 protocol QueryExpression {
   var queryString: String { get }
 }
+
+prefix func ! (expression: some QueryExpression) -> some QueryExpression {
+  Negate(base: expression)
+}
+
+struct Negate<Base: QueryExpression>: QueryExpression {
+  let base: Base
+  var queryString: String {
+    "NOT (\(base.queryString))"
+  }
+}
+
+func == (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression {
+  Equals(lhs: lhs, rhs: rhs)
+}
+
+struct Equals<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
+  let lhs: LHS
+  let rhs: RHS
+  var queryString: String {
+    "(\(lhs.queryString) = \(rhs.queryString))"
+  }
+}
+
+extension Int: QueryExpression {
+  var queryString: String { "\(self)" }
+}
+
+func || (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression {
+  Or(lhs: lhs, rhs: rhs)
+}
+
+struct Or<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
+  let lhs: LHS
+  let rhs: RHS
+  var queryString: String {
+    "(\(lhs.queryString) OR \(rhs.queryString))"
+  }
+}
+
+func && (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression {
+  And(lhs: lhs, rhs: rhs)
+}
+
+struct And<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
+  let lhs: LHS
+  let rhs: RHS
+  var queryString: String {
+    "(\(lhs.queryString) AND \(rhs.queryString))"
+  }
+}
