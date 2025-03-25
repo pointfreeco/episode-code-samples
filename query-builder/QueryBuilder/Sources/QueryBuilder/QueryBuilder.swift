@@ -43,7 +43,7 @@ struct Select<From: Table>: QueryExpression {
   }
 
   func `where`(
-    _ predicate: (From.Columns) -> some QueryExpression
+    _ predicate: (From.Columns) -> some QueryExpression<Bool>
   ) -> Select {
     Select(
       columns: columns,
@@ -88,11 +88,11 @@ extension Table {
   static func select(_ columns: String...) -> Select<Self> {
     Select(columns: columns)
   }
-  static func select(_ columns: KeyPath<Columns, Column>...) -> Select<Self> {
-    Select(
-      columns: columns.map { Self.columns[keyPath: $0].name }
-    )
-  }
+//  static func select(_ columns: KeyPath<Columns, Column>...) -> Select<Self> {
+//    Select(
+//      columns: columns.map { Self.columns[keyPath: $0].name }
+//    )
+//  }
   static func select<each ResultColumn: QueryExpression>(
     //_: (any QueryExpression)...,
     _ columns: (Columns) -> (repeat each ResultColumn)
@@ -114,7 +114,7 @@ extension Table {
   }
 }
 
-struct Column: QueryExpression {
+struct Column<QueryValue>: QueryExpression {
   var name: String
   var queryString: String { name }
 }
@@ -205,26 +205,31 @@ struct GroupConcatFunction<Base: QueryExpression>: QueryExpression {
   }
 }
 
-protocol QueryExpression {
+protocol QueryExpression<QueryValue> {
+  associatedtype QueryValue = ()
   var queryString: String { get }
 }
 
-prefix func ! (expression: some QueryExpression) -> some QueryExpression {
+prefix func ! (
+  expression: some QueryExpression<Bool>
+) -> some QueryExpression<Bool> {
   Negate(base: expression)
 }
 
-struct Negate<Base: QueryExpression>: QueryExpression {
+struct Negate<Base: QueryExpression<Bool>>: QueryExpression {
+  typealias QueryValue = Bool
   let base: Base
   var queryString: String {
     "NOT (\(base.queryString))"
   }
 }
 
-func == (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression {
+func == (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression<Bool> {
   Equals(lhs: lhs, rhs: rhs)
 }
 
 struct Equals<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
+  typealias QueryValue = Bool
   let lhs: LHS
   let rhs: RHS
   var queryString: String {
@@ -236,11 +241,12 @@ extension Int: QueryExpression {
   var queryString: String { "\(self)" }
 }
 
-func || (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression {
+func || (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression<Bool> {
   Or(lhs: lhs, rhs: rhs)
 }
 
 struct Or<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
+  typealias QueryValue = Bool
   let lhs: LHS
   let rhs: RHS
   var queryString: String {
@@ -248,11 +254,12 @@ struct Or<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
   }
 }
 
-func && (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression {
+func && (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression<Bool> {
   And(lhs: lhs, rhs: rhs)
 }
 
 struct And<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
+  typealias QueryValue = Bool
   let lhs: LHS
   let rhs: RHS
   var queryString: String {

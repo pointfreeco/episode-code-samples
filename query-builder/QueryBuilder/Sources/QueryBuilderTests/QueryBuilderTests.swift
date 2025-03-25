@@ -40,17 +40,17 @@ import Testing
     }
   }
 
-  @Test func selectWithKeyPaths() {
-    assertInlineSnapshot(
-      of: Reminder.select(\.id, \.title),
-      as: .sql
-    ) {
-      """
-      SELECT id, title
-      FROM reminders
-      """
-    }
-  }
+//  @Test func selectWithKeyPaths() {
+//    assertInlineSnapshot(
+//      of: Reminder.select(\.id, \.title),
+//      as: .sql
+//    ) {
+//      """
+//      SELECT id, title
+//      FROM reminders
+//      """
+//    }
+//  }
 
   @Test func fancySelect() {
     assertInlineSnapshot(
@@ -430,15 +430,49 @@ import Testing
       """
     }
   }
+
+  @Test func nonsense() {
+    //Reminder.init(id: 0, title: "0")
+//    assertInlineSnapshot(
+//      of: Reminder.all().where { $0.title },
+//      as: .sql
+//    ) {
+//      """
+//      SELECT *
+//      FROM reminders
+//      WHERE title
+//      """
+//    }
+    assertInlineSnapshot(
+      of: Reminder.all().where { $0.title == 3 },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      WHERE (title = 3)
+      """
+    }
+    assertInlineSnapshot(
+      of: Reminder.all().where { $0.title == $0.priority },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      WHERE (title = priority)
+      """
+    }
+  }
 }
 
 struct Reminder: Table {
   // -----
   struct Columns {
-    let id = Column(name: "id")
-    let title = Column(name: "title")
-    let isCompleted = Column(name: "isCompleted")
-    let priority = Column(name: "priority")
+    let id = Column<Int>(name: "id")
+    let title = Column<String>(name: "title")
+    let isCompleted = Column<Bool>(name: "isCompleted")
+    let priority = Column<Int?>(name: "priority")
   }
   static let columns = Columns()
   static let tableName = "reminders"
