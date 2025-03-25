@@ -13,8 +13,17 @@ struct Select<From: Table>: QueryExpression {
     return sql
   }
 
+  func order(
+    @OrderBuilder build orders: (From.Columns) -> [String]
+  ) -> Select {
+    Select(
+      columns: columns,
+      orders: self.orders + orders(From.columns)
+    )
+  }
+
   func order<each OrderingTerm: QueryExpression>(
-    _ orders: (From.Columns) -> (repeat each OrderingTerm)
+    build orders: (From.Columns) -> (repeat each OrderingTerm)
   ) -> Select {
     let orders = orders(From.columns)
     var orderStrings: [String] = []
@@ -25,6 +34,31 @@ struct Select<From: Table>: QueryExpression {
       columns: columns,
       orders: self.orders + orderStrings
     )
+  }
+}
+
+@resultBuilder
+enum OrderBuilder {
+  static func buildBlock(_ component: [String]) -> [String] {
+    component
+  }
+  static func buildOptional(_ component: [String]?) -> [String] {
+    component ?? []
+  }
+  static func buildEither(first component: [String]) -> [String] {
+    component
+  }
+  static func buildEither(second component: [String]) -> [String] {
+    component
+  }
+  static func buildExpression<each OrderingTerm: QueryExpression>(
+    _ orders: (repeat each OrderingTerm)
+  ) -> [String] {
+    var orderStrings: [String] = []
+    for order in repeat each orders {
+      orderStrings.append(order.queryString)
+    }
+    return orderStrings
   }
 }
 

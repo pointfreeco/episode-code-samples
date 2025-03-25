@@ -260,6 +260,85 @@ import Testing
       """
     }
   }
+
+  @Test func complexOrderBy() {
+    let shouldSortByTitle = true
+    assertInlineSnapshot(
+      of: Reminder.all()
+        .order {
+          if shouldSortByTitle {
+            $0.title.collate(.nocase).desc()
+          }
+        },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY title COLLATE NOCASE DESC
+      """
+    }
+  }
+
+  @Test func complexOrderByFalseCondition() {
+    let shouldSortByTitle = false
+    assertInlineSnapshot(
+      of: Reminder.all()
+        .order {
+          if shouldSortByTitle {
+            $0.title.collate(.nocase).desc()
+          }
+        },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      """
+    }
+  }
+
+  @Test func orderByElseCondition() {
+    let shouldSortByTitle = false
+    assertInlineSnapshot(
+      of: Reminder.all()
+        .order {
+          if shouldSortByTitle {
+            ($0.title.collate(.nocase).desc(), $0.priority)
+          } else {
+            ($0.isCompleted, $0.id.desc())
+          }
+        },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY isCompleted, id DESC
+      """
+    }
+  }
+
+  @Test func orderBySwitch() {
+    enum Order { case title, priority }
+    let order = Order.title
+    assertInlineSnapshot(
+      of: Reminder.all()
+        .order {
+          switch order {
+          case .title: ($0.title.collate(.nocase).desc(), $0.isCompleted)
+          case .priority: $0.priority
+          }
+        },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM reminders
+      ORDER BY title COLLATE NOCASE DESC, isCompleted
+      """
+    }
+  }
 }
 
 struct Reminder: Table {
