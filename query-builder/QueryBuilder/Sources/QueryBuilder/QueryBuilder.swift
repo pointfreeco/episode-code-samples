@@ -126,16 +126,19 @@ extension QueryExpression {
   func avg() -> some QueryExpression {
     AvgFunction(base: self)
   }
-  func groupConcat(separator: String? = nil) -> some QueryExpression {
-    GroupConcatFunction(base: self, separator: separator)
-  }
   func asc(nulls nullOrder: NullOrder? = nil) -> some QueryExpression {
     OrderingTerm(isAscending: true, nullOrder: nullOrder, base: self)
   }
   func desc(nulls nullOrder: NullOrder? = nil) -> some QueryExpression {
     OrderingTerm(isAscending: false, nullOrder: nullOrder, base: self)
   }
-  func length() -> some QueryExpression {
+}
+
+extension QueryExpression<String> {
+  func groupConcat(separator: String? = nil) -> some QueryExpression {
+    GroupConcatFunction(base: self, separator: separator)
+  }
+  func length() -> some QueryExpression<Int> {
     LengthFunction(base: self)
   }
   func collate(_ collation: Collation) -> some QueryExpression {
@@ -191,6 +194,7 @@ struct AvgFunction<Base: QueryExpression>: QueryExpression {
 }
 
 struct LengthFunction<Base: QueryExpression>: QueryExpression {
+  typealias QueryValue = Int
   let base: Base
   var queryString: String {
     "length(\(base.queryString))"
@@ -224,7 +228,15 @@ struct Negate<Base: QueryExpression<Bool>>: QueryExpression {
   }
 }
 
-func == (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression<Bool> {
+func == <T> (lhs: some QueryExpression<T>, rhs: some QueryExpression<T>) -> some QueryExpression<Bool> {
+  Equals(lhs: lhs, rhs: rhs)
+}
+
+func == <T> (lhs: some QueryExpression<T?>, rhs: some QueryExpression<T>) -> some QueryExpression<Bool> {
+  Equals(lhs: lhs, rhs: rhs)
+}
+
+func == <T> (lhs: some QueryExpression<T>, rhs: some QueryExpression<T?>) -> some QueryExpression<Bool> {
   Equals(lhs: lhs, rhs: rhs)
 }
 
@@ -238,10 +250,11 @@ struct Equals<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
 }
 
 extension Int: QueryExpression {
+  typealias QueryValue = Self
   var queryString: String { "\(self)" }
 }
 
-func || (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression<Bool> {
+func || (lhs: some QueryExpression<Bool>, rhs: some QueryExpression<Bool>) -> some QueryExpression<Bool> {
   Or(lhs: lhs, rhs: rhs)
 }
 
@@ -254,7 +267,7 @@ struct Or<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
   }
 }
 
-func && (lhs: some QueryExpression, rhs: some QueryExpression) -> some QueryExpression<Bool> {
+func && (lhs: some QueryExpression<Bool>, rhs: some QueryExpression<Bool>) -> some QueryExpression<Bool> {
   And(lhs: lhs, rhs: rhs)
 }
 

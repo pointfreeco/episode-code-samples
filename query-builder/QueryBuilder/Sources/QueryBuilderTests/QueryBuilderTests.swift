@@ -443,26 +443,28 @@ import Testing
 //      WHERE title
 //      """
 //    }
-    assertInlineSnapshot(
-      of: Reminder.all().where { $0.title == 3 },
-      as: .sql
-    ) {
-      """
-      SELECT *
-      FROM reminders
-      WHERE (title = 3)
-      """
-    }
-    assertInlineSnapshot(
-      of: Reminder.all().where { $0.title == $0.priority },
-      as: .sql
-    ) {
-      """
-      SELECT *
-      FROM reminders
-      WHERE (title = priority)
-      """
-    }
+//    assertInlineSnapshot(
+//      of: Reminder.all().where { $0.title == 3 },
+//      as: .sql
+//    ) {
+//      """
+//      SELECT *
+//      FROM reminders
+//      WHERE (title = 3)
+//      """
+//    }
+//    assertInlineSnapshot(
+//      of: Reminder.all().where { $0.title == $0.priority },
+//      as: .sql
+//    ) {
+//      """
+//      SELECT *
+//      FROM reminders
+//      WHERE (title = priority)
+//      """
+//    }
+//    Reminder.all().where { $0.priority.length() == 3 }
+//    Reminder.all().where { $0.title && $0.priority }
   }
 }
 
