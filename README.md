@@ -320,3 +320,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [SQL Builders: Selects](0316-sql-building-pt3)
 1. [SQL Builders: Advanced Selects](0317-sql-building-pt4)
 1. [SQL Builders: Order](0318-sql-building-pt5)
+1. [SQL Builders: Filtering](0319-sql-building-pt6)
