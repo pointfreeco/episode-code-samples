@@ -599,16 +599,38 @@ import Testing
         RemindersList
         .all()
         .group(by: \.id)
-        .join(Reminder.self) { $0.id == $1.remindersListID }
+        .leftJoin(Reminder.self) { $0.id == $1.remindersListID }
         .select { ($0.title, $1.id.count()) },
       as: .sql
     ) {
       """
       SELECT remindersLists.title, count(reminders.id)
       FROM remindersLists
-      JOIN reminders
+      LEFT JOIN reminders
       ON (remindersLists.id = reminders.remindersListID)
       GROUP BY remindersLists.id
+      """
+    }
+  }
+
+  @Test func joinAggregateCountHaving() {
+    assertInlineSnapshot(
+      of:
+        RemindersList
+        .all()
+        .group(by: \.id)
+        .leftJoin(Reminder.self) { $0.id == $1.remindersListID }
+        .select { ($0.title, $1.id.count()) }
+        .having { $1.id.count() == 1 },
+      as: .sql
+    ) {
+      """
+      SELECT remindersLists.title, count(reminders.id)
+      FROM remindersLists
+      LEFT JOIN reminders
+      ON (remindersLists.id = reminders.remindersListID)
+      GROUP BY remindersLists.id
+      HAVING (count(reminders.id) = 1)
       """
     }
   }

@@ -1,6 +1,7 @@
 struct Select<From: Table, each Join: Table>: QueryExpression {
   var columns: [String]
   var groups: [String] = []
+  var havings: [String] = []
   var joins: [String] = []
   var orders: [String] = []
   var wheres: [String] = []
@@ -19,6 +20,9 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
     if !groups.isEmpty {
       sql.append("\nGROUP BY \(groups.joined(separator: ", "))")
     }
+    if !havings.isEmpty {
+      sql.append("\nHAVING \(havings.joined(separator: " AND "))")
+    }
     if !orders.isEmpty {
       sql.append("\nORDER BY \(orders.joined(separator: ", "))")
     }
@@ -31,6 +35,7 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
     Select(
       columns: columns,
       groups: groups,
+      havings: havings,
       joins: joins,
       orders: self.orders + orders(From.columns, repeat (each Join).columns),
       wheres: wheres
@@ -59,6 +64,7 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
     Select(
       columns: columns,
       groups: groups,
+      havings: havings,
       joins: joins,
       orders: orders,
       wheres: wheres + [
@@ -74,9 +80,29 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
     Select<From, Other>(
       columns: columns,
       groups: groups,
+      havings: havings,
       joins: joins + [
         """
         JOIN \(other.tableName)
+        ON \(constraint(From.columns, Other.columns).queryString)
+        """
+      ],
+      orders: orders,
+      wheres: wheres
+    )
+  }
+
+  func leftJoin<Other: Table>(
+    _ other: Other.Type,
+    on constraint: (From.Columns, Other.Columns) -> some QueryExpression<Bool>
+  ) -> Select<From, Other> {
+    Select<From, Other>(
+      columns: columns,
+      groups: groups,
+      havings: havings,
+      joins: joins + [
+        """
+        LEFT JOIN \(other.tableName)
         ON \(constraint(From.columns, Other.columns).queryString)
         """
       ],
@@ -96,6 +122,7 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
     return Select(
       columns: self.columns + columnStrings,
       groups: groups,
+      havings: havings,
       joins: joins,
       orders: orders,
       wheres: wheres
@@ -114,6 +141,22 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
     return Select(
       columns: columns,
       groups: self.groups + groupStrings,
+      havings: havings,
+      joins: joins,
+      orders: orders,
+      wheres: wheres
+    )
+  }
+
+  func having(
+    _ predicate: (From.Columns, repeat (each Join).Columns) -> some QueryExpression<Bool>
+  ) -> Select {
+    Select(
+      columns: columns,
+      groups: groups,
+      havings: havings + [
+        predicate(From.columns, repeat (each Join).columns).queryString
+      ],
       joins: joins,
       orders: orders,
       wheres: wheres
@@ -188,7 +231,7 @@ struct Column<QueryValue>: QueryExpression {
 }
 
 extension QueryExpression {
-  func count(distinct: Bool = false) -> some QueryExpression {
+  func count(distinct: Bool = false) -> some QueryExpression<Int> {
     CountFunction(base: self, isDistinct: distinct)
   }
   func avg() -> some QueryExpression {
@@ -247,6 +290,7 @@ struct OrderingTerm<Base: QueryExpression>: QueryExpression {
 }
 
 struct CountFunction<Base: QueryExpression>: QueryExpression {
+  typealias QueryValue = Int
   let base: Base
   let isDistinct: Bool
   var queryString: String {
