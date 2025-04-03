@@ -1,5 +1,6 @@
 struct Select<From: Table>: QueryExpression {
   var columns: [String]
+  var joins: [String] = []
   var orders: [String] = []
   var wheres: [String] = []
 
@@ -8,6 +9,9 @@ struct Select<From: Table>: QueryExpression {
     SELECT \(columns.isEmpty ? "*" : columns.joined(separator: ", "))
     FROM \(From.tableName)
     """
+    if !joins.isEmpty {
+      sql.append("\n\(joins.joined(separator: "\n"))")
+    }
     if !wheres.isEmpty {
       sql.append("\nWHERE \(wheres.joined(separator: " AND "))")
     }
@@ -22,6 +26,7 @@ struct Select<From: Table>: QueryExpression {
   ) -> Select {
     Select(
       columns: columns,
+      joins: joins,
       orders: self.orders + orders(From.columns),
       wheres: wheres
     )
@@ -37,6 +42,7 @@ struct Select<From: Table>: QueryExpression {
     }
     return Select(
       columns: columns,
+      joins: joins,
       orders: self.orders + orderStrings,
       wheres: wheres
     )
@@ -47,8 +53,26 @@ struct Select<From: Table>: QueryExpression {
   ) -> Select {
     Select(
       columns: columns,
+      joins: joins,
       orders: orders,
       wheres: wheres + [predicate(From.columns).queryString]
+    )
+  }
+
+  func join<Other: Table>(
+    _ other: Other.Type,
+    on constraint: (From.Columns, Other.Columns) -> some QueryExpression<Bool>
+  ) -> Select {
+    Select(
+      columns: columns,
+      joins: joins + [
+        """
+        JOIN \(other.tableName)
+        ON \(constraint(From.columns, Other.columns).queryString)
+        """
+      ],
+      orders: orders,
+      wheres: wheres
     )
   }
 }
@@ -116,7 +140,8 @@ extension Table {
 
 struct Column<QueryValue>: QueryExpression {
   var name: String
-  var queryString: String { name }
+  var table: String
+  var queryString: String { "\(table).\(name)" }
 }
 
 extension QueryExpression {
