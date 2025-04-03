@@ -1,4 +1,4 @@
-struct Select<From: Table>: QueryExpression {
+struct Select<From: Table, each Join: Table>: QueryExpression {
   var columns: [String]
   var joins: [String] = []
   var orders: [String] = []
@@ -22,48 +22,50 @@ struct Select<From: Table>: QueryExpression {
   }
 
   func order(
-    @OrderBuilder build orders: (From.Columns) -> [String]
+    @OrderBuilder build orders: (From.Columns, repeat (each Join).Columns) -> [String]
   ) -> Select {
     Select(
       columns: columns,
       joins: joins,
-      orders: self.orders + orders(From.columns),
+      orders: self.orders + orders(From.columns, repeat (each Join).columns),
       wheres: wheres
     )
   }
 
-  func order<each OrderingTerm: QueryExpression>(
-    build orders: (From.Columns) -> (repeat each OrderingTerm)
-  ) -> Select {
-    let orders = orders(From.columns)
-    var orderStrings: [String] = []
-    for order in repeat each orders {
-      orderStrings.append(order.queryString)
-    }
-    return Select(
-      columns: columns,
-      joins: joins,
-      orders: self.orders + orderStrings,
-      wheres: wheres
-    )
-  }
+//  func order<each OrderingTerm: QueryExpression>(
+//    build orders: (From.Columns) -> (repeat each OrderingTerm)
+//  ) -> Select {
+//    let orders = orders(From.columns)
+//    var orderStrings: [String] = []
+//    for order in repeat each orders {
+//      orderStrings.append(order.queryString)
+//    }
+//    return Select(
+//      columns: columns,
+//      joins: joins,
+//      orders: self.orders + orderStrings,
+//      wheres: wheres
+//    )
+//  }
 
   func `where`(
-    _ predicate: (From.Columns) -> some QueryExpression<Bool>
+    _ predicate: (From.Columns, repeat (each Join).Columns) -> some QueryExpression<Bool>
   ) -> Select {
     Select(
       columns: columns,
       joins: joins,
       orders: orders,
-      wheres: wheres + [predicate(From.columns).queryString]
+      wheres: wheres + [
+        predicate(From.columns, repeat (each Join).columns).queryString
+      ]
     )
   }
 
   func join<Other: Table>(
     _ other: Other.Type,
     on constraint: (From.Columns, Other.Columns) -> some QueryExpression<Bool>
-  ) -> Select {
-    Select(
+  ) -> Select<From, Other> {
+    Select<From, Other>(
       columns: columns,
       joins: joins + [
         """
@@ -71,6 +73,22 @@ struct Select<From: Table>: QueryExpression {
         ON \(constraint(From.columns, Other.columns).queryString)
         """
       ],
+      orders: orders,
+      wheres: wheres
+    )
+  }
+
+  func select<each ResultColumn: QueryExpression>(
+    _ columns: (From.Columns, repeat (each Join).Columns) -> (repeat each ResultColumn)
+  ) -> Select {
+    let columns = columns(From.columns, repeat (each Join).columns)
+    var columnStrings: [String] = []
+    for column in repeat each columns {
+      columnStrings.append(column.queryString)
+    }
+    return Select(
+      columns: self.columns + columnStrings,
+      joins: joins,
       orders: orders,
       wheres: wheres
     )
@@ -118,7 +136,6 @@ extension Table {
 //    )
 //  }
   static func select<each ResultColumn: QueryExpression>(
-    //_: (any QueryExpression)...,
     _ columns: (Columns) -> (repeat each ResultColumn)
   ) -> Select<Self> {
     let columns = columns(Self.columns)

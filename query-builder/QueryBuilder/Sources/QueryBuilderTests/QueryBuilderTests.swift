@@ -494,6 +494,84 @@ import Testing
       """
     }
   }
+
+  @Test func joinWhere() {
+    assertInlineSnapshot(
+      of:
+        RemindersList
+        .all()
+        .join(Reminder.self) { $0.id == $1.remindersListID }
+        .where { !$1.isCompleted },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM remindersLists
+      JOIN reminders
+      ON (remindersLists.id = reminders.remindersListID)
+      WHERE NOT (reminders.isCompleted)
+      """
+    }
+  }
+
+  @Test func joinOrder() {
+    assertInlineSnapshot(
+      of:
+        RemindersList
+        .all()
+        .join(Reminder.self) { $0.id == $1.remindersListID }
+        .order { ($0.title, $1.priority.desc()) },
+      as: .sql
+    ) {
+      """
+      SELECT *
+      FROM remindersLists
+      JOIN reminders
+      ON (remindersLists.id = reminders.remindersListID)
+      ORDER BY remindersLists.title, reminders.priority DESC
+      """
+    }
+  }
+
+  @Test func joinSelect() {
+    assertInlineSnapshot(
+      of:
+        RemindersList
+        .all()
+        .join(Reminder.self) { $0.id == $1.remindersListID }
+        .select { ($0.title, $1.title) },
+      as: .sql
+    ) {
+      """
+      SELECT remindersLists.title, reminders.title
+      FROM remindersLists
+      JOIN reminders
+      ON (remindersLists.id = reminders.remindersListID)
+      """
+    }
+  }
+
+  @Test func joinSelectWhereOrder() {
+    assertInlineSnapshot(
+      of:
+        RemindersList
+        .all()
+        .join(Reminder.self) { $0.id == $1.remindersListID }
+        .select { ($0.title, $1.title) }
+        .where { !$1.isCompleted }
+        .order { ($0.title, $1.priority.desc()) },
+      as: .sql
+    ) {
+      """
+      SELECT remindersLists.title, reminders.title
+      FROM remindersLists
+      JOIN reminders
+      ON (remindersLists.id = reminders.remindersListID)
+      WHERE NOT (reminders.isCompleted)
+      ORDER BY remindersLists.title, reminders.priority DESC
+      """
+    }
+  }
 }
 
 struct Reminder: Table {
@@ -501,9 +579,11 @@ struct Reminder: Table {
   struct Columns {
     let id = Column<Int>(name: "id", table: Reminder.tableName)
     let title = Column<String>(name: "title", table: Reminder.tableName)
-    let isCompleted = Column<Bool>(name: "isCompleted", table: Reminder.tableName)
+    let isCompleted = Column<Bool>(
+      name: "isCompleted", table: Reminder.tableName)
     let priority = Column<Int?>(name: "priority", table: Reminder.tableName)
-    let remindersListID = Column<RemindersList.ID>(name: "remindersListID", table: Reminder.tableName)
+    let remindersListID = Column<RemindersList.ID>(
+      name: "remindersListID", table: Reminder.tableName)
   }
   static let columns = Columns()
   static let tableName = "reminders"
