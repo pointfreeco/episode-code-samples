@@ -1,5 +1,6 @@
 struct Select<From: Table, each Join: Table>: QueryExpression {
   var columns: [String]
+  var groups: [String] = []
   var joins: [String] = []
   var orders: [String] = []
   var wheres: [String] = []
@@ -15,6 +16,9 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
     if !wheres.isEmpty {
       sql.append("\nWHERE \(wheres.joined(separator: " AND "))")
     }
+    if !groups.isEmpty {
+      sql.append("\nGROUP BY \(groups.joined(separator: ", "))")
+    }
     if !orders.isEmpty {
       sql.append("\nORDER BY \(orders.joined(separator: ", "))")
     }
@@ -26,6 +30,7 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
   ) -> Select {
     Select(
       columns: columns,
+      groups: groups,
       joins: joins,
       orders: self.orders + orders(From.columns, repeat (each Join).columns),
       wheres: wheres
@@ -53,6 +58,7 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
   ) -> Select {
     Select(
       columns: columns,
+      groups: groups,
       joins: joins,
       orders: orders,
       wheres: wheres + [
@@ -67,6 +73,7 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
   ) -> Select<From, Other> {
     Select<From, Other>(
       columns: columns,
+      groups: groups,
       joins: joins + [
         """
         JOIN \(other.tableName)
@@ -88,6 +95,25 @@ struct Select<From: Table, each Join: Table>: QueryExpression {
     }
     return Select(
       columns: self.columns + columnStrings,
+      groups: groups,
+      joins: joins,
+      orders: orders,
+      wheres: wheres
+    )
+  }
+
+  // GROUP BY reminders.isCompleted, reminders.priority
+  func group<each Grouping: QueryExpression>(
+    by groups: (From.Columns, repeat (each Join).Columns) -> (repeat each Grouping)
+  ) -> Select {
+    let groups = groups(From.columns, repeat (each Join).columns)
+    var groupStrings: [String] = []
+    for group in repeat each groups {
+      groupStrings.append(group.queryString)
+    }
+    return Select(
+      columns: columns,
+      groups: self.groups + groupStrings,
       joins: joins,
       orders: orders,
       wheres: wheres

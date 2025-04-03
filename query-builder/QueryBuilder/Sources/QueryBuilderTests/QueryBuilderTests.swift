@@ -572,6 +572,46 @@ import Testing
       """
     }
   }
+
+  @Test func joinAggregate() {
+    assertInlineSnapshot(
+      of:
+        RemindersList
+        .all()
+        .group(by: \.id)
+        .join(Reminder.self) { $0.id == $1.remindersListID }
+        .select { ($0.title, $1.title.groupConcat()) },
+      as: .sql
+    ) {
+      """
+      SELECT remindersLists.title, group_concat(reminders.title)
+      FROM remindersLists
+      JOIN reminders
+      ON (remindersLists.id = reminders.remindersListID)
+      GROUP BY remindersLists.id
+      """
+    }
+  }
+
+  @Test func joinAggregateCount() {
+    assertInlineSnapshot(
+      of:
+        RemindersList
+        .all()
+        .group(by: \.id)
+        .join(Reminder.self) { $0.id == $1.remindersListID }
+        .select { ($0.title, $1.id.count()) },
+      as: .sql
+    ) {
+      """
+      SELECT remindersLists.title, count(reminders.id)
+      FROM remindersLists
+      JOIN reminders
+      ON (remindersLists.id = reminders.remindersListID)
+      GROUP BY remindersLists.id
+      """
+    }
+  }
 }
 
 struct Reminder: Table {
