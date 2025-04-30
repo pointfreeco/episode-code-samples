@@ -391,3 +391,31 @@ struct And<LHS: QueryExpression, RHS: QueryExpression>: QueryExpression {
     "(\(lhs.queryString) AND \(rhs.queryString))"
   }
 }
+
+struct SQL: QueryExpression, ExpressibleByStringInterpolation {
+  let queryString: String
+  init(_ queryString: String) {
+    self.queryString = queryString
+  }
+
+  init(stringLiteral value: String) {
+    queryString = value
+  }
+
+  init(stringInterpolation: StringInterpolation) {
+    queryString = stringInterpolation.rawValue
+  }
+
+  struct StringInterpolation: StringInterpolationProtocol {
+    var rawValue: String
+    init(literalCapacity: Int, interpolationCount: Int) {
+      rawValue = ""
+    }
+    mutating func appendLiteral(_ literal: String) {
+      rawValue.append(literal)
+    }
+    mutating func appendInterpolation(_ value: some QueryExpression) {
+      rawValue.append(value.queryString)
+    }
+  }
+}

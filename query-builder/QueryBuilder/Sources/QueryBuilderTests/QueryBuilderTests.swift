@@ -634,6 +634,32 @@ import Testing
       """
     }
   }
+
+  @Test func joinAggregateCountExpression() {
+    let userInput = "; DROP TABLE reminders; --"
+    assertInlineSnapshot(
+      of:
+        RemindersList
+        .all()
+        .group(by: \.id)
+        .leftJoin(Reminder.self) { $0.id == $1.remindersListID }
+        .select {
+          (
+            $0.title,
+            SQL("count(iif(\($1.isCompleted), NULL, \($1.id)))")
+          )
+        },
+      as: .sql
+    ) {
+      """
+      SELECT remindersLists.title, count(iif(reminders.isCompleted, NULL, reminders.id))
+      FROM remindersLists
+      LEFT JOIN reminders
+      ON (remindersLists.id = reminders.remindersListID)
+      GROUP BY remindersLists.id
+      """
+    }
+  }
 }
 
 struct Reminder: Table {
