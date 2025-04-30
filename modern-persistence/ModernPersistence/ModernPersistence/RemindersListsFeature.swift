@@ -2,6 +2,7 @@ import SharingGRDB
 import SwiftUI
 
 struct RemindersListsView: View {
+  @Dependency(\.defaultDatabase) var database
   @FetchAll(RemindersList.order(by: \.title)) var remindersLists
 
   var body: some View {
@@ -16,6 +17,17 @@ struct RemindersListsView: View {
             incompleteRemindersCount: 0,
             remindersList: remindersList
           )
+        }
+        .onDelete { indexSet in
+          withErrorReporting {
+            try database.write { db in
+              let ids = indexSet.map { remindersLists[$0].id }
+              try RemindersList
+                .where { $0.id.in(ids) }
+                .delete()
+                .execute(db)
+            }
+          }
         }
       } header: {
         Text("My lists")
