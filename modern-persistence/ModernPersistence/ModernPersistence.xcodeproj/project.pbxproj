@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2AD71FF02DC2CF4F005ACD2E /* DependenciesTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 2AD71FEF2DC2CF4F005ACD2E /* DependenciesTestSupport */; };
 		4BA81C4C2DC29FFB0076907E /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4BA81C4B2DC29FFB0076907E /* SharingGRDB */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AD71FF02DC2CF4F005ACD2E /* DependenciesTestSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,6 +143,7 @@
 			);
 			name = ModernPersistenceTests;
 			packageProductDependencies = (
+				2AD71FEF2DC2CF4F005ACD2E /* DependenciesTestSupport */,
 			);
 			productName = ModernPersistenceTests;
 			productReference = CA14DBE92DA93A6400E36852 /* ModernPersistenceTests.xctest */;
@@ -203,6 +206,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				4BA81C4A2DC29FFB0076907E /* XCRemoteSwiftPackageReference "sharing-grdb" */,
+				2AD71FEE2DC2CF4F005ACD2E /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CA14DBDD2DA93A6200E36852 /* Products */;
@@ -557,6 +561,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		2AD71FEE2DC2CF4F005ACD2E /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		4BA81C4A2DC29FFB0076907E /* XCRemoteSwiftPackageReference "sharing-grdb" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/sharing-grdb.git";
@@ -568,6 +580,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2AD71FEF2DC2CF4F005ACD2E /* DependenciesTestSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2AD71FEE2DC2CF4F005ACD2E /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = DependenciesTestSupport;
+		};
 		4BA81C4B2DC29FFB0076907E /* SharingGRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4BA81C4A2DC29FFB0076907E /* XCRemoteSwiftPackageReference "sharing-grdb" */;

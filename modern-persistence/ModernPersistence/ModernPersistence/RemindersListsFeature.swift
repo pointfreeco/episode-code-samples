@@ -1,9 +1,28 @@
 import SharingGRDB
 import SwiftUI
 
-struct RemindersListsView: View {
+@Observable
+class RemindersListsModel {
+  @ObservationIgnored
   @Dependency(\.defaultDatabase) var database
+  @ObservationIgnored
   @FetchAll(RemindersList.order(by: \.title)) var remindersLists
+
+  func deleteButtonTapped(indexSet: IndexSet) {
+    withErrorReporting {
+      try database.write { db in
+        let ids = indexSet.map { remindersLists[$0].id }
+        try RemindersList
+          .where { $0.id.in(ids) }
+          .delete()
+          .execute(db)
+      }
+    }
+  }
+}
+
+struct RemindersListsView: View {
+  let model: RemindersListsModel
 
   var body: some View {
     List {
@@ -12,22 +31,14 @@ struct RemindersListsView: View {
       }
 
       Section {
-        ForEach(remindersLists) { remindersList in
+        ForEach(model.remindersLists) { remindersList in
           RemindersListRow(
             incompleteRemindersCount: 0,
             remindersList: remindersList
           )
         }
         .onDelete { indexSet in
-          withErrorReporting {
-            try database.write { db in
-              let ids = indexSet.map { remindersLists[$0].id }
-              try RemindersList
-                .where { $0.id.in(ids) }
-                .delete()
-                .execute(db)
-            }
-          }
+          model.deleteButtonTapped(indexSet: indexSet)
         }
       } header: {
         Text("My lists")
@@ -79,6 +90,6 @@ struct RemindersListsView: View {
     $0.defaultDatabase = try! appDatabase()
   }
   NavigationStack {
-    RemindersListsView()
+    RemindersListsView(model: RemindersListsModel())
   }
 }
