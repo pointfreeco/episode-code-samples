@@ -65,15 +65,53 @@ func appDatabase() throws -> any DatabaseWriter {
   }
 
   var migrator = DatabaseMigrator()
+  #if DEBUG
+    migrator.eraseDatabaseOnSchemaChange = true
+  #endif
   migrator.registerMigration("Create tables") { db in
-    try #sql("""
+    try #sql(
+      """
       CREATE TABLE "remindersLists" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "color" INTEGER NOT NULL DEFAULT \(raw: 0x4a99ef_ff),
         "title" TEXT NOT NULL DEFAULT ''
       ) STRICT
-      """)
-      .execute(db)
+      """
+    )
+    .execute(db)
+    try #sql(
+      """
+      CREATE TABLE "tags" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "title" TEXT NOT NULL DEFAULT ''
+      ) STRICT
+      """
+    )
+    .execute(db)
+    try #sql(
+      """
+      CREATE TABLE "reminders" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "dueDate" TEXT,
+        "isCompleted" INTEGER NOT NULL DEFAULT 0,
+        "isFlagged" INTEGER NOT NULL DEFAULT 0,
+        "notes" TEXT NOT NULL DEFAULT '',
+        "priority" INTEGER,
+        "remindersListID" INTEGER NOT NULL REFERENCES "remindersLists"("id") ON DELETE CASCADE,
+        "title" TEXT NOT NULL DEFAULT ''
+      ) STRICT
+      """
+    )
+    .execute(db)
+    try #sql(
+      """
+      CREATE TABLE "reminderTags" (
+        "reminderID" INTEGER NOT NULL REFERENCES "reminders"("id") ON DELETE CASCADE,
+        "tagID" INTEGER NOT NULL REFERENCES "tags"("id") ON DELETE CASCADE
+      ) STRICT
+      """
+    )
+    .execute(db)
   }
 
   try migrator.migrate(database)
