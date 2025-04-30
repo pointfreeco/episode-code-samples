@@ -6,7 +6,7 @@ class RemindersListsModel {
   @ObservationIgnored
   @Dependency(\.defaultDatabase) var database
   @ObservationIgnored
-  @FetchAll(RemindersList.order(by: \.title)) var remindersLists
+  @FetchAll(RemindersList.all) var remindersLists
 
   func deleteButtonTapped(indexSet: IndexSet) {
     withErrorReporting {

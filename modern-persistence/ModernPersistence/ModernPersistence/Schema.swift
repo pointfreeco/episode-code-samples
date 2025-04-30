@@ -3,7 +3,7 @@ import OSLog
 import SharingGRDB
 
 @Table
-struct RemindersList: Identifiable {
+struct RemindersList: Equatable, Identifiable {
   let id: Int
   var color = 0x4a99ef_ff
   var title = ""

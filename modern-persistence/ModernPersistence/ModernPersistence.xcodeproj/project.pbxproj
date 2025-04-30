@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		2AD71FF02DC2CF4F005ACD2E /* DependenciesTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 2AD71FEF2DC2CF4F005ACD2E /* DependenciesTestSupport */; };
 		4BA81C4C2DC29FFB0076907E /* SharingGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4BA81C4B2DC29FFB0076907E /* SharingGRDB */; };
+		4BA81C6F2DC2D5870076907E /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 4BA81C6E2DC2D5870076907E /* InlineSnapshotTesting */; };
+		4BA81C722DC2D5FE0076907E /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 4BA81C712DC2D5FE0076907E /* SnapshotTestingCustomDump */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +67,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BA81C722DC2D5FE0076907E /* SnapshotTestingCustomDump in Frameworks */,
+				4BA81C6F2DC2D5870076907E /* InlineSnapshotTesting in Frameworks */,
 				2AD71FF02DC2CF4F005ACD2E /* DependenciesTestSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -79,12 +83,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4BA81C702DC2D5FE0076907E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		CA14DBD32DA93A6200E36852 = {
 			isa = PBXGroup;
 			children = (
 				CA14DBDE2DA93A6200E36852 /* ModernPersistence */,
 				CA14DBEC2DA93A6400E36852 /* ModernPersistenceTests */,
 				CA14DBF62DA93A6400E36852 /* ModernPersistenceUITests */,
+				4BA81C702DC2D5FE0076907E /* Frameworks */,
 				CA14DBDD2DA93A6200E36852 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -144,6 +156,8 @@
 			name = ModernPersistenceTests;
 			packageProductDependencies = (
 				2AD71FEF2DC2CF4F005ACD2E /* DependenciesTestSupport */,
+				4BA81C6E2DC2D5870076907E /* InlineSnapshotTesting */,
+				4BA81C712DC2D5FE0076907E /* SnapshotTestingCustomDump */,
 			);
 			productName = ModernPersistenceTests;
 			productReference = CA14DBE92DA93A6400E36852 /* ModernPersistenceTests.xctest */;
@@ -207,6 +221,7 @@
 			packageReferences = (
 				4BA81C4A2DC29FFB0076907E /* XCRemoteSwiftPackageReference "sharing-grdb" */,
 				2AD71FEE2DC2CF4F005ACD2E /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				4BA81C6D2DC2D5870076907E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CA14DBDD2DA93A6200E36852 /* Products */;
@@ -577,6 +592,14 @@
 				minimumVersion = 0.2.2;
 			};
 		};
+		4BA81C6D2DC2D5870076907E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -589,6 +612,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4BA81C4A2DC29FFB0076907E /* XCRemoteSwiftPackageReference "sharing-grdb" */;
 			productName = SharingGRDB;
+		};
+		4BA81C6E2DC2D5870076907E /* InlineSnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BA81C6D2DC2D5870076907E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = InlineSnapshotTesting;
+		};
+		4BA81C712DC2D5FE0076907E /* SnapshotTestingCustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BA81C6D2DC2D5870076907E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTestingCustomDump;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
