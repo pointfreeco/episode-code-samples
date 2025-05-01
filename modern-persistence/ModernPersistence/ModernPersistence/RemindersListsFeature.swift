@@ -6,12 +6,32 @@ class RemindersListsModel {
   @ObservationIgnored
   @Dependency(\.defaultDatabase) var database
   @ObservationIgnored
-  @FetchAll(RemindersList.all) var remindersLists
+  @FetchAll(
+    RemindersList
+      .group(by: \.id)
+      .order(by: \.title)
+      .leftJoin(Reminder.all) {
+        $0.id.eq($1.remindersListID) && !$1.isCompleted
+      }
+      .select {
+        RemindersListRow.Columns(
+          incompleteRemindersCount: $1.count(),
+          remindersList: $0
+        )
+      }
+  )
+  var remindersListRows
+
+  @Selection
+  struct RemindersListRow {
+    let incompleteRemindersCount: Int
+    let remindersList: RemindersList
+  }
 
   func deleteButtonTapped(indexSet: IndexSet) {
     withErrorReporting {
       try database.write { db in
-        let ids = indexSet.map { remindersLists[$0].id }
+        let ids = indexSet.map { remindersListRows[$0].remindersList.id }
         try RemindersList
           .where { $0.id.in(ids) }
           .delete()
@@ -31,10 +51,10 @@ struct RemindersListsView: View {
       }
 
       Section {
-        ForEach(model.remindersLists) { remindersList in
+        ForEach(model.remindersListRows, id: \.remindersList.id) { row in
           RemindersListRow(
-            incompleteRemindersCount: 0,
-            remindersList: remindersList
+            incompleteRemindersCount: row.incompleteRemindersCount,
+            remindersList: row.remindersList
           )
         }
         .onDelete { indexSet in

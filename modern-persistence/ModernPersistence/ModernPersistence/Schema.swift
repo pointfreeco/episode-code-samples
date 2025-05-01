@@ -21,7 +21,7 @@ struct Reminder: Identifiable {
   @Column(as: Date.ISO8601Representation?.self)
   var dueDate: Date?
   var isCompleted = false
-  var isFlagging = false
+  var isFlagged = false
   var notes = ""
   var priority: Priority?
   var remindersListID: RemindersList.ID
@@ -123,6 +123,84 @@ func appDatabase() throws -> any DatabaseWriter {
         RemindersList(id: 1, color: 0x4a99ef_ff, title: "Personal")
         RemindersList(id: 2, color: 0xef7e4a_ff, title: "Family")
         RemindersList(id: 3, color: 0x7ee04a_ff, title: "Business")
+
+        Reminder(
+          id: 1,
+          notes: "Milk\nEggs\nApples\nOatmeal\nSpinach",
+          remindersListID: 1,
+          title: "Groceries"
+        )
+        Reminder(
+          id: 2,
+          dueDate: Date().addingTimeInterval(-60 * 60 * 24 * 2),
+          isFlagged: true,
+          remindersListID: 1,
+          title: "Haircut"
+        )
+        Reminder(
+          id: 3,
+          dueDate: Date(),
+          notes: "Ask about diet",
+          priority: .high,
+          remindersListID: 1,
+          title: "Doctor appointment"
+        )
+        Reminder(
+          id: 4,
+          dueDate: Date().addingTimeInterval(-60 * 60 * 24 * 190),
+          isCompleted: true,
+          remindersListID: 1,
+          title: "Take a walk"
+        )
+        Reminder(
+          id: 5,
+          dueDate: Date(),
+          remindersListID: 1,
+          title: "Buy concert tickets"
+        )
+        Reminder(
+          id: 6,
+          dueDate: Date().addingTimeInterval(60 * 60 * 24 * 2),
+          isFlagged: true,
+          priority: .high,
+          remindersListID: 2,
+          title: "Pick up kids from school"
+        )
+        Reminder(
+          id: 7,
+          dueDate: Date().addingTimeInterval(-60 * 60 * 24 * 2),
+          isCompleted: true,
+          priority: .low,
+          remindersListID: 2,
+          title: "Get laundry"
+        )
+        Reminder(
+          id: 8,
+          dueDate: Date().addingTimeInterval(60 * 60 * 24 * 4),
+          isCompleted: false,
+          priority: .high,
+          remindersListID: 2,
+          title: "Take out trash"
+        )
+        Reminder(
+          id: 9,
+          dueDate: Date().addingTimeInterval(60 * 60 * 24 * 2),
+          notes: """
+            Status of tax return
+            Expenses for next year
+            Changing payroll company
+            """,
+          remindersListID: 3,
+          title: "Call accountant"
+        )
+        Reminder(
+          id: 10,
+          dueDate: Date().addingTimeInterval(-60 * 60 * 24 * 2),
+          isCompleted: true,
+          priority: .medium,
+          remindersListID: 3,
+          title: "Send weekly emails"
+        )
       }
     }
   #endif
