@@ -28,7 +28,7 @@ struct RemindersListForm: View {
         Button("Save") {
           withErrorReporting {
             try database.write { db in
-              try RemindersList.insert(remindersList)
+              try RemindersList.upsert(remindersList)
                 .execute(db)
             }
           }
@@ -73,6 +73,7 @@ struct RemindersListFormPreviews: PreviewProvider {
       NavigationStack {
         RemindersListForm(
           remindersList: RemindersList.Draft(
+            id: 2,
             color: 0xef7e4a_ff,
             title: "Family"
           )

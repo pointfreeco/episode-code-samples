@@ -18,7 +18,8 @@ class RemindersListsModel {
           incompleteRemindersCount: $1.count(),
           remindersList: $0
         )
-      }
+      },
+    animation: .default
   )
   var remindersListRows
 
@@ -30,13 +31,11 @@ class RemindersListsModel {
     let remindersList: RemindersList
   }
 
-  func deleteButtonTapped(indexSet: IndexSet) {
+  func deleteButtonTapped(remindersList: RemindersList) {
     withErrorReporting {
       try database.write { db in
-        let ids = indexSet.map { remindersListRows[$0].remindersList.id }
         try RemindersList
-          .where { $0.id.in(ids) }
-          .delete()
+          .delete(remindersList)
           .execute(db)
       }
     }
@@ -44,6 +43,10 @@ class RemindersListsModel {
 
   func addListButtonTapped() {
     remindersListForm = RemindersList.Draft()
+  }
+
+  func editButtonTapped(remindersList: RemindersList) {
+    remindersListForm = RemindersList.Draft(remindersList)
   }
 }
 
@@ -62,9 +65,18 @@ struct RemindersListsView: View {
             incompleteRemindersCount: row.incompleteRemindersCount,
             remindersList: row.remindersList
           )
-        }
-        .onDelete { indexSet in
-          model.deleteButtonTapped(indexSet: indexSet)
+          .swipeActions {
+            Button(role: .destructive) {
+              model.deleteButtonTapped(remindersList: row.remindersList)
+            } label: {
+              Image(systemName: "trash")
+            }
+            Button {
+              model.editButtonTapped(remindersList: row.remindersList)
+            } label: {
+              Image(systemName: "info.circle")
+            }
+          }
         }
       } header: {
         Text("My lists")
