@@ -4,7 +4,7 @@ import SwiftUI
 struct RemindersListForm: View {
   @Dependency(\.defaultDatabase) var database
   @Environment(\.dismiss) var dismiss
-  @State var remindersList: RemindersList
+  @State var remindersList: RemindersList.Draft
 
   var body: some View {
     Form {
@@ -61,22 +61,24 @@ extension Int {
   }
 }
 
-#Preview {
-  let _ = prepareDependencies {
-    $0.defaultDatabase = try! appDatabase()
-  }
-  Form {
-  }
-  .sheet(isPresented: .constant(true)) {
-    NavigationStack {
-      RemindersListForm(
-        remindersList: RemindersList(
-          id: 212498712849,
-          color: 0xef7e4a_ff,
-          title: "Family"
-        )
-      )
+struct RemindersListFormPreviews: PreviewProvider {
+  static var previews: some View {
+    let _ = prepareDependencies {
+      $0.defaultDatabase = try! appDatabase()
     }
-    .presentationDetents([.medium])
+    
+    Form {
+    }
+    .sheet(isPresented: .constant(true)) {
+      NavigationStack {
+        RemindersListForm(
+          remindersList: RemindersList.Draft(
+            color: 0xef7e4a_ff,
+            title: "Family"
+          )
+        )
+      }
+      .presentationDetents([.medium])
+    }
   }
 }

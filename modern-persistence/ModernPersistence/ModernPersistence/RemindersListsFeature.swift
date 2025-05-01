@@ -22,6 +22,8 @@ class RemindersListsModel {
   )
   var remindersListRows
 
+  var remindersListForm: RemindersList.Draft?
+
   @Selection
   struct RemindersListRow {
     let incompleteRemindersCount: Int
@@ -39,10 +41,14 @@ class RemindersListsModel {
       }
     }
   }
+
+  func addListButtonTapped() {
+    remindersListForm = RemindersList.Draft()
+  }
 }
 
 struct RemindersListsView: View {
-  let model: RemindersListsModel
+  @Bindable var model: RemindersListsModel
 
   var body: some View {
     List {
@@ -94,13 +100,20 @@ struct RemindersListsView: View {
           }
           Spacer()
           Button {
-            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Add list action@*//*@END_MENU_TOKEN@*/
+            model.addListButtonTapped()
           } label: {
             Text("Add List")
               .font(.title3)
           }
         }
       }
+    }
+    .sheet(item: $model.remindersListForm) { remindersList in
+      NavigationStack {
+        RemindersListForm(remindersList: remindersList)
+          .navigationTitle("New List")
+      }
+      .presentationDetents([.medium])
     }
   }
 }

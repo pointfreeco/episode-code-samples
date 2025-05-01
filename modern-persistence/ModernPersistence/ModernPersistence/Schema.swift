@@ -8,6 +8,7 @@ struct RemindersList: Equatable, Identifiable {
   var color = 0x4a99ef_ff
   var title = ""
 }
+extension RemindersList.Draft: Identifiable {}
 
 @Table
 struct Tag: Identifiable {
