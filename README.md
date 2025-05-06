@@ -324,3 +324,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [SQL Builders: Joins](0320-sql-building-pt7)
 1. [SQL Builders: Joins in Swift](0321-sql-building-pt8)
 1. [SQL Builders: Advanced Joins](0322-sql-building-pt9)
+1. [Modern Persistence: Schemas](0323-modern-persistence-pt1)
