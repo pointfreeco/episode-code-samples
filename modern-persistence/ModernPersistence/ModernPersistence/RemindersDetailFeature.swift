@@ -8,21 +8,34 @@ class RemindersDetailModel {
   @FetchAll var reminders: [Reminder]
 
   @ObservationIgnored
-  @Shared(.appStorage("showCompleted"))
-  var showCompleted = false
+  @Shared var showCompleted: Bool
 
-  init() {
+  let detailType: DetailType
+
+  init(detailType: DetailType) {
+    self.detailType = detailType
+    _showCompleted = Shared(
+      wrappedValue: false,
+      .appStorage("showCompleted_\(detailType.appStorageKeySuffix)")
+    )
     _reminders = FetchAll(
       remindersQuery
     )
   }
 
   var remindersQuery: some SelectStatementOf<Reminder> {
-    Reminder.where {
-      if !showCompleted {
-        !$0.isCompleted
+    Reminder
+      .where {
+        if !showCompleted {
+          !$0.isCompleted
+        }
       }
-    }
+      .where {
+        switch detailType {
+        case .remindersList(let remindersList):
+          $0.remindersListID.eq(remindersList.id)
+        }
+      }
   }
 
   func toggleShowCompletedButtonTapped() async {
@@ -37,6 +50,29 @@ class RemindersDetailModel {
   }
 }
 
+enum DetailType {
+  case remindersList(RemindersList)
+
+  var navigationTitle: String {
+    switch self {
+    case .remindersList(let remindersList):
+      remindersList.title
+    }
+  }
+  var color: Color {
+    switch self {
+    case .remindersList(let remindersList):
+      remindersList.color.swiftUIColor
+    }
+  }
+  var appStorageKeySuffix: String {
+    switch self {
+    case .remindersList(let remindersList):
+      "remindersList_\(remindersList.id)"
+    }
+  }
+}
+
 struct RemindersDetailView: View {
   @Bindable var model: RemindersDetailModel
 
@@ -44,7 +80,7 @@ struct RemindersDetailView: View {
     List {
       ForEach(model.reminders) { reminder in
         ReminderRow(
-          color: /*@START_MENU_TOKEN@*/Color.blue/*@PLACEHOLDER=Color.blue@*//*@END_MENU_TOKEN@*/,
+          color: model.detailType.color,
           isPastDue: /*@START_MENU_TOKEN@*/false/*@PLACEHOLDER=false@*//*@END_MENU_TOKEN@*/,
           reminder: reminder,
           tags: /*@START_MENU_TOKEN@*/["weekend", "fun"]/*@PLACEHOLDER=["weekend", "fun"]@*//*@END_MENU_TOKEN@*/
@@ -53,7 +89,7 @@ struct RemindersDetailView: View {
         }
       }
     }
-    .navigationTitle(Text(/*@START_MENU_TOKEN@*/"Reminders"/*@PLACEHOLDER=Reminders@*//*@END_MENU_TOKEN@*/))
+    .navigationTitle(Text(model.detailType.navigationTitle))
     .listStyle(.plain)
     .toolbar {
       ToolbarItem(placement: .bottomBar) {
@@ -70,7 +106,7 @@ struct RemindersDetailView: View {
           }
           Spacer()
         }
-        .tint(/*@START_MENU_TOKEN@*/Color.blue/*@PLACEHOLDER=Color.blue@*//*@END_MENU_TOKEN@*/)
+        .tint(model.detailType.color)
       }
       ToolbarItem(placement: .primaryAction) {
         Menu {
@@ -107,10 +143,10 @@ struct RemindersDetailView: View {
               }
             }
           }
-          .tint(/*@START_MENU_TOKEN@*/Color.blue/*@PLACEHOLDER=Color.blue@*//*@END_MENU_TOKEN@*/)
+          .tint(model.detailType.color)
         } label: {
           Image(systemName: "ellipsis.circle")
-            .tint(/*@START_MENU_TOKEN@*/Color.blue/*@PLACEHOLDER=Color.blue@*//*@END_MENU_TOKEN@*/)
+            .tint(model.detailType.color)
         }
       }
     }
@@ -119,10 +155,21 @@ struct RemindersDetailView: View {
 
 struct RemindersDetailPreview: PreviewProvider {
   static var previews: some View {
-    let _ = prepareDependencies { $0.defaultDatabase = try! appDatabase() }
+    let remindersList = try! prepareDependencies {
+      $0.defaultDatabase = try appDatabase()
+      return try $0.defaultDatabase.read { db in
+        try RemindersList.find(1).fetchOne(db)!
+      }
+    }
 
     NavigationStack {
-      RemindersDetailView(model: RemindersDetailModel())
+      RemindersDetailView(
+        model: RemindersDetailModel(
+          detailType: .remindersList(
+            remindersList
+          )
+        )
+      )
     }
   }
 }
