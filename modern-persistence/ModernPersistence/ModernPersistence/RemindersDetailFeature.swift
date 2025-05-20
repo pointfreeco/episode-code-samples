@@ -4,7 +4,37 @@ import SwiftUI
 @MainActor
 @Observable
 class RemindersDetailModel {
+  @ObservationIgnored
+  @FetchAll var reminders: [Reminder]
 
+  @ObservationIgnored
+  @Shared(.appStorage("showCompleted"))
+  var showCompleted = false
+
+  init() {
+    _reminders = FetchAll(
+      remindersQuery
+    )
+  }
+
+  var remindersQuery: some SelectStatementOf<Reminder> {
+    Reminder.where {
+      if !showCompleted {
+        !$0.isCompleted
+      }
+    }
+  }
+
+  func toggleShowCompletedButtonTapped() async {
+    $showCompleted.withLock { $0.toggle() }
+    await updateQuery()
+  }
+
+  func updateQuery() async {
+    await withErrorReporting {
+      try await $reminders.load(remindersQuery, animation: .default)
+    }
+  }
 }
 
 struct RemindersDetailView: View {
@@ -12,7 +42,7 @@ struct RemindersDetailView: View {
 
   var body: some View {
     List {
-      ForEach(/*@START_MENU_TOKEN@*/[Reminder(id: 1, remindersListID: 1, title: "Groceries"), Reminder(id: 2, remindersListID: 2, title: "Haircut"), Reminder(id: 3, remindersListID: 3, title: "Take a walk")]/*@PLACEHOLDER=Reminders@*//*@END_MENU_TOKEN@*/) { reminder in
+      ForEach(model.reminders) { reminder in
         ReminderRow(
           color: /*@START_MENU_TOKEN@*/Color.blue/*@PLACEHOLDER=Color.blue@*//*@END_MENU_TOKEN@*/,
           isPastDue: /*@START_MENU_TOKEN@*/false/*@PLACEHOLDER=false@*//*@END_MENU_TOKEN@*/,
@@ -66,12 +96,14 @@ struct RemindersDetailView: View {
               }
             }
             Button {
-              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Show/hide completed action@*//*@END_MENU_TOKEN@*/
+              Task {
+                await model.toggleShowCompletedButtonTapped()
+              }
             } label: {
               Label {
-                Text(/*@START_MENU_TOKEN@*/false/*@PLACEHOLDER=showCompleted@*//*@END_MENU_TOKEN@*/ ? "Hide Completed" : "Show Completed")
+                Text(model.showCompleted ? "Hide Completed" : "Show Completed")
               } icon: {
-                Image(systemName: /*@START_MENU_TOKEN@*/false/*@PLACEHOLDER=showCompleted@*//*@END_MENU_TOKEN@*/ ? "eye.slash.fill" : "eye")
+                Image(systemName: model.showCompleted ? "eye.slash.fill" : "eye")
               }
             }
           }
