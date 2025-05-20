@@ -120,6 +120,7 @@ func appDatabase() throws -> any DatabaseWriter {
   }
   #if DEBUG
     migrator.registerMigration("Seed database") { db in
+      @Dependency(\.date.now) var now
       try db.seed {
         RemindersList(id: 1, color: 0x4a99ef_ff, title: "Personal")
         RemindersList(id: 2, color: 0xef7e4a_ff, title: "Family")
@@ -133,14 +134,14 @@ func appDatabase() throws -> any DatabaseWriter {
         )
         Reminder(
           id: 2,
-          dueDate: Date().addingTimeInterval(-60 * 60 * 24 * 2),
+          dueDate: now.addingTimeInterval(-60 * 60 * 24 * 2),
           isFlagged: true,
           remindersListID: 1,
           title: "Haircut"
         )
         Reminder(
           id: 3,
-          dueDate: Date(),
+          dueDate: now,
           notes: "Ask about diet",
           priority: .high,
           remindersListID: 1,
@@ -148,20 +149,20 @@ func appDatabase() throws -> any DatabaseWriter {
         )
         Reminder(
           id: 4,
-          dueDate: Date().addingTimeInterval(-60 * 60 * 24 * 190),
+          dueDate: now.addingTimeInterval(-60 * 60 * 24 * 190),
           isCompleted: true,
           remindersListID: 1,
           title: "Take a walk"
         )
         Reminder(
           id: 5,
-          dueDate: Date(),
+          dueDate: now,
           remindersListID: 1,
           title: "Buy concert tickets"
         )
         Reminder(
           id: 6,
-          dueDate: Date().addingTimeInterval(60 * 60 * 24 * 2),
+          dueDate: now.addingTimeInterval(60 * 60 * 24 * 2),
           isFlagged: true,
           priority: .high,
           remindersListID: 2,
@@ -169,7 +170,7 @@ func appDatabase() throws -> any DatabaseWriter {
         )
         Reminder(
           id: 7,
-          dueDate: Date().addingTimeInterval(-60 * 60 * 24 * 2),
+          dueDate: now.addingTimeInterval(-60 * 60 * 24 * 2),
           isCompleted: true,
           priority: .low,
           remindersListID: 2,
@@ -177,7 +178,7 @@ func appDatabase() throws -> any DatabaseWriter {
         )
         Reminder(
           id: 8,
-          dueDate: Date().addingTimeInterval(60 * 60 * 24 * 4),
+          dueDate: now.addingTimeInterval(60 * 60 * 24 * 4),
           isCompleted: false,
           priority: .high,
           remindersListID: 2,
@@ -185,7 +186,7 @@ func appDatabase() throws -> any DatabaseWriter {
         )
         Reminder(
           id: 9,
-          dueDate: Date().addingTimeInterval(60 * 60 * 24 * 2),
+          dueDate: now.addingTimeInterval(60 * 60 * 24 * 2),
           notes: """
             Status of tax return
             Expenses for next year
@@ -196,7 +197,7 @@ func appDatabase() throws -> any DatabaseWriter {
         )
         Reminder(
           id: 10,
-          dueDate: Date().addingTimeInterval(-60 * 60 * 24 * 2),
+          dueDate: now.addingTimeInterval(-60 * 60 * 24 * 2),
           isCompleted: true,
           priority: .medium,
           remindersListID: 3,
