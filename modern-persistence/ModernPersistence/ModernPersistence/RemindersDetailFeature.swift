@@ -10,6 +10,9 @@ class RemindersDetailModel {
   @ObservationIgnored
   @Shared var showCompleted: Bool
 
+  @ObservationIgnored
+  @Shared var ordering: Ordering
+
   let detailType: DetailType
 
   init(detailType: DetailType) {
@@ -17,6 +20,10 @@ class RemindersDetailModel {
     _showCompleted = Shared(
       wrappedValue: false,
       .appStorage("showCompleted_\(detailType.appStorageKeySuffix)")
+    )
+    _ordering = Shared(
+      wrappedValue: .dueDate,
+      .appStorage("ordering_\(detailType.appStorageKeySuffix)")
     )
     _reminders = FetchAll(
       remindersQuery
@@ -36,6 +43,17 @@ class RemindersDetailModel {
           $0.remindersListID.eq(remindersList.id)
         }
       }
+      .order { $0.isCompleted }
+      .order {
+        switch ordering {
+        case .dueDate:
+          $0.dueDate.asc(nulls: .last)
+        case .priority:
+          ($0.priority.desc(), $0.isFlagged.desc())
+        case .title:
+          $0.title
+        }
+      }
   }
 
   func toggleShowCompletedButtonTapped() async {
@@ -43,9 +61,28 @@ class RemindersDetailModel {
     await updateQuery()
   }
 
+  func orderingButtonTapped(_ ordering: Ordering) async {
+    $ordering.withLock { $0 = ordering }
+    await updateQuery()
+  }
+
   func updateQuery() async {
     await withErrorReporting {
       try await $reminders.load(remindersQuery, animation: .default)
+    }
+  }
+}
+
+enum Ordering: String, CaseIterable {
+  case dueDate = "Due Date"
+  case priority = "Priority"
+  case title = "Title"
+
+  var icon: Image {
+    switch self {
+    case .dueDate: Image(systemName: "calendar")
+    case .priority: Image(systemName: "chart.bar.fill")
+    case .title: Image(systemName: "textformat.characters")
     }
   }
 }
@@ -112,14 +149,16 @@ struct RemindersDetailView: View {
         Menu {
           Group {
             Menu {
-              ForEach(/*@START_MENU_TOKEN@*/["Due Date", "Priority", "Title"]/*@PLACEHOLDER=["Due Date", "Priority", "Title"]@*//*@END_MENU_TOKEN@*/, id: \.self) { ordering in
+              ForEach(Ordering.allCases, id: \.self) { ordering in
                 Button {
-                  /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Order action@*//*@END_MENU_TOKEN@*/
+                  Task {
+                    await model.orderingButtonTapped(ordering)
+                  }
                 } label: {
                   Label {
-                    Text(ordering)
+                    Text(ordering.rawValue)
                   } icon: {
-                    /*@START_MENU_TOKEN@*/Image(systemName: "calendar")/*@PLACEHOLDER=Ordering icon@*//*@END_MENU_TOKEN@*/
+                    ordering.icon
                   }
                 }
               }
