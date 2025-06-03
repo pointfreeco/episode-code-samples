@@ -34,6 +34,7 @@ struct Reminder: Identifiable {
     case high
   }
 }
+extension Reminder.Draft: Identifiable {}
 
 @Table
 struct ReminderTag {
