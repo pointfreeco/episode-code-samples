@@ -1,6 +1,7 @@
 import SharingGRDB
 import SwiftUI
 
+@MainActor
 @Observable
 class RemindersListsModel {
   @ObservationIgnored
@@ -25,6 +26,8 @@ class RemindersListsModel {
 
   var remindersListForm: RemindersList.Draft?
 
+  var remindersDetail: RemindersDetailModel?
+
   @Selection
   struct RemindersListRow {
     let incompleteRemindersCount: Int
@@ -48,6 +51,10 @@ class RemindersListsModel {
   func editButtonTapped(remindersList: RemindersList) {
     remindersListForm = RemindersList.Draft(remindersList)
   }
+
+  func remindersListTapped(remindersList: RemindersList) {
+    remindersDetail = RemindersDetailModel(detailType: .remindersList(remindersList))
+  }
 }
 
 struct RemindersListsView: View {
@@ -61,10 +68,15 @@ struct RemindersListsView: View {
 
       Section {
         ForEach(model.remindersListRows, id: \.remindersList.id) { row in
-          RemindersListRow(
-            incompleteRemindersCount: row.incompleteRemindersCount,
-            remindersList: row.remindersList
-          )
+          Button {
+            model.remindersListTapped(remindersList: row.remindersList)
+          } label: {
+            RemindersListRow(
+              incompleteRemindersCount: row.incompleteRemindersCount,
+              remindersList: row.remindersList
+            )
+            .foregroundColor(.primary)
+          }
           .swipeActions {
             Button(role: .destructive) {
               model.deleteButtonTapped(remindersList: row.remindersList)
@@ -126,6 +138,9 @@ struct RemindersListsView: View {
           .navigationTitle("New List")
       }
       .presentationDetents([.medium])
+    }
+    .navigationDestination(item: $model.remindersDetail) { remindersDetail in
+      RemindersDetailView(model: remindersDetail)
     }
   }
 }
