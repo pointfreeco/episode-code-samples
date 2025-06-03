@@ -13,6 +13,8 @@ class RemindersDetailModel {
   @ObservationIgnored
   @Shared var ordering: Ordering
 
+  var reminderForm: Reminder.Draft?
+
   let detailType: DetailType
 
   init(detailType: DetailType) {
@@ -66,10 +68,30 @@ class RemindersDetailModel {
     await updateQuery()
   }
 
+  func reminderDetailsButtonTapped(reminder: Reminder) {
+    reminderForm = Reminder.Draft(reminder)
+  }
+
+  func newReminderButtonTapped() {
+    switch detailType {
+    case .remindersList(let remindersList):
+      reminderForm = Reminder.Draft(remindersListID: remindersList.id)
+    }
+  }
+
   func updateQuery() async {
     await withErrorReporting {
       try await $reminders.load(remindersQuery, animation: .default)
     }
+  }
+}
+
+extension RemindersDetailModel: Hashable {
+  nonisolated static func == (lhs: RemindersDetailModel, rhs: RemindersDetailModel) -> Bool {
+    lhs === rhs
+  }
+  nonisolated func hash(into hasher: inout Hasher) {
+    hasher.combine(ObjectIdentifier(self))
   }
 }
 
@@ -122,7 +144,7 @@ struct RemindersDetailView: View {
           reminder: reminder,
           tags: /*@START_MENU_TOKEN@*/["weekend", "fun"]/*@PLACEHOLDER=["weekend", "fun"]@*//*@END_MENU_TOKEN@*/
         ) {
-          // Details button tapped in row
+          model.reminderDetailsButtonTapped(reminder: reminder)
         }
       }
     }
@@ -132,7 +154,7 @@ struct RemindersDetailView: View {
       ToolbarItem(placement: .bottomBar) {
         HStack {
           Button {
-            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=New reminder action@*//*@END_MENU_TOKEN@*/
+            model.newReminderButtonTapped()
           } label: {
             HStack {
               Image(systemName: "plus.circle.fill")
@@ -187,6 +209,12 @@ struct RemindersDetailView: View {
           Image(systemName: "ellipsis.circle")
             .tint(model.detailType.color)
         }
+      }
+    }
+    .sheet(item: $model.reminderForm) { reminderDraft in
+      NavigationStack {
+        ReminderFormView(reminder: reminderDraft)
+          .navigationTitle(reminderDraft.id == nil ? "New reminder" : "Edit reminder")
       }
     }
   }
