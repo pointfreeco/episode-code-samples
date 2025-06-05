@@ -24,6 +24,27 @@ class RemindersListsModel {
   )
   var remindersListRows
 
+  @ObservationIgnored
+  @FetchOne(
+    Reminder.select {
+      Stats.Columns(
+        allCount: $0.count(filter: !$0.isCompleted),
+        flaggedCount: $0.count(filter: !$0.isCompleted && $0.isFlagged),
+        scheduledCount: $0.count(filter: !$0.isCompleted && $0.dueDate.isNot(nil)),
+        todayCount: $0.count(filter: !$0.isCompleted && #sql("date(\($0.dueDate)) = date()"))
+      )
+    }
+  )
+  var stats = Stats()
+
+  @Selection
+  struct Stats {
+    var allCount = 0
+    var flaggedCount = 0
+    var scheduledCount = 0
+    var todayCount = 0
+  }
+
   var remindersListForm: RemindersList.Draft?
 
   var remindersDetail: RemindersDetailModel?
@@ -53,7 +74,9 @@ class RemindersListsModel {
   }
 
   func remindersListTapped(remindersList: RemindersList) {
-    remindersDetail = RemindersDetailModel(detailType: .remindersList(remindersList))
+    remindersDetail = RemindersDetailModel(
+      detailType: .remindersList(remindersList)
+    )
   }
 }
 
@@ -63,7 +86,57 @@ struct RemindersListsView: View {
   var body: some View {
     List {
       Section {
-        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Top-level stats@*//*@END_MENU_TOKEN@*/
+        Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
+          GridRow {
+            ReminderGridCell(
+              color: .blue,
+              count: model.stats.todayCount,
+              iconName: "calendar.circle.fill",
+              title: "Today"
+            ) {
+              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+            }
+            ReminderGridCell(
+              color: .red,
+              count: model.stats.scheduledCount,
+              iconName: "calendar.circle.fill",
+              title: "Scheduled"
+            ) {
+              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+            }
+          }
+          GridRow {
+            ReminderGridCell(
+              color: .gray,
+              count: model.stats.allCount,
+              iconName: "tray.circle.fill",
+              title: "All"
+            ) {
+              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+            }
+            ReminderGridCell(
+              color: .orange,
+              count: model.stats.flaggedCount,
+              iconName: "flag.circle.fill",
+              title: "Flagged"
+            ) {
+              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+            }
+          }
+          GridRow {
+            ReminderGridCell(
+              color: .gray,
+              count: nil,
+              iconName: "checkmark.circle.fill",
+              title: "Completed"
+            ) {
+              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+            }
+          }
+        }
+        .buttonStyle(.plain)
+        .listRowBackground(Color.clear)
+        .padding([.leading, .trailing], -20)
       }
 
       Section {
@@ -108,7 +181,9 @@ struct RemindersListsView: View {
           .textCase(nil)
       }
     }
-    .searchable(text: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Search text@*/.constant("")/*@END_MENU_TOKEN@*/)
+    .searchable(
+      text: /*@START_MENU_TOKEN@*/ /*@PLACEHOLDER=Search text@*/.constant("")/*@END_MENU_TOKEN@*/
+    )
     .toolbar {
       ToolbarItem(placement: .bottomBar) {
         HStack {
@@ -141,6 +216,46 @@ struct RemindersListsView: View {
     }
     .navigationDestination(item: $model.remindersDetail) { remindersDetail in
       RemindersDetailView(model: remindersDetail)
+    }
+  }
+}
+
+private struct ReminderGridCell: View {
+  let color: Color
+  let count: Int?
+  let iconName: String
+  let title: String
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      HStack(alignment: .firstTextBaseline) {
+        VStack(alignment: .leading, spacing: 8) {
+          Image(systemName: iconName)
+            .font(.largeTitle)
+            .bold()
+            .foregroundStyle(color)
+            .background(
+              Color.white.clipShape(Circle()).padding(4)
+            )
+          Text(title)
+            .font(.headline)
+            .foregroundStyle(.gray)
+            .bold()
+            .padding(.leading, 4)
+        }
+        Spacer()
+        if let count {
+          Text("\(count)")
+            .font(.largeTitle)
+            .fontDesign(.rounded)
+            .bold()
+            .foregroundStyle(Color(.label))
+        }
+      }
+      .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
+      .background(Color(.secondarySystemGroupedBackground))
+      .cornerRadius(10)
     }
   }
 }
