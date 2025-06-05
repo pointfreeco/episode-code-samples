@@ -19,7 +19,7 @@ struct Tag: Identifiable {
 @Table
 struct Reminder: Identifiable {
   let id: Int
-  @Column(as: Date.ISO8601Representation?.self)
+  // @Column(as: Date?.ISO...)
   var dueDate: Date?
   var isCompleted = false
   var isFlagged = false
@@ -35,6 +35,13 @@ struct Reminder: Identifiable {
   }
 }
 extension Reminder.Draft: Identifiable {}
+
+extension Reminder.TableColumns {
+  var isPastDue: some QueryExpression<Bool> {
+    !isCompleted
+      && (dueDate ?? Date.distantFuture) < Date()
+  }
+}
 
 @Table
 struct ReminderTag {
@@ -142,7 +149,7 @@ func appDatabase() throws -> any DatabaseWriter {
         )
         Reminder(
           id: 3,
-          dueDate: now,
+          dueDate: now.addingTimeInterval(60 * 60 * 12),
           notes: "Ask about diet",
           priority: .high,
           remindersListID: 1,

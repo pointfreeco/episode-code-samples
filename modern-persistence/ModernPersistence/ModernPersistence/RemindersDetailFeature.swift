@@ -5,7 +5,7 @@ import SwiftUI
 @Observable
 class RemindersDetailModel {
   @ObservationIgnored
-  @FetchAll var reminders: [Reminder]
+  @FetchAll var rows: [Row]
 
   @ObservationIgnored
   @Shared var showCompleted: Bool
@@ -27,12 +27,10 @@ class RemindersDetailModel {
       wrappedValue: .dueDate,
       .appStorage("ordering_\(detailType.appStorageKeySuffix)")
     )
-    _reminders = FetchAll(
-      remindersQuery
-    )
+    _rows = FetchAll(query)
   }
 
-  var remindersQuery: some SelectStatementOf<Reminder> {
+  var query: some StructuredQueries.Statement<Row> {
     Reminder
       .where {
         if !showCompleted {
@@ -56,7 +54,20 @@ class RemindersDetailModel {
           $0.title
         }
       }
+      .select {
+        Row.Columns(
+          isPastDue: $0.isPastDue,
+          reminder: $0,
+          tags: #bind(["weekend", "fun"])
+        )
+      }
   }
+
+//  func compare() {
+//    var dueDate = Optional(Date())
+//    (dueDate ?? .distantPast) < Date()
+//    (dueDate ?? .distantFuture) > Date()
+//  }
 
   func toggleShowCompletedButtonTapped() async {
     $showCompleted.withLock { $0.toggle() }
@@ -81,8 +92,16 @@ class RemindersDetailModel {
 
   func updateQuery() async {
     await withErrorReporting {
-      try await $reminders.load(remindersQuery, animation: .default)
+      try await $rows.load(query, animation: .default)
     }
+  }
+
+  @Selection
+  struct Row {
+    let isPastDue: Bool
+    let reminder: Reminder
+    @Column(as: [String].JSONRepresentation.self)
+    let tags: [String]
   }
 }
 
@@ -137,14 +156,14 @@ struct RemindersDetailView: View {
 
   var body: some View {
     List {
-      ForEach(model.reminders) { reminder in
+      ForEach(model.rows, id: \.reminder.id) { row in
         ReminderRow(
           color: model.detailType.color,
-          isPastDue: /*@START_MENU_TOKEN@*/false/*@PLACEHOLDER=false@*//*@END_MENU_TOKEN@*/,
-          reminder: reminder,
-          tags: /*@START_MENU_TOKEN@*/["weekend", "fun"]/*@PLACEHOLDER=["weekend", "fun"]@*//*@END_MENU_TOKEN@*/
+          isPastDue: row.isPastDue,
+          reminder: row.reminder,
+          tags: row.tags
         ) {
-          model.reminderDetailsButtonTapped(reminder: reminder)
+          model.reminderDetailsButtonTapped(reminder: row.reminder)
         }
       }
     }
