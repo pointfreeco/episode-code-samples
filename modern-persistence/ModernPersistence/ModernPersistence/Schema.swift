@@ -16,6 +16,12 @@ struct Tag: Identifiable {
   var title = ""
 }
 
+extension Tag?.TableColumns {
+  var jsonTitles: some QueryExpression<[String].JSONRepresentation> {
+    (self.title ?? "").jsonGroupArray(filter: self.id.isNot(nil))
+  }
+}
+
 @Table
 struct Reminder: Identifiable {
   let id: Int
@@ -211,6 +217,22 @@ func appDatabase() throws -> any DatabaseWriter {
           remindersListID: 3,
           title: "Send weekly emails"
         )
+
+        Tag(id: 1, title: "weekend")
+        Tag(id: 2, title: "fun")
+        Tag(id: 3, title: "easy-win")
+
+        ReminderTag(reminderID: 1, tagID: 1)
+        ReminderTag(reminderID: 2, tagID: 1)
+        ReminderTag(reminderID: 4, tagID: 1)
+
+        ReminderTag(reminderID: 4, tagID: 2)
+        ReminderTag(reminderID: 5, tagID: 2)
+
+        ReminderTag(reminderID: 2, tagID: 3)
+        ReminderTag(reminderID: 6, tagID: 3)
+        ReminderTag(reminderID: 7, tagID: 3)
+        ReminderTag(reminderID: 8, tagID: 3)
       }
     }
   #endif

@@ -32,6 +32,7 @@ class RemindersDetailModel {
 
   var query: some StructuredQueries.Statement<Row> {
     Reminder
+      .group(by: \.id)
       .where {
         if !showCompleted {
           !$0.isCompleted
@@ -54,20 +55,16 @@ class RemindersDetailModel {
           $0.title
         }
       }
+      .leftJoin(ReminderTag.all) { $0.id.eq($1.reminderID) }
+      .leftJoin(Tag.all) { $1.tagID.eq($2.id) }
       .select {
         Row.Columns(
           isPastDue: $0.isPastDue,
           reminder: $0,
-          tags: #bind(["weekend", "fun"])
+          tags: $2.jsonTitles
         )
       }
   }
-
-//  func compare() {
-//    var dueDate = Optional(Date())
-//    (dueDate ?? .distantPast) < Date()
-//    (dueDate ?? .distantFuture) > Date()
-//  }
 
   func toggleShowCompletedButtonTapped() async {
     $showCompleted.withLock { $0.toggle() }
