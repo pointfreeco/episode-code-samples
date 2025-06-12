@@ -34,7 +34,7 @@ class RemindersDetailModel {
     Reminder
       .group(by: \.id)
       .where {
-        if !showCompleted {
+        if detailType != .completed && !showCompleted {
           !$0.isCompleted
         }
       }
@@ -42,6 +42,16 @@ class RemindersDetailModel {
         switch detailType {
         case .remindersList(let remindersList):
           $0.remindersListID.eq(remindersList.id)
+        case .all:
+          true
+        case .completed:
+          $0.isCompleted
+        case .flagged:
+          $0.isFlagged
+        case .scheduled:
+          $0.isScheduled
+        case .today:
+          $0.isToday
         }
       }
       .order { $0.isCompleted }
@@ -84,6 +94,16 @@ class RemindersDetailModel {
     switch detailType {
     case .remindersList(let remindersList):
       reminderForm = Reminder.Draft(remindersListID: remindersList.id)
+    case .all:
+      break
+    case .completed:
+      break
+    case .flagged:
+      break
+    case .scheduled:
+      break
+    case .today:
+      break
     }
   }
 
@@ -125,25 +145,60 @@ enum Ordering: String, CaseIterable {
   }
 }
 
-enum DetailType {
+enum DetailType: Equatable {
+  case all
+  case completed
+  case flagged
   case remindersList(RemindersList)
+  case scheduled
+  case today
 
   var navigationTitle: String {
     switch self {
     case .remindersList(let remindersList):
       remindersList.title
+    case .all:
+      "All"
+    case .completed:
+      "Completed"
+    case .flagged:
+      "Flagged"
+    case .scheduled:
+      "Scheduled"
+    case .today:
+      "Today"
     }
   }
   var color: Color {
     switch self {
     case .remindersList(let remindersList):
       remindersList.color.swiftUIColor
+    case .all:
+        .black
+    case .completed:
+        .gray
+    case .flagged:
+        .orange
+    case .scheduled:
+        .red
+    case .today:
+        .blue
     }
   }
   var appStorageKeySuffix: String {
     switch self {
     case .remindersList(let remindersList):
       "remindersList_\(remindersList.id)"
+    case .all:
+      "all"
+    case .completed:
+      "completed"
+    case .flagged:
+      "flagged"
+    case .scheduled:
+      "scheduled"
+    case .today:
+      "today"
     }
   }
 }
@@ -208,15 +263,17 @@ struct RemindersDetailView: View {
                 Image(systemName: "arrow.up.arrow.down")
               }
             }
-            Button {
-              Task {
-                await model.toggleShowCompletedButtonTapped()
-              }
-            } label: {
-              Label {
-                Text(model.showCompleted ? "Hide Completed" : "Show Completed")
-              } icon: {
-                Image(systemName: model.showCompleted ? "eye.slash.fill" : "eye")
+            if model.detailType != .completed {
+              Button {
+                Task {
+                  await model.toggleShowCompletedButtonTapped()
+                }
+              } label: {
+                Label {
+                  Text(model.showCompleted ? "Hide Completed" : "Show Completed")
+                } icon: {
+                  Image(systemName: model.showCompleted ? "eye.slash.fill" : "eye")
+                }
               }
             }
           }

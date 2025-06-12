@@ -30,8 +30,8 @@ class RemindersListsModel {
       Stats.Columns(
         allCount: $0.count(filter: !$0.isCompleted),
         flaggedCount: $0.count(filter: !$0.isCompleted && $0.isFlagged),
-        scheduledCount: $0.count(filter: !$0.isCompleted && $0.dueDate.isNot(nil)),
-        todayCount: $0.count(filter: !$0.isCompleted && #sql("date(\($0.dueDate)) = date()"))
+        scheduledCount: $0.count(filter: !$0.isCompleted && $0.isScheduled),
+        todayCount: $0.count(filter: !$0.isCompleted && $0.isToday)
       )
     }
   )
@@ -69,14 +69,12 @@ class RemindersListsModel {
     remindersListForm = RemindersList.Draft()
   }
 
-  func editButtonTapped(remindersList: RemindersList) {
-    remindersListForm = RemindersList.Draft(remindersList)
+  func detailTapped(detailType: DetailType) {
+    remindersDetail = RemindersDetailModel(detailType: detailType)
   }
 
-  func remindersListTapped(remindersList: RemindersList) {
-    remindersDetail = RemindersDetailModel(
-      detailType: .remindersList(remindersList)
-    )
+  func editButtonTapped(remindersList: RemindersList) {
+    remindersListForm = RemindersList.Draft(remindersList)
   }
 }
 
@@ -94,7 +92,7 @@ struct RemindersListsView: View {
               iconName: "calendar.circle.fill",
               title: "Today"
             ) {
-              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+              model.detailTapped(detailType: .today)
             }
             ReminderGridCell(
               color: .red,
@@ -102,7 +100,7 @@ struct RemindersListsView: View {
               iconName: "calendar.circle.fill",
               title: "Scheduled"
             ) {
-              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+              model.detailTapped(detailType: .scheduled)
             }
           }
           GridRow {
@@ -112,7 +110,7 @@ struct RemindersListsView: View {
               iconName: "tray.circle.fill",
               title: "All"
             ) {
-              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+              model.detailTapped(detailType: .all)
             }
             ReminderGridCell(
               color: .orange,
@@ -120,7 +118,7 @@ struct RemindersListsView: View {
               iconName: "flag.circle.fill",
               title: "Flagged"
             ) {
-              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+              model.detailTapped(detailType: .flagged)
             }
           }
           GridRow {
@@ -130,7 +128,7 @@ struct RemindersListsView: View {
               iconName: "checkmark.circle.fill",
               title: "Completed"
             ) {
-              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+              model.detailTapped(detailType: .completed)
             }
           }
         }
@@ -142,7 +140,7 @@ struct RemindersListsView: View {
       Section {
         ForEach(model.remindersListRows, id: \.remindersList.id) { row in
           Button {
-            model.remindersListTapped(remindersList: row.remindersList)
+            model.detailTapped(detailType: .remindersList(row.remindersList))
           } label: {
             RemindersListRow(
               incompleteRemindersCount: row.incompleteRemindersCount,

@@ -47,6 +47,14 @@ extension Reminder.TableColumns {
     !isCompleted
       && (dueDate ?? Date.distantFuture) < Date()
   }
+
+  var isScheduled: some QueryExpression<Bool> {
+    dueDate.isNot(nil)
+  }
+
+  var isToday: some QueryExpression<Bool> {
+    #sql("date(\(dueDate)) = date()")
+  }
 }
 
 @Table
