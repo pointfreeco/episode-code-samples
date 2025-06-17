@@ -329,3 +329,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Modern Persistence: Reminders Lists, Part 2](0325-modern-persistence-pt3)
 1. [Modern Persistence: Reminders Detail, Part 1](0326-modern-persistence-pt4)
 1. [Modern Persistence: Reminders Detail, Part 2](0327-modern-persistence-pt5)
+1. [Modern Persistence: Advanced Aggregations](0328-modern-persistence-pt6)
