@@ -288,15 +288,9 @@ func appDatabase() throws -> any DatabaseWriter {
   try migrator.migrate(database)
 
   try database.write { db in
-    try #sql("""
-      CREATE TEMPORARY TRIGGER "reminders_updatedAt"
-      AFTER UPDATE ON "reminders"
-      FOR EACH ROW BEGIN
-        UPDATE "reminders"
-        SET "updatedAt" = datetime('subsec')
-        WHERE "id" = "new"."id";
-      END
-      """)
+    try Reminder.createTemporaryTrigger(afterInsertTouch: \.createdAt)
+    .execute(db)
+    try Reminder.createTemporaryTrigger(afterUpdateTouch: \.updatedAt)
     .execute(db)
   }
 
