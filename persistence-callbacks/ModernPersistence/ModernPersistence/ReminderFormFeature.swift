@@ -123,8 +123,6 @@ struct ReminderFormView: View {
         Button {
           withErrorReporting {
             try database.write { db in
-              var reminder = reminder
-              reminder.updatedAt = Date()
               try Reminder.upsert { reminder }.execute(db)
             }
           }

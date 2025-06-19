@@ -17,6 +17,9 @@ class RemindersDetailModel {
 
   let detailType: DetailType
 
+  @ObservationIgnored
+  @Dependency(\.defaultDatabase) var database
+
   init(detailType: DetailType) {
     self.detailType = detailType
     _showCompleted = Shared(
@@ -128,6 +131,17 @@ extension RemindersDetailModel: Hashable {
   }
   nonisolated func hash(into hasher: inout Hasher) {
     hasher.combine(ObjectIdentifier(self))
+  }
+
+  func flagAllRemindersButtonTapped() {
+    withErrorReporting {
+      try database.write { db in
+        try Reminder
+          .where { $0.id.in(rows.map(\.reminder.id)) }
+          .update { $0.isFlagged = true }
+          .execute(db)
+      }
+    }
   }
 }
 
@@ -278,6 +292,9 @@ struct RemindersDetailView: View {
             }
           }
           .tint(model.detailType.color)
+          Button("Flag all reminders") {
+            model.flagAllRemindersButtonTapped()
+          }
         } label: {
           Image(systemName: "ellipsis.circle")
             .tint(model.detailType.color)

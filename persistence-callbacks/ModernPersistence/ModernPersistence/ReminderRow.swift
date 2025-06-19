@@ -20,7 +20,7 @@ struct ReminderRow: View {
                 .find(reminder.id)
                 .update {
                   $0.isCompleted.toggle()
-                  $0.updatedAt = Date()
+                  //$0.updatedAt = Date()
                 }
                 .execute(db)
             }
@@ -86,7 +86,7 @@ struct ReminderRow: View {
               .find(reminder.id)
               .update {
                 $0.isFlagged.toggle()
-                $0.updatedAt = Date()
+                //$0.updatedAt = Date()
               }
               .execute(db)
           }

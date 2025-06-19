@@ -43,34 +43,34 @@ struct Reminder: Identifiable {
 }
 extension Reminder.Draft: Identifiable {}
 
-struct ReminderGRDB: Codable, FetchableRecord, MutablePersistableRecord {
-  var id: Int64?
-  var isCompleted = false
-  var title: String
-  var updatedAt: Date = Date()
-  enum Columns {
-    static let id = Column(CodingKeys.id)
-    static let isCompleted = Column(CodingKeys.isCompleted)
-    static let title = Column(CodingKeys.title)
-    static let updatedAt = Column(CodingKeys.updatedAt)
-  }
-  mutating func willSave(_ db: Database) throws {
-    updatedAt = Date()
-  }
-}
-
-func operation(_ db: Database) throws {
-  var reminder = ReminderGRDB(title: "Get milk")
-  reminder.save(db)
-  reminder.update(<#T##db: Database##Database#>)
-  reminder.delete(<#T##db: Database##Database#>)
-  _ = reminder.updatedAt
-
-  Reminder.upsert { reminder }.execute(db)
-  Reminder.find(reminder.id).delete().execute(db)
-
-  ReminderGRDB.updateAll(db, [ReminderGRDB.Columns.isCompleted.set(to: true)])
-}
+//struct ReminderGRDB: Codable, FetchableRecord, MutablePersistableRecord {
+//  var id: Int64?
+//  var isCompleted = false
+//  var title: String
+//  var updatedAt: Date = Date()
+//  enum Columns {
+//    static let id = Column(CodingKeys.id)
+//    static let isCompleted = Column(CodingKeys.isCompleted)
+//    static let title = Column(CodingKeys.title)
+//    static let updatedAt = Column(CodingKeys.updatedAt)
+//  }
+//  mutating func willSave(_ db: Database) throws {
+//    updatedAt = Date()
+//  }
+//}
+//
+//func operation(_ db: Database) throws {
+//  var reminder = ReminderGRDB(title: "Get milk")
+//  reminder.save(db)
+//  reminder.update(<#T##db: Database##Database#>)
+//  reminder.delete(<#T##db: Database##Database#>)
+//  _ = reminder.updatedAt
+//
+//  Reminder.upsert { reminder }.execute(db)
+//  Reminder.find(reminder.id).delete().execute(db)
+//
+//  ReminderGRDB.updateAll(db, [ReminderGRDB.Columns.isCompleted.set(to: true)])
+//}
 
 extension Reminder.TableColumns {
   var isPastDue: some QueryExpression<Bool> {
@@ -286,6 +286,19 @@ func appDatabase() throws -> any DatabaseWriter {
   #endif
 
   try migrator.migrate(database)
+
+  try database.write { db in
+    try #sql("""
+      CREATE TEMPORARY TRIGGER "reminders_updatedAt"
+      AFTER UPDATE ON "reminders"
+      FOR EACH ROW BEGIN
+        UPDATE "reminders"
+        SET "updatedAt" = datetime('subsec')
+        WHERE "id" = "new"."id";
+      END
+      """)
+    .execute(db)
+  }
 
   return database
 }
