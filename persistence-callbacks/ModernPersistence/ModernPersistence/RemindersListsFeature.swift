@@ -11,7 +11,7 @@ class RemindersListsModel {
   @FetchAll(
     RemindersList
       .group(by: \.id)
-      .order(by: \.title)
+      .order(by: \.position)
       .leftJoin(Reminder.all) {
         $0.id.eq($1.remindersListID) && !$1.isCompleted
       }
@@ -76,6 +76,21 @@ class RemindersListsModel {
 
   func editButtonTapped(remindersList: RemindersList) {
     remindersListForm = RemindersList.Draft(remindersList)
+  }
+
+  func moveRemindersList(fromOffsets source: IndexSet, toOffset destination: Int) {
+    var remindersListIDs = remindersListRows.map(\.remindersList.id)
+    remindersListIDs.move(fromOffsets: source, toOffset: destination)
+    withErrorReporting {
+      try database.write { db in
+        for (offset, remindersListID) in remindersListIDs.enumerated() {
+          try RemindersList
+            .find(remindersListID)
+            .update { $0.position = offset }
+            .execute(db)
+        }
+      }
+    }
   }
 }
 
@@ -161,6 +176,9 @@ struct RemindersListsView: View {
               Image(systemName: "info.circle")
             }
           }
+        }
+        .onMove { source, destination in
+          model.moveRemindersList(fromOffsets: source, toOffset: destination)
         }
       } header: {
         Text("My lists")
