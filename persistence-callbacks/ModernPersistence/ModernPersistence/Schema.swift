@@ -276,6 +276,9 @@ func appDatabase() throws -> any DatabaseWriter {
         Tag(id: 1, title: "weekend")
         Tag(id: 2, title: "fun")
         Tag(id: 3, title: "easy-win")
+        Tag(id: 4, title: "exercise")
+        Tag(id: 5, title: "social")
+        Tag(id: 6, title: "point-free")
 
         ReminderTag(reminderID: 1, tagID: 1)
         ReminderTag(reminderID: 2, tagID: 1)
@@ -311,6 +314,15 @@ func appDatabase() throws -> any DatabaseWriter {
 
     try RemindersList.createTemporaryTrigger(afterInsertTouch: { $0.position = RemindersList.count() - 1 })
       .execute(db)
+
+    try ReminderTag.createTemporaryTrigger(before: .insert { new in
+      #sql("SELECT RAISE(ABORT, 'Reminders can have a maximum of 5 tags.')")
+    } when: { new in
+      ReminderTag
+        .where { $0.reminderID.eq(new.reminderID) }
+        .count() >= 5
+    })
+    .execute(db)
   }
 
   return database

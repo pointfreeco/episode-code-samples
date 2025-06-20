@@ -8,7 +8,9 @@ struct ReminderFormView: View {
   @FetchAll(RemindersList.order(by: \.title))
   var remindersLists: [RemindersList]
 
+  @State var isSaveErrorPresented = false
   @State var isTagsPickerPresented = false
+  @State var saveErrorMessage: String?
   @State var selectedTags: [Tag] = []
   @Dependency(\.defaultDatabase) var database
   @Environment(\.dismiss) var dismiss
@@ -135,7 +137,7 @@ struct ReminderFormView: View {
     .toolbar {
       ToolbarItem {
         Button {
-          withErrorReporting {
+          do {
             try database.write { db in
               let reminderID = try Reminder
                 .upsert { reminder }
@@ -168,8 +170,14 @@ struct ReminderFormView: View {
                 }
                 .execute(db)
             }
+            dismiss()
+          } catch let error as DatabaseError where error.resultCode == .SQLITE_CONSTRAINT && error.extendedResultCode == .SQLITE_CONSTRAINT_TRIGGER {
+            saveErrorMessage = error.message
+            isSaveErrorPresented = true
+          } catch {
+            reportIssue(error)
+            dismiss()
           }
-          dismiss()
         } label: {
           Text("Save")
         }
@@ -181,6 +189,9 @@ struct ReminderFormView: View {
           Text("Cancel")
         }
       }
+    }
+    .alert("Save error", isPresented: $isSaveErrorPresented, presenting: saveErrorMessage) { _ in } message: { message in
+      Text(message)
     }
   }
 
