@@ -8,6 +8,8 @@ struct ReminderFormView: View {
   @FetchAll(RemindersList.order(by: \.title))
   var remindersLists: [RemindersList]
 
+  @State var isTagsPickerPresented = false
+  @State var selectedTags: [Tag] = []
   @Dependency(\.defaultDatabase) var database
   @Environment(\.dismiss) var dismiss
 
@@ -19,7 +21,7 @@ struct ReminderFormView: View {
 
       Section {
         Button {
-          /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Tags action@*//*@END_MENU_TOKEN@*/
+          isTagsPickerPresented = true
         } label: {
           HStack {
             Image(systemName: "number.square.fill")
@@ -28,7 +30,7 @@ struct ReminderFormView: View {
             Text("Tags")
               .foregroundStyle(Color(.label))
             Spacer()
-              /*@START_MENU_TOKEN@*/Text("#weekend #fun")/*@PLACEHOLDER=Text("#weekend #fun")@*//*@END_MENU_TOKEN@*/
+            tagsDetail
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .font(.callout)
@@ -37,9 +39,9 @@ struct ReminderFormView: View {
           }
         }
       }
-      .popover(isPresented: /*@START_MENU_TOKEN@*/.constant(false)/*@PLACEHOLDER=.constant(false)@*//*@END_MENU_TOKEN@*/) {
+      .popover(isPresented: $isTagsPickerPresented) {
         NavigationStack {
-          Text("Tags")
+          TagsView(selectedTags: $selectedTags)
         }
       }
 
@@ -110,6 +112,18 @@ struct ReminderFormView: View {
         }
       }
     }
+    .task {
+      await withErrorReporting {
+        selectedTags = try await database.read { [reminderID = reminder.id] db in
+          try Tag
+            .order(by: \.title)
+            .join(ReminderTag.all) { $0.id.eq($1.tagID) }
+            .where { $1.reminderID.is(reminderID) }
+            .select { tag, _ in tag }
+            .fetchAll(db)
+        }
+      }
+    }
     .task(id: reminder.remindersListID) {
       await withErrorReporting {
         try await $selectedRemindersList.load(
@@ -123,7 +137,36 @@ struct ReminderFormView: View {
         Button {
           withErrorReporting {
             try database.write { db in
-              try Reminder.upsert { reminder }.execute(db)
+              let reminderID = try Reminder
+                .upsert { reminder }
+                .returning(\.id)
+                .fetchOne(db)
+              guard let reminderID
+              else { return }
+
+              let currentReminderTagIDs = try ReminderTag
+                .where { $0.reminderID.is(reminder.id) }
+                .select(\.tagID)
+                .fetchAll(db)
+              let selectedTagIDs = Set(selectedTags.map(\.id))
+              let tagIDsToDelete = Set(currentReminderTagIDs).subtracting(selectedTagIDs)
+              let tagIDsToInsert = selectedTagIDs.subtracting(currentReminderTagIDs)
+
+              try ReminderTag
+                .where { $0.reminderID.is(reminder.id) && $0.tagID.in(tagIDsToDelete) }
+                .delete()
+                .execute(db)
+
+              try ReminderTag
+                .insert {
+                  tagIDsToInsert.map {
+                    ReminderTag(
+                      reminderID: reminderID,
+                      tagID: $0
+                    )
+                  }
+                }
+                .execute(db)
             }
           }
           dismiss()
@@ -138,6 +181,13 @@ struct ReminderFormView: View {
           Text("Cancel")
         }
       }
+    }
+  }
+
+  private var tagsDetail: Text {
+    guard let tag = selectedTags.first else { return Text("") }
+    return selectedTags.dropFirst().reduce(Text("#\(tag.title)")) { result, tag in
+      result + Text(" #\(tag.title) ")
     }
   }
 }
