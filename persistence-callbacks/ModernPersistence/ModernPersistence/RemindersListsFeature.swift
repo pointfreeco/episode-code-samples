@@ -6,6 +6,7 @@ import SwiftUI
 class RemindersListsModel {
   @ObservationIgnored
   @Dependency(\.defaultDatabase) var database
+
   @ObservationIgnored
   @FetchAll(
     RemindersList
@@ -183,6 +184,14 @@ struct RemindersListsView: View {
       text: /*@START_MENU_TOKEN@*/ /*@PLACEHOLDER=Search text@*/.constant("")/*@END_MENU_TOKEN@*/
     )
     .toolbar {
+      ToolbarItem(placement: .primaryAction) {
+        Button("Delete all lists") {
+          @Dependency(\.defaultDatabase) var database
+          try! database.write { db in
+            try RemindersList.delete().execute(db)
+          }
+        }
+      }
       ToolbarItem(placement: .bottomBar) {
         HStack {
           Button {
