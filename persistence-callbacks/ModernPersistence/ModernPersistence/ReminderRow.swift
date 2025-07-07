@@ -19,14 +19,13 @@ struct ReminderRow: View {
               try Reminder
                 .find(reminder.id)
                 .update {
-                  $0.isCompleted.toggle()
-                  //$0.updatedAt = Date()
+                  $0.isCompleting.toggle()
                 }
                 .execute(db)
             }
           }
         } label: {
-          Image(systemName: reminder.isCompleted ? "circle.inset.filled" : "circle")
+          Image(systemName: reminder.isCompleting || reminder.isCompleted ? "circle.inset.filled" : "circle")
             .foregroundStyle(.gray)
             .font(.title2)
             .padding([.trailing], 5)
@@ -35,11 +34,10 @@ struct ReminderRow: View {
           HStack(alignment: .firstTextBaseline) {
             if let priority = reminder.priority {
               Text(String(repeating: "!", count: priority.rawValue))
-                .foregroundStyle(reminder.isCompleted ? .gray : color)
             }
             Text(reminder.title)
-              .foregroundStyle(reminder.isCompleted ? .gray : .primary)
           }
+          .foregroundStyle(reminder.isCompleting || reminder.isCompleted ? .gray : .primary)
           .font(.title3)
 
           if !reminder.notes.isEmpty {
@@ -128,7 +126,7 @@ struct ReminderRowPreview: PreviewProvider {
     Inner()
   }
   struct Inner: View {
-    @FetchAll(Reminder.order(by: \.isCompleted), animation: .default)
+    @FetchAll(Reminder.order { $0.isCompleting || $0.isCompleted }, animation: .default)
     var reminders: [Reminder]
     var body: some View {
       NavigationStack {

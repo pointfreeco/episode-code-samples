@@ -29,6 +29,7 @@ struct Reminder: Identifiable {
   var createdAt: Date?
   var dueDate: Date?
   var isCompleted = false
+  var isCompleting = false
   var isFlagged = false
   var notes = ""
   var priority: Priority?
@@ -187,6 +188,12 @@ func appDatabase() throws -> any DatabaseWriter {
       """)
     .execute(db)
   }
+  migrator.registerMigration("Add 'isCompleting' to 'reminders'") { db in
+    try #sql("""
+      ALTER TABLE "reminders" ADD COLUMN "isCompleting" INTEGER NOT NULL DEFAULT 0
+      """)
+    .execute(db)
+  }
   #if DEBUG
     migrator.registerMigration("Seed database") { db in
       @Dependency(\.date.now) var now
@@ -323,6 +330,17 @@ func appDatabase() throws -> any DatabaseWriter {
         .count() >= 5
     })
     .execute(db)
+
+    try Reminder.createTemporaryTrigger(
+      after: .update {
+        $0.isCompleting
+      } forEachRow: { _, new in
+        Reminder.find(new.id).update {
+          $0.isCompleted = new.isCompleting
+          $0.isCompleting = !new.isCompleting
+        }
+      }
+    )
   }
 
   return database

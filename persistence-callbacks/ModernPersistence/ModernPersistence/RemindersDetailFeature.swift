@@ -30,7 +30,7 @@ class RemindersDetailModel {
       wrappedValue: .dueDate,
       .appStorage("ordering_\(detailType.appStorageKeySuffix)")
     )
-    _rows = FetchAll(query)
+    _rows = FetchAll(query, animation: .default)
   }
 
   var query: some StructuredQueries.Statement<Row> {
@@ -57,7 +57,7 @@ class RemindersDetailModel {
           $0.isToday
         }
       }
-      .order { $0.isCompleted }
+      .order { $0.isCompleting || $0.isCompleted }
       .order {
         switch ordering {
         case .dueDate:
