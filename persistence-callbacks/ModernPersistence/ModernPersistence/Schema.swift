@@ -337,14 +337,11 @@ func appDatabase() throws -> any DatabaseWriter {
     try updateQuery.execute(db)
 
     let task = Mutex<Task<Void, any Error>?>(nil)
-    db.add(function: DatabaseFunction("throttleCompletions", argumentCount: 1) { arguments in
-      let isCompleting = arguments.first.flatMap(Bool.fromDatabaseValue) ?? false
+    db.add(function: DatabaseFunction("throttleCompletions", argumentCount: 0) { _ in
       task.withLock {
         $0?.cancel()
         $0 = Task {
-          if isCompleting {
-            try await Task.sleep(for: .seconds(3))
-          }
+          try await Task.sleep(for: .seconds(3))
           try await database.write { db in
             try updateQuery.execute(db)
           }
@@ -357,7 +354,20 @@ func appDatabase() throws -> any DatabaseWriter {
       after: .update {
         $0.isCompleting
       } forEachRow: { _, new in
-        Reminder.select { _ in #sql("throttleCompletions(\(new.isCompleting))", as: Bool.self) }
+        Reminder.find(new.id).update { $0.isCompleted = new.isCompleting }
+      } when: { _, new in
+        !new.isCompleting
+      }
+    )
+    .execute(db)
+
+    try Reminder.createTemporaryTrigger(
+      after: .update {
+        $0.isCompleting
+      } forEachRow: { _, new in
+        Reminder.select { _ in #sql("throttleCompletions()", as: Bool.self) }
+      } when: { _, new in
+        new.isCompleting
       }
     )
     .execute(db)
