@@ -29,14 +29,23 @@ struct Reminder: Identifiable {
   let id: Int
   var createdAt: Date?
   var dueDate: Date?
-  var isCompleted = false
-  var isCompleting = false
   var isFlagged = false
   var notes = ""
   var priority: Priority?
   var remindersListID: RemindersList.ID
+  var status: Status = .incomplete
   var title = ""
   var updatedAt: Date?
+
+  var isCompleted: Bool {
+    status == .completed
+  }
+
+  enum Status: Int, QueryBindable {
+    case incomplete
+    case completed
+    case completing
+  }
 
   enum Priority: Int, QueryBindable {
     case low = 1
@@ -76,6 +85,10 @@ extension Reminder.Draft: Identifiable {}
 //}
 
 extension Reminder.TableColumns {
+  var isCompleted: some QueryExpression<Bool> {
+    status.eq(Reminder.Status.completed)
+  }
+
   var isPastDue: some QueryExpression<Bool> {
     !isCompleted
       && (dueDate ?? Date.distantFuture) < Date()
@@ -195,6 +208,24 @@ func appDatabase() throws -> any DatabaseWriter {
       """)
     .execute(db)
   }
+  migrator.registerMigration("Add 'status' to 'reminders'") { db in
+    try #sql("""
+      ALTER TABLE "reminders" ADD COLUMN "status" INTEGER NOT NULL DEFAULT 0
+      """)
+    .execute(db)
+    try #sql("""
+      UPDATE "reminders" SET "status" = "isCompleted"
+      """)
+    .execute(db)
+    try #sql("""
+      ALTER TABLE "reminders" DROP COLUMN "isCompleted"
+      """)
+    .execute(db)
+    try #sql("""
+      ALTER TABLE "reminders" DROP COLUMN "isCompleting"
+      """)
+    .execute(db)
+  }
   #if DEBUG
     migrator.registerMigration("Seed database") { db in
       @Dependency(\.date.now) var now
@@ -227,8 +258,8 @@ func appDatabase() throws -> any DatabaseWriter {
         Reminder(
           id: 4,
           dueDate: now.addingTimeInterval(-60 * 60 * 24 * 190),
-          isCompleted: true,
           remindersListID: 1,
+          status: .completed,
           title: "Take a walk"
         )
         Reminder(
@@ -248,17 +279,17 @@ func appDatabase() throws -> any DatabaseWriter {
         Reminder(
           id: 7,
           dueDate: now.addingTimeInterval(-60 * 60 * 24 * 2),
-          isCompleted: true,
           priority: .low,
           remindersListID: 2,
+          status: .completed,
           title: "Get laundry"
         )
         Reminder(
           id: 8,
           dueDate: now.addingTimeInterval(60 * 60 * 24 * 4),
-          isCompleted: false,
           priority: .high,
           remindersListID: 2,
+          status: .completed,
           title: "Take out trash"
         )
         Reminder(
@@ -275,9 +306,9 @@ func appDatabase() throws -> any DatabaseWriter {
         Reminder(
           id: 10,
           dueDate: now.addingTimeInterval(-60 * 60 * 24 * 2),
-          isCompleted: true,
           priority: .medium,
           remindersListID: 3,
+          status: .completed,
           title: "Send weekly emails"
         )
 
@@ -333,7 +364,8 @@ func appDatabase() throws -> any DatabaseWriter {
     .execute(db)
 
     let updateQuery = Reminder
-      .update { $0.isCompleted = $0.isCompleting }
+      .where { $0.status.eq(Reminder.Status.completing)}
+      .update { $0.status = .completed }
     try updateQuery.execute(db)
 
     let task = Mutex<Task<Void, any Error>?>(nil)
@@ -352,22 +384,11 @@ func appDatabase() throws -> any DatabaseWriter {
 
     try Reminder.createTemporaryTrigger(
       after: .update {
-        $0.isCompleting
-      } forEachRow: { _, new in
-        Reminder.find(new.id).update { $0.isCompleted = new.isCompleting }
-      } when: { _, new in
-        !new.isCompleting
-      }
-    )
-    .execute(db)
-
-    try Reminder.createTemporaryTrigger(
-      after: .update {
-        $0.isCompleting
+        $0.status
       } forEachRow: { _, new in
         Reminder.select { _ in #sql("throttleCompletions()", as: Bool.self) }
       } when: { _, new in
-        new.isCompleting
+        new.status.eq(Reminder.Status.completing)
       }
     )
     .execute(db)

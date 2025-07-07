@@ -1,6 +1,25 @@
 import SharingGRDB
 import SwiftUI
 
+extension SQLQueryExpression<Reminder.Status> {
+  // Or: Updates<Reminder>.toggleStatus()
+  mutating func toggle() {
+    self = Self(
+      Case(self)
+      .when(Reminder.Status.incomplete, then: Reminder.Status.completing)
+      .else(Reminder.Status.incomplete)
+    )
+  }
+}
+
+extension Updates<Reminder> {
+  mutating func toggleStatus() {
+    self.status = Case(self.status)
+      .when(Reminder.Status.incomplete, then: Reminder.Status.completing)
+      .else(Reminder.Status.incomplete)
+  }
+}
+
 struct ReminderRow: View {
   let color: Color
   let isPastDue: Bool
@@ -19,13 +38,17 @@ struct ReminderRow: View {
               try Reminder
                 .find(reminder.id)
                 .update {
-                  $0.isCompleting.toggle()
+                  $0.toggleStatus()
+//                  $0.status.toggle()
+//                  $0.status = Case($0.status)
+//                    .when(Reminder.Status.incomplete, then: Reminder.Status.completing)
+//                    .else(Reminder.Status.incomplete)
                 }
                 .execute(db)
             }
           }
         } label: {
-          Image(systemName: reminder.isCompleting || reminder.isCompleted ? "circle.inset.filled" : "circle")
+          Image(systemName: reminder.status != .incomplete ? "circle.inset.filled" : "circle")
             .foregroundStyle(.gray)
             .font(.title2)
             .padding([.trailing], 5)
@@ -37,7 +60,7 @@ struct ReminderRow: View {
             }
             Text(reminder.title)
           }
-          .foregroundStyle(reminder.isCompleting || reminder.isCompleted ? .gray : .primary)
+          .foregroundStyle(reminder.status != .incomplete ? .gray : .primary)
           .font(.title3)
 
           if !reminder.notes.isEmpty {

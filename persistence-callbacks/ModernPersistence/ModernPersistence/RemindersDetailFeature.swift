@@ -59,7 +59,7 @@ class RemindersDetailModel {
       }
       .order {
         if showCompleted {
-          $0.isCompleting || $0.isCompleted
+          $0.status.neq(Reminder.Status.incomplete)
         } else {
           $0.isCompleted
         }
