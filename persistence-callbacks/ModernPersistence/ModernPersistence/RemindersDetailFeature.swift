@@ -57,7 +57,13 @@ class RemindersDetailModel {
           $0.isToday
         }
       }
-      .order { $0.isCompleting || $0.isCompleted }
+      .order {
+        if showCompleted {
+          $0.isCompleting || $0.isCompleted
+        } else {
+          $0.isCompleted
+        }
+      }
       .order {
         switch ordering {
         case .dueDate:

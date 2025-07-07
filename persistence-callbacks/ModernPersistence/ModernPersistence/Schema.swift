@@ -1,6 +1,7 @@
 import Foundation
 import OSLog
 import SharingGRDB
+import Synchronization
 
 @Table
 struct RemindersList: Equatable, Identifiable {
@@ -331,16 +332,35 @@ func appDatabase() throws -> any DatabaseWriter {
     })
     .execute(db)
 
+    let updateQuery = Reminder
+      .update { $0.isCompleted = $0.isCompleting }
+    try updateQuery.execute(db)
+
+    let task = Mutex<Task<Void, any Error>?>(nil)
+    db.add(function: DatabaseFunction("throttleCompletions", argumentCount: 1) { arguments in
+      let isCompleting = arguments.first.flatMap(Bool.fromDatabaseValue) ?? false
+      task.withLock {
+        $0?.cancel()
+        $0 = Task {
+          if isCompleting {
+            try await Task.sleep(for: .seconds(3))
+          }
+          try await database.write { db in
+            try updateQuery.execute(db)
+          }
+        }
+      }
+      return true
+    })
+
     try Reminder.createTemporaryTrigger(
       after: .update {
         $0.isCompleting
       } forEachRow: { _, new in
-        Reminder.find(new.id).update {
-          $0.isCompleted = new.isCompleting
-          $0.isCompleting = !new.isCompleting
-        }
+        Reminder.select { _ in #sql("throttleCompletions(\(new.isCompleting))", as: Bool.self) }
       }
     )
+    .execute(db)
   }
 
   return database
