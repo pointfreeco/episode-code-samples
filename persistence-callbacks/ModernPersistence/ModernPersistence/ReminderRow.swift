@@ -18,10 +18,7 @@ struct ReminderRow: View {
             try database.write { db in
               try Reminder
                 .find(reminder.id)
-                .update {
-                  $0.isCompleted.toggle()
-                  //$0.updatedAt = Date()
-                }
+                .update { $0.toggleStatus() }
                 .execute(db)
             }
           }

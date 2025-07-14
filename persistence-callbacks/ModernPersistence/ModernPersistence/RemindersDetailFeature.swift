@@ -30,7 +30,7 @@ class RemindersDetailModel {
       wrappedValue: .dueDate,
       .appStorage("ordering_\(detailType.appStorageKeySuffix)")
     )
-    _rows = FetchAll(query)
+    _rows = FetchAll(query, animation: .default)
   }
 
   var query: some StructuredQueries.Statement<Row> {
@@ -38,7 +38,7 @@ class RemindersDetailModel {
       .group(by: \.id)
       .where {
         if detailType != .completed && !showCompleted {
-          !$0.isCompleted
+          $0.status.neq(Reminder.Status.completed)
         }
       }
       .where {
@@ -57,7 +57,13 @@ class RemindersDetailModel {
           $0.isToday
         }
       }
-      .order { $0.isCompleted }
+      .order {
+        if showCompleted {
+          $0.isCompleted
+        } else {
+          $0.status.eq(Reminder.Status.completed)
+        }
+      }
       .order {
         switch ordering {
         case .dueDate:
