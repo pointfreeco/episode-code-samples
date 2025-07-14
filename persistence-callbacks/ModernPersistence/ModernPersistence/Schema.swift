@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 import OSLog
 import SharingGRDB
@@ -102,6 +103,24 @@ func appDatabase() throws -> any DatabaseWriter {
   var configuration = Configuration()
   configuration.foreignKeysEnabled = true
   configuration.prepareDatabase { db in
+
+    db.add(function: DatabaseFunction("handleDeletedRemindersList") { arguments in
+      Task {
+        @Dependency(\.defaultDatabase) var database
+
+        try await Task.sleep(for: .seconds(1))
+        try await database.write { db in
+          let isRemindersListEmpty = try RemindersList.count().fetchOne(db) == 0
+          if isRemindersListEmpty {
+            try RemindersList
+              .insert { RemindersList.Draft(title: "Reminders") }
+              .execute(db)
+          }
+        }
+      }
+      return nil
+    })
+
     #if DEBUG
       db.trace(options: .profile) {
         if context == .preview {
@@ -305,9 +324,8 @@ func appDatabase() throws -> any DatabaseWriter {
 
     try RemindersList.createTemporaryTrigger(
       after: .delete { old in
-        RemindersList.insert { RemindersList.Draft(title: "Reminders") }
-      } when: { old in
-        !RemindersList.exists()
+        //RemindersList.insert { RemindersList.Draft(title: "Reminders") }
+        #sql("SELECT handleDeletedRemindersList()")
       }
     )
     .execute(db)
