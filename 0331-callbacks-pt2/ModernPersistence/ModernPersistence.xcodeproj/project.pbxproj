@@ -592,7 +592,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-structured-queries";
 			requirement = {
-				branch = "temp-triggers";
+				branch = main;
 				kind = branch;
 			};
 		};
