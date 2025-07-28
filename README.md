@@ -333,4 +333,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Point-Free Live: A Vision for Modern Persistence](0329-pflive-modern-persistence)
 1. [Persistence Callbacks: Triggers](0330-callbacks-pt1)
 1. [Persistence Callbacks: Type-Safe Triggers](0331-callbacks-pt2)
-1. [Persistence Callbacks: Valdation Triggers](0332-callbacks-pt3)
+1. [Persistence Callbacks: Validation Triggers](0332-callbacks-pt3)
+1. [Persistence Callbacks: Advanced Triggers](0333-callbacks-pt4)
