@@ -592,8 +592,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-structured-queries";
 			requirement = {
-				branch = "temp-triggers";
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
 			};
 		};
 		4BA81C4A2DC29FFB0076907E /* XCRemoteSwiftPackageReference "sharing-grdb" */ = {
