@@ -5,8 +5,31 @@ import SwiftUI
 @Observable
 class SearchRemindersModel {
   @ObservationIgnored
-  @FetchAll var reminders: [Reminder]
-  var searchText = ""
+  @FetchAll(Reminder.none) var reminders: [Reminder]
+  var searchText = "" {
+    didSet {
+      if oldValue != searchText {
+        updateQuery()
+      }
+    }
+  }
+  var searchTask: Task<Void, Never>?
+
+  func updateQuery() {
+    searchTask?.cancel()
+    searchTask = Task {
+      await withErrorReporting {
+        try await $reminders.load(
+          Reminder.where {
+            for term in searchText.split(separator: " ") {
+              $0.title.contains(term)
+              || $0.notes.contains(term)
+            }
+          }
+        )
+      }
+    }
+  }
 }
 
 struct SearchRemindersView: View {
