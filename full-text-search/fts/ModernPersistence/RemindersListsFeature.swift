@@ -47,8 +47,8 @@ class RemindersListsModel {
   }
 
   var remindersListForm: RemindersList.Draft?
-
   var remindersDetail: RemindersDetailModel?
+  let searchRemindersModel = SearchRemindersModel()
 
   @Selection
   struct RemindersListRow {
@@ -98,106 +98,113 @@ struct RemindersListsView: View {
   @Bindable var model: RemindersListsModel
 
   var body: some View {
+    @Bindable var searchRemindersModel = model.searchRemindersModel
+
     List {
-      Section {
-        Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
-          GridRow {
-            ReminderGridCell(
-              color: .blue,
-              count: model.stats.todayCount,
-              iconName: "calendar.circle.fill",
-              title: "Today"
-            ) {
-              model.detailTapped(detailType: .today)
+      if model.searchRemindersModel.searchText.isEmpty {
+        Section {
+          Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
+            GridRow {
+              ReminderGridCell(
+                color: .blue,
+                count: model.stats.todayCount,
+                iconName: "calendar.circle.fill",
+                title: "Today"
+              ) {
+                model.detailTapped(detailType: .today)
+              }
+              ReminderGridCell(
+                color: .red,
+                count: model.stats.scheduledCount,
+                iconName: "calendar.circle.fill",
+                title: "Scheduled"
+              ) {
+                model.detailTapped(detailType: .scheduled)
+              }
             }
-            ReminderGridCell(
-              color: .red,
-              count: model.stats.scheduledCount,
-              iconName: "calendar.circle.fill",
-              title: "Scheduled"
-            ) {
-              model.detailTapped(detailType: .scheduled)
+            GridRow {
+              ReminderGridCell(
+                color: .gray,
+                count: model.stats.allCount,
+                iconName: "tray.circle.fill",
+                title: "All"
+              ) {
+                model.detailTapped(detailType: .all)
+              }
+              ReminderGridCell(
+                color: .orange,
+                count: model.stats.flaggedCount,
+                iconName: "flag.circle.fill",
+                title: "Flagged"
+              ) {
+                model.detailTapped(detailType: .flagged)
+              }
+            }
+            GridRow {
+              ReminderGridCell(
+                color: .gray,
+                count: nil,
+                iconName: "checkmark.circle.fill",
+                title: "Completed"
+              ) {
+                model.detailTapped(detailType: .completed)
+              }
             }
           }
-          GridRow {
-            ReminderGridCell(
-              color: .gray,
-              count: model.stats.allCount,
-              iconName: "tray.circle.fill",
-              title: "All"
-            ) {
-              model.detailTapped(detailType: .all)
-            }
-            ReminderGridCell(
-              color: .orange,
-              count: model.stats.flaggedCount,
-              iconName: "flag.circle.fill",
-              title: "Flagged"
-            ) {
-              model.detailTapped(detailType: .flagged)
-            }
-          }
-          GridRow {
-            ReminderGridCell(
-              color: .gray,
-              count: nil,
-              iconName: "checkmark.circle.fill",
-              title: "Completed"
-            ) {
-              model.detailTapped(detailType: .completed)
-            }
-          }
+          .buttonStyle(.plain)
+          .listRowBackground(Color.clear)
+          .padding([.leading, .trailing], -20)
         }
-        .buttonStyle(.plain)
-        .listRowBackground(Color.clear)
-        .padding([.leading, .trailing], -20)
-      }
 
-      Section {
-        ForEach(model.remindersListRows, id: \.remindersList.id) { row in
-          Button {
-            model.detailTapped(detailType: .remindersList(row.remindersList))
-          } label: {
-            RemindersListRow(
-              incompleteRemindersCount: row.incompleteRemindersCount,
-              remindersList: row.remindersList
-            )
-            .foregroundColor(.primary)
-          }
-          .swipeActions {
-            Button(role: .destructive) {
-              model.deleteButtonTapped(remindersList: row.remindersList)
-            } label: {
-              Image(systemName: "trash")
-            }
+        Section {
+          ForEach(model.remindersListRows, id: \.remindersList.id) { row in
             Button {
-              model.editButtonTapped(remindersList: row.remindersList)
+              model.detailTapped(detailType: .remindersList(row.remindersList))
             } label: {
-              Image(systemName: "info.circle")
+              RemindersListRow(
+                incompleteRemindersCount: row.incompleteRemindersCount,
+                remindersList: row.remindersList
+              )
+              .foregroundColor(.primary)
+            }
+            .swipeActions {
+              Button(role: .destructive) {
+                model.deleteButtonTapped(remindersList: row.remindersList)
+              } label: {
+                Image(systemName: "trash")
+              }
+              Button {
+                model.editButtonTapped(remindersList: row.remindersList)
+              } label: {
+                Image(systemName: "info.circle")
+              }
             }
           }
+          .onMove { source, destination in
+            model.moveRemindersList(fromOffsets: source, toOffset: destination)
+          }
+        } header: {
+          Text("My lists")
+            .font(.largeTitle)
+            .bold()
+            .foregroundStyle(.black)
+            .textCase(nil)
         }
-        .onMove { source, destination in
-          model.moveRemindersList(fromOffsets: source, toOffset: destination)
-        }
-      } header: {
-        Text("My lists")
-          .font(.largeTitle)
-          .bold()
-          .foregroundStyle(.black)
-          .textCase(nil)
-      }
 
-      Section {
-        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Tags@*//*@END_MENU_TOKEN@*/
-      } header: {
-        Text("Tags")
-          .font(.largeTitle)
-          .bold()
-          .foregroundStyle(.black)
-          .textCase(nil)
+        Section {
+          /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Tags@*//*@END_MENU_TOKEN@*/
+        } header: {
+          Text("Tags")
+            .font(.largeTitle)
+            .bold()
+            .foregroundStyle(.black)
+            .textCase(nil)
+        }
+      } else {
+        SearchRemindersView(model: model.searchRemindersModel)
       }
     }
+    .searchable(text: $searchRemindersModel.searchText)
     .toolbar {
       ToolbarItem(placement: .primaryAction) {
         Button("Delete all lists") {

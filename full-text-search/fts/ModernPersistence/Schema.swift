@@ -260,6 +260,7 @@ func appDatabase() throws -> any DatabaseWriter {
     try #sql("""
       ALTER TABLE "reminders" DROP COLUMN "isCompleted"
       """)
+    .execute(db)
   }
   #if DEBUG
     migrator.registerMigration("Seed database") { db in
