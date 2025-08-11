@@ -5,7 +5,7 @@ import SwiftUI
 @Observable
 class SearchRemindersModel {
   @ObservationIgnored
-  @Fetch var searchResults = SearchRequest.Value()
+  @FetchAll var rows: [Row]
 
   var searchText = "" {
     didSet {
@@ -20,11 +20,27 @@ class SearchRemindersModel {
     searchTask?.cancel()
     searchTask = Task {
       try await Task.sleep(for: .seconds(0.3))
-
       await withErrorReporting {
-        try await $searchResults.load(
-          SearchRequest(searchText: searchText),
-          animation: .default
+        try await $rows.load(
+          Reminder
+            .group(by: \.id)
+            .where {
+              for term in searchText.split(separator: " ") {
+                $0.title.contains(term)
+                  || $0.notes.contains(term)
+              }
+            }
+            .leftJoin(ReminderTag.all) { $0.id.eq($1.reminderID) }
+            .leftJoin(Tag.all) { $1.tagID.eq($2.id) }
+            .join(RemindersList.all) { $0.remindersListID.eq($3.id) }
+            .select { reminder, _, tag, remindersList in
+              Row.Columns(
+                color: remindersList.color,
+                isPastDue: reminder.isPastDue,
+                reminder: reminder,
+                tags: tag.jsonTitles
+              )
+            }
         )
       }
     }
@@ -38,57 +54,13 @@ class SearchRemindersModel {
     @Column(as: [String].JSONRepresentation.self)
     let tags: [String]
   }
-
-  struct SearchRequest: FetchKeyRequest {
-    let searchText: String
-    struct Value {
-      var completedCount = 0
-      var rows: [Row] = []
-    }
-    func fetch(_ db: Database) throws -> Value {
-      let query = Reminder
-        .leftJoin(ReminderTag.all) { $0.id.eq($1.reminderID) }
-        .leftJoin(Tag.all) { $1.tagID.eq($2.id) }
-        .where { reminder, _, tag in
-          for term in searchText.split(separator: " ") {
-            reminder.title.contains(term)
-            || reminder.notes.contains(term)
-            || (tag.title ?? "").hasPrefix(term)
-          }
-        }
-      return try Value(
-        completedCount: query
-          .where { reminder, _, _ in reminder.isCompleted }
-          .select { reminder, _, _ in reminder.id.count(distinct: true) }
-          .fetchOne(db) ?? 0,
-        rows: query
-          .join(RemindersList.all) { $0.remindersListID.eq($3.id) }
-          .order { reminder, _, _, _ in reminder.isCompleted }
-          .group { reminder, _, _, _ in reminder.id }
-          .select { reminder, _, tag, remindersList in
-            Row.Columns(
-              color: remindersList.color,
-              isPastDue: reminder.isPastDue,
-              reminder: reminder,
-              tags: tag.jsonTitles
-            )
-          }
-          .fetchAll(db)
-      )
-    }
-  }
 }
 
 struct SearchRemindersView: View {
   let model: SearchRemindersModel
 
   var body: some View {
-    HStack {
-      Text("\(model.searchResults.completedCount) Completed")
-      Spacer()
-      Button("Show completed") {}
-    }
-    ForEach(model.searchResults.rows, id: \.reminder.id) { row in
+    ForEach(model.rows, id: \.reminder.id) { row in
       ReminderRow(
         color: Color(hex: row.color),
         isPastDue: row.isPastDue,
