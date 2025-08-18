@@ -336,3 +336,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Persistence Callbacks: Validation Triggers](0332-callbacks-pt3)
 1. [Persistence Callbacks: Advanced Triggers](0333-callbacks-pt4)
 1. [Modern Search: The Basics](0334-fts-pt1)
+1. [Modern Search: Finesse](0335-fts-pt2)
