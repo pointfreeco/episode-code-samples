@@ -210,7 +210,7 @@ func appDatabase() throws -> any DatabaseWriter {
       """
       CREATE TABLE "tags" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "title" TEXT NOT NULL DEFAULT ''
+        "title" TEXT NOT NULL DEFAULT '' CHECK(instr("title", ' ') = 0)
       ) STRICT
       """
     )
@@ -354,6 +354,27 @@ func appDatabase() throws -> any DatabaseWriter {
           .delete()
       }
     )
+    .execute(db)
+
+    func updateTags(for reminderID: some QueryExpression<Reminder.ID>) -> UpdateOf<ReminderText> {
+      ReminderText
+        .where { $0.reminderID.eq(reminderID) }
+        .update {
+          $0.tags = Tag
+            .select { $0.title.groupConcat(" ") }
+            .join(ReminderTag.all) { $0.id.eq($1.tagID) }
+            .where { $1.reminderID.eq(reminderID) } ?? ""
+        }
+    }
+
+    try ReminderTag.createTemporaryTrigger(after: .insert { new in
+      updateTags(for: new.reminderID)
+    })
+    .execute(db)
+
+    try ReminderTag.createTemporaryTrigger(after: .delete { old in
+      updateTags(for: old.reminderID)
+    })
     .execute(db)
 
     #if DEBUG
