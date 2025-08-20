@@ -118,6 +118,14 @@ struct ReminderTag {
   let tagID: Tag.ID
 }
 
+@Table
+struct ReminderText: StructuredQueries.FTS5 {
+  let reminderID: Reminder.ID
+  let title: String
+  let notes: String
+  let tags: String
+}
+
 func appDatabase() throws -> any DatabaseWriter {
   @Dependency(\.context) var context
 
@@ -259,6 +267,18 @@ func appDatabase() throws -> any DatabaseWriter {
     .execute(db)
     try #sql("""
       ALTER TABLE "reminders" DROP COLUMN "isCompleted"
+      """)
+    .execute(db)
+  }
+  migrator.registerMigration("Create reminders FTS table") { db in
+    try #sql("""
+      CREATE VIRTUAL TABLE "reminderTexts" USING fts5(
+        "reminderID" UNINDEXED,
+        "title",
+        "notes",
+        "tags",
+        tokenize='trigram'
+      )
       """)
     .execute(db)
   }
