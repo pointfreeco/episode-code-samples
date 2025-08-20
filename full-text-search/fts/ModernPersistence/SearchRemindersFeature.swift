@@ -52,28 +52,34 @@ class SearchRemindersModel {
     let searchText: String
     func fetch(_ db: Database) throws -> Value {
       let query = Reminder
-        .leftJoin(ReminderTag.all) { $0.id.eq($1.reminderID) }
-        .leftJoin(Tag.all) { $1.tagID.eq($2.id) }
-        .where { reminder, _, tag in
-          for term in searchText.split(separator: " ") {
-            reminder.title.contains(term)
-            || reminder.notes.contains(term)
-            || (tag.title ?? "").hasPrefix(term)
-          }
+        .join(ReminderText.all) { $0.id.eq($1.reminderID) }
+        .where { reminder, reminderText in
+          reminderText.match(searchText)
         }
+//        .leftJoin(ReminderTag.all) { $0.id.eq($1.reminderID) }
+//        .leftJoin(Tag.all) { $1.tagID.eq($2.id) }
+//        .where { reminder, _, tag in
+//          for term in searchText.split(separator: " ") {
+//            reminder.title.contains(term)
+//            || reminder.notes.contains(term)
+//            || (tag.title ?? "").hasPrefix(term)
+//          }
+//        }
 
       return try Value(
         completedCount: query
-          .where { reminder, _, _ in reminder.isCompleted }
-          .select { reminder, _, _ in reminder.id.count(distinct: true) }
+          .where { reminder, _ in reminder.isCompleted }
+          .select { reminder, _ in reminder.id.count(distinct: true) }
           .fetchOne(db) ?? 0,
         rows: query
-          .group { reminder, _, _ in reminder.id }
-          .join(RemindersList.all) { $0.remindersListID.eq($3.id) }
-          .order { reminder, _, _, _ in
+          .group { reminder, _ in reminder.id }
+          .leftJoin(ReminderTag.all) { $0.id.eq($2.reminderID) }
+          .leftJoin(Tag.all) { $2.tagID.eq($3.id) }
+          .join(RemindersList.all) { $0.remindersListID.eq($4.id) }
+          .order { reminder, _, _, _, _ in
             reminder.isCompleted
           }
-          .select { reminder, _, tag, remindersList in
+          .select { reminder, _, _, tag, remindersList in
             Row.Columns(
               color: remindersList.color,
               isPastDue: reminder.isPastDue,

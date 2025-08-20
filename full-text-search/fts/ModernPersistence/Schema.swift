@@ -118,7 +118,7 @@ struct ReminderTag {
   let tagID: Tag.ID
 }
 
-@Table
+@Table @Selection
 struct ReminderText: StructuredQueries.FTS5 {
   let reminderID: Reminder.ID
   let title: String
@@ -424,6 +424,20 @@ func appDatabase() throws -> any DatabaseWriter {
     } when: { old, new in
       new.status.eq(Reminder.Status.completing)
     })
+    .execute(db)
+
+    try Reminder.createTemporaryTrigger(
+      after: .insert { new in
+        ReminderText.insert {
+          ReminderText.Columns(
+            reminderID: new.id,
+            title: new.title,
+            notes: new.notes,
+            tags: ""
+          )
+        }
+      }
+    )
     .execute(db)
   }
 
