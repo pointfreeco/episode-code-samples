@@ -600,8 +600,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/sharing-grdb.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.2;
+				branch = fts;
+				kind = branch;
 			};
 		};
 		4BA81C6D2DC2D5870076907E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
