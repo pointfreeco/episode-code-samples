@@ -202,18 +202,21 @@ struct RemindersListsView: View {
         }
       } else {
         SearchRemindersView(model: model.searchRemindersModel)
+          .id(model.searchRemindersModel.searchText)
       }
     }
     .searchable(text: $searchRemindersModel.searchText)
     .toolbar {
+#if DEBUG
       ToolbarItem(placement: .primaryAction) {
-        Button("Delete all lists") {
+        Button("Seed") {
           @Dependency(\.defaultDatabase) var database
           try! database.write { db in
-            try RemindersList.delete().execute(db)
+            try seedDatabase(db)
           }
         }
       }
+#endif
       ToolbarItem(placement: .bottomBar) {
         HStack {
           Button {
