@@ -72,23 +72,24 @@ class SearchRemindersModel {
           .select { reminder, _ in reminder.id.count(distinct: true) }
           .fetchOne(db) ?? 0,
         rows: query
-          .group { reminder, _ in reminder.id }
-          .leftJoin(ReminderTag.all) { $0.id.eq($2.reminderID) }
-          .leftJoin(Tag.all) { $2.tagID.eq($3.id) }
-          .join(RemindersList.all) { $0.remindersListID.eq($4.id) }
-          .order { reminder, reminderText, _, _, _ in
+//          .group { reminder, _ in reminder.id }
+//          .leftJoin(ReminderTag.all) { $0.id.eq($2.reminderID) }
+//          .leftJoin(Tag.all) { $2.tagID.eq($3.id) }
+          .join(RemindersList.all) { $0.remindersListID.eq($2.id) }
+          .order { reminder, reminderText, _ in
             (
               reminder.isCompleted,
-              reminderText.rank
+              #sql("bm25(\(ReminderText.self), 0, 10, 5)")
+              //reminderText.rank
               //#sql("rank")
             )
           }
-          .select { reminder, _, _, tag, remindersList in
+          .select { reminder, _, remindersList in
             Row.Columns(
               color: remindersList.color,
               isPastDue: reminder.isPastDue,
               reminder: reminder,
-              tags: tag.jsonTitles
+              tags: #sql("'[]'") // tag.jsonTitles
             )
           }
           .fetchAll(db)
