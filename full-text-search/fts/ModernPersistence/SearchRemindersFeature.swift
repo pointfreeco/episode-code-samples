@@ -79,8 +79,9 @@ class SearchRemindersModel {
           .order { reminder, reminderText, _ in
             (
               reminder.isCompleted,
-              #sql("bm25(\(ReminderText.self), 0, 10, 5)")
-              //reminderText.rank
+              reminderText.rank
+              //#sql("bm25(\(ReminderText.self), 0, 10, 5)")
+              //reminderText.rank / bm25(reminderTexts)
               //#sql("rank")
             )
           }

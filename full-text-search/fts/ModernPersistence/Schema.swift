@@ -125,6 +125,11 @@ struct ReminderText: StructuredQueries.FTS5 {
   let notes: String
   let tags: String
 }
+extension ReminderText.TableColumns {
+  var defaultRank: some QueryExpression<Double> {
+    bm25([\.title: 10, \.notes: 5])
+  }
+}
 
 func appDatabase() throws -> any DatabaseWriter {
   @Dependency(\.context) var context
@@ -376,6 +381,14 @@ func appDatabase() throws -> any DatabaseWriter {
       updateTags(for: old.reminderID)
     })
     .execute(db)
+
+    try #sql("""
+      INSERT INTO \(ReminderText.self)
+      (\(ReminderText.self), rank) 
+      VALUES
+      ('rank', 'bm25(0, 10, 5)')
+      """)
+      .execute(db)
 
     #if DEBUG
     if context != .live {
