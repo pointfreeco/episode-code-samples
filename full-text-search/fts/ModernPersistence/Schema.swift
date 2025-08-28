@@ -412,7 +412,7 @@ func seedDatabase(_ db: Database) throws {
 
     Reminder(
       id: 1,
-      notes: "Check weekly specials\nMilk\nEggs\nApples\nOatmeal\nSpinach",
+      notes: "Check weekly specials\nChips\nDips\nYogurt\nGranola\nTomatoes\nMilk\nEggs\nApples\nOatmeal\nSpinach",
       remindersListID: 1,
       title: "Groceries"
     )

@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ReminderRow: View {
   let color: Color
+  var formattedNotes: String?
   var formattedTitle: String?
   let isPastDue: Bool
   let reminder: Reminder
@@ -40,8 +41,9 @@ struct ReminderRow: View {
           }
           .font(.title3)
 
-          if !reminder.notes.isEmpty {
-            Text(reminder.notes.replacingOccurrences(of: "\n", with: " "))
+          let notes = formattedNotes ?? reminder.notes
+          if !notes.isEmpty {
+            highlight(notes.replacingOccurrences(of: "\n", with: " "))
               .font(.subheadline)
               .foregroundStyle(.gray)
               .lineLimit(2)

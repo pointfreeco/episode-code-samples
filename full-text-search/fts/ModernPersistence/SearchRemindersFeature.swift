@@ -38,6 +38,7 @@ class SearchRemindersModel {
   @Selection
   struct Row {
     let color: Int
+    let formattedNotes: String
     let formattedTitle: String
     let isPastDue: Bool
     let reminder: Reminder
@@ -89,6 +90,7 @@ class SearchRemindersModel {
           .select { reminder, reminderText, remindersList in
             Row.Columns(
               color: remindersList.color,
+              formattedNotes: reminderText.notes.snippet("**", "**", "...", 64),
               formattedTitle: reminderText.title.highlight("**", "**"),
                 // #sql("highlight(\(ReminderText,self), 1, '**', '**')"),
               isPastDue: reminder.isPastDue,
@@ -116,6 +118,7 @@ struct SearchRemindersView: View {
     ForEach(model.searchResults.rows, id: \.reminder.id) { row in
       ReminderRow(
         color: Color(hex: row.color),
+        formattedNotes: row.formattedNotes,
         formattedTitle: row.formattedTitle,
         isPastDue: row.isPastDue,
         reminder: row.reminder,
