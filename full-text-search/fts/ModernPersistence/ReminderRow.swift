@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ReminderRow: View {
   let color: Color
+  var formattedTitle: String?
   let isPastDue: Bool
   let reminder: Reminder
   let tags: [String]
@@ -34,7 +35,7 @@ struct ReminderRow: View {
               Text(String(repeating: "!", count: priority.rawValue))
                 .foregroundStyle(reminder.isCompleted ? .gray : color)
             }
-            Text(reminder.title)
+            highlight(formattedTitle ?? reminder.title)
               .foregroundStyle(reminder.isCompleted ? .gray : .primary)
           }
           .font(.title3)
@@ -93,6 +94,14 @@ struct ReminderRow: View {
       Button("Details") {
         onDetailsTapped()
       }
+    }
+  }
+
+  private func highlight(_ text: String) -> Text {
+    if let attributedText = try? AttributedString(markdown: text) {
+      Text(attributedText)
+    } else {
+      Text(text)
     }
   }
 

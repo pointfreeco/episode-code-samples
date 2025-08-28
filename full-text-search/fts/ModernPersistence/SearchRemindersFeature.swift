@@ -38,6 +38,7 @@ class SearchRemindersModel {
   @Selection
   struct Row {
     let color: Int
+    let formattedTitle: String
     let isPastDue: Bool
     let reminder: Reminder
     @Column(as: [String].JSONRepresentation.self)
@@ -85,9 +86,11 @@ class SearchRemindersModel {
               //#sql("rank")
             )
           }
-          .select { reminder, _, remindersList in
+          .select { reminder, reminderText, remindersList in
             Row.Columns(
               color: remindersList.color,
+              formattedTitle: reminderText.title.highlight("**", "**"),
+                // #sql("highlight(\(ReminderText,self), 1, '**', '**')"),
               isPastDue: reminder.isPastDue,
               reminder: reminder,
               tags: #sql("'[]'") // tag.jsonTitles
@@ -113,6 +116,7 @@ struct SearchRemindersView: View {
     ForEach(model.searchResults.rows, id: \.reminder.id) { row in
       ReminderRow(
         color: Color(hex: row.color),
+        formattedTitle: row.formattedTitle,
         isPastDue: row.isPastDue,
         reminder: row.reminder,
         tags: row.tags,
