@@ -593,15 +593,15 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-structured-queries";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.0;
+				minimumVersion = 0.14.0;
 			};
 		};
 		4BA81C4A2DC29FFB0076907E /* XCRemoteSwiftPackageReference "sharing-grdb" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/sharing-grdb.git";
 			requirement = {
-				branch = fts;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
 			};
 		};
 		4BA81C6D2DC2D5870076907E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {

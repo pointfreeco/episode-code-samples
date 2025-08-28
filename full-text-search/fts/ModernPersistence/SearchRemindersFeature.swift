@@ -76,8 +76,12 @@ class SearchRemindersModel {
           .leftJoin(ReminderTag.all) { $0.id.eq($2.reminderID) }
           .leftJoin(Tag.all) { $2.tagID.eq($3.id) }
           .join(RemindersList.all) { $0.remindersListID.eq($4.id) }
-          .order { reminder, _, _, _, _ in
-            reminder.isCompleted
+          .order { reminder, reminderText, _, _, _ in
+            (
+              reminder.isCompleted,
+              reminderText.rank
+              //#sql("rank")
+            )
           }
           .select { reminder, _, _, tag, remindersList in
             Row.Columns(

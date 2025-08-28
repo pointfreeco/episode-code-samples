@@ -399,7 +399,7 @@ func seedDatabase(_ db: Database) throws {
 
     Reminder(
       id: 1,
-      notes: "Milk\nEggs\nApples\nOatmeal\nSpinach",
+      notes: "Check weekly specials\nMilk\nEggs\nApples\nOatmeal\nSpinach",
       remindersListID: 1,
       title: "Groceries"
     )
@@ -407,8 +407,9 @@ func seedDatabase(_ db: Database) throws {
       id: 2,
       dueDate: now.addingTimeInterval(-60 * 60 * 24 * 2),
       isFlagged: true,
+      notes: "Ask if I can reschedule next week",
       remindersListID: 1,
-      title: "Haircut"
+      title: "Haircut next week"
     )
     Reminder(
       id: 3,
@@ -423,7 +424,7 @@ func seedDatabase(_ db: Database) throws {
       dueDate: now.addingTimeInterval(-60 * 60 * 24 * 190),
       remindersListID: 1,
       status: .completed,
-      title: "Take a walk"
+      title: "Take a walk this week"
     )
     Reminder(
       id: 5,
