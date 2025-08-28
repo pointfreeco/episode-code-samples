@@ -7,7 +7,7 @@ struct ReminderRow: View {
   var formattedTitle: String?
   let isPastDue: Bool
   let reminder: Reminder
-  let tags: [String]
+  let tags: String
   let onDetailsTapped: () -> Void
 
   @Dependency(\.defaultDatabase) var database
@@ -117,14 +117,12 @@ struct ReminderRow: View {
   }
 
   private var subtitleText: Text {
-    let tagsText = tags.reduce(Text("")) { result, tag in
-      result + Text(" #\(tag)")
-    }
-    return
-      (dueText
-      + tagsText.foregroundStyle(.gray)
-      .bold())
-      .font(.callout)
+    Text(
+      """
+      \(dueText) \(highlight(tags).foregroundStyle(.gray))
+      """
+    )
+    .font(.callout)
   }
 }
 
@@ -146,7 +144,7 @@ struct ReminderRowPreview: PreviewProvider {
               color: .blue,
               isPastDue: false,
               reminder: reminder,
-              tags: ["weekend", "fun"]
+              tags: "#weekend #fun"
             ) {
               // No-op
             }

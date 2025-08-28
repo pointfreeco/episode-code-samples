@@ -366,7 +366,7 @@ func appDatabase() throws -> any DatabaseWriter {
         .where { $0.reminderID.eq(reminderID) }
         .update {
           $0.tags = Tag
-            .select { $0.title.groupConcat(" ") }
+            .select { ("#" + $0.title).groupConcat(" ") }
             .join(ReminderTag.all) { $0.id.eq($1.tagID) }
             .where { $1.reminderID.eq(reminderID) } ?? ""
         }

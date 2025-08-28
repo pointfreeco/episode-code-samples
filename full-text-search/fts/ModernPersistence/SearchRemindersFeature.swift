@@ -42,8 +42,7 @@ class SearchRemindersModel {
     let formattedTitle: String
     let isPastDue: Bool
     let reminder: Reminder
-    @Column(as: [String].JSONRepresentation.self)
-    let tags: [String]
+    let tags: String
   }
 
   struct SearchRequest: FetchKeyRequest {
@@ -95,7 +94,7 @@ class SearchRemindersModel {
                 // #sql("highlight(\(ReminderText,self), 1, '**', '**')"),
               isPastDue: reminder.isPastDue,
               reminder: reminder,
-              tags: #sql("'[]'") // tag.jsonTitles
+              tags: reminderText.tags.highlight("**", "**")
             )
           }
           .fetchAll(db)

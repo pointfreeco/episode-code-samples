@@ -74,13 +74,12 @@ class RemindersDetailModel {
           $0.title
         }
       }
-      .leftJoin(ReminderTag.all) { $0.id.eq($1.reminderID) }
-      .leftJoin(Tag.all) { $1.tagID.eq($2.id) }
+      .join(ReminderText.all) { $0.id.eq($1.reminderID) }
       .select {
         Row.Columns(
           isPastDue: $0.isPastDue,
           reminder: $0,
-          tags: $2.jsonTitles
+          tags: $1.tags
         )
       }
   }
@@ -126,8 +125,7 @@ class RemindersDetailModel {
   struct Row {
     let isPastDue: Bool
     let reminder: Reminder
-    @Column(as: [String].JSONRepresentation.self)
-    let tags: [String]
+    let tags: String
   }
 }
 
