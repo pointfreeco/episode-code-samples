@@ -339,3 +339,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Modern Search: Finesse](0335-fts-pt2)
 1. [Modern Search: Full-Text Search](0336-fts-pt3)
 1. [Modern Search: Relevance & Ranking](0337-fts-pt4)
+1. [Modern Search: Highlights & Snippets](0338-fts-pt5)
