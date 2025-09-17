@@ -4,12 +4,6 @@ import SwiftUI
 @MainActor
 @Observable
 class SearchRemindersModel {
-//  @ObservationIgnored
-//  @FetchAll var rows: [Row]
-//
-//  @ObservationIgnored
-//  @FetchOne var completedCount = 0
-
   @ObservationIgnored
   @Fetch var searchResults = SearchRequest.Value()
 
@@ -55,17 +49,8 @@ class SearchRemindersModel {
       let query = Reminder
         .join(ReminderText.all) { $0.id.eq($1.reminderID) }
         .where { reminder, reminderText in
-          reminderText.match(searchText)
+          reminderText.match(searchText.quoted())
         }
-//        .leftJoin(ReminderTag.all) { $0.id.eq($1.reminderID) }
-//        .leftJoin(Tag.all) { $1.tagID.eq($2.id) }
-//        .where { reminder, _, tag in
-//          for term in searchText.split(separator: " ") {
-//            reminder.title.contains(term)
-//            || reminder.notes.contains(term)
-//            || (tag.title ?? "").hasPrefix(term)
-//          }
-//        }
 
       return try Value(
         completedCount: query
@@ -73,17 +58,11 @@ class SearchRemindersModel {
           .select { reminder, _ in reminder.id.count(distinct: true) }
           .fetchOne(db) ?? 0,
         rows: query
-//          .group { reminder, _ in reminder.id }
-//          .leftJoin(ReminderTag.all) { $0.id.eq($2.reminderID) }
-//          .leftJoin(Tag.all) { $2.tagID.eq($3.id) }
           .join(RemindersList.all) { $0.remindersListID.eq($2.id) }
           .order { reminder, reminderText, _ in
             (
               reminder.isCompleted,
               reminderText.rank
-              //#sql("bm25(\(ReminderText.self), 0, 10, 5)")
-              //reminderText.rank / bm25(reminderTexts)
-              //#sql("rank")
             )
           }
           .select { reminder, reminderText, remindersList in
@@ -91,7 +70,6 @@ class SearchRemindersModel {
               color: remindersList.color,
               formattedNotes: reminderText.notes.snippet("**", "**", "...", 64),
               formattedTitle: reminderText.title.highlight("**", "**"),
-                // #sql("highlight(\(ReminderText,self), 1, '**', '**')"),
               isPastDue: reminder.isPastDue,
               reminder: reminder,
               tags: reminderText.tags.highlight("**", "**")
@@ -153,5 +131,16 @@ struct SearchRemindersPreviews: PreviewProvider {
         .searchable(text: $model.searchText)
       }
     }
+  }
+}
+
+extension String {
+  fileprivate func quoted() -> String {
+    split(separator: " ").map {
+      """
+      "\($0)"
+      """
+    }
+    .joined(separator: " ")
   }
 }
