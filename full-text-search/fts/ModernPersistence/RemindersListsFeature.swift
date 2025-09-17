@@ -101,7 +101,7 @@ struct RemindersListsView: View {
     @Bindable var searchRemindersModel = model.searchRemindersModel
 
     List {
-      if model.searchRemindersModel.searchText.isEmpty {
+      if !model.searchRemindersModel.isSearching {
         Section {
           Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 16) {
             GridRow {
@@ -205,7 +205,12 @@ struct RemindersListsView: View {
           .id(model.searchRemindersModel.searchText)
       }
     }
-    .searchable(text: $searchRemindersModel.searchText)
+    .searchable(
+      text: $searchRemindersModel.searchText,
+      tokens: $searchRemindersModel.searchTokens
+    ) { token in
+      Text(token.value)
+    }
     .toolbar {
 #if DEBUG
       ToolbarItem(placement: .primaryAction) {

@@ -4,17 +4,32 @@ import SwiftUI
 @MainActor
 @Observable
 class SearchRemindersModel {
+  struct Token: Identifiable, Hashable {
+    let id = UUID()
+    var value = ""
+  }
+
   @ObservationIgnored
   @Fetch var searchResults = SearchRequest.Value()
 
   var searchText = "" {
     didSet {
       if oldValue != searchText {
+        if searchText.count > 1, searchText.hasSuffix("\t") {
+          searchTokens.append(Token(value: String(searchText.dropLast())))
+          searchText = ""
+        }
         updateQuery()
       }
     }
   }
   var searchTask: Task<Void, any Error>?
+
+  var searchTokens: [Token] = []
+
+  var isSearching: Bool {
+    !searchText.isEmpty || !searchTokens.isEmpty
+  }
 
   func updateQuery() {
     searchTask?.cancel()
@@ -22,7 +37,7 @@ class SearchRemindersModel {
       try await Task.sleep(for: .seconds(0.3))
       await withErrorReporting {
         try await $searchResults.load(
-          SearchRequest(searchText: searchText),
+          SearchRequest(searchText: searchText, searchTokens: searchTokens),
           animation: .default
         )
       }
@@ -45,11 +60,19 @@ class SearchRemindersModel {
       var rows: [Row] = []
     }
     let searchText: String
+    let searchTokens: [Token]
     func fetch(_ db: Database) throws -> Value {
       let query = Reminder
         .join(ReminderText.all) { $0.id.eq($1.reminderID) }
         .where { reminder, reminderText in
-          reminderText.match(searchText.quoted())
+          if !searchText.isEmpty {
+            reminderText.match(searchText.quoted())
+          }
+        }
+        .where { _, reminderText in
+          for token in searchTokens where !token.value.isEmpty {
+            reminderText.match("NEAR(\(token.value))")
+          }
         }
 
       return try Value(
