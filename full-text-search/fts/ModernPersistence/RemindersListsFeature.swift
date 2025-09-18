@@ -209,7 +209,12 @@ struct RemindersListsView: View {
       text: $searchRemindersModel.searchText,
       tokens: $searchRemindersModel.searchTokens
     ) { token in
-      Text(token.value)
+      switch token.kind {
+      case .tag:
+        Text("#\(token.value)")
+      case .near:
+        Text(token.value)
+      }
     }
     .toolbar {
 #if DEBUG

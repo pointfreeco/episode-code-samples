@@ -7,6 +7,11 @@ class SearchRemindersModel {
   struct Token: Identifiable, Hashable {
     let id = UUID()
     var value = ""
+    let kind: Kind
+
+    enum Kind {
+      case near, tag
+    }
   }
 
   @ObservationIgnored
@@ -16,7 +21,21 @@ class SearchRemindersModel {
     didSet {
       if oldValue != searchText {
         if searchText.count > 1, searchText.hasSuffix("\t") {
-          searchTokens.append(Token(value: String(searchText.dropLast())))
+          if searchText.hasPrefix("#") {
+            searchTokens.append(
+              Token(
+                value: String(searchText.dropLast().dropFirst()),
+                kind: .tag
+              )
+            )
+          } else {
+            searchTokens.append(
+              Token(
+                value: String(searchText.dropLast()),
+                kind: .near
+              )
+            )
+          }
           searchText = ""
         }
         updateQuery()
@@ -58,10 +77,25 @@ class SearchRemindersModel {
     struct Value {
       var completedCount = 0
       var rows: [Row] = []
+      var tags: [Tag] = []
     }
     let searchText: String
     let searchTokens: [Token]
     func fetch(_ db: Database) throws -> Value {
+      guard !searchText.hasPrefix("#")
+      else {
+        // #week
+        return Value(
+          tags: try Tag
+            .group(by: \.id)
+            .where { $0.title.hasPrefix(searchText.dropFirst()) }
+            .leftJoin(ReminderTag.all) { $0.id.eq($1.tagID) }
+            .order { ($1.reminderID.count().desc(), $0.title) }
+            .select { tag, _ in tag }
+            .fetchAll(db)
+        )
+      }
+
       let query = Reminder
         .join(ReminderText.all) { $0.id.eq($1.reminderID) }
         .where { reminder, reminderText in
@@ -71,7 +105,12 @@ class SearchRemindersModel {
         }
         .where { _, reminderText in
           for token in searchTokens where !token.value.isEmpty {
-            reminderText.match("NEAR(\(token.value))")
+            switch token.kind {
+            case .near:
+              reminderText.match("NEAR(\(token.value))")
+            case .tag:
+              reminderText.tags.match(token.value)
+            }
           }
         }
 
@@ -102,29 +141,49 @@ class SearchRemindersModel {
       )
     }
   }
+
+  func tagButtonTapped(_ tag: Tag) {
+    searchTokens.append(Token(value: tag.title, kind: .tag))
+    searchText = ""
+  }
 }
 
 struct SearchRemindersView: View {
   let model: SearchRemindersModel
 
   var body: some View {
-    HStack {
-      Text("\(model.searchResults.completedCount) Completed")
-      Spacer()
-      Button("Show completed") {
-
+    if !model.searchResults.tags.isEmpty {
+      Section {
+        ScrollView(.horizontal) {
+          HStack {
+            ForEach(model.searchResults.tags) { tag in
+              Button("#\(tag.title)") {
+                model.tagButtonTapped(tag)
+              }
+            }
+          }
+        }
+        .scrollIndicators(.hidden)
       }
-    }
-    ForEach(model.searchResults.rows, id: \.reminder.id) { row in
-      ReminderRow(
-        color: Color(hex: row.color),
-        formattedNotes: row.formattedNotes,
-        formattedTitle: row.formattedTitle,
-        isPastDue: row.isPastDue,
-        reminder: row.reminder,
-        tags: row.tags,
-        onDetailsTapped: {}
-      )
+    } else {
+      HStack {
+        Text("\(model.searchResults.completedCount) Completed")
+        Spacer()
+        Button("Show completed") {
+
+        }
+      }
+      ForEach(model.searchResults.rows, id: \.reminder.id) { row in
+        ReminderRow(
+          color: Color(hex: row.color),
+          formattedNotes: row.formattedNotes,
+          formattedTitle: row.formattedTitle,
+          isPastDue: row.isPastDue,
+          reminder: row.reminder,
+          tags: row.tags,
+          onDetailsTapped: {}
+        )
+      }
     }
   }
 }
