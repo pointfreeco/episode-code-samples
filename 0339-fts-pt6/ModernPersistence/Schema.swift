@@ -119,7 +119,7 @@ struct ReminderTag {
 }
 
 @Table @Selection
-struct ReminderText: StructuredQueries.FTS5 {
+struct ReminderText: StructuredQueriesSQLite.FTS5 {
   let reminderID: Reminder.ID
   let title: String
   let notes: String
