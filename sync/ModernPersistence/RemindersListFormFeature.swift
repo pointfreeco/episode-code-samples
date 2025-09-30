@@ -1,4 +1,4 @@
-import SharingGRDB
+import SQLiteData
 import SwiftUI
 
 struct RemindersListForm: View {
@@ -73,7 +73,7 @@ struct RemindersListFormPreviews: PreviewProvider {
       NavigationStack {
         RemindersListForm(
           remindersList: RemindersList.Draft(
-            id: 2,
+            id: UUID(2),
             color: 0xef7e4a_ff,
             title: "Family"
           )

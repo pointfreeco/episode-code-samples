@@ -1,5 +1,5 @@
 import IssueReporting
-import SharingGRDB
+import SQLiteData
 import SwiftUI
 
 struct ReminderFormView: View {
@@ -162,7 +162,7 @@ struct ReminderFormView: View {
               try ReminderTag
                 .insert {
                   tagIDsToInsert.map {
-                    ReminderTag(
+                    ReminderTag.Draft(
                       reminderID: reminderID,
                       tagID: $0
                     )
@@ -230,7 +230,7 @@ struct ReminderFormPreview: PreviewProvider {
           isFlagged: true,
           notes: "* Milk\n* Eggs\n* Cheese",
           priority: .medium,
-          remindersListID: 1,
+          remindersListID: UUID(1),
           title: "Get groceries",
           updatedAt: Date()
         )

@@ -1,4 +1,5 @@
-import SharingGRDB
+import Sharing
+import SQLiteData
 import SwiftUI
 
 @MainActor
@@ -319,7 +320,7 @@ struct RemindersDetailPreview: PreviewProvider {
     let remindersList = try! prepareDependencies {
       $0.defaultDatabase = try appDatabase()
       return try $0.defaultDatabase.read { db in
-        try RemindersList.find(1).fetchOne(db)!
+        try RemindersList.find(UUID(1)).fetchOne(db)!
       }
     }
 

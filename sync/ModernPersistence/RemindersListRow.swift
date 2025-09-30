@@ -33,7 +33,7 @@ extension Color {
       RemindersListRow(
         incompleteRemindersCount: 10,
         remindersList: RemindersList(
-          id: 1,
+          id: UUID(1),
           title: "Personal"
         )
       )

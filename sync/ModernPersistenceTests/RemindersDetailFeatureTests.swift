@@ -1,5 +1,5 @@
 import InlineSnapshotTesting
-import SharingGRDB
+import SQLiteData
 import Testing
 
 @testable import ModernPersistence
