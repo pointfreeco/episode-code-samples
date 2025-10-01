@@ -5,17 +5,14 @@ import SwiftUI
 @MainActor
 @Observable
 class RemindersDetailModel {
-  @ObservationIgnored
-  @FetchAll var rows: [Row]
+  @ObservationIgnored @FetchAll var rows: [Row]
+  @ObservationIgnored @FetchOne(RemindersListAsset.none)
+  var remindersListAsset: RemindersListAsset?
 
-  @ObservationIgnored
-  @Shared var showCompleted: Bool
-
-  @ObservationIgnored
-  @Shared var ordering: Ordering
+  @ObservationIgnored @Shared var showCompleted: Bool
+  @ObservationIgnored @Shared var ordering: Ordering
 
   var reminderForm: Reminder.Draft?
-
   let detailType: DetailType
 
   @ObservationIgnored
@@ -32,6 +29,15 @@ class RemindersDetailModel {
       .appStorage("ordering_\(detailType.appStorageKeySuffix)")
     )
     _rows = FetchAll(query, animation: .default)
+
+    switch detailType {
+    case .remindersList(let remindersList):
+      _remindersListAsset = FetchOne(
+        RemindersListAsset.find(remindersList.id)
+      )
+    default:
+      break
+    }
   }
 
   var query: some StructuredQueries.Statement<Row> {
@@ -227,6 +233,19 @@ struct RemindersDetailView: View {
 
   var body: some View {
     List {
+
+      if
+        let remindersListAsset = model.remindersListAsset,
+        let image = UIImage(data: remindersListAsset.coverImage)
+      {
+        Image(uiImage: image)
+          .resizable()
+          .scaledToFill()
+          .frame(maxHeight: 200)
+          .clipped()
+          .listRowInsets(EdgeInsets())
+      }
+
       ForEach(model.rows, id: \.reminder.id) { row in
         ReminderRow(
           color: model.detailType.color,
