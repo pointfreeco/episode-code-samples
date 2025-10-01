@@ -10,6 +10,7 @@ struct ReminderRow: View {
   let tags: String
   let onDetailsTapped: () -> Void
 
+  @Environment(\.openURL) var openURL
   @Dependency(\.defaultDatabase) var database
 
   var body: some View {
@@ -25,10 +26,12 @@ struct ReminderRow: View {
             }
           }
         } label: {
-          Image(systemName: reminder.isCompleted ? "circle.inset.filled" : "circle")
-            .foregroundStyle(.gray)
-            .font(.title2)
-            .padding([.trailing], 5)
+          Image(
+            systemName: reminder.isCompleted ? "circle.inset.filled" : "circle"
+          )
+          .foregroundStyle(.gray)
+          .font(.title2)
+          .padding([.trailing], 5)
         }
         VStack(alignment: .leading) {
           HStack(alignment: .firstTextBaseline) {
@@ -49,6 +52,19 @@ struct ReminderRow: View {
               .lineLimit(2)
           }
           subtitleText
+          if let url = reminder.url {
+            Button {
+              openURL(url)
+            } label: {
+              Text(url.host(percentEncoded: true) ?? "Link")
+                .padding(8)
+                .foregroundStyle(Color.black)
+                .background(
+                  RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color.init(white: 0, opacity: 0.1))
+                )
+            }
+          }
         }
       }
       Spacer()

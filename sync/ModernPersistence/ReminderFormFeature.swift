@@ -20,6 +20,10 @@ struct ReminderFormView: View {
       TextField("Title", text: $reminder.title)
       TextEditor(text: $reminder.notes)
         .lineLimit(4)
+      TextField("URL", text: $reminder.url.absoluteString)
+        .keyboardType(.URL)
+        .textInputAutocapitalization(.never)
+        .disableAutocorrection(true)
 
       Section {
         Button {
@@ -215,6 +219,17 @@ extension Optional {
     get { self ?? coalesce }
     set { self = newValue }
   }
+}
+
+extension URL? {
+  fileprivate var absoluteString: String {
+     get {
+       self?.absoluteString ?? ""
+     }
+     set {
+       self = URL(string: newValue)
+     }
+   }
 }
 
 struct ReminderFormPreview: PreviewProvider {

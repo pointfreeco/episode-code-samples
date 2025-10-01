@@ -37,6 +37,7 @@ struct Reminder: Identifiable {
   var status: Status = .incomplete
   var title = ""
   var updatedAt: Date?
+  var url: URL?
 
   var isCompleted: Bool {
     status != .incomplete
@@ -244,6 +245,12 @@ func appDatabase() throws -> any DatabaseWriter {
       tables: RemindersList.self, Reminder.self, Tag.self, ReminderTag.self
     )
   }
+  migrator.registerMigration("Add URL to reminders") { db in
+    try #sql("""
+      ALTER TABLE "reminders" ADD COLUMN "url" TEXT
+      """)
+    .execute(db)
+  }
   try migrator.migrate(database)
 
   try database.write { db in
@@ -450,7 +457,8 @@ private let logger = Logger(subsystem: "Reminders", category: "Database")
         id: UUID(5),
         dueDate: now,
         remindersListID: UUID(1),
-        title: "Buy concert tickets"
+        title: "Buy concert tickets",
+        url: URL(string: "https://www.buytix.com")!
       )
       Reminder(
         id: UUID(6),
