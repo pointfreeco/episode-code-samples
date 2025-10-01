@@ -96,6 +96,7 @@ class RemindersListsModel {
 
 struct RemindersListsView: View {
   @Bindable var model: RemindersListsModel
+  @Dependency(\.defaultSyncEngine) var syncEngine
 
   var body: some View {
     @Bindable var searchRemindersModel = model.searchRemindersModel
@@ -217,16 +218,31 @@ struct RemindersListsView: View {
       }
     }
     .toolbar {
-#if DEBUG
       ToolbarItem(placement: .primaryAction) {
-        Button("Seed") {
-          @Dependency(\.defaultDatabase) var database
-          try! database.write { db in
-            try seedDatabase(db)
+        Menu {
+          Button {
+            if syncEngine.isRunning {
+              syncEngine.stop()
+            } else {
+              Task {
+                try await syncEngine.start()
+              }
+            }
+          } label: {
+            Text("\(syncEngine.isRunning ? "Stop" : "Start") synchronizing")
           }
+#if DEBUG
+          Button("Seed") {
+            @Dependency(\.defaultDatabase) var database
+            try! database.write { db in
+              try seedDatabase(db)
+            }
+          }
+#endif
+        } label: {
+          Image(systemName: "ellipsis.circle")
         }
       }
-#endif
       ToolbarItem(placement: .bottomBar) {
         HStack {
           Button {
