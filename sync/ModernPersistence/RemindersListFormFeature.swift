@@ -1,3 +1,4 @@
+import PhotosUI
 import SQLiteData
 import SwiftUI
 
@@ -5,6 +6,9 @@ struct RemindersListForm: View {
   @Dependency(\.defaultDatabase) var database
   @Environment(\.dismiss) var dismiss
   @State var remindersList: RemindersList.Draft
+  @State var coverImageData: Data?
+  @State var isPhotoPickerPresented = false
+  @State var photoPickerItem: PhotosPickerItem?
 
   var body: some View {
     Form {
@@ -21,6 +25,44 @@ struct RemindersListForm: View {
         .clipShape(.buttonBorder)
       }
       ColorPicker("Color", selection: $remindersList.color.swiftUIColor)
+
+      ZStack(alignment: .topTrailing) {
+        ZStack {
+          if let coverImageData, let coverImage = UIImage(data: coverImageData) {
+            Image(uiImage: coverImage)
+              .resizable()
+              .scaledToFill()
+              .frame(height: 150)
+              .clipped()
+              .cornerRadius(10)
+          } else {
+            Rectangle()
+              .fill(Color.secondary.opacity(0.1))
+              .frame(height: 150)
+              .cornerRadius(10)
+          }
+
+          Button("Select Cover Image") {
+            isPhotoPickerPresented = true
+          }
+          .padding()
+          .background(.ultraThinMaterial)
+          .clipShape(.capsule)
+        }
+
+        if coverImageData != nil {
+          Button {
+            coverImageData = nil
+          } label: {
+            Image(systemName: "xmark.circle.fill")
+              .foregroundColor(.red)
+              .background(Color.white)
+              .clipShape(Circle())
+          }
+          .padding(8)
+        }
+      }
+      .buttonStyle(.plain)
     }
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {
@@ -28,8 +70,21 @@ struct RemindersListForm: View {
         Button("Save") {
           withErrorReporting {
             try database.write { db in
-              try RemindersList.upsert { remindersList }
+              let remindersListID = try RemindersList.upsert { remindersList }
+                .returning(\.id)
+                .fetchOne(db)
+              guard let remindersListID else { return }
+              if let coverImageData {
+                try RemindersListAsset.upsert {
+                  RemindersListAsset(
+                    remindersListID: remindersListID,
+                    coverImage: coverImageData
+                  )
+                }
                 .execute(db)
+              } else {
+                try RemindersListAsset.find(remindersListID).delete().execute(db)
+              }
             }
           }
           dismiss()
@@ -41,6 +96,48 @@ struct RemindersListForm: View {
         }
       }
     }
+    .task {
+      guard let remindersListID = remindersList.id
+      else { return }
+      await withErrorReporting {
+        coverImageData = try await database.read { db in
+          try RemindersListAsset
+            .where { $0.remindersListID.eq(remindersListID) }
+            .select(\.coverImage)
+            .fetchOne(db)
+        }
+      }
+    }
+    .photosPicker(isPresented: $isPhotoPickerPresented, selection: $photoPickerItem)
+    .onChange(of: photoPickerItem) {
+      Task {
+        if let photoPickerItem {
+          await withErrorReporting {
+            coverImageData = try await photoPickerItem.loadTransferable(type: Data.self)
+              .flatMap { resizedAndOptimizedImageData(from: $0) }
+            self.photoPickerItem = nil
+          }
+        }
+      }
+    }
+  }
+
+  private func resizedAndOptimizedImageData(from data: Data, maxWidth: CGFloat = 1000) -> Data? {
+    guard let image = UIImage(data: data) else { return nil }
+
+    let originalSize = image.size
+    let scaleFactor = min(1, maxWidth / originalSize.width)
+    let newSize = CGSize(
+      width: originalSize.width * scaleFactor,
+      height: originalSize.height * scaleFactor
+    )
+
+    UIGraphicsBeginImageContextWithOptions(newSize, false, 1)
+    image.draw(in: CGRect(origin: .zero, size: newSize))
+    let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    return resizedImage?.jpegData(compressionQuality: 0.8)
   }
 }
 

@@ -14,6 +14,17 @@ struct RemindersList: Equatable, Identifiable {
 extension RemindersList.Draft: Identifiable {}
 
 @Table
+struct RemindersListAsset: Identifiable {
+  @Column(primaryKey: true)
+  let remindersListID: RemindersList.ID
+  var coverImage: Data
+
+  var id: RemindersList.ID {
+    remindersListID
+  }
+}
+
+@Table
 struct Tag: Identifiable {
   let id: UUID
   var title = ""
@@ -248,6 +259,15 @@ func appDatabase() throws -> any DatabaseWriter {
   migrator.registerMigration("Add URL to reminders") { db in
     try #sql("""
       ALTER TABLE "reminders" ADD COLUMN "url" TEXT
+      """)
+    .execute(db)
+  }
+  migrator.registerMigration("Create RemindersListAsset table") { db in
+    try #sql("""
+      CREATE TABLE "remindersListAssets" (
+        "remindersListID" TEXT NOT NULL PRIMARY KEY REFERENCES "remindersLists"("id") ON DELETE CASCADE,
+        "coverImage" BLOB NOT NULL
+      ) STRICT
       """)
     .execute(db)
   }

@@ -15,7 +15,8 @@ struct ModernPersistenceApp: App {
           tables: RemindersList.self,
           Reminder.self,
           Tag.self,
-          ReminderTag.self
+          ReminderTag.self,
+          RemindersListAsset.self
         )
       }
     }
