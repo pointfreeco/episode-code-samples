@@ -341,3 +341,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Modern Search: Relevance & Ranking](0337-fts-pt4)
 1. [Modern Search: Highlights & Snippets](0338-fts-pt5)
 1. [Modern Search: Syntax & Tokenization](0339-fts-pt6)
+1. [CloudKit Sync: Preparing an Existing App](0340-sync-pt1)
+1. [CloudKit Sync: The SyncEngine](0341-sync-pt2)
