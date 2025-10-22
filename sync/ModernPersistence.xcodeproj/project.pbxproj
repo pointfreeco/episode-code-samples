@@ -629,7 +629,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/sqlite-data";
 			requirement = {
-				branch = main;
+				branch = "fix-share-query";
 				kind = branch;
 			};
 		};

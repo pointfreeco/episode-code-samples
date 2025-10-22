@@ -17,7 +17,7 @@ struct ModernPersistenceApp: App {
           Tag.self,
           ReminderTag.self,
           RemindersListAsset.self,
-          startImmediately: false
+//          startImmediately: false
         )
       }
     }

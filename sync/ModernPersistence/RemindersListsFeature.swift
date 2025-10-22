@@ -1,11 +1,12 @@
+import CloudKit
 import SQLiteData
 import SwiftUI
 
 @MainActor
 @Observable
 class RemindersListsModel {
-  @ObservationIgnored
-  @Dependency(\.defaultDatabase) var database
+  @ObservationIgnored @Dependency(\.defaultDatabase) var database
+  @ObservationIgnored @Dependency(\.defaultSyncEngine) var syncEngine
 
   @ObservationIgnored
   @FetchAll(
@@ -49,6 +50,7 @@ class RemindersListsModel {
   var remindersListForm: RemindersList.Draft?
   var remindersDetail: RemindersDetailModel?
   let searchRemindersModel = SearchRemindersModel()
+  var sharedRecord: SharedRecord?
 
   @Selection
   struct RemindersListRow {
@@ -90,6 +92,28 @@ class RemindersListsModel {
             .execute(db)
         }
       }
+    }
+  }
+
+  func shareButtonTapped(remindersList: RemindersList) async {
+    let coverImage = withErrorReporting {
+      try database.read { db in
+        try RemindersListAsset
+          .find(remindersList.id)
+          .select(\.coverImage)
+          .fetchOne(db)
+      }
+    }
+    do {
+      sharedRecord = try await syncEngine.share(record: remindersList) { share in
+        share[CKShare.SystemFieldKey.title] = "Join '\(remindersList.title)'!"
+        share[CKShare.SystemFieldKey.thumbnailImageData] = coverImage
+      }
+    } catch is CKError {
+      // TODO: Let the user know that CloudKit is having problems
+    } catch {
+      // NB: programmer error
+      reportIssue(error)
     }
   }
 }
@@ -179,6 +203,14 @@ struct RemindersListsView: View {
               } label: {
                 Image(systemName: "info.circle")
               }
+              Button {
+                Task {
+                  await model.shareButtonTapped(remindersList: row.remindersList)
+                }
+              } label: {
+                Image(systemName: "square.and.arrow.up.fill")
+              }
+              .tint(.blue)
             }
           }
           .onMove { source, destination in
@@ -264,6 +296,9 @@ struct RemindersListsView: View {
           }
         }
       }
+    }
+    .sheet(item: $model.sharedRecord) { sharedRecord in
+      CloudSharingView(sharedRecord: sharedRecord)
     }
     .sheet(item: $model.remindersListForm) { remindersList in
       NavigationStack {

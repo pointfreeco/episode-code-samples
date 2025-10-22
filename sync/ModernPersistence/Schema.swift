@@ -102,7 +102,7 @@ struct ReminderTag {
   let tagID: Tag.ID
 }
 
-@Table @Selection
+@Table
 struct ReminderText: StructuredQueriesSQLite.FTS5 {
   let rowid: Int
   let title: String
@@ -274,9 +274,9 @@ func appDatabase() throws -> any DatabaseWriter {
   try migrator.migrate(database)
 
   try database.write { db in
-    try Reminder.createTemporaryTrigger(afterInsertTouch: \.createdAt)
+    try Reminder.createTemporaryTrigger(after: .insert(touch: \.createdAt))
       .execute(db)
-    try Reminder.createTemporaryTrigger(afterUpdateTouch: \.updatedAt)
+    try Reminder.createTemporaryTrigger(after: .update(touch: \.updatedAt))
       .execute(db)
 
     try RemindersList.createTemporaryTrigger(
@@ -286,7 +286,7 @@ func appDatabase() throws -> any DatabaseWriter {
     )
     .execute(db)
 
-    try RemindersList.createTemporaryTrigger(afterInsertTouch: {
+    try RemindersList.createTemporaryTrigger(after: .insert {
       $0.position = RemindersList.count() - 1
     })
     .execute(db)
