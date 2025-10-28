@@ -16,15 +16,43 @@ class RemindersListsModel {
       .leftJoin(Reminder.all) {
         $0.id.eq($1.remindersListID) && !$1.isCompleted
       }
+      .leftJoin(SyncMetadata.all) {
+        $0.syncMetadataID.eq($2.id)
+      }
+      .where { !$2.isShared.ifnull(false) }
       .select {
         RemindersListRow.Columns(
           incompleteRemindersCount: $1.count(),
+          isShared: $2.isShared.ifnull(false),
           remindersList: $0
         )
       },
     animation: .default
   )
-  var remindersListRows
+  var privateRemindersListRows
+
+  @ObservationIgnored
+  @FetchAll(
+    RemindersList
+      .group(by: \.id)
+      .order(by: \.position)
+      .leftJoin(Reminder.all) {
+        $0.id.eq($1.remindersListID) && !$1.isCompleted
+      }
+      .leftJoin(SyncMetadata.all) {
+        $0.syncMetadataID.eq($2.id)
+      }
+      .where { $2.isShared.ifnull(false) }
+      .select {
+        RemindersListRow.Columns(
+          incompleteRemindersCount: $1.count(),
+          isShared: $2.isShared.ifnull(false),
+          remindersList: $0
+        )
+      },
+    animation: .default
+  )
+  var sharedRemindersListRows
 
   @ObservationIgnored
   @FetchOne(
@@ -56,6 +84,7 @@ class RemindersListsModel {
   @Selection
   struct RemindersListRow {
     let incompleteRemindersCount: Int
+    let isShared: Bool
     let remindersList: RemindersList
   }
 
@@ -106,7 +135,7 @@ class RemindersListsModel {
   }
 
   func moveRemindersList(fromOffsets source: IndexSet, toOffset destination: Int) {
-    var remindersListIDs = remindersListRows.map(\.remindersList.id)
+    var remindersListIDs = privateRemindersListRows.map(\.remindersList.id)
     remindersListIDs.move(fromOffsets: source, toOffset: destination)
     withErrorReporting {
       try database.write { db in
@@ -207,12 +236,13 @@ struct RemindersListsView: View {
         }
 
         Section {
-          ForEach(model.remindersListRows, id: \.remindersList.id) { row in
+          ForEach(model.privateRemindersListRows, id: \.remindersList.id) { row in
             Button {
               model.detailTapped(detailType: .remindersList(row.remindersList))
             } label: {
               RemindersListRow(
                 incompleteRemindersCount: row.incompleteRemindersCount,
+                isShared: row.isShared,
                 remindersList: row.remindersList
               )
               .foregroundColor(.primary)
@@ -247,6 +277,49 @@ struct RemindersListsView: View {
             .bold()
             .foregroundStyle(.black)
             .textCase(nil)
+        }
+
+        if !model.sharedRemindersListRows.isEmpty {
+          Section {
+            ForEach(model.sharedRemindersListRows, id: \.remindersList.id) { row in
+              Button {
+                model.detailTapped(detailType: .remindersList(row.remindersList))
+              } label: {
+                RemindersListRow(
+                  incompleteRemindersCount: row.incompleteRemindersCount,
+                  isShared: row.isShared,
+                  remindersList: row.remindersList
+                )
+                .foregroundColor(.primary)
+              }
+              .swipeActions {
+                Button(role: .destructive) {
+                  model.deleteButtonTapped(remindersList: row.remindersList)
+                } label: {
+                  Image(systemName: "trash")
+                }
+                Button {
+                  model.editButtonTapped(remindersList: row.remindersList)
+                } label: {
+                  Image(systemName: "info.circle")
+                }
+                Button {
+                  Task {
+                    await model.shareButtonTapped(remindersList: row.remindersList)
+                  }
+                } label: {
+                  Image(systemName: "square.and.arrow.up.fill")
+                }
+                .tint(.blue)
+              }
+            }
+          } header: {
+            Text("Shared lists")
+              .font(.largeTitle)
+              .bold()
+              .foregroundStyle(.black)
+              .textCase(nil)
+          }
         }
 
         Section {

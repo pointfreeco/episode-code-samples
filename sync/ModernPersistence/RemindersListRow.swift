@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RemindersListRow: View {
   let incompleteRemindersCount: Int
+  let isShared: Bool
   let remindersList: RemindersList
 
   var body: some View {
@@ -9,7 +10,12 @@ struct RemindersListRow: View {
       Image(systemName: "list.bullet.circle.fill")
         .font(.title)
         .foregroundStyle(Color(hex: remindersList.color))
-      Text(remindersList.title)
+      VStack(alignment: .leading) {
+        Text(remindersList.title)
+        if isShared {
+          Text("Shared")
+        }
+      }
       Spacer()
       Text("\(incompleteRemindersCount)")
     }
@@ -32,6 +38,7 @@ extension Color {
     List {
       RemindersListRow(
         incompleteRemindersCount: 10,
+        isShared: false,
         remindersList: RemindersList(
           id: UUID(1),
           title: "Personal"
