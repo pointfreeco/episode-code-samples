@@ -202,7 +202,7 @@ struct ReminderFormView: View {
   private var tagsDetail: Text {
     guard let tag = selectedTags.first else { return Text("") }
     return selectedTags.dropFirst().reduce(Text("#\(tag.title)")) { result, tag in
-      result + Text(" #\(tag.title) ")
+      Text("\(result) #\(tag.title) ")
     }
   }
 }

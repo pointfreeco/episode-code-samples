@@ -51,6 +51,7 @@ class RemindersListsModel {
   var remindersDetail: RemindersDetailModel?
   let searchRemindersModel = SearchRemindersModel()
   var sharedRecord: SharedRecord?
+  var deleteRemindersListAlert: RemindersList?
 
   @Selection
   struct RemindersListRow {
@@ -59,6 +60,30 @@ class RemindersListsModel {
   }
 
   func deleteButtonTapped(remindersList: RemindersList) {
+    let metadata = withErrorReporting {
+      try database.read { db in
+        try SyncMetadata.find(remindersList.syncMetadataID)
+          .fetchOne(db)
+      }
+    }
+    if
+      let metadata,
+      let currentUserParticipant = metadata.share?.currentUserParticipant,
+      currentUserParticipant.role == .owner
+    {
+      deleteRemindersListAlert = remindersList
+    } else {
+      withErrorReporting {
+        try database.write { db in
+          try RemindersList
+            .delete(remindersList)
+            .execute(db)
+        }
+      }
+    }
+  }
+
+  func confirmDeleteRemindersListButtonTapped(remindersList: RemindersList) {
     withErrorReporting {
       try database.write { db in
         try RemindersList
@@ -310,6 +335,24 @@ struct RemindersListsView: View {
     .navigationDestination(item: $model.remindersDetail) { remindersDetail in
       RemindersDetailView(model: remindersDetail)
     }
+    .alert(
+      "Delete shared reminders list?",
+      isPresented: $model.deleteRemindersListAlert.isPresented,
+      presenting: model.deleteRemindersListAlert,
+      actions: { remindersList in
+        Button(role: .destructive) {
+          model.confirmDeleteRemindersListButtonTapped(
+            remindersList: remindersList
+          )
+        }
+      },
+      message: { _ in
+        Text("""
+          This reminders list is shared with other iCloud users. Deleting it \
+          will remove it from their devices. Do you want to proceed.
+          """)
+      }
+    )
   }
 }
 
@@ -349,6 +392,21 @@ private struct ReminderGridCell: View {
       .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
       .background(Color(.secondarySystemGroupedBackground))
       .cornerRadius(10)
+    }
+  }
+}
+
+extension Optional {
+  var isPresented: Bool {
+    get {
+      self != nil
+    }
+    set {
+      guard !newValue
+      else {
+        fatalError()
+      }
+      self = nil
     }
   }
 }

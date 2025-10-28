@@ -103,7 +103,7 @@ struct ReminderTag {
 }
 
 @Table
-struct ReminderText: StructuredQueriesSQLite.FTS5 {
+struct ReminderText: FTS5 {
   let rowid: Int
   let title: String
   let notes: String
@@ -125,6 +125,7 @@ func appDatabase() throws -> any DatabaseWriter {
   configuration.prepareDatabase { db in
     db.add(function: $handleDeletedRemindersList)
     db.add(function: $handleReminderStatusUpdate)
+    try db.attachMetadatabase()
 
     #if DEBUG
       db.trace(options: .profile) {
