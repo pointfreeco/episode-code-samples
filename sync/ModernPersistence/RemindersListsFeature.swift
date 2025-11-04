@@ -197,8 +197,8 @@ struct RemindersListsView: View {
             } label: {
               RemindersListRowView(
                 incompleteRemindersCount: row.incompleteRemindersCount,
-                isShared: row.isShared,
-                remindersList: row.remindersList
+                remindersList: row.remindersList,
+                share: row.share
               )
               .foregroundColor(.primary)
             }
@@ -242,8 +242,8 @@ struct RemindersListsView: View {
               } label: {
                 RemindersListRowView(
                   incompleteRemindersCount: row.incompleteRemindersCount,
-                  isShared: row.isShared,
-                  remindersList: row.remindersList
+                  remindersList: row.remindersList,
+                  share: row.share
                 )
                 .foregroundColor(.primary)
               }

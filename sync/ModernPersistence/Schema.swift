@@ -1,3 +1,4 @@
+import CloudKit
 import Dependencies
 import Foundation
 import OSLog
@@ -118,8 +119,16 @@ extension ReminderText.TableColumns {
 @Table
 struct RemindersListRow {
   let incompleteRemindersCount: Int
-  let isShared: Bool
   let remindersList: RemindersList
+  @Column(as: CKShare?.SystemFieldsRepresentation.self)
+  let share: CKShare?
+  var isShared: Bool { share != nil }
+}
+
+extension RemindersListRow.TableColumns {
+  var isShared: some QueryExpression<Bool> {
+    self.share.isNot(nil)
+  }
 }
 
 func appDatabase() throws -> any DatabaseWriter {
@@ -147,8 +156,8 @@ func appDatabase() throws -> any DatabaseWriter {
         .select {
           RemindersListRow.Columns(
             incompleteRemindersCount: $1.count(),
-            isShared: $2.isShared.ifnull(false),
-            remindersList: $0
+            remindersList: $0,
+            share: $2.share
           )
         }
     )
