@@ -115,6 +115,13 @@ extension ReminderText.TableColumns {
   }
 }
 
+@Table
+struct RemindersListRow {
+  let incompleteRemindersCount: Int
+  let isShared: Bool
+  let remindersList: RemindersList
+}
+
 func appDatabase() throws -> any DatabaseWriter {
   @Dependency(\.context) var context
 
@@ -126,6 +133,26 @@ func appDatabase() throws -> any DatabaseWriter {
     db.add(function: $handleDeletedRemindersList)
     db.add(function: $handleReminderStatusUpdate)
     try db.attachMetadatabase()
+
+    try RemindersListRow.createTemporaryView(
+      as: RemindersList
+        .group(by: \.id)
+        .order(by: \.position)
+        .leftJoin(Reminder.all) {
+          $0.id.eq($1.remindersListID) && !$1.isCompleted
+        }
+        .leftJoin(SyncMetadata.all) {
+          $0.syncMetadataID.eq($2.id)
+        }
+        .select {
+          RemindersListRow.Columns(
+            incompleteRemindersCount: $1.count(),
+            isShared: $2.isShared.ifnull(false),
+            remindersList: $0
+          )
+        }
+    )
+    .execute(db)
 
     #if DEBUG
       db.trace(options: .profile) {
@@ -228,12 +255,6 @@ func appDatabase() throws -> any DatabaseWriter {
     try #sql(
       """
       UPDATE "reminders" SET "status" = "isCompleted"
-      """
-    )
-    .execute(db)
-    try #sql(
-      """
-      ALTER TABLE "reminders" DROP COLUMN "isCompleted"
       """
     )
     .execute(db)

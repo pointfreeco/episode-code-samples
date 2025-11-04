@@ -9,49 +9,11 @@ class RemindersListsModel {
   @ObservationIgnored @Dependency(\.defaultSyncEngine) var syncEngine
 
   @ObservationIgnored
-  @FetchAll(
-    RemindersList
-      .group(by: \.id)
-      .order(by: \.position)
-      .leftJoin(Reminder.all) {
-        $0.id.eq($1.remindersListID) && !$1.isCompleted
-      }
-      .leftJoin(SyncMetadata.all) {
-        $0.syncMetadataID.eq($2.id)
-      }
-      .where { !$2.isShared.ifnull(false) }
-      .select {
-        RemindersListRow.Columns(
-          incompleteRemindersCount: $1.count(),
-          isShared: $2.isShared.ifnull(false),
-          remindersList: $0
-        )
-      },
-    animation: .default
-  )
+  @FetchAll(RemindersListRow.where { !$0.isShared }, animation: .default)
   var privateRemindersListRows
 
   @ObservationIgnored
-  @FetchAll(
-    RemindersList
-      .group(by: \.id)
-      .order(by: \.position)
-      .leftJoin(Reminder.all) {
-        $0.id.eq($1.remindersListID) && !$1.isCompleted
-      }
-      .leftJoin(SyncMetadata.all) {
-        $0.syncMetadataID.eq($2.id)
-      }
-      .where { $2.isShared.ifnull(false) }
-      .select {
-        RemindersListRow.Columns(
-          incompleteRemindersCount: $1.count(),
-          isShared: $2.isShared.ifnull(false),
-          remindersList: $0
-        )
-      },
-    animation: .default
-  )
+  @FetchAll(RemindersListRow.where(\.isShared), animation: .default)
   var sharedRemindersListRows
 
   @ObservationIgnored
@@ -80,13 +42,6 @@ class RemindersListsModel {
   let searchRemindersModel = SearchRemindersModel()
   var sharedRecord: SharedRecord?
   var deleteRemindersListAlert: RemindersList?
-
-  @Selection
-  struct RemindersListRow {
-    let incompleteRemindersCount: Int
-    let isShared: Bool
-    let remindersList: RemindersList
-  }
 
   func deleteButtonTapped(remindersList: RemindersList) {
     let metadata = withErrorReporting {
@@ -240,7 +195,7 @@ struct RemindersListsView: View {
             Button {
               model.detailTapped(detailType: .remindersList(row.remindersList))
             } label: {
-              RemindersListRow(
+              RemindersListRowView(
                 incompleteRemindersCount: row.incompleteRemindersCount,
                 isShared: row.isShared,
                 remindersList: row.remindersList
@@ -285,7 +240,7 @@ struct RemindersListsView: View {
               Button {
                 model.detailTapped(detailType: .remindersList(row.remindersList))
               } label: {
-                RemindersListRow(
+                RemindersListRowView(
                   incompleteRemindersCount: row.incompleteRemindersCount,
                   isShared: row.isShared,
                   remindersList: row.remindersList

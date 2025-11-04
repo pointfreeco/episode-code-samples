@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct RemindersListRow: View {
+struct RemindersListRowView: View {
   let incompleteRemindersCount: Int
   let isShared: Bool
   let remindersList: RemindersList
@@ -36,7 +36,7 @@ extension Color {
 #Preview {
   NavigationStack {
     List {
-      RemindersListRow(
+      RemindersListRowView(
         incompleteRemindersCount: 10,
         isShared: false,
         remindersList: RemindersList(
