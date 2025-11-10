@@ -43,24 +43,14 @@ class RemindersListsModel {
   var sharedRecord: SharedRecord?
   var deleteRemindersListAlert: RemindersList?
 
-  func deleteButtonTapped(remindersList: RemindersList) {
-    let metadata = withErrorReporting {
-      try database.read { db in
-        try SyncMetadata.find(remindersList.syncMetadataID)
-          .fetchOne(db)
-      }
-    }
-    if
-      let metadata,
-      let currentUserParticipant = metadata.share?.currentUserParticipant,
-      currentUserParticipant.role == .owner
-    {
-      deleteRemindersListAlert = remindersList
+  func deleteButtonTapped(row: RemindersListRow) {
+    if row.isOwner, row.isShared {
+      deleteRemindersListAlert = row.remindersList
     } else {
       withErrorReporting {
         try database.write { db in
           try RemindersList
-            .delete(remindersList)
+            .delete(row.remindersList)
             .execute(db)
         }
       }
@@ -197,14 +187,13 @@ struct RemindersListsView: View {
             } label: {
               RemindersListRowView(
                 incompleteRemindersCount: row.incompleteRemindersCount,
-                remindersList: row.remindersList,
-                share: row.share
+                remindersList: row.remindersList
               )
               .foregroundColor(.primary)
             }
             .swipeActions {
               Button(role: .destructive) {
-                model.deleteButtonTapped(remindersList: row.remindersList)
+                model.deleteButtonTapped(row: row)
               } label: {
                 Image(systemName: "trash")
               }
@@ -243,13 +232,13 @@ struct RemindersListsView: View {
                 RemindersListRowView(
                   incompleteRemindersCount: row.incompleteRemindersCount,
                   remindersList: row.remindersList,
-                  share: row.share
+                  shareSummary: row.shareSummary
                 )
                 .foregroundColor(.primary)
               }
               .swipeActions {
                 Button(role: .destructive) {
-                  model.deleteButtonTapped(remindersList: row.remindersList)
+                  model.deleteButtonTapped(row: row)
                 } label: {
                   Image(systemName: "trash")
                 }

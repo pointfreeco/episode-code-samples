@@ -119,15 +119,15 @@ extension ReminderText.TableColumns {
 @Table
 struct RemindersListRow {
   let incompleteRemindersCount: Int
+  let isOwner: Bool
   let remindersList: RemindersList
-  @Column(as: CKShare?.SystemFieldsRepresentation.self)
-  let share: CKShare?
-  var isShared: Bool { share != nil }
+  let shareSummary: String?
+  var isShared: Bool { shareSummary != nil }
 }
 
 extension RemindersListRow.TableColumns {
   var isShared: some QueryExpression<Bool> {
-    self.share.isNot(nil)
+    self.shareSummary.isNot(nil)
   }
 }
 
@@ -141,6 +141,8 @@ func appDatabase() throws -> any DatabaseWriter {
   configuration.prepareDatabase { db in
     db.add(function: $handleDeletedRemindersList)
     db.add(function: $handleReminderStatusUpdate)
+    db.add(function: $participants)
+    db.add(function: $isOwner)
     try db.attachMetadatabase()
 
     try RemindersListRow.createTemporaryView(
@@ -156,8 +158,9 @@ func appDatabase() throws -> any DatabaseWriter {
         .select {
           RemindersListRow.Columns(
             incompleteRemindersCount: $1.count(),
+            isOwner: $2.share.map { $isOwner(of: $0) }.ifnull(true),
             remindersList: $0,
-            share: $2.share
+            shareSummary: $2.share.map { $participants(share: $0) }
           )
         }
     )
@@ -462,6 +465,42 @@ private func handleReminderStatusUpdate() {
       }
     }
   }
+}
+
+@DatabaseFunction(
+  as: ((CKShare.SystemFieldsRepresentation) -> String).self,
+  isDeterministic: true
+)
+func participants(share: CKShare) -> String {
+  print("Computing participant names")
+  let isOwner = share.currentUserParticipant?.role == .owner
+  let hasParticipants = share.participants.contains { $0.role != .owner }
+  switch (isOwner, hasParticipants) {
+  case (true, true):
+    let participantNames = share.participants.compactMap {
+      $0.role == .owner ? nil : $0.userIdentity.nameComponents?.formatted()
+    }
+    .formatted()
+    return "Shared with \(participantNames)"
+  case (true, false):
+    return "Shared by you"
+  case (false, true):
+    let owner = share.participants.first(where: { $0.role == .owner })
+    guard let owner, let ownerName = owner.userIdentity.nameComponents?.formatted()
+    else {
+      return "Shared with you"
+    }
+    return "Shared by \(ownerName)"
+  case (false, false):
+    return "Shared with you"
+  }
+}
+@DatabaseFunction(
+  as: ((CKShare.SystemFieldsRepresentation) -> Bool).self,
+  isDeterministic: true
+)
+func isOwner(of share: CKShare) -> Bool {
+  share.currentUserParticipant?.role == .owner
 }
 
 private let logger = Logger(subsystem: "Reminders", category: "Database")
