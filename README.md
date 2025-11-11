@@ -345,3 +345,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [CloudKit Sync: The SyncEngine](0341-sync-pt2)
 1. [CloudKit Sync: Assets](0342-sync-pt3)
 1. [CloudKit Sync: Sharing](0343-sync-pt4)
+1. [CloudKit Sync: Sync Metadata](0344-sync-pt5)
+1. [CloudKit Sync: Participants](0345-sync-pt6)
