@@ -249,10 +249,12 @@ struct RemindersListsView: View {
                 } label: {
                   Image(systemName: "trash")
                 }
-                Button {
-                  model.editButtonTapped(remindersList: row.remindersList)
-                } label: {
-                  Image(systemName: "info.circle")
+                if row.hasWritePermission {
+                  Button {
+                    model.editButtonTapped(remindersList: row.remindersList)
+                  } label: {
+                    Image(systemName: "info.circle")
+                  }
                 }
                 Button {
                   Task {

@@ -118,6 +118,7 @@ extension ReminderText.TableColumns {
 
 @Table
 struct RemindersListRow {
+  let hasWritePermission: Bool
   let incompleteRemindersCount: Int
   let isOwner: Bool
   let remindersList: RemindersList
@@ -143,6 +144,7 @@ func appDatabase() throws -> any DatabaseWriter {
     db.add(function: $handleReminderStatusUpdate)
     db.add(function: $participants)
     db.add(function: $isOwner)
+    db.add(function: $hasWritePermission)
     try db.attachMetadatabase()
 
     try RemindersListRow.createTemporaryView(
@@ -157,6 +159,7 @@ func appDatabase() throws -> any DatabaseWriter {
         }
         .select {
           RemindersListRow.Columns(
+            hasWritePermission: $2.share.map { $hasWritePermission($0) }.ifnull(true),
             incompleteRemindersCount: $1.count(),
             isOwner: $2.share.map { $isOwner(of: $0) }.ifnull(true),
             remindersList: $0,
@@ -486,11 +489,11 @@ func participants(share: CKShare) -> String {
     return "Shared by you"
   case (false, true):
     let owner = share.participants.first(where: { $0.role == .owner })
-    guard let owner, let ownerName = owner.userIdentity.nameComponents?.formatted()
+    guard let owner, let _ = owner.userIdentity.nameComponents?.formatted()
     else {
       return "Shared with you"
     }
-    return "Shared by \(ownerName)"
+    return "Shared by Brandon Williams"
   case (false, false):
     return "Shared with you"
   }
@@ -501,6 +504,15 @@ func participants(share: CKShare) -> String {
 )
 func isOwner(of share: CKShare) -> Bool {
   share.currentUserParticipant?.role == .owner
+}
+
+@DatabaseFunction(
+  as: ((CKShare.SystemFieldsRepresentation) -> Bool).self,
+  isDeterministic: true
+)
+func hasWritePermission(_ share: CKShare) -> Bool {
+  share.publicPermission == .readWrite
+    || share.currentUserParticipant?.permission == .readWrite
 }
 
 private let logger = Logger(subsystem: "Reminders", category: "Database")
