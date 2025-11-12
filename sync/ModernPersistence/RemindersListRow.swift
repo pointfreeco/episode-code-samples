@@ -5,7 +5,6 @@ struct RemindersListRowView: View {
   let incompleteRemindersCount: Int
   let remindersList: RemindersList
   var shareSummary: String?
-  @State var uuid = UUID()
 
   var body: some View {
     HStack {
@@ -14,10 +13,6 @@ struct RemindersListRowView: View {
         .foregroundStyle(Color(hex: remindersList.color))
       VStack(alignment: .leading) {
         Text(remindersList.title)
-        let _ = uuid
-        Button("Boop") {
-          uuid = UUID()
-        }
         if let shareSummary {
           Text(shareSummary)
         }

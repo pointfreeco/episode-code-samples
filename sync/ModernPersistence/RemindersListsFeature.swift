@@ -216,11 +216,18 @@ struct RemindersListsView: View {
             model.moveRemindersList(fromOffsets: source, toOffset: destination)
           }
         } header: {
-          Text("My lists")
-            .font(.largeTitle)
-            .bold()
-            .foregroundStyle(.black)
-            .textCase(nil)
+          HStack {
+            Text("My lists")
+              .font(.largeTitle)
+              .bold()
+              .foregroundStyle(.black)
+              .textCase(nil)
+
+            if syncEngine.isSynchronizing {
+              Spacer()
+              ProgressView()
+            }
+          }
         }
 
         if !model.sharedRemindersListRows.isEmpty {
@@ -278,6 +285,11 @@ struct RemindersListsView: View {
       } else {
         SearchRemindersView(model: model.searchRemindersModel)
           .id(model.searchRemindersModel.searchText)
+      }
+    }
+    .refreshable {
+      await withErrorReporting {
+        try await syncEngine.syncChanges()
       }
     }
     .searchable(
