@@ -175,7 +175,13 @@ struct ReminderFormView: View {
                 .execute(db)
             }
             dismiss()
-          } catch let error as DatabaseError where error.resultCode == .SQLITE_CONSTRAINT && error.extendedResultCode == .SQLITE_CONSTRAINT_TRIGGER {
+          } catch
+            let error as DatabaseError
+              where
+              error.resultCode == .SQLITE_CONSTRAINT
+              && error.extendedResultCode == .SQLITE_CONSTRAINT_TRIGGER
+              && error.message != SyncEngine.writePermissionError
+          {
             saveErrorMessage = error.message
             isSaveErrorPresented = true
           } catch {

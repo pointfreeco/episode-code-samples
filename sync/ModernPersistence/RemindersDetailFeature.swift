@@ -31,9 +31,9 @@ class RemindersDetailModel {
     _rows = FetchAll(query, animation: .default)
 
     switch detailType {
-    case .remindersList(let remindersList):
+    case .remindersList(let row):
       _remindersListAsset = FetchOne(
-        RemindersListAsset.find(remindersList.id)
+        RemindersListAsset.find(row.remindersList.id)
       )
     default:
       break
@@ -50,8 +50,8 @@ class RemindersDetailModel {
       }
       .where {
         switch detailType {
-        case .remindersList(let remindersList):
-          $0.remindersListID.eq(remindersList.id)
+        case .remindersList(let row):
+          $0.remindersListID.eq(row.remindersList.id)
         case .all:
           true
         case .completed:
@@ -107,8 +107,8 @@ class RemindersDetailModel {
 
   func newReminderButtonTapped() {
     switch detailType {
-    case .remindersList(let remindersList):
-      reminderForm = Reminder.Draft(remindersListID: remindersList.id)
+    case .remindersList(let row):
+      reminderForm = Reminder.Draft(remindersListID: row.remindersList.id)
     case .all:
       break
     case .completed:
@@ -174,14 +174,14 @@ enum DetailType: Equatable {
   case all
   case completed
   case flagged
-  case remindersList(RemindersList)
+  case remindersList(RemindersListRow)
   case scheduled
   case today
 
   var navigationTitle: String {
     switch self {
-    case .remindersList(let remindersList):
-      remindersList.title
+    case .remindersList(let row):
+      row.remindersList.title
     case .all:
       "All"
     case .completed:
@@ -196,8 +196,8 @@ enum DetailType: Equatable {
   }
   var color: Color {
     switch self {
-    case .remindersList(let remindersList):
-      remindersList.color.swiftUIColor
+    case .remindersList(let row):
+      row.remindersList.color.swiftUIColor
     case .all:
         .black
     case .completed:
@@ -212,8 +212,8 @@ enum DetailType: Equatable {
   }
   var appStorageKeySuffix: String {
     switch self {
-    case .remindersList(let remindersList):
-      "remindersList_\(remindersList.id)"
+    case .remindersList(let row):
+      "remindersList_\(row.remindersList.id)"
     case .all:
       "all"
     case .completed:
@@ -224,6 +224,14 @@ enum DetailType: Equatable {
       "scheduled"
     case .today:
       "today"
+    }
+  }
+  var hasWritePermission: Bool {
+    switch self {
+    case .all, .completed, .flagged, .scheduled, .today:
+      return true
+    case .remindersList(let row):
+      return row.hasWritePermission
     }
   }
 }
@@ -249,6 +257,7 @@ struct RemindersDetailView: View {
       ForEach(model.rows, id: \.reminder.id) { row in
         ReminderRow(
           color: model.detailType.color,
+          hasWritePermission: model.detailType.hasWritePermission,
           isPastDue: row.isPastDue,
           reminder: row.reminder,
           tags: row.tags
@@ -262,15 +271,17 @@ struct RemindersDetailView: View {
     .toolbar {
       ToolbarItem(placement: .bottomBar) {
         HStack {
-          Button {
-            model.newReminderButtonTapped()
-          } label: {
-            HStack {
-              Image(systemName: "plus.circle.fill")
-              Text("New Reminder")
+          if model.detailType.hasWritePermission {
+            Button {
+              model.newReminderButtonTapped()
+            } label: {
+              HStack {
+                Image(systemName: "plus.circle.fill")
+                Text("New Reminder")
+              }
+              .bold()
+              .font(.title3)
             }
-            .bold()
-            .font(.title3)
           }
           Spacer()
         }
@@ -347,7 +358,13 @@ struct RemindersDetailPreview: PreviewProvider {
       RemindersDetailView(
         model: RemindersDetailModel(
           detailType: .remindersList(
-            remindersList
+            RemindersListRow(
+              hasWritePermission: true,
+              incompleteRemindersCount: 2,
+              isOwner: true,
+              remindersList: remindersList,
+              shareSummary: "Shared with Blob"
+            )
           )
         )
       )

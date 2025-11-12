@@ -183,7 +183,7 @@ struct RemindersListsView: View {
         Section {
           ForEach(model.privateRemindersListRows, id: \.remindersList.id) { row in
             Button {
-              model.detailTapped(detailType: .remindersList(row.remindersList))
+              model.detailTapped(detailType: .remindersList(row))
             } label: {
               RemindersListRowView(
                 incompleteRemindersCount: row.incompleteRemindersCount,
@@ -234,7 +234,7 @@ struct RemindersListsView: View {
           Section {
             ForEach(model.sharedRemindersListRows, id: \.remindersList.id) { row in
               Button {
-                model.detailTapped(detailType: .remindersList(row.remindersList))
+                model.detailTapped(detailType: .remindersList(row))
               } label: {
                 RemindersListRowView(
                   incompleteRemindersCount: row.incompleteRemindersCount,

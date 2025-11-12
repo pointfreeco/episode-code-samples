@@ -5,6 +5,7 @@ struct ReminderRow: View {
   let color: Color
   var formattedNotes: String?
   var formattedTitle: String?
+  var hasWritePermission = true
   let isPastDue: Bool
   let reminder: Reminder
   let tags: String
@@ -16,22 +17,24 @@ struct ReminderRow: View {
   var body: some View {
     HStack {
       HStack(alignment: .firstTextBaseline) {
-        Button {
-          withErrorReporting {
-            try database.write { db in
-              try Reminder
-                .find(reminder.id)
-                .update { $0.toggleStatus() }
-                .execute(db)
+        if hasWritePermission {
+          Button {
+            withErrorReporting {
+              try database.write { db in
+                try Reminder
+                  .find(reminder.id)
+                  .update { $0.toggleStatus() }
+                  .execute(db)
+              }
             }
+          } label: {
+            Image(
+              systemName: reminder.isCompleted ? "circle.inset.filled" : "circle"
+            )
+            .foregroundStyle(.gray)
+            .font(.title2)
+            .padding([.trailing], 5)
           }
-        } label: {
-          Image(
-            systemName: reminder.isCompleted ? "circle.inset.filled" : "circle"
-          )
-          .foregroundStyle(.gray)
-          .font(.title2)
-          .padding([.trailing], 5)
         }
         VStack(alignment: .leading) {
           HStack(alignment: .firstTextBaseline) {
@@ -74,43 +77,47 @@ struct ReminderRow: View {
             Image(systemName: "flag.fill")
               .foregroundStyle(.orange)
           }
-          Button {
-            onDetailsTapped()
-          } label: {
-            Image(systemName: "info.circle")
+          if hasWritePermission {
+            Button {
+              onDetailsTapped()
+            } label: {
+              Image(systemName: "info.circle")
+            }
+            .tint(color)
           }
-          .tint(color)
         }
       }
     }
     .buttonStyle(.borderless)
     .swipeActions {
-      Button("Delete", role: .destructive) {
-        withErrorReporting {
-          try database.write { db in
-            try Reminder
-              .find(reminder.id)
-              .delete()
-              .execute(db)
+      if hasWritePermission {
+        Button("Delete", role: .destructive) {
+          withErrorReporting {
+            try database.write { db in
+              try Reminder
+                .find(reminder.id)
+                .delete()
+                .execute(db)
+            }
           }
         }
-      }
-      Button(reminder.isFlagged ? "Unflag" : "Flag") {
-        withErrorReporting {
-          try database.write { db in
-            try Reminder
-              .find(reminder.id)
-              .update {
-                $0.isFlagged.toggle()
-                //$0.updatedAt = Date()
-              }
-              .execute(db)
+        Button(reminder.isFlagged ? "Unflag" : "Flag") {
+          withErrorReporting {
+            try database.write { db in
+              try Reminder
+                .find(reminder.id)
+                .update {
+                  $0.isFlagged.toggle()
+                  //$0.updatedAt = Date()
+                }
+                .execute(db)
+            }
           }
         }
-      }
-      .tint(.orange)
-      Button("Details") {
-        onDetailsTapped()
+        .tint(.orange)
+        Button("Details") {
+          onDetailsTapped()
+        }
       }
     }
   }

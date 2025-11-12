@@ -117,7 +117,7 @@ extension ReminderText.TableColumns {
 }
 
 @Table
-struct RemindersListRow {
+struct RemindersListRow: Equatable {
   let hasWritePermission: Bool
   let incompleteRemindersCount: Int
   let isOwner: Bool
@@ -489,11 +489,11 @@ func participants(share: CKShare) -> String {
     return "Shared by you"
   case (false, true):
     let owner = share.participants.first(where: { $0.role == .owner })
-    guard let owner, let _ = owner.userIdentity.nameComponents?.formatted()
+    guard let owner, let ownerName = owner.userIdentity.nameComponents?.formatted()
     else {
       return "Shared with you"
     }
-    return "Shared by Brandon Williams"
+    return "Shared by \(ownerName)"
   case (false, false):
     return "Shared with you"
   }
