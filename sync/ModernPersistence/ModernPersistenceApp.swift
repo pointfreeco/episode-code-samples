@@ -50,7 +50,9 @@ struct ModernPersistenceApp: App {
   @UIApplicationDelegateAdaptor var delegate: AppDelegate
 
   @Dependency(\.context) var context
+  @Dependency(\.defaultSyncEngine) var syncEngine
   static let model = RemindersListsModel()
+  @State var syncEngineDelegate = RemindersSyncEngineDelegate()
 
   init() {
     if context == .live {
@@ -62,7 +64,8 @@ struct ModernPersistenceApp: App {
           Reminder.self,
           Tag.self,
           ReminderTag.self,
-          RemindersListAsset.self
+          RemindersListAsset.self,
+          delegate: syncEngineDelegate
         )
       }
     }
@@ -74,7 +77,45 @@ struct ModernPersistenceApp: App {
         NavigationStack {
           RemindersListsView(model: Self.model)
         }
+        .alert(
+          "Reset local data?",
+          isPresented: $syncEngineDelegate.isDeleteLocalDataAlertPresented
+        ) {
+          Button("Delete local data", role: .destructive) {
+            Task {
+              await withErrorReporting {
+                try await syncEngine.deleteLocalData()
+              }
+            }
+          }
+        } message: {
+          Text("""
+              You are no longer logged into iCloud. Would you like \
+              to reset your local data to the defaults? This will \
+              not affect your data in iCloud.
+              """)
+        }
       }
+    }
+  }
+}
+
+@MainActor
+@Observable
+final class RemindersSyncEngineDelegate: SyncEngineDelegate {
+  var isDeleteLocalDataAlertPresented = false
+
+  func syncEngine(
+    _ syncEngine: SyncEngine,
+    accountChanged changeType: CKSyncEngine.Event.AccountChange.ChangeType
+  ) async {
+    switch changeType {
+    case .signIn:
+      break
+    case .signOut, .switchAccounts:
+      isDeleteLocalDataAlertPresented = true
+    @unknown default:
+      break
     }
   }
 }
