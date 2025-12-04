@@ -1,15 +1,25 @@
+import PhotosUI
 import SQLiteData
 import SwiftUI
 
 @Observable class GameModel {
   let game: Game
   var isNewPlayerAlertPresented = false
+  var isPlayerPhotoPickerPresented = false
+  var playerPhotoPickerPresented: Player?
   var newPlayerName = ""
+  var photosPickerItem: PhotosPickerItem? {
+    didSet {
+      updatePlayerImageTask?.cancel()
+      updatePlayerImageTask = Task { await updatePlayerImage() }
+    }
+  }
   var sortAscending = false {
     didSet {
       Task { await reloadData() }
     }
   }
+  var updatePlayerImageTask: Task<Void, Never>?
   @ObservationIgnored @FetchAll var rows: [Row]
   @ObservationIgnored @Dependency(\.defaultDatabase) var database
 
@@ -76,6 +86,11 @@ import SwiftUI
     await reloadData()
   }
 
+  func photoButtonTapped(for player: Player) {
+    isPlayerPhotoPickerPresented = true
+    playerPhotoPickerPresented = player
+  }
+
   private func reloadData() async {
     await withErrorReporting {
       _ = try await $rows.load(
@@ -92,6 +107,25 @@ import SwiftUI
           .select { Row.Columns(player: $0, imageData: $1.imageData) },
         animation: .default
       )
+    }
+  }
+
+  private func updatePlayerImage() async {
+    guard let photosPickerItem, let playerPhotoPickerPresented else { return }
+    do {
+      guard let imageData = try await photosPickerItem.loadTransferable(type: Data.self)
+      else { return }
+      try await database.write { db in
+        try PlayerAsset.upsert {
+          PlayerAsset(
+            playerID: playerPhotoPickerPresented.id,
+            imageData: imageData
+          )
+        }
+        .execute(db)
+      }
+    } catch {
+      // TODO: Show error to user
     }
   }
 }
@@ -116,7 +150,7 @@ struct GameView: View {
           ForEach(model.rows, id: \.player.id) { row in
             HStack {
               Button {
-                /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+                model.photoButtonTapped(for: row.player)
               } label: {
                 if
                   let imageData = row.imageData,
@@ -188,6 +222,10 @@ struct GameView: View {
     .task {
       await model.task()
     }
+    .photosPicker(
+      isPresented: $model.isPlayerPhotoPickerPresented,
+      selection: $model.photosPickerItem
+    )
   }
 }
 
