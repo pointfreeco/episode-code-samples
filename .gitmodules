@@ -25,3 +25,6 @@
 [submodule "0049-generative-art-pt2/Joy/Vendor/swift-snapshot-testing"]
 	path = 0050-generative-art-pt2/Joy/Vendor/swift-snapshot-testing
 	url = https://github.com/pointfreeco/swift-snapshot-testing.git
+[submodule "sqlite-data-tour/the-point-free-way"]
+	path = sqlite-data-tour/the-point-free-way
+	url = https://www.github.com/pointfreeco/the-point-free-way
