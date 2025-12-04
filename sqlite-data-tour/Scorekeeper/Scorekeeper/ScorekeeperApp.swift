@@ -10,7 +10,9 @@ struct ScorekeeperApp: App {
   }
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      NavigationStack {
+        GamesView()
+      }
     }
   }
 }

@@ -54,3 +54,14 @@ extension DependencyValues {
   }
 }
 
+extension DatabaseWriter {
+  func seed() throws {
+    try write { db in
+      try db.seed {
+        Game.Draft(title: "Family gin rummy")
+        Game.Draft(title: "Weekly poker night")
+        Game.Draft(title: "Mahjong with grandma")
+      }
+    }
+  }
+}
