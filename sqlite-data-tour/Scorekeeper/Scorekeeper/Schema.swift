@@ -14,6 +14,13 @@ import SQLiteData
   var score = 0
 }
 
+@Table struct PlayerAsset: Identifiable {
+  @Column(primaryKey: true)
+  let playerID: Player.ID
+  var imageData: Data
+  var id: Player.ID { playerID }
+}
+
 func appDatabase() throws -> any DatabaseWriter {
   var configuration = Configuration()
   configuration.prepareDatabase { db in
@@ -58,6 +65,19 @@ func appDatabase() throws -> any DatabaseWriter {
     )
     .execute(db)
   }
+
+  migrator.registerMigration("Create 'playerAssets' table") { db in
+    try #sql(
+      """
+      CREATE TABLE "playerAssets" (
+        "playerID" TEXT PRIMARY KEY NOT NULL REFERENCES "players"("id") ON DELETE CASCADE,
+        "imageData" BLOB NOT NULL
+      ) STRICT
+      """
+    )
+    .execute(db)
+  }
+
   try migrator.migrate(database)
   return database
 }
@@ -83,3 +103,4 @@ extension DatabaseWriter {
     }
   }
 }
+

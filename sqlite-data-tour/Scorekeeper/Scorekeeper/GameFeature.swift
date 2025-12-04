@@ -10,8 +10,13 @@ import SwiftUI
       Task { await reloadData() }
     }
   }
-  @ObservationIgnored @FetchAll(Player.none) var players
+  @ObservationIgnored @FetchAll var rows: [Row]
   @ObservationIgnored @Dependency(\.defaultDatabase) var database
+
+  @Selection struct Row {
+    let player: Player
+    let imageData: Data?
+  }
 
   init(game: Game) {
     self.game = game
@@ -45,7 +50,7 @@ import SwiftUI
   func deletePlayers(at offsets: IndexSet) {
     withErrorReporting {
       try database.write { db in
-        try Player.find(offsets.map { players[$0].id })
+        try Player.find(offsets.map { rows[$0].player.id })
           .delete()
           .execute(db)
       }
@@ -73,7 +78,7 @@ import SwiftUI
 
   private func reloadData() async {
     await withErrorReporting {
-      _ = try await $players.load(
+      _ = try await $rows.load(
         Player
           .where { $0.gameID.eq(game.id) }
           .order {
@@ -82,7 +87,9 @@ import SwiftUI
             } else {
               $0.score.desc()
             }
-          },
+          }
+          .leftJoin(PlayerAsset.all) { $0.id.eq($1.playerID) }
+          .select { Row.Columns(player: $0, imageData: $1.imageData) },
         animation: .default
       )
     }
@@ -98,7 +105,7 @@ struct GameView: View {
 
   var body: some View {
     Form {
-      if !model.$players.isLoading, model.players.isEmpty {
+      if !model.$rows.isLoading, model.rows.isEmpty {
         ContentUnavailableView {
           Label("No players", systemImage: "person.3.fill")
         } description: {
@@ -106,12 +113,14 @@ struct GameView: View {
         }
       } else {
         Section {
-          ForEach(model.players) { player in
+          ForEach(model.rows, id: \.player.id) { row in
             HStack {
               Button {
                 /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
               } label: {
-                if let image = UIImage(data: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Image data@*/Data()/*@END_MENU_TOKEN@*/) {
+                if
+                  let imageData = row.imageData,
+                  let image = UIImage(data: imageData) {
                   Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
@@ -124,16 +133,16 @@ struct GameView: View {
               .clipShape(Circle())
               .transaction { $0.animation = nil }
 
-              Text(player.name)
+              Text(row.player.name)
               Spacer()
               Button {
-                model.decrementButtonTapped(for: player)
+                model.decrementButtonTapped(for: row.player)
               } label: {
                 Image(systemName: "minus")
               }
-              Text("\(player.score)")
+              Text("\(row.player.score)")
               Button {
-                model.incrementButtonTapped(for: player)
+                model.incrementButtonTapped(for: row.player)
               } label: {
                 Image(systemName: "plus")
               }
