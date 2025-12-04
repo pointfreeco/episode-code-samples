@@ -2,25 +2,36 @@ import SQLiteData
 import SwiftUI
 
 struct GamesView: View {
-  @FetchAll(animation: .default) var games: [Game]
+  @Selection struct Row {
+    let game: Game
+    let playerCount: Int
+  }
+
+  @FetchAll var rows: [Row]
   @State var isNewGameAlertPresented = false
   @State var newGameTitle = ""
   @Dependency(\.defaultDatabase) var database
 
   var body: some View {
     List {
-      ForEach(games) { game in
+      ForEach(rows, id: \.game.id) { row in
         NavigationLink {
-          GameView(game: game)
+          GameView(game: row.game)
         } label: {
-          Text(game.title)
-            .font(.headline)
+          HStack {
+            Text(row.game.title)
+              .font(.headline)
+            Spacer()
+            Text("\(row.playerCount)")
+            Image(systemName: "person.2.fill")
+              .foregroundStyle(.gray)
+          }
         }
       }
       .onDelete { offsets in
         withErrorReporting {
           try database.write { db in
-            try Game.find(offsets.map { games[$0].id })
+            try Game.find(offsets.map { rows[$0].game.id })
               .delete()
               .execute(db)
           }
@@ -50,6 +61,19 @@ struct GamesView: View {
         }
       }
       Button(role: .cancel) {}
+    }
+    .task {
+      await withErrorReporting {
+        try await $rows.load(
+          Game
+            .group(by: \.id)
+            .leftJoin(Player.all) { $0.id.eq($1.gameID) }
+            .order { $1.count().desc() }
+            .select { Row.Columns(game: $0, playerCount: $1.count()) },
+          animation: .default
+        )
+        .task
+      }
     }
   }
 }

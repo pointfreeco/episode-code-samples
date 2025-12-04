@@ -15,34 +15,48 @@ import SQLiteData
 }
 
 func appDatabase() throws -> any DatabaseWriter {
-  let database = try SQLiteData.defaultDatabase()
+  var configuration = Configuration()
+  configuration.prepareDatabase { db in
+    #if DEBUG
+      db.trace {
+        print($0.expandedDescription)
+      }
+    #endif
+  }
+  let database = try SQLiteData.defaultDatabase(configuration: configuration)
   var migrator = DatabaseMigrator()
   #if DEBUG
-  migrator.eraseDatabaseOnSchemaChange = true
+    migrator.eraseDatabaseOnSchemaChange = true
   #endif
   migrator.registerMigration("Create 'games' and 'players' tables") { db in
-    try #sql("""
+    try #sql(
+      """
       CREATE TABLE "games" (
         "id" TEXT PRIMARY KEY NOT NULL ON CONFLICT REPLACE DEFAULT (uuid()),
         "title" TEXT NOT NULL DEFAULT ''
       ) STRICT
-      """)
-      .execute(db)
+      """
+    )
+    .execute(db)
 
-    try #sql("""
+    try #sql(
+      """
       CREATE TABLE "players" (
         "id" TEXT PRIMARY KEY NOT NULL ON CONFLICT REPLACE DEFAULT (uuid()),
         "gameID" TEXT NOT NULL REFERENCES "games"("id") ON DELETE CASCADE,
         "name" TEXT NOT NULL DEFAULT '',
         "score" INTEGER NOT NULL DEFAULT 0
       ) STRICT
-      """)
-      .execute(db)
+      """
+    )
+    .execute(db)
 
-    try #sql("""
+    try #sql(
+      """
       CREATE INDEX "index_players_on_gameID" ON "players"("gameID")
-      """)
-      .execute(db)
+      """
+    )
+    .execute(db)
   }
   try migrator.migrate(database)
   return database
