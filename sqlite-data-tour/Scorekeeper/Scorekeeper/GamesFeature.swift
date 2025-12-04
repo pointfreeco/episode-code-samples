@@ -10,8 +10,12 @@ struct GamesView: View {
   var body: some View {
     List {
       ForEach(games) { game in
-        Text(game.title)
-          .font(.headline)
+        NavigationLink {
+          GameView(game: game)
+        } label: {
+          Text(game.title)
+            .font(.headline)
+        }
       }
       .onDelete { offsets in
         withErrorReporting {
