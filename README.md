@@ -348,3 +348,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [CloudKit Sync: Sync Metadata](0344-sync-pt5)
 1. [CloudKit Sync: Participants](0345-sync-pt6)
 1. [CloudKit Sync: Finesse](0346-sync-pt7)
+1. [Tour of SQLiteData: Basics](0347-sqlite-data-tour-pt1)
+1. [Tour of SQLiteData: Querying](0348-sqlite-data-tour-pt2)
