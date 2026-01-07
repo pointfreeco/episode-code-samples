@@ -1,6 +1,7 @@
 import PhotosUI
 import SQLiteData
 import SwiftUI
+import CloudKit
 
 @Observable class GameModel {
   let game: Game
@@ -20,9 +21,13 @@ import SwiftUI
       Task { await reloadData() }
     }
   }
+
+  var sharedRecord: SharedRecord?
+
   var updatePlayerImageTask: Task<Void, Never>?
   @ObservationIgnored @FetchAll var rows: [Row]
   @ObservationIgnored @Dependency(\.defaultDatabase) var database
+  @ObservationIgnored @Dependency(\.defaultSyncEngine) var syncEngine
 
   @Selection struct Row {
     let player: Player
@@ -79,6 +84,14 @@ import SwiftUI
           Player.Draft(gameID: game.id, name: newPlayerName)
         }
         .execute(db)
+      }
+    }
+  }
+
+  func shareButtonTapped() async {
+    await withErrorReporting {
+      sharedRecord = try await syncEngine.share(record: game) {
+        $0[CKShare.SystemFieldKey.title] = game.title
       }
     }
   }
@@ -234,7 +247,7 @@ struct GameView: View {
     .toolbar {
       ToolbarItem {
         Button {
-          /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*//*@END_MENU_TOKEN@*/
+          Task { await model.shareButtonTapped() }
         } label: {
           Image(systemName: "square.and.arrow.up")
         }
@@ -259,6 +272,9 @@ struct GameView: View {
       isPresented: $model.isPlayerPhotoPickerPresented,
       selection: $model.photosPickerItem
     )
+    .sheet(item: $model.sharedRecord) { sharedRecord in
+      CloudSharingView(sharedRecord: sharedRecord)
+    }
   }
 }
 
@@ -286,3 +302,4 @@ extension Optional {
     GameView(game: game)
   }
 }
+

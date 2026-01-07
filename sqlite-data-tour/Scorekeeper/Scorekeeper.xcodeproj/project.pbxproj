@@ -21,6 +21,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2A36925B2F0EEACC0057E9CD /* ObservableModels.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ObservableModels.md; sourceTree = "<group>"; };
 		2AF6699A2EE2052700F64240 /* CasePaths.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CasePaths.md; sourceTree = "<group>"; };
 		2AF6699B2EE2052700F64240 /* ComposableArchitecture.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ComposableArchitecture.md; sourceTree = "<group>"; };
 		2AF6699C2EE2052700F64240 /* CustomDump.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CustomDump.md; sourceTree = "<group>"; };
@@ -89,6 +90,7 @@
 				2AF6699C2EE2052700F64240 /* CustomDump.md */,
 				2AF6699D2EE2052700F64240 /* Dependencies.md */,
 				2AF6699E2EE2052700F64240 /* IdentifiedCollections.md */,
+				2A36925B2F0EEACC0057E9CD /* ObservableModels.md */,
 				2AF6699F2EE2052700F64240 /* README.md */,
 				2AF669A02EE2052700F64240 /* Sharing.md */,
 				2AF669A12EE2052700F64240 /* SnapshotTesting.md */,
