@@ -133,9 +133,9 @@ import CloudKit
           .where { $0.gameID.eq(game.id) }
           .order {
             if sortAscending {
-              ($0.score, $0.name)
+              $0.score
             } else {
-              ($0.score.desc(), $0.name)
+              $0.score.desc()
             }
           }
           .leftJoin(PlayerAsset.all) { $0.id.eq($1.playerID) }
