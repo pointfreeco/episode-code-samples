@@ -24,6 +24,7 @@ import SQLiteData
 func appDatabase() throws -> any DatabaseWriter {
   var configuration = Configuration()
   configuration.prepareDatabase { db in
+    try db.attachMetadatabase()
     #if DEBUG
       db.trace {
         print($0.expandedDescription)

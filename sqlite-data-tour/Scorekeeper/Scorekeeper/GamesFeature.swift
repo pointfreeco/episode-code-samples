@@ -4,6 +4,7 @@ import SwiftUI
 struct GamesView: View {
   @Selection struct Row {
     let game: Game
+    let isShared: Bool
     let playerCount: Int
   }
 
@@ -19,6 +20,9 @@ struct GamesView: View {
           GameView(game: row.game)
         } label: {
           HStack {
+            if row.isShared {
+              Image(systemName: "network")
+            }
             Text(row.game.title)
               .font(.headline)
             Spacer()
@@ -69,7 +73,14 @@ struct GamesView: View {
             .group(by: \.id)
             .leftJoin(Player.all) { $0.id.eq($1.gameID) }
             .order { $1.count().desc() }
-            .select { Row.Columns(game: $0, playerCount: $1.count()) },
+            .leftJoin(SyncMetadata.all) { $0.syncMetadataID.eq($2.id) }
+            .select {
+              Row.Columns(
+                game: $0,
+                isShared: $2.isShared.ifnull(false),
+                playerCount: $1.count()
+              )
+            },
           animation: .default
         )
         .task
