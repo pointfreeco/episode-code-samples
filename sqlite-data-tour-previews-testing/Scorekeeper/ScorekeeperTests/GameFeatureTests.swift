@@ -27,16 +27,20 @@ extension BaseSuite {
     }
   )
   struct GameFeatureTests {
+    let model: GameModel
     @Dependency(\.defaultDatabase) var database
 
-    @Test func basics() async throws {
+    init() async throws {
       let game = try await #require(
-        database.read { db in
+        _database.wrappedValue.read { db in
           try Game.find(UUID(-1)).fetchOne(db)
         }
       )
-      let model = GameModel(game: game)
+      model = GameModel(game: game)
       await model.task()
+    }
+
+    @Test func basics() async throws {
       expectNoDifference(
         model.rows,
         [
@@ -48,27 +52,47 @@ extension BaseSuite {
     }
 
     @Test func addPlayer() async throws {
-      let game = try await #require(
-        database.read { db in
-          try Game.find(UUID(-1)).fetchOne(db)
-        }
-      )
-      let model = GameModel(game: game)
-      await model.task()
+      await expectDifference(model.rows) {
+        model.addPlayerButtonTapped()
+        model.newPlayerName = "Blob Esq"
+        model.saveNewPlayerButtonTapped()
+        try await model.$rows.load()
+      } changes: { rows in
+        rows.append(
+          GameModel.Row(player: Player(id: UUID(0), gameID: UUID(-1), name: "Blob Esq", score: 0))
+        )
+      }
+    }
 
-      model.addPlayerButtonTapped()
-      model.newPlayerName = "Blob Esq"
-      model.saveNewPlayerButtonTapped()
-      try await model.$rows.load()
-      expectNoDifference(
-        model.rows,
-        [
-          GameModel.Row(player: Player(id: UUID(-2), gameID: UUID(-1), name: "Blob Sr", score: 3)),
-          GameModel.Row(player: Player(id: UUID(-3), gameID: UUID(-1), name: "Blob Jr", score: 2)),
-          GameModel.Row(player: Player(id: UUID(-1), gameID: UUID(-1), name: "Blob", score: 1)),
-          GameModel.Row(player: Player(id: UUID(0), gameID: UUID(-1), name: "Blob Esq", score: 0)),
-        ]
-      )
+    @Test func incrementPlayerScore() async throws {
+      await expectDifference(model.rows) {
+        model.incrementButtonTapped(for: model.rows[0].player)
+        try await model.$rows.load()
+      } changes: { rows in
+        rows[0].player.score = 4
+      }
+    }
+
+    @Test func incrementPlayerScoreSortsToTop() async throws {
+      let blobJr = model.rows[1].player
+      await expectDifference(model.rows) {
+        model.incrementButtonTapped(for: blobJr)
+        model.incrementButtonTapped(for: blobJr)
+        try await model.$rows.load()
+      } changes: { rows in
+        rows[1].player.score = 4
+        let blobJr = rows.remove(at: 1)
+        rows.insert(blobJr, at: 0)
+      }
+    }
+
+    @Test func deletePlayerRemovesRow() async throws {
+      await expectDifference(model.rows) {
+        model.deletePlayers(at: [0])
+        try await model.$rows.load()
+      } changes: { rows in
+        rows.remove(at: 0)
+      }
     }
   }
 }
