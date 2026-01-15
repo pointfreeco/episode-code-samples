@@ -7,7 +7,7 @@ import SQLiteData
   var title = ""
 }
 
-@Table struct Player: Identifiable {
+@Table struct Player: Equatable, Identifiable {
   let id: UUID
   let gameID: Game.ID
   var name = ""

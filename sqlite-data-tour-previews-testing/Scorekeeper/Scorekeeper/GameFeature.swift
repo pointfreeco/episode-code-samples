@@ -27,7 +27,7 @@ import SwiftUI
   @ObservationIgnored @Dependency(\.defaultDatabase) var database
   @ObservationIgnored @Dependency(\.defaultSyncEngine) var syncEngine
 
-  @Selection struct Row {
+  @Selection struct Row: Equatable {
     var player: Player
     var imageData: Data?
   }
@@ -290,7 +290,7 @@ extension Optional {
 
 #Preview {
   let game = prepareDependencies {
-    $0.defaultDatabase = try! appDatabase()
+    try! $0.bootstrapDatabase()
     try! $0.defaultDatabase.seed()
     return try! $0.defaultDatabase.read { db in
       try Game.fetchOne(db)!

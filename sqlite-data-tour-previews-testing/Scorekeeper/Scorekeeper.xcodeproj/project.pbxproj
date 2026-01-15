@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4BE0D2852F199E3B001BB9DC /* DependenciesTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 4BE0D2842F199E3B001BB9DC /* DependenciesTestSupport */; };
+		4BE0D2882F19A226001BB9DC /* CustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 4BE0D2872F19A226001BB9DC /* CustomDump */; };
 		CA8B8C862ECCD94500F06B5C /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = CA8B8C852ECCD94500F06B5C /* SQLiteData */; };
 /* End PBXBuildFile section */
 
@@ -64,17 +66,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BE0D2852F199E3B001BB9DC /* DependenciesTestSupport in Frameworks */,
+				4BE0D2882F19A226001BB9DC /* CustomDump in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4BE0D2832F199E3B001BB9DC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		CA7D861E2E7482E70018EFD6 = {
 			isa = PBXGroup;
 			children = (
 				CA7D86292E7482E70018EFD6 /* Scorekeeper */,
 				CA7D86372E7482E90018EFD6 /* ScorekeeperTests */,
+				4BE0D2832F199E3B001BB9DC /* Frameworks */,
 				CA7D86282E7482E70018EFD6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -132,6 +144,8 @@
 			);
 			name = ScorekeeperTests;
 			packageProductDependencies = (
+				4BE0D2842F199E3B001BB9DC /* DependenciesTestSupport */,
+				4BE0D2872F19A226001BB9DC /* CustomDump */,
 			);
 			productName = ScorekeeperTests;
 			productReference = CA7D86342E7482E90018EFD6 /* ScorekeeperTests.xctest */;
@@ -168,6 +182,7 @@
 			packageReferences = (
 				CA8B8C842ECCD94500F06B5C /* XCRemoteSwiftPackageReference "sqlite-data" */,
 				2A4D62782F198996000D360D /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				4BE0D2862F19A226001BB9DC /* XCRemoteSwiftPackageReference "swift-custom-dump" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CA7D86282E7482E70018EFD6 /* Products */;
@@ -503,6 +518,14 @@
 				minimumVersion = 1.10.0;
 			};
 		};
+		4BE0D2862F19A226001BB9DC /* XCRemoteSwiftPackageReference "swift-custom-dump" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-custom-dump.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.4;
+			};
+		};
 		CA8B8C842ECCD94500F06B5C /* XCRemoteSwiftPackageReference "sqlite-data" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/sqlite-data.git";
@@ -514,6 +537,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4BE0D2842F199E3B001BB9DC /* DependenciesTestSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2A4D62782F198996000D360D /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = DependenciesTestSupport;
+		};
+		4BE0D2872F19A226001BB9DC /* CustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BE0D2862F19A226001BB9DC /* XCRemoteSwiftPackageReference "swift-custom-dump" */;
+			productName = CustomDump;
+		};
 		CA8B8C852ECCD94500F06B5C /* SQLiteData */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CA8B8C842ECCD94500F06B5C /* XCRemoteSwiftPackageReference "sqlite-data" */;
