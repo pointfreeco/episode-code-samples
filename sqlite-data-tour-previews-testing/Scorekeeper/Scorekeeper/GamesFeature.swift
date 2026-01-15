@@ -140,7 +140,7 @@ private struct GamesSection: View {
         try Game.fetchOne(db)!
       }
       try await syncEngine.sendChanges()
-      try await syncEngine.share(record: game) { _ in
+      _ = try await syncEngine.share(record: game) { _ in
       }
     } catch {}
   }

@@ -2,19 +2,19 @@ import Dependencies
 import Foundation
 import SQLiteData
 
-@Table struct Game: Identifiable {
+@Table nonisolated struct Game: Identifiable {
   let id: UUID
   var title = ""
 }
 
-@Table struct Player: Equatable, Identifiable {
+@Table nonisolated struct Player: Equatable, Identifiable {
   let id: UUID
   let gameID: Game.ID
   var name = ""
   var score = 0
 }
 
-@Table struct PlayerAsset: Identifiable {
+@Table nonisolated struct PlayerAsset: Identifiable {
   @Column(primaryKey: true)
   let playerID: Player.ID
   var imageData: Data
@@ -24,6 +24,7 @@ import SQLiteData
 func appDatabase() throws -> any DatabaseWriter {
   var configuration = Configuration()
   configuration.prepareDatabase { db in
+    db.add(function: $uuid)
     try db.attachMetadatabase()
     #if DEBUG
       db.trace {
@@ -113,3 +114,8 @@ extension DatabaseWriter {
   }
 }
 
+@DatabaseFunction
+nonisolated var uuid: UUID {
+  @Dependency(\.uuid) var uuid
+  return uuid()
+}
