@@ -21,18 +21,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2A36926D2F0F09CB0057E9CD /* ObservableModels.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ObservableModels.md; sourceTree = "<group>"; };
-		2AF6699A2EE2052700F64240 /* CasePaths.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CasePaths.md; sourceTree = "<group>"; };
-		2AF6699B2EE2052700F64240 /* ComposableArchitecture.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ComposableArchitecture.md; sourceTree = "<group>"; };
-		2AF6699C2EE2052700F64240 /* CustomDump.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CustomDump.md; sourceTree = "<group>"; };
-		2AF6699D2EE2052700F64240 /* Dependencies.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Dependencies.md; sourceTree = "<group>"; };
-		2AF6699E2EE2052700F64240 /* IdentifiedCollections.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = IdentifiedCollections.md; sourceTree = "<group>"; };
-		2AF6699F2EE2052700F64240 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		2AF669A02EE2052700F64240 /* Sharing.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Sharing.md; sourceTree = "<group>"; };
-		2AF669A12EE2052700F64240 /* SnapshotTesting.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SnapshotTesting.md; sourceTree = "<group>"; };
-		2AF669A22EE2052700F64240 /* SQLiteData.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SQLiteData.md; sourceTree = "<group>"; };
-		2AF669A32EE2052700F64240 /* StructuredQueries.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = StructuredQueries.md; sourceTree = "<group>"; };
-		2AF669A42EE2052700F64240 /* SwiftNavigation.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SwiftNavigation.md; sourceTree = "<group>"; };
 		CA7D86272E7482E70018EFD6 /* Scorekeeper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scorekeeper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA7D86342E7482E90018EFD6 /* ScorekeeperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ScorekeeperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -82,30 +70,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2AF669A52EE2052700F64240 /* the-point-free-way */ = {
-			isa = PBXGroup;
-			children = (
-				2AF6699A2EE2052700F64240 /* CasePaths.md */,
-				2AF6699B2EE2052700F64240 /* ComposableArchitecture.md */,
-				2AF6699C2EE2052700F64240 /* CustomDump.md */,
-				2AF6699D2EE2052700F64240 /* Dependencies.md */,
-				2AF6699E2EE2052700F64240 /* IdentifiedCollections.md */,
-				2A36926D2F0F09CB0057E9CD /* ObservableModels.md */,
-				2AF6699F2EE2052700F64240 /* README.md */,
-				2AF669A02EE2052700F64240 /* Sharing.md */,
-				2AF669A12EE2052700F64240 /* SnapshotTesting.md */,
-				2AF669A22EE2052700F64240 /* SQLiteData.md */,
-				2AF669A32EE2052700F64240 /* StructuredQueries.md */,
-				2AF669A42EE2052700F64240 /* SwiftNavigation.md */,
-			);
-			name = "the-point-free-way";
-			path = "../the-point-free-way";
-			sourceTree = SOURCE_ROOT;
-		};
 		CA7D861E2E7482E70018EFD6 = {
 			isa = PBXGroup;
 			children = (
-				2AF669A52EE2052700F64240 /* the-point-free-way */,
 				CA7D86292E7482E70018EFD6 /* Scorekeeper */,
 				CA7D86372E7482E90018EFD6 /* ScorekeeperTests */,
 				CA7D86282E7482E70018EFD6 /* Products */,
@@ -200,6 +167,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				CA8B8C842ECCD94500F06B5C /* XCRemoteSwiftPackageReference "sqlite-data" */,
+				2A4D62782F198996000D360D /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CA7D86282E7482E70018EFD6 /* Products */;
@@ -527,12 +495,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		2A4D62782F198996000D360D /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.10.0;
+			};
+		};
 		CA8B8C842ECCD94500F06B5C /* XCRemoteSwiftPackageReference "sqlite-data" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/sqlite-data.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.0;
+				minimumVersion = 1.4.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
