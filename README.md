@@ -350,3 +350,7 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [CloudKit Sync: Finesse](0346-sync-pt7)
 1. [Tour of SQLiteData: Basics](0347-sqlite-data-tour-pt1)
 1. [Tour of SQLiteData: Querying](0348-sqlite-data-tour-pt2)
+1. [Tour of SQLiteData: Assets](0349-sqlite-data-tour-pt3)
+1. [Tour of SQLiteData: CloudKit](0350-sqlite-data-tour-pt4)
+1. [Tour of SQLiteData: Previews](0351-sqlite-data-tour-pt5)
+1. [Tour of SQLiteData: Testing](0352-sqlite-data-tour-pt6)
