@@ -354,3 +354,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Tour of SQLiteData: CloudKit](0350-sqlite-data-tour-pt4)
 1. [Tour of SQLiteData: Previews](0351-sqlite-data-tour-pt5)
 1. [Tour of SQLiteData: Testing](0352-sqlite-data-tour-pt6)
+1. [Tour of SQLiteData: Advanced Testing](0353-sqlite-data-tour-pt7)
