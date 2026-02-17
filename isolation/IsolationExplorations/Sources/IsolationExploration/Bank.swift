@@ -9,21 +9,11 @@ final class Bank: @unchecked Sendable {
     from fromID: Account.ID,
     to toID: Account.ID
   ) throws {
+    let fromAccount = try account(for: fromID)
+    let toAccount = try account(for: toID)
     try lock.withLock {
-      guard
-        let fromAccount = accounts[fromID],
-        let toAccount = accounts[toID]
-      else {
-        struct AccountNotFound: Error {}
-        throw AccountNotFound()
-      }
-      guard fromAccount.balance >= amount
-      else {
-        struct InsufficientFunds: Error {}
-        throw InsufficientFunds()
-      }
-      fromAccount.balance -= amount
-      toAccount.balance += amount
+      try fromAccount.withdraw(amount)
+      toAccount.deposit(amount)
     }
   }
 
@@ -58,6 +48,17 @@ final class Bank: @unchecked Sendable {
     init(id: UUID, balance: Int = 0) {
       self.id = id
       self.balance = balance
+    }
+    func deposit(_ amount: Int) {
+      balance += amount
+    }
+    func withdraw(_ amount: Int) throws {
+      guard balance >= amount
+      else {
+        struct InsufficientFunds: Error {}
+        throw InsufficientFunds()
+      }
+      balance -= amount
     }
   }
 }
