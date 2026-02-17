@@ -29,6 +29,7 @@ extension BaseSuite {
   struct GameFeatureTests {
     let model: GameModel
     @Dependency(\.defaultDatabase) var database
+    @Dependency(\.defaultSyncEngine) var syncEngine
 
     init() async throws {
       let game = try await #require(
@@ -93,6 +94,19 @@ extension BaseSuite {
       } changes: { rows in
         rows.remove(at: 0)
       }
+    }
+
+    @Test func sharing() async throws {
+      try await syncEngine.syncChanges()
+
+      await model.shareButtonTapped()
+      try await model.$isShared.load()
+      #expect(model.isShared)
+
+      await model.stopSharingButtonTapped()
+      try await syncEngine.syncChanges()
+      try await model.$isShared.load()
+      #expect(!model.isShared)
     }
   }
 }

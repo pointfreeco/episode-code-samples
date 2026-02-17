@@ -24,6 +24,7 @@ import SwiftUI
   var updatePlayerImageTask: Task<Void, Never>?
   var sharedRecord: SharedRecord?
   @ObservationIgnored @FetchAll var rows: [Row]
+  @ObservationIgnored @FetchOne var isShared = false
   @ObservationIgnored @Dependency(\.defaultDatabase) var database
   @ObservationIgnored @Dependency(\.defaultSyncEngine) var syncEngine
 
@@ -141,6 +142,10 @@ import SwiftUI
           .select { Row.Columns(player: $0, imageData: $1.imageData) },
         animation: .default
       )
+
+      try await $isShared.load(
+        SyncMetadata.find(game.syncMetadataID).select(\.isShared)
+      )
     }
   }
 
@@ -162,6 +167,12 @@ import SwiftUI
       // TODO: Show error to user
     }
   }
+
+  func stopSharingButtonTapped() async {
+    await withErrorReporting {
+      try await syncEngine.unshare(record: game)
+    }
+  }
 }
 
 struct GameView: View {
@@ -173,6 +184,15 @@ struct GameView: View {
 
   var body: some View {
     Form {
+      if model.isShared {
+        HStack {
+          Text("Shared with others")
+          Spacer()
+          Button("Stop sharing", role: .destructive) {
+            Task { await model.stopSharingButtonTapped() }
+          }
+        }
+      }
       if !model.$rows.isLoading, model.rows.isEmpty {
         ContentUnavailableView {
           Label("No players", systemImage: "person.3.fill")
