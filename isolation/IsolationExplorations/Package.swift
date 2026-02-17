@@ -20,5 +20,5 @@ let package = Package(
       dependencies: ["IsolationExploration"]
     ),
   ],
-  swiftLanguageModes: [.v5]
+  swiftLanguageModes: [.v6]
 )

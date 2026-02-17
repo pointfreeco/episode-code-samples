@@ -1,6 +1,7 @@
 import Foundation
 
-class Bank {
+final class Bank: @unchecked Sendable {
+  private let lock = NSLock()
   private var accounts: [Account.ID: Account] = [:]
 
   func transfer(
@@ -8,39 +9,47 @@ class Bank {
     from fromID: Account.ID,
     to toID: Account.ID
   ) throws {
-    guard
-      let fromAccount = accounts[fromID],
-      let toAccount = accounts[toID]
-    else {
-      struct AccountNotFound: Error {}
-      throw AccountNotFound()
+    try lock.withLock {
+      guard
+        let fromAccount = accounts[fromID],
+        let toAccount = accounts[toID]
+      else {
+        struct AccountNotFound: Error {}
+        throw AccountNotFound()
+      }
+      guard fromAccount.balance >= amount
+      else {
+        struct InsufficientFunds: Error {}
+        throw InsufficientFunds()
+      }
+      fromAccount.balance -= amount
+      toAccount.balance += amount
     }
-    guard fromAccount.balance >= amount
-    else {
-      struct InsufficientFunds: Error {}
-      throw InsufficientFunds()
-    }
-    fromAccount.balance -= amount
-    toAccount.balance += amount
   }
 
   func openAccount(initialDeposit: Int = 0) -> Account.ID {
-    let id = UUID()
-    accounts[id] = Account(id: id, balance: initialDeposit)
-    return id
+    lock.withLock {
+      let id = UUID()
+      accounts[id] = Account(id: id, balance: initialDeposit)
+      return id
+    }
   }
 
   var totalDeposits: Int {
-    accounts.values.reduce(into: 0) { $0 += $1.balance }
+    lock.withLock {
+      accounts.values.reduce(into: 0) { $0 += $1.balance }
+    }
   }
 
   func account(for id: Account.ID) throws -> Account {
-    guard let account = accounts[id]
-    else {
-      struct AccountNotFound: Error {}
-      throw AccountNotFound()
+    try lock.withLock {
+      guard let account = accounts[id]
+      else {
+        struct AccountNotFound: Error {}
+        throw AccountNotFound()
+      }
+      return account
     }
-    return account
   }
 
   class Account: Identifiable {
