@@ -24,4 +24,18 @@ import Testing
     }
     #expect(bank.totalDeposits == 100 * 1000)
   }
+
+  @Test func busyDepositDay() async throws {
+    let bank = Bank()
+    let id = bank.openAccount(initialDeposit: 0)
+    await withThrowingTaskGroup { group in
+      for _ in 1...1000 {
+        group.addTask {
+          let account = try bank.account(for: id)
+          account.deposit(100)
+        }
+      }
+    }
+    #expect(bank.totalDeposits == 100 * 1000)
+  }
 }

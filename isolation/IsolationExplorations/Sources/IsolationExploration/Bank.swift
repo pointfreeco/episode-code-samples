@@ -45,11 +45,13 @@ final class Bank: @unchecked Sendable {
   class Account: Identifiable {
     let id: UUID
     var balance: Int
+    var balanceHistory: [Int] = []
     init(id: UUID, balance: Int = 0) {
       self.id = id
       self.balance = balance
     }
     func deposit(_ amount: Int) {
+      balanceHistory.append(balance)
       balance += amount
     }
     func withdraw(_ amount: Int) throws {
