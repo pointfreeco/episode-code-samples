@@ -9,8 +9,8 @@ import Testing
     let id2 = bank.openAccount(initialDeposit: 100)
     try bank.transfer(amount: 50, from: id1, to: id2)
     #expect(bank.totalDeposits == 200)
-    #expect(try bank.account(for: id1).balance == 50)
-    #expect(try bank.account(for: id2).balance == 150)
+    #expect(try bank.account(for: id1) { $0.balance } == 50)
+    #expect(try bank.account(for: id2) { $0.balance } == 150)
   }
 
   @Test func newAccountRush() async {
@@ -31,8 +31,9 @@ import Testing
     await withThrowingTaskGroup { group in
       for _ in 1...1000 {
         group.addTask {
-          let account = try bank.account(for: id)
-          account.deposit(100)
+          try bank.account(for: id) { account in
+            account.deposit(100)
+          }
         }
       }
     }
