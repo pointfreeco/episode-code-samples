@@ -1,8 +1,8 @@
 import Foundation
+import os
 
-final class Bank: @unchecked Sendable {
-  private let lock = NSLock()
-  private var accounts: [Account.ID: Account] = [:]
+final class Bank: Sendable {
+  private let accounts = OSAllocatedUnfairLock<[Account.ID: Account]>(checkedState: [:])
 
   func transfer(
     amount: Int,
@@ -62,5 +62,11 @@ final class Bank: @unchecked Sendable {
       }
       balance -= amount
     }
+  }
+}
+
+extension OSAllocatedUnfairLock {
+  init(checkedState: @Sendable @autoclosure () -> State) {
+    self.init(uncheckedState: checkedStated())
   }
 }
