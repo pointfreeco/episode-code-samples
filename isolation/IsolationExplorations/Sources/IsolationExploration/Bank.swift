@@ -11,18 +11,23 @@ func exploration() {
   }
   let state = NS()
   let ns = Mutex(state)
-  ns.withLock {
-    NS(count: $0.count + 1)
-  }
-//  ns.lock()
-//  ns.unlock()
-
-  let lock = OSAllocatedUnfairLock()
-  lock.lock()
-  lock.unlock()
-
-//  let ns = OSAllocatedUnfairLock(checkedState: state)
 //  _ = state.count
+  var next: NS!
+  ns.withLock {
+    next = $0
+    $0 = NS()
+  }
+//  var count = 0
+//  Task {
+//    count += 1
+//  }
+//  count = 1
+  Task {
+    let escaped = ns.withLock { $0 }
+    print(escaped.count)
+  }
+  let escaped = ns.withLock { $0 }
+  print(escaped.count)
 }
 
 final class Bank: Sendable {
@@ -55,6 +60,16 @@ final class Bank: Sendable {
     }
   }
 
+  func account(for id: Account.ID) throws -> Account {
+    try accounts.withLock {
+      guard let account = $0[id] else {
+        struct AccountNotFound: Error {}
+        throw AccountNotFound()
+      }
+      return account
+    }
+  }
+  
   func account<R: Sendable>(for id: Account.ID, body: @Sendable (Account) -> R) throws -> R{
     try accounts.withLock {
       try body($0.account(for: id))
