@@ -1,8 +1,32 @@
 import Foundation
 import os
+import Synchronization
+
+func exploration() {
+  class NS {
+    var count = 0
+    init(count: Int = 0) {
+      self.count = count
+    }
+  }
+  let state = NS()
+  let ns = Mutex(state)
+  ns.withLock {
+    NS(count: $0.count + 1)
+  }
+//  ns.lock()
+//  ns.unlock()
+
+  let lock = OSAllocatedUnfairLock()
+  lock.lock()
+  lock.unlock()
+
+//  let ns = OSAllocatedUnfairLock(checkedState: state)
+//  _ = state.count
+}
 
 final class Bank: Sendable {
-  private let accounts = OSAllocatedUnfairLock<[Account.ID: Account]>(checkedState: [:])
+  private let accounts = Mutex<[Account.ID: Account]>([:])
 
   func transfer(
     amount: Int,
