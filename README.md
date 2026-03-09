@@ -355,3 +355,7 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Tour of SQLiteData: Previews](0351-sqlite-data-tour-pt5)
 1. [Tour of SQLiteData: Testing](0352-sqlite-data-tour-pt6)
 1. [Tour of SQLiteData: Advanced Testing](0353-sqlite-data-tour-pt7)
+1. [The Point-Free Way: Live](0354-pfw-live)
+1. [Beyond Basics: Isolation, ~Copyable, ~Escapable](0355-beyond-basics-isolation-pt1)
+1. [Beyond Basics: Superpowers](0356-beyond-basics-isolation-pt2)
+1. [Isolation: What Is It?](0357-beyond-basics-isolation-pt3)
