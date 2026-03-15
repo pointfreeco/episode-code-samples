@@ -359,3 +359,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Beyond Basics: Isolation, ~Copyable, ~Escapable](0355-beyond-basics-isolation-pt1)
 1. [Beyond Basics: Superpowers](0356-beyond-basics-isolation-pt2)
 1. [Isolation: What Is It?](0357-beyond-basics-isolation-pt3)
+1. [Isolation: Legacy Locking](0358-beyond-basics-isolation-pt4)
