@@ -1,5 +1,5 @@
 ## [Point-Free](https://www.pointfree.co)
 
-> #### This directory contains code from Point-Free Episode: [Isolation: What Is It?](https://www.pointfree.co/episodes/ep357-isolation-what-is-it)
+> #### This directory contains code from Point-Free Episode: [Isolation: Legacy Locking](https://www.pointfree.co/episodes/ep358-isolation-legacy-locking)
 >
-> What is “isolation” in Swift? We define the term based on Swift’s open “evolution” process and flesh out an example from the proposal to get an understanding of its purpose, and see how legacy tools can lead to dangerous situations at runtime.
+> We have a data race on our hands, which is exactly what Swift concurrency is supposed to solve for. Let's figure out how we managed to get into this mess, and then we will get our feet wet with an isolation tool that predates Swift concurrency: locking.
