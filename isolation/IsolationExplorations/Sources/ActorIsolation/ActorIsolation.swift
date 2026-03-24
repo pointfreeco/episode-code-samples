@@ -45,7 +45,7 @@ actor Bank {
   }
 
 
-  func account<R: Sendable>(for id: Account.ID, body: @Sendable (Account) -> R) throws -> R{
+  func account<R: Sendable>(for id: Account.ID, body: @Sendable (Account) throws -> R) throws -> R {
     try body(account(for: id))
   }
 
