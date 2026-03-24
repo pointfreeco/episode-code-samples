@@ -7,17 +7,28 @@ let package = Package(
   platforms: [.macOS(.v26)],
   products: [
     .library(
-      name: "IsolationExploration",
-      targets: ["IsolationExploration"]
+      name: "LegacyIsolation",
+      targets: ["LegacyIsolation"]
+    ),
+    .library(
+      name: "ActorIsolation",
+      targets: ["ActorIsolation"]
     )
   ],
   targets: [
     .target(
-      name: "IsolationExploration"
+      name: "LegacyIsolation"
+    ),
+    .target(
+      name: "ActorIsolation"
     ),
     .testTarget(
       name: "IsolationExplorationsTests",
-      dependencies: ["IsolationExploration"]
+      dependencies: ["LegacyIsolation"]
+    ),
+    .testTarget(
+      name: "ActorIsolationTests",
+      dependencies: ["ActorIsolation"]
     ),
   ],
   swiftLanguageModes: [.v6]
