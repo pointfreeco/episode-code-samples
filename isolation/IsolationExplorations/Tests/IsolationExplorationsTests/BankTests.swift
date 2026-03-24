@@ -1,6 +1,6 @@
 import Testing
 
-@testable import IsolationExploration
+@testable import LegacyIsolation
 
 @Suite struct BankTests {
   @Test func basics() throws {

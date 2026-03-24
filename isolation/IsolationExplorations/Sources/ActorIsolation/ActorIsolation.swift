@@ -31,6 +31,19 @@ actor Bank {
     }
     return account
   }
+  func totallyFine() throws {
+    let account = try account(for: UUID())
+    print(account.balance)
+  }
+  func take(account: Bank.Account) {
+    accounts[account.id] = account
+  }
+  func operate() {
+    let account = Bank.Account(id: UUID())
+    take(account: account)
+    print(account.balance)
+  }
+
 
   func account<R: Sendable>(for id: Account.ID, body: @Sendable (Account) -> R) throws -> R{
     try body(account(for: id))
