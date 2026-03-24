@@ -84,4 +84,32 @@ import Testing
     }
     #expect(await bank.totalDeposits == 100 * 1000)
   }
+
+  @Test func checkedTransfer() async throws {
+    let bank = Bank()
+    try await bank.run { bank in
+      let id1 = bank.openAccount(initialDeposit: 100)
+      let id2 = bank.openAccount(initialDeposit: 100)
+      Task {
+        try await Task.sleep(for: .seconds(0.5))
+        #expect(await bank.totalDeposits == 150)
+      }
+      try bank.checkedTransfer(amount: 50, from: id1, to: id2)
+      #expect(bank.totalDeposits == 200)
+    }
+  }
+}
+
+actor Foo {
+  func operate(_ bar: Bar) async {
+    await bar.operate(foo)
+  }
+  private // NB: This is very important to avoid deadlocking!
+  func do_finish() {}
+  func finish() { do_finish() }
+}
+actor Bar {
+  func operate(_ foo: Foo) async {
+    await foo.finish()
+  }
 }

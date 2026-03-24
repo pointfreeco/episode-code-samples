@@ -31,6 +31,19 @@ actor Bank: Actor {
     toAccount.deposit(amount)
   }
 
+  func checkedTransfer(
+    amount: Int,
+    from fromID: Account.ID,
+    to toID: Account.ID
+  ) async throws {
+    printFunction()
+    let fromAccount = try account(for: fromID)
+    let toAccount = try account(for: toID)
+    try fromAccount.withdraw(amount)
+    try await Task.sleep(for: .seconds(1))  // Fraud check
+    toAccount.deposit(amount)
+  }
+
   func openAccount(initialDeposit: Int = 0) -> Account.ID {
     printFunction()
     let id = UUID()
@@ -94,5 +107,5 @@ actor Bank: Actor {
 }
 
 private func printFunction(_ f: StaticString = #function) {
-  //print(f)
+  print(f)
 }
