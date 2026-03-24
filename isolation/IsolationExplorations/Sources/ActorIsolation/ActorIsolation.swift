@@ -23,12 +23,10 @@ actor Bank: Actor {
     amount: Int,
     from fromID: Account.ID,
     to toID: Account.ID
-  ) async throws {
+  ) throws {
     printFunction()
-    let fromAccount = try account(for: fromID)
-    let toAccount = try account(for: toID)
-    try await fromAccount.withdraw(amount)
-    await toAccount.deposit(amount)
+    try account(for: fromID) { try $0.withdraw(amount) }
+    try account(for: toID) { $0.deposit(amount) }
   }
 
   func checkedTransfer(
@@ -47,19 +45,17 @@ actor Bank: Actor {
   func openAccount(initialDeposit: Int = 0) -> Account.ID {
     printFunction()
     let id = UUID()
-    accounts[id] = Account(id: id, balance: initialDeposit)
+    accounts[id] = Account(id: id, balance: initialDeposit, isolation: self)
     return id
   }
 
   var totalDeposits: Int {
-    get async {
-      printFunction()
-      var sum = 0
-      for account in accounts.values {
-        sum += await account.balance
-      }
-      return sum
+    printFunction()
+    var sum = 0
+    for account in accounts.values {
+      sum += account.assumeIsolated { $0.balance }
     }
+    return sum
   }
 
   func account(for id: Account.ID) throws -> Account {
@@ -84,18 +80,27 @@ actor Bank: Actor {
 //  }
 
 
-  func account<R: Sendable>(for id: Account.ID, body: @Sendable (Account) throws -> R) throws -> R {
+  func account<R: Sendable>(for id: Account.ID, body: @Sendable (isolated Account) throws -> R) throws -> R {
     printFunction()
-    return try body(account(for: id))
+    return try account(for: id).assumeIsolated { try body($0) }
   }
 
   final actor Account: Identifiable {
     let id: UUID
     var balance: Int
     var balanceHistory: [Int] = []
-    init(id: UUID, balance: Int = 0) {
+    private let isolation: any Actor
+    fileprivate init(
+      id: UUID,
+      balance: Int = 0,
+      isolation: Bank
+    ) {
       self.id = id
       self.balance = balance
+      self.isolation = isolation
+    }
+    nonisolated var unownedExecutor: UnownedSerialExecutor {
+      isolation.unownedExecutor
     }
     func deposit(_ amount: Int) {
       balanceHistory.append(balance)

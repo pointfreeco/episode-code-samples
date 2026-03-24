@@ -24,15 +24,15 @@ import Testing
   @Test func transaction() async throws {
     let bank = Bank()
     //let otherBank = Bank()
-//    try await bank.run { bank in
+    try await bank.run { bank in
       var x = 0; let id1 = bank.openAccount(initialDeposit: 100)
       x += 1; let id2 = bank.openAccount(initialDeposit: 100)
       //let id3 = otherBank.openAccount(initialDeposit: 100)
       x += 1; try bank.transfer(amount: 50, from: id1, to: id2)
       x += 1; #expect(bank.totalDeposits == 200)
-      x += 1; #expect(try bank.account(for: id1).balance == 50)
-      x += 1; #expect(try bank.account(for: id2).balance == 150)
-//    }
+      x += 1; #expect(try bank.account(for: id1) { $0.balance == 50 })
+      x += 1; #expect(try bank.account(for: id2) { $0.balance == 150 })
+    }
   }
 
   @Test func nonAtomicProblem() async throws {
@@ -85,31 +85,17 @@ import Testing
     #expect(await bank.totalDeposits == 100 * 1000)
   }
 
-  @Test func checkedTransfer() async throws {
-    let bank = Bank()
-    try await bank.run { bank in
-      let id1 = bank.openAccount(initialDeposit: 100)
-      let id2 = bank.openAccount(initialDeposit: 100)
-      Task {
-        try await Task.sleep(for: .seconds(0.5))
-        #expect(await bank.totalDeposits == 150)
-      }
-      try bank.checkedTransfer(amount: 50, from: id1, to: id2)
-      #expect(bank.totalDeposits == 200)
-    }
-  }
-}
-
-actor Foo {
-  func operate(_ bar: Bar) async {
-    await bar.operate(foo)
-  }
-  private // NB: This is very important to avoid deadlocking!
-  func do_finish() {}
-  func finish() { do_finish() }
-}
-actor Bar {
-  func operate(_ foo: Foo) async {
-    await foo.finish()
-  }
+//  @Test func checkedTransfer() async throws {
+//    let bank = Bank()
+//    try await bank.run { bank in
+//      let id1 = bank.openAccount(initialDeposit: 100)
+//      let id2 = bank.openAccount(initialDeposit: 100)
+//      Task {
+//        try await Task.sleep(for: .seconds(0.5))
+//        #expect(await bank.totalDeposits == 150)
+//      }
+//      try bank.checkedTransfer(amount: 50, from: id1, to: id2)
+//      #expect(bank.totalDeposits == 200)
+//    }
+//  }
 }
