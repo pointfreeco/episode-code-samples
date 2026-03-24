@@ -1,13 +1,30 @@
 import Foundation
 
-actor Bank {
+final class LoggingExecutor: SerialExecutor {
+  private let queue = DispatchSerialQueue(label: "co.pointfree.logging-executor")
+  func enqueue(_ job: consuming ExecutorJob) {
+    print("-> Job enqueued: \(job.description) @ priority \(job.priority.rawValue)")
+    let unownedJob = UnownedJob(job)
+    queue.async {
+      unownedJob.runSynchronously(on: self.asUnownedSerialExecutor())
+    }
+  }
+}
+
+actor Bank: Actor {
   private var accounts: [Account.ID: Account] = [:]
+
+  let executor = LoggingExecutor()
+  nonisolated var unownedExecutor: UnownedSerialExecutor {
+    executor.asUnownedSerialExecutor()
+  }
 
   func transfer(
     amount: Int,
     from fromID: Account.ID,
     to toID: Account.ID
   ) throws {
+    printFunction()
     let fromAccount = try account(for: fromID)
     let toAccount = try account(for: toID)
     try fromAccount.withdraw(amount)
@@ -15,16 +32,19 @@ actor Bank {
   }
 
   func openAccount(initialDeposit: Int = 0) -> Account.ID {
+    printFunction()
     let id = UUID()
     accounts[id] = Account(id: id, balance: initialDeposit)
     return id
   }
 
   var totalDeposits: Int {
-    accounts.values.reduce(into: 0) { $0 += $1.balance }
+    printFunction()
+    return accounts.values.reduce(into: 0) { $0 += $1.balance }
   }
 
   func account(for id: Account.ID) throws -> Account {
+    printFunction()
     guard let account = accounts[id] else {
       struct AccountNotFound: Error {}
       throw AccountNotFound()
@@ -46,7 +66,8 @@ actor Bank {
 
 
   func account<R: Sendable>(for id: Account.ID, body: @Sendable (Account) throws -> R) throws -> R {
-    try body(account(for: id))
+    printFunction()
+    return try body(account(for: id))
   }
 
   final class Account: Identifiable {
@@ -70,4 +91,8 @@ actor Bank {
       balance -= amount
     }
   }
+}
+
+private func printFunction(_ f: StaticString = #function) {
+  //print(f)
 }

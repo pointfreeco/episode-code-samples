@@ -6,25 +6,32 @@ import Testing
 @Suite struct BankTests {
   @Test func basics() async throws {
     let bank = Bank()
-    let id1 = await bank.openAccount(initialDeposit: 100)
-    let id2 = await bank.openAccount(initialDeposit: 100)
-    try await bank.transfer(amount: 50, from: id1, to: id2)
-    #expect(await bank.totalDeposits == 200)
-    #expect(try await bank.account(for: id1) { $0.balance } == 50)
-    #expect(try await bank.account(for: id2) { $0.balance } == 150)
+    var x = 0; let id1 = await bank.openAccount(initialDeposit: 100)
+    /*x += 1; */let id2 = await bank.openAccount(initialDeposit: 100)
+    /*x += 1; */try await bank.transfer(amount: 50, from: id1, to: id2)
+    /*x += 1; */#expect(await bank.totalDeposits == 200)
+    /*x += 1; */#expect(try await bank.account(for: id1) { $0.balance } == 50)
+    /*x += 1; */#expect(try await bank.account(for: id2) { $0.balance } == 150)
+    let task1 = Task {
+      #expect(await bank.totalDeposits == 200)
+    }
+    let task2 = Task {
+      #expect(await bank.totalDeposits == 200)
+    }
+    _ = await (task1.value, task2.value)
   }
 
   @Test func transaction() async throws {
     let bank = Bank()
     let otherBank = Bank()
     try await bank.run { bank in
-      let id1 = bank.openAccount(initialDeposit: 100)
-      let id2 = bank.openAccount(initialDeposit: 100)
-      let id3 = otherBank.openAccount(initialDeposit: 100)
-      try bank.transfer(amount: 50, from: id1, to: id2)
-      #expect(bank.totalDeposits == 200)
-      #expect(try bank.account(for: id1).balance == 50)
-      #expect(try bank.account(for: id2).balance == 150)
+      var x = 0; let id1 = bank.openAccount(initialDeposit: 100)
+      x += 1; let id2 = bank.openAccount(initialDeposit: 100)
+      //let id3 = otherBank.openAccount(initialDeposit: 100)
+      x += 1; try bank.transfer(amount: 50, from: id1, to: id2)
+      x += 1; #expect(bank.totalDeposits == 200)
+      x += 1; #expect(try bank.account(for: id1).balance == 50)
+      x += 1; #expect(try bank.account(for: id2).balance == 150)
     }
   }
 
