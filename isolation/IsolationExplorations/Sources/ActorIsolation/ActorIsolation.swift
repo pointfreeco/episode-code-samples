@@ -23,12 +23,12 @@ actor Bank: Actor {
     amount: Int,
     from fromID: Account.ID,
     to toID: Account.ID
-  ) throws {
+  ) async throws {
     printFunction()
     let fromAccount = try account(for: fromID)
     let toAccount = try account(for: toID)
-    try fromAccount.withdraw(amount)
-    toAccount.deposit(amount)
+    try await fromAccount.withdraw(amount)
+    await toAccount.deposit(amount)
   }
 
   func checkedTransfer(
@@ -39,9 +39,9 @@ actor Bank: Actor {
     printFunction()
     let fromAccount = try account(for: fromID)
     let toAccount = try account(for: toID)
-    try fromAccount.withdraw(amount)
+    try await fromAccount.withdraw(amount)
     try await Task.sleep(for: .seconds(1))  // Fraud check
-    toAccount.deposit(amount)
+    await toAccount.deposit(amount)
   }
 
   func openAccount(initialDeposit: Int = 0) -> Account.ID {
@@ -52,8 +52,14 @@ actor Bank: Actor {
   }
 
   var totalDeposits: Int {
-    printFunction()
-    return accounts.values.reduce(into: 0) { $0 += $1.balance }
+    get async {
+      printFunction()
+      var sum = 0
+      for account in accounts.values {
+        sum += await account.balance
+      }
+      return sum
+    }
   }
 
   func account(for id: Account.ID) throws -> Account {
@@ -64,18 +70,18 @@ actor Bank: Actor {
     }
     return account
   }
-  func totallyFine() throws {
-    let account = try account(for: UUID())
-    print(account.balance)
-  }
-  func take(account: Bank.Account) {
-    accounts[account.id] = account
-  }
-  func operate() {
-    let account = Bank.Account(id: UUID())
-    take(account: account)
-    print(account.balance)
-  }
+//  func totallyFine() throws {
+//    let account = try account(for: UUID())
+//    print(account.balance)
+//  }
+//  func take(account: Bank.Account) {
+//    accounts[account.id] = account
+//  }
+//  func operate() {
+//    let account = Bank.Account(id: UUID())
+//    take(account: account)
+//    print(account.balance)
+//  }
 
 
   func account<R: Sendable>(for id: Account.ID, body: @Sendable (Account) throws -> R) throws -> R {
@@ -83,7 +89,7 @@ actor Bank: Actor {
     return try body(account(for: id))
   }
 
-  final class Account: Identifiable {
+  final actor Account: Identifiable {
     let id: UUID
     var balance: Int
     var balanceHistory: [Int] = []

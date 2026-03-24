@@ -23,8 +23,8 @@ import Testing
 
   @Test func transaction() async throws {
     let bank = Bank()
-    let otherBank = Bank()
-    try await bank.run { bank in
+    //let otherBank = Bank()
+//    try await bank.run { bank in
       var x = 0; let id1 = bank.openAccount(initialDeposit: 100)
       x += 1; let id2 = bank.openAccount(initialDeposit: 100)
       //let id3 = otherBank.openAccount(initialDeposit: 100)
@@ -32,7 +32,7 @@ import Testing
       x += 1; #expect(bank.totalDeposits == 200)
       x += 1; #expect(try bank.account(for: id1).balance == 50)
       x += 1; #expect(try bank.account(for: id2).balance == 150)
-    }
+//    }
   }
 
   @Test func nonAtomicProblem() async throws {
