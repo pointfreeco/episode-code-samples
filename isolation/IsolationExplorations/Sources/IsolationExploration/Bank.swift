@@ -2,34 +2,6 @@ import Foundation
 import os
 import Synchronization
 
-func exploration() {
-  class NS {
-    var count = 0
-    init(count: Int = 0) {
-      self.count = count
-    }
-  }
-  let state = NS()
-  let ns = Mutex(state)
-//  _ = state.count
-  var next: NS!
-  ns.withLock {
-    next = $0
-    $0 = NS()
-  }
-//  var count = 0
-//  Task {
-//    count += 1
-//  }
-//  count = 1
-  Task {
-    let escaped = ns.withLock { $0 }
-    print(escaped.count)
-  }
-  let escaped = ns.withLock { $0 }
-  print(escaped.count)
-}
-
 final class Bank: Sendable {
   private let accounts = Mutex<[Account.ID: Account]>([:])
 
@@ -56,7 +28,7 @@ final class Bank: Sendable {
 
   var totalDeposits: Int {
     accounts.withLock {
-      $0.values.reduce(into: 0) { $0 += $1.balance }
+      $0.values.reduce(into: 0) { $0 += $1.state.withLock(\.balance) }
     }
   }
 
@@ -76,25 +48,32 @@ final class Bank: Sendable {
     }
   }
 
-  class Account: Identifiable {
+  final class Account: Identifiable, Sendable {
     let id: UUID
-    var balance: Int
-    var balanceHistory: [Int] = []
+    let state: Mutex<State>
+    struct State {
+      var balance: Int
+      var balanceHistory: [Int] = []
+    }
     init(id: UUID, balance: Int = 0) {
       self.id = id
-      self.balance = balance
+      state = Mutex(State(balance: balance))
     }
     func deposit(_ amount: Int) {
-      balanceHistory.append(balance)
-      balance += amount
+      state.withLock {
+        $0.balanceHistory.append($0.balance)
+        $0.balance += amount
+      }
     }
     func withdraw(_ amount: Int) throws {
-      guard balance >= amount
-      else {
-        struct InsufficientFunds: Error {}
-        throw InsufficientFunds()
+      try state.withLock {
+        guard $0.balance >= amount
+        else {
+          struct InsufficientFunds: Error {}
+          throw InsufficientFunds()
+        }
+        $0.balance -= amount
       }
-      balance -= amount
     }
   }
 }
