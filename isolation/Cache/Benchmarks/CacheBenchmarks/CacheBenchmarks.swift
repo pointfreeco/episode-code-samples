@@ -3,9 +3,6 @@ import Cache
 import Foundation
 
 let benchmarks: @Sendable () -> Void = {
-  var mutexCache: MutexCache<Int, Int>!
-  var actorCache: ActorCache<Int, Int>!
-  
   let configuration = Benchmark.Configuration(
     metrics: [
       .throughput,
@@ -13,32 +10,13 @@ let benchmarks: @Sendable () -> Void = {
       .wallClock,
       .cpuTotal
     ],
-    warmupIterations: 10,
-    setup: {
-      actorCache = ActorCache()
-      mutexCache = MutexCache()
-    },
-    teardown: {
-      actorCache = nil
-      mutexCache = nil
-    }
+    warmupIterations: 10
   )
 
   Benchmark(
-    "MutexCache.get",
+    "Array map",
     configuration: configuration
-  ) { benchmark in
-    for key in 1...10_000 {
-      blackHole(mutexCache.get(key))
-    }
-  }
-
-  Benchmark(
-    "ActorCache.get",
-    configuration: configuration
-  ) { benchmark async in
-    for key in 1...10_000 {
-      blackHole(await actorCache.get(key))
-    }
+  ) { _ in
+    precondition(Array(1...100).map { $0 + 1 } == Array(2...101))
   }
 }
