@@ -1,12 +1,8 @@
-import Synchronization
-
-public let cacheSize = 10_000_000
-
-public final class MutexCache<Key: Hashable & Sendable, Value: Sendable>: Sendable {
-  private let cache: Mutex<[Key: Value]>
+public actor ActorCache<Key: Hashable & Sendable, Value: Sendable> {
+  private var cache: [Key: Value] = [:]
 
   public init(initialCache: [Key: Value]) {
-    cache = Mutex(initialCache)
+    cache = initialCache
   }
 
   public init() where Key == Int, Value == Int {
@@ -15,30 +11,22 @@ public final class MutexCache<Key: Hashable & Sendable, Value: Sendable>: Sendab
     for value in 0..<cacheSize {
       initialCache[value] = value
     }
-    cache = Mutex(initialCache)
+    cache = initialCache
   }
 
   public func keys() -> some Collection<Key> {
-    cache.withLock {
-      $0.keys
-    }
+    cache.keys
   }
 
   public func get(_ key: Key) -> Value? {
-    cache.withLock {
-      $0[key]
-    }
+    cache[key]
   }
 
   public func set(_ key: Key, value: Value) {
-    cache.withLock {
-      $0[key] = value
-    }
+    cache[key] = value
   }
 
   public func remove(_ key: Key) {
-    cache.withLock {
-      $0[key] = nil
-    }
+    cache[key] = nil
   }
 }
