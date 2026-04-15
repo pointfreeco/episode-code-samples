@@ -361,3 +361,6 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Isolation: What Is It?](0357-beyond-basics-isolation-pt3)
 1. [Isolation: Legacy Locking](0358-beyond-basics-isolation-pt4)
 1. [Isolation: OSUnfairAllocatedLock](0359-beyond-basics-isolation-pt5)
+1. [Isolation: Mutex](0360-beyond-basics-isolation-pt6)
+1. [Isolation: Actors](0361-beyond-basics-isolation-pt7)
+1. [Isolation: Actor Enqueuing](0362-beyond-basics-isolation-pt8)
