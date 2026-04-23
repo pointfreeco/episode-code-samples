@@ -364,3 +364,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Isolation: Mutex](0360-beyond-basics-isolation-pt6)
 1. [Isolation: Actors](0361-beyond-basics-isolation-pt7)
 1. [Isolation: Actor Enqueuing](0362-beyond-basics-isolation-pt8)
+1. [Isolation: Actor Reentrancy](0363-beyond-basics-isolation-pt9)
