@@ -1,5 +1,7 @@
 import Foundation
 
+nonisolated(nonsending) func operation() async {}
+
 final class LoggingExecutor: SerialExecutor {
   private let queue = DispatchSerialQueue(label: "co.pointfree.logging-executor")
   func enqueue(_ job: consuming ExecutorJob) {
@@ -11,8 +13,19 @@ final class LoggingExecutor: SerialExecutor {
   }
 }
 
+func accessExecutor(bank: Bank) /* async */ {
+  _ = bank.unownedExecutor
+}
+func check(bank: Bank) /* async */ {
+  _ = bank.routingNumber
+}
+
 actor Bank: Actor {
   private var accounts: [Account.ID: Account] = [:]
+  let routingNumber: String
+  init(routingNumber: String = "1212121212") {
+    self.routingNumber = routingNumber
+  }
 
   let executor = LoggingExecutor()
   nonisolated var unownedExecutor: UnownedSerialExecutor {
