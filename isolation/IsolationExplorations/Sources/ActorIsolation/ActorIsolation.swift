@@ -37,15 +37,15 @@ actor Bank: Actor {
     printFunction()
     let fromAccount = try account(for: fromID)
     let toAccount = try account(for: toID)
-    try await fromAccount.withdraw(amount)
+    try fromAccount.withdraw(amount)
     try await Task.sleep(for: .seconds(1))  // Fraud check
-    await toAccount.deposit(amount)
+    toAccount.deposit(amount)
   }
 
   func openAccount(initialDeposit: Int = 0) -> Account.ID {
     printFunction()
     let id = UUID()
-    accounts[id] = Account(id: id, balance: initialDeposit, isolation: self)
+    accounts[id] = Account(id: id, balance: initialDeposit)
     return id
   }
 
@@ -53,7 +53,7 @@ actor Bank: Actor {
     printFunction()
     var sum = 0
     for account in accounts.values {
-      sum += account.assumeIsolated { $0.balance }
+      sum += account.balance
     }
     return sum
   }
@@ -80,33 +80,27 @@ actor Bank: Actor {
 //  }
 
 
-  func account<R: Sendable>(for id: Account.ID, body: @Sendable (isolated Account) throws -> R) throws -> R {
+  func account<R: Sendable>(for id: Account.ID, body: @Sendable (Account) throws -> R) throws -> R {
     printFunction()
-    return try account(for: id).assumeIsolated { try body($0) }
+    return try body(account(for: id))
   }
 
-  final actor Account: Identifiable {
+  final class Account: Identifiable {
     let id: UUID
     var balance: Int
     var balanceHistory: [Int] = []
-    private let isolation: any Actor
     fileprivate init(
       id: UUID,
-      balance: Int = 0,
-      isolation: Bank
+      balance: Int = 0
     ) {
       self.id = id
       self.balance = balance
-      self.isolation = isolation
     }
-    nonisolated var unownedExecutor: UnownedSerialExecutor {
-      isolation.unownedExecutor
-    }
-    func deposit(_ amount: Int) {
+    nonisolated func deposit(_ amount: Int) {
       balanceHistory.append(balance)
       balance += amount
     }
-    func withdraw(_ amount: Int) throws {
+    nonisolated func withdraw(_ amount: Int) throws {
       guard balance >= amount
       else {
         struct InsufficientFunds: Error {}
@@ -114,8 +108,46 @@ actor Bank: Actor {
       }
       balance -= amount
     }
+    nonisolated(nonsending)
+    private func prepareHistory() async throws -> Data {
+      Data()
+    }
+    nonisolated(nonsending)
+    private func writeHistory(data: Data) async throws -> URL {
+      .temporaryDirectory
+    }
+    nonisolated(nonsending)
+    func exportHistory() async throws -> URL {
+      let data = try await prepareHistory()
+      return try await writeHistory(data: data)
+    }
+  }
+
+  func export() async throws -> URL {
+    printIsolation()
+    for account in accounts.values {
+      _ = try await account.exportHistory()
+    }
+    return .temporaryDirectory
   }
 }
+
+private func printIsolation(
+  function: StaticString = #function,
+  isolation: (any Actor)? = #isolation
+) {
+  print(
+    function,
+    "\(isolation as (any Actor)?, default: "nonisolated")",
+    "\((isolation as (any Actor)?).map(ObjectIdentifier.init), default: "nonisolated")",
+  )
+}
+
+//@MainActor
+//func tryOutExport(account: Bank.Account) async throws {
+////  let account = Bank.Account(id: UUID(), balance: 100)
+//  _ = try await account.exportHistory()
+//}
 
 private func printFunction(_ f: StaticString = #function) {
   print(f)

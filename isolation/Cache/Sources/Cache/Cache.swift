@@ -59,7 +59,7 @@ public actor ActorCache<Key: Hashable & Sendable, Value: Sendable> {
     cache = initialCache
   }
 
-  public func keys() -> some Collection<Key> {
+  public func keys() -> some Collection<Key> & Sendable {
     cache.keys
   }
 
@@ -73,5 +73,11 @@ public actor ActorCache<Key: Hashable & Sendable, Value: Sendable> {
 
   public func remove(_ key: Key) {
     cache[key] = nil
+  }
+}
+
+extension Actor {
+  public func run<R, Failure: Error>(_ body: @Sendable (isolated Self) throws(Failure) -> R) throws(Failure) -> R {
+    try body(self)
   }
 }

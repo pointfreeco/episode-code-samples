@@ -20,7 +20,10 @@ let package = Package(
       name: "LegacyIsolation"
     ),
     .target(
-      name: "ActorIsolation"
+      name: "ActorIsolation",
+      swiftSettings: [
+//        .enableUpcomingFeature("NonisolatedNonsendingByDefault")
+      ]
     ),
     .testTarget(
       name: "IsolationExplorationsTests",

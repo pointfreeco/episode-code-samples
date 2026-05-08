@@ -98,4 +98,10 @@ import Testing
 //      #expect(bank.totalDeposits == 200)
 //    }
 //  }
+
+  @Test func export() async throws {
+    let bank = Bank()
+    let id = await bank.openAccount(initialDeposit: 100)
+    _ = try await bank.export()
+  }
 }
