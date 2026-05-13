@@ -22,7 +22,8 @@ let package = Package(
     .target(
       name: "ActorIsolation",
       swiftSettings: [
-//        .enableUpcomingFeature("NonisolatedNonsendingByDefault")
+        //.enableUpcomingFeature("NonisolatedNonsendingByDefault")
+        .enableUpcomingFeature("InferIsolatedConformances")
       ]
     ),
     .testTarget(

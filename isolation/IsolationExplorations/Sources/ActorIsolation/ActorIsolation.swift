@@ -16,11 +16,27 @@ final class LoggingExecutor: SerialExecutor {
 func accessExecutor(bank: Bank) /* async */ {
   _ = bank.unownedExecutor
 }
-func check(bank: Bank) /* async */ {
-  _ = bank.routingNumber
+@MainActor
+func check(bank: Bank) async {
+  bank.asyncMethod()
+  let erased = bank as any MyProtocol
+  erased.syncMethod()
+  await erased.asyncMethod()
 }
 
-actor Bank: Actor {
+protocol MyProtocol {
+  func syncMethod()
+  func asyncMethod() async
+}
+
+@MainActor
+class Bank: MyProtocol {
+  func syncMethod() {
+    print(accounts)
+  }
+  func asyncMethod() {
+    print(accounts)
+  }
   private var accounts: [Account.ID: Account] = [:]
   let routingNumber: String
   init(routingNumber: String = "1212121212") {
