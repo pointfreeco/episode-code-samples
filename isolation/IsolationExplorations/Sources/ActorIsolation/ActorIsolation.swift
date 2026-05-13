@@ -79,19 +79,6 @@ actor Bank: Actor {
     }
     return account
   }
-//  func totallyFine() throws {
-//    let account = try account(for: UUID())
-//    print(account.balance)
-//  }
-//  func take(account: Bank.Account) {
-//    accounts[account.id] = account
-//  }
-//  func operate() {
-//    let account = Bank.Account(id: UUID())
-//    take(account: account)
-//    print(account.balance)
-//  }
-
 
   func account<R: Sendable>(for id: Account.ID, body: @Sendable (Account) throws -> R) throws -> R {
     printFunction()
@@ -102,7 +89,7 @@ actor Bank: Actor {
     let id: UUID
     var balance: Int
     var balanceHistory: [Int] = []
-    fileprivate init(
+    init(
       id: UUID,
       balance: Int = 0
     ) {
@@ -156,12 +143,7 @@ private func printIsolation(
   )
 }
 
-//@MainActor
-//func tryOutExport(account: Bank.Account) async throws {
-////  let account = Bank.Account(id: UUID(), balance: 100)
-//  _ = try await account.exportHistory()
-//}
-
 private func printFunction(_ f: StaticString = #function) {
   print(f)
 }
+
