@@ -69,7 +69,7 @@ func functionMerging() async throws {
     account1.balance += 1
   }
   // [{(account1, account2, result), Task}]
-  result.balance += 1
+//  result.balance += 1
 }
 
 func alias() {
@@ -108,5 +108,64 @@ func closureMerging() {
     f()
   }
   // [{(account1, account2, f), Task}]
-  account1.balance += 1
+//  account1.balance += 1
+}
+
+func controlFlow() {
+  let account1 = Bank.Account(id: UUID())
+  // [(account1)]
+  let account2 = Bank.Account(id: UUID())
+  // [(account1), (account2)]
+  if Bool.random() {
+    _ = linkAccounts(account1, account2)
+    // [(account1, account2)]
+  }
+  // [(account1, account2)]
+//  Task { account1.balance += 1 }
+//  Task { account2.balance += 1 }
+}
+
+func invalidRegions() async {
+  let chase = Bank()
+  let boa = Bank()
+  let account = Bank.Account(id: UUID())
+  // [{(), chase}, {(), boa}, (account)]
+
+  switch Bool.random() {
+  case true:
+    await chase.transfer(account: account)
+    // [{(account), chase}, {(), boa}]
+  case false:
+    await boa.transfer(account: account)
+    // [{(), chase}, {(account), boa}]
+  }
+
+  // [{(), chase}, {(), boa}, {(account), invalid}]
+  account.balance += 1
+}
+
+func guardRegions() async {
+  let chase = Bank()
+  let boa = Bank()
+  let account = Bank.Account(id: UUID())
+  // [{(), chase}, {(), boa}, (account)]
+
+  guard Bool.random()
+  else {
+    await boa.transfer(account: account)
+    // [{(), chase}, {(account), boa}]
+    return
+  }
+
+  await chase.transfer(account: account)
+  // [{(account), chase}, {(), boa}]
+//  account.balance += 1
+}
+
+func loopRegions() async {
+  let bank = Bank()
+  let account = Bank.Account(id: UUID())
+  while true {
+    await bank.transfer(account: account)
+  }
 }
