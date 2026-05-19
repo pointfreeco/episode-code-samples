@@ -7,6 +7,10 @@ let package = Package(
   platforms: [.macOS(.v26)],
   products: [
     .library(
+      name: "MyApp",
+      targets: ["MyApp"]
+    ),
+    .library(
       name: "LegacyIsolation",
       targets: ["LegacyIsolation"]
     ),
@@ -16,6 +20,14 @@ let package = Package(
     )
   ],
   targets: [
+    .target(
+      name: "MyApp",
+      swiftSettings: [
+        .defaultIsolation(MainActor.self),
+        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+        .enableUpcomingFeature("InferIsolatedConformances"),
+      ]
+    ),
     .target(
       name: "LegacyIsolation"
     ),
