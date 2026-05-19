@@ -41,6 +41,7 @@ func accessBankAccount() async throws {
   let bank = Bank()
   let id = await bank.openAccount()
   let account = try await bank.close(accountID: id)
+  _ = account
   // [(account)]
 }
 
@@ -103,4 +104,32 @@ func sendingTaskGroup() async {
       account.balance += 1
     }
   }
+}
+
+import Synchronization
+
+func mutex() {
+  let account = Mutex(Bank.Account(id: UUID()))
+  let escapedAccount = account.withLock {
+    // [($0)]
+    let escaped = $0
+    // [($0, escaped)]
+    let newAccount = Bank.Account(id: UUID())
+    // [($0, escaped), (newAccount)]
+    $0 = newAccount
+    // [(escaped), ($0, newAccount)]
+    return escaped
+  }
+
+  // (inout sending A) -> sending R
+  // (sending A) -> (sending A, sending R)
+
+//  let newAccount = account.withLock {
+//    let newAccount = Bank.Account(id: UUID(), balance: $0.balance)
+//    // [(newAccount)]
+//    return newAccount
+//  }
+//  // [(newAccount)]
+//  newAccount.balance += 1
+//  Task { newAccount.balance += 1 }
 }
