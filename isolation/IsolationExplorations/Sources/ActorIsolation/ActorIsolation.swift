@@ -38,8 +38,19 @@ actor Bank {
   }
   var accounts: [Account.ID: Account] = [:]
   let routingNumber: String
-  init(routingNumber: String = "1212121212") {
+  init(
+    routingNumber: String = "1212121212",
+    accounts: [Account] = []
+  ) {
     self.routingNumber = routingNumber
+    self.accounts = Dictionary(accounts.map { ($0.id, $0) }, uniquingKeysWith: { $1 })
+  }
+
+  init(
+    routingNumber: String = "1212121212",
+    account: Account
+  ) {
+    self.init(routingNumber: routingNumber, accounts: [account])
   }
 
   let executor = LoggingExecutor()
