@@ -80,3 +80,27 @@ func transferBetweenBanks() async throws {
   await boa.transfer(account: closedAccount)
   // [{(), chase}, {(closedAccount), boa})]
 }
+
+func nonisolatedAsync(account: Bank.Account) async {
+  // [{(account), Task}]
+}
+
+func taskCapture() {
+  let account = Bank.Account(id: UUID())
+  // [(account)]
+  let f = {
+    account.balance += 1
+  }
+  // [(account, f)]
+  Task(operation: f)
+  // [{(account, f), Task}]
+}
+
+func sendingTaskGroup() async {
+  nonisolated(unsafe) let account = Bank.Account(id: UUID())
+  await withTaskGroup { group in
+    group.addTask {
+      account.balance += 1
+    }
+  }
+}
