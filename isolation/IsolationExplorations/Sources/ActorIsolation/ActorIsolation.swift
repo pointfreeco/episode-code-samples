@@ -103,6 +103,7 @@ actor Bank {
       struct AccountNotFound: Error {}
       throw AccountNotFound()
     }
+    // [{(account), self}]
     return account
   }
 
