@@ -21,7 +21,13 @@ let package = Package(
   ],
   targets: [
     .target(
+      name: "MyLibrary",
+    ),
+    .target(
       name: "MyApp",
+      dependencies: [
+        "MyLibrary",
+      ],
       swiftSettings: [
         .defaultIsolation(MainActor.self),
         .enableUpcomingFeature("NonisolatedNonsendingByDefault"),

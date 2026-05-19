@@ -1,21 +1,20 @@
+import MyLibrary
+
 // @MainActor
 final class Model {
+
+}
+nonisolated extension Model: MyProtocol {
   func operate() {}
 }
 
-nonisolated func test() {
+//nonisolated
+func test() async {
   let model = Model()
   model.operate()
+  await launder(model)
 }
 
-actor Bank {
-  var totalDeposits: Int {
-    0
-  }
-}
-
-// @MainActor
-func bank() {
-  let bank = Bank()
-  bank.totalDeposits
+@concurrent func launder(_ model: some MyProtocol) async {
+  model.operate()
 }
