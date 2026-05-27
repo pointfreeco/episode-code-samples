@@ -365,3 +365,7 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Isolation: Actors](0361-beyond-basics-isolation-pt7)
 1. [Isolation: Actor Enqueuing](0362-beyond-basics-isolation-pt8)
 1. [Isolation: Actor Reentrancy](0363-beyond-basics-isolation-pt9)
+1. [Isolation: Performance](0364-beyond-basics-isolation-pt10)
+1. [Isolation: Approachability](0365-beyond-basics-isolation-pt11)
+1. [Isolation: Regions](0366-beyond-basics-isolation-pt12)
+1. [Isolation: Sending Values](0367-beyond-basics-isolation-pt13)
