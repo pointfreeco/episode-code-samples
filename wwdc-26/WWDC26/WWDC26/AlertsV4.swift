@@ -11,11 +11,16 @@ final class AlertsV4ViewController: UIViewController {
     case archive
   }
 
-  var alertAction: Action? {
-    didSet {
-      print("didSet", alertAction)
-    }
-  }
+  var alertAction: Action?
+  var status: String?
+
+  let statusLabel: UILabel = {
+    let label = UILabel()
+    label.font = .systemFont(ofSize: 16)
+    return label
+  }()
+  @ObservationIgnored
+  var observationToken: ObservationTracking.Token?
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -56,6 +61,7 @@ final class AlertsV4ViewController: UIViewController {
     let stackView = UIStackView(arrangedSubviews: [
       deleteButton,
       archiveButton,
+      statusLabel,
     ])
     stackView.axis = .vertical
     stackView.spacing = 16
@@ -74,12 +80,15 @@ final class AlertsV4ViewController: UIViewController {
       ),
     ])
 
+    observe { [unowned self] in
+      statusLabel.text = status
+      statusLabel.alpha = status == nil ? 0 : 1
+      statusLabel.isHidden = status == nil ? true : false
+    }
+
     @UIBindable var `self` = self
 
-    //    @Environment(Library.self) var library
-    //    @Bindable var library = library
-
-    present(item: $self.alertAction) { $action in
+    present(item: $self.alertAction) { [unowned self] $action in
       let controller = UIAlertController(
         title: {
           switch action {
@@ -102,8 +111,10 @@ final class AlertsV4ViewController: UIViewController {
       switch $action.cases {
       case .delete(let $confirmation):
         controller.addAction(
-          UIAlertAction(title: "Confirm", style: .destructive) { _ in
-            print($confirmation.wrappedValue == "pointfreeco" ? "✅" : "🛑")
+          UIAlertAction(title: "Confirm", style: .destructive) { [unowned self] _ in
+            withUIKitAnimation {
+              self.status = $confirmation.wrappedValue == "pointfreeco" ? "✅ Deleted" : "🛑 Confirmation failed"
+            }
           }
         )
         controller.addTextField { textField in
@@ -113,8 +124,8 @@ final class AlertsV4ViewController: UIViewController {
         }
       case .archive:
         controller.addAction(
-          UIAlertAction(title: "Confirm", style: .default) { _ in
-
+          UIAlertAction(title: "Confirm", style: .default) { [unowned self] _ in
+            self.status = nil
           }
         )
       }
