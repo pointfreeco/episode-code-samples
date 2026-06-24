@@ -15,7 +15,7 @@ struct AlertsV1View: View {
       Section {
         Button("Delete") {
           alertAction = .delete
-          Task {
+          _ = Task {
             try await Task.sleep(for: .seconds(1))
             alertAction = .archive
           }

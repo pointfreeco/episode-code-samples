@@ -15,7 +15,7 @@ struct AlertsV2View: View {
       Section {
         Button("Delete") {
           alertAction = .delete
-          Task {
+          _ = Task {
             try await Task.sleep(for: .seconds(1))
             alertAction = .archive
           }
@@ -33,7 +33,7 @@ struct AlertsV2View: View {
     .alert("Delete", isPresented: $deleteAlertIsPresented) {
       Button("Confirm", role: .destructive) {
       }
-      Button("Cancel" /*, role: .default*/) {}
+      Button("Cancel") {}
       TextField("pointfreeco", text: .constant(""))
         .textInputAutocapitalization(.never)
     } message: {
@@ -66,35 +66,6 @@ struct AlertsV2View: View {
         Text("Do you want to archive?")
       }
     }
-
-    //    .alert(
-    //      alertAction.map {
-    //        switch $0 {
-    //        case .delete: "Delete"
-    //        case .archive: "Archive"
-    //        }
-    //      }
-    //      ?? "",
-    //      isPresented: $alertActionIsPresented,
-    //      presenting: alertAction
-    //    ) { action in
-    //      switch action {
-    //      case .delete:
-    //        Button("Confirm", role: .destructive) {}
-    //        TextField("pointfreeco", text: .constant(""))
-    //          .textInputAutocapitalization(.never)
-    //      case .archive:
-    //        Button("Confirm") {}
-    //        Button(role: .cancel) {}
-    //      }
-    //    } message: { action in
-    //      switch action {
-    //      case .delete:
-    //        Text("Confirm name to delete")
-    //      case .archive:
-    //        Text("Do you want to archive?")
-    //      }
-    //    }
   }
 }
 
