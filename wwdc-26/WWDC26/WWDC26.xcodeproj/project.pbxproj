@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4B0DAD102FEC52D00026C07A /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 4B0DAD0F2FEC52D00026C07A /* SwiftUINavigation */; };
+		4B0DAD202FEC6CA80026C07A /* UIKitNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 4B0DAD1F2FEC6CA80026C07A /* UIKitNavigation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				4B0DAD102FEC52D00026C07A /* SwiftUINavigation in Frameworks */,
+				4B0DAD202FEC6CA80026C07A /* UIKitNavigation in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -36,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000010 /* WWDC26 */,
+				4B0DAD1E2FEC6CA80026C07A /* Frameworks */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +49,13 @@
 				000000000000000000000120 /* WWDC26.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		4B0DAD1E2FEC6CA80026C07A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -67,6 +77,7 @@
 			name = WWDC26;
 			packageProductDependencies = (
 				4B0DAD0F2FEC52D00026C07A /* SwiftUINavigation */,
+				4B0DAD1F2FEC6CA80026C07A /* UIKitNavigation */,
 			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* WWDC26.app */;
@@ -372,6 +383,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4B0DAD0E2FEC52D00026C07A /* XCRemoteSwiftPackageReference "swift-navigation" */;
 			productName = SwiftUINavigation;
+		};
+		4B0DAD1F2FEC6CA80026C07A /* UIKitNavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B0DAD0E2FEC52D00026C07A /* XCRemoteSwiftPackageReference "swift-navigation" */;
+			productName = UIKitNavigation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

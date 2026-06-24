@@ -1,10 +1,13 @@
 import Playgrounds
 import SwiftUI
+import UIKitNavigation
 
 @main struct MyApp: App {
   var body: some Scene {
     WindowGroup {
-      AlertsV3View()
+      UIViewControllerRepresenting {
+        AlertsV4ViewController()
+      }
     }
   }
 }
