@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 90;
+	objectVersion = 100;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -362,6 +362,7 @@
 				minimumVersion = 2.10.1;
 			};
 			traits = (
+				CasePaths,
 			);
 		};
 /* End XCRemoteSwiftPackageReference section */
