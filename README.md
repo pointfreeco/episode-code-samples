@@ -369,3 +369,6 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Isolation: Approachability](0365-beyond-basics-isolation-pt11)
 1. [Isolation: Regions](0366-beyond-basics-isolation-pt12)
 1. [Isolation: Sending Values](0367-beyond-basics-isolation-pt13)
+1. [Isolation: Sending Closures](0368-beyond-basics-isolation-pt14)
+1. [Isolation: MainActor Default](0369-beyond-basics-isolation-pt15)
+1. [WWDC26: Alerts](0370-wwdc26-pt1)
