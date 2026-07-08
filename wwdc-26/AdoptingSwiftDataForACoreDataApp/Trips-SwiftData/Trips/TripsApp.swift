@@ -5,17 +5,17 @@ Abstract:
 The SwiftUI app.
 */
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct TripsApp: App {
-    let modelContainer = DataModel.shared.modelContainer
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .modelContainer(modelContainer)
+  let modelContainer = DataModel.shared.modelContainer
+
+  var body: some Scene {
+    WindowGroup {
+      ContentView()
     }
+    .modelContainer(modelContainer)
+  }
 }

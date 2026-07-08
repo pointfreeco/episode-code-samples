@@ -3,7 +3,7 @@ import UIKit
 import UIKitNavigation
 
 @Observable
-final class AlertsV4ViewController: UIViewController {
+final class AlertsV4Model {
   @CaseBindable
   enum Action: Identifiable {
     var id: some Hashable { Self.allCasePaths[self] }
@@ -12,7 +12,39 @@ final class AlertsV4ViewController: UIViewController {
   }
 
   var alertAction: Action?
+  var count = 0
   var status: String?
+  func deleteButtonTapped() {
+    alertAction = .delete(confirmation: "")
+  }
+  func archiveButtonTapped() {
+    alertAction = .archive
+  }
+  func confirmDeleteButtonTapped() {
+    withUIKitAnimation {
+      switch alertAction {
+      case .delete(let confirmation):
+        status = confirmation == "pointfreeco" ? "✅ Deleted" : "🛑 Confirmation failed"
+      case .archive, .none:
+        break
+      }
+    }
+  }
+  func confirmArchiveButtonTapped() {
+    status = nil
+  }
+  func decrementButtonTapped() {
+    count -= 1
+  }
+  func incrementButtonTapped() {
+    withUITransaction(\.animateCount, true) {
+      count += 1
+    }
+  }
+}
+
+final class AlertsV4ViewController: UIViewController {
+  @UIBindable var model = AlertsV4Model()
 
   let statusLabel: UILabel = {
     let label = UILabel()
@@ -34,7 +66,7 @@ final class AlertsV4ViewController: UIViewController {
       let button = UIButton(configuration: configuration)
       button.addAction(
         UIAction { [unowned self] _ in
-          alertAction = .delete(confirmation: "")
+          model.deleteButtonTapped()
         },
         for: .touchUpInside
       )
@@ -48,17 +80,65 @@ final class AlertsV4ViewController: UIViewController {
       let button = UIButton(configuration: configuration)
       button.addAction(
         UIAction { [unowned self] _ in
-          alertAction = .archive
+          model.archiveButtonTapped()
         },
         for: .touchUpInside
       )
       return button
     }()
 
+    let countLabel: UILabel = {
+      let label = UILabel()
+      label.font = .systemFont(ofSize: 24, weight: .semibold)
+      label.textAlignment = .center
+      return label
+    }()
+    let decrementButton: UIButton = {
+      var configuration = UIButton.Configuration.filled()
+      configuration.title = "-"
+      configuration.cornerStyle = .large
+
+      let button = UIButton(configuration: configuration)
+      button.addAction(
+        UIAction { [unowned self] _ in
+//          withUITransaction(\.animateCount, true) {
+          model.decrementButtonTapped()
+//          }
+        },
+        for: .touchUpInside
+      )
+      return button
+    }()
+    let incrementButton: UIButton = {
+      var configuration = UIButton.Configuration.filled()
+      configuration.title = "+"
+      configuration.cornerStyle = .large
+
+      let button = UIButton(configuration: configuration)
+      button.addAction(
+        UIAction { [unowned self] _ in
+          model.incrementButtonTapped()
+        },
+        for: .touchUpInside
+      )
+      return button
+    }()
+    let countButtonsStackView = UIStackView(
+      arrangedSubviews: [
+        decrementButton,
+        incrementButton,
+      ]
+    )
+    countButtonsStackView.axis = .horizontal
+    countButtonsStackView.spacing = 16
+    countButtonsStackView.distribution = .fillEqually
+
     self.title = "Alerts V4"
     view.backgroundColor = .systemBackground
 
     let stackView = UIStackView(arrangedSubviews: [
+      countLabel,
+      countButtonsStackView,
       deleteButton,
       archiveButton,
       statusLabel,
@@ -80,15 +160,20 @@ final class AlertsV4ViewController: UIViewController {
       ),
     ])
 
-    observe { [unowned self] in
-      statusLabel.text = status
-      statusLabel.alpha = status == nil ? 0 : 1
-      statusLabel.isHidden = status == nil ? true : false
+    observe { [unowned self] transaction in
+      if transaction.animateCount {
+        UIView.transition(with: countLabel, duration: 0.2, options: .transitionCrossDissolve) {
+          countLabel.text = "\(model.count)"
+        }
+      } else {
+        countLabel.text = "\(model.count)"
+      }
+      statusLabel.text = model.status
+      statusLabel.alpha = model.status == nil ? 0 : 1
+      statusLabel.isHidden = model.status == nil ? true : false
     }
 
-    @UIBindable var `self` = self
-
-    present(item: $self.alertAction) { [unowned self] $action in
+    present(item: $model.alertAction) { [unowned self] $action in
       let controller = UIAlertController(
         title: {
           switch action {
@@ -112,9 +197,7 @@ final class AlertsV4ViewController: UIViewController {
       case .delete(let $confirmation):
         controller.addAction(
           UIAlertAction(title: "Confirm", style: .destructive) { [unowned self] _ in
-            withUIKitAnimation {
-              self.status = $confirmation.wrappedValue == "pointfreeco" ? "✅ Deleted" : "🛑 Confirmation failed"
-            }
+            model.confirmDeleteButtonTapped()
           }
         )
         controller.addTextField { textField in
@@ -125,13 +208,17 @@ final class AlertsV4ViewController: UIViewController {
       case .archive:
         controller.addAction(
           UIAlertAction(title: "Confirm", style: .default) { [unowned self] _ in
-            self.status = nil
+            model.confirmArchiveButtonTapped()
           }
         )
       }
       return controller
     }
   }
+}
+
+extension UITransaction {
+  @UITransactionEntry var animateCount = false
 }
 
 #Preview {

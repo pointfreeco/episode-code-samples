@@ -5,12 +5,12 @@ Abstract:
 The widget bundle.
 */
 
-import WidgetKit
 import SwiftUI
+import WidgetKit
 
 @main
 struct TripsWidgetBundle: WidgetBundle {
-    var body: some Widget {
-        TripsWidget()
-    }
+  var body: some Widget {
+    TripsWidget()
+  }
 }
