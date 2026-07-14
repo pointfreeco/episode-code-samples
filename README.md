@@ -372,3 +372,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Isolation: Sending Closures](0368-beyond-basics-isolation-pt14)
 1. [Isolation: MainActor Default](0369-beyond-basics-isolation-pt15)
 1. [WWDC26: Alerts](0371-wwdc26-pt1)
+1. [WWDC26: UIKit](0372-wwdc26-pt2)
+1. [WWDC26: SwiftData](0373-wwdc26-pt3)
