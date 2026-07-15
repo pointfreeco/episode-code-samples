@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B3840FA30082DB200F9A570 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3840F930082DB200F9A570 /* SwiftUINavigation */; };
 		CA455E45300572BE00E46162 /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = CA455E44300572BE00E46162 /* SQLiteData */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +27,7 @@
 		000000000000000130000000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				4B3840FA30082DB200F9A570 /* SwiftUINavigation in Frameworks */,
 				CA455E45300572BE00E46162 /* SQLiteData in Frameworks */,
 			);
 		};
@@ -36,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000010 /* Trips */,
+				4B3840F830082DB200F9A570 /* Frameworks */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +49,13 @@
 				000000000000000000000120 /* Trips.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		4B3840F830082DB200F9A570 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -67,6 +77,7 @@
 			name = Trips;
 			packageProductDependencies = (
 				CA455E44300572BE00E46162 /* SQLiteData */,
+				4B3840F930082DB200F9A570 /* SwiftUINavigation */,
 			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* Trips.app */;
@@ -98,6 +109,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				CA455E43300572BE00E46162 /* XCRemoteSwiftPackageReference "sqlite-data" */,
+				4B3840F730082D3200F9A570 /* XCRemoteSwiftPackageReference "swift-navigation" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -354,6 +366,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4B3840F730082D3200F9A570 /* XCRemoteSwiftPackageReference "swift-navigation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-navigation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.10.3;
+			};
+			traits = (
+				CasePaths,
+			);
+		};
 		CA455E43300572BE00E46162 /* XCRemoteSwiftPackageReference "sqlite-data" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/sqlite-data.git";
@@ -369,6 +392,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4B3840F930082DB200F9A570 /* SwiftUINavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B3840F730082D3200F9A570 /* XCRemoteSwiftPackageReference "swift-navigation" */;
+			productName = SwiftUINavigation;
+		};
 		CA455E44300572BE00E46162 /* SQLiteData */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CA455E43300572BE00E46162 /* XCRemoteSwiftPackageReference "sqlite-data" */;

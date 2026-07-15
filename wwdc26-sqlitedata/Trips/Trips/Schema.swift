@@ -3,6 +3,7 @@ import Foundation
 import MapKit
 import OSLog
 import SQLiteData
+import SwiftUINavigation
 import SwiftUI
 
 struct Location: Codable {
@@ -31,6 +32,7 @@ struct Location: Codable {
   var displayDestination: String {
     destination.isEmpty ? "Untitled Destination" : destination
   }
+  @CaseBindable
   @Selection
   enum Purpose {
     case personal(Personal = Personal())

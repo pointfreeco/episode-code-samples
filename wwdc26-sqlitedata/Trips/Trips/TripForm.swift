@@ -1,51 +1,53 @@
 import MapKit
 import SQLiteData
 import SwiftUI
+import SwiftUINavigation
 
 struct TripForm: View {
   @State var showLocationSearch = false
   @State var trip: Trip.Draft
+  @Dependency(\.defaultDatabase) var database
 
   var body: some View {
     Form {
       Section {
-        TextField("Blob's grand adventure", text: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=$name@*/Binding.constant("")/*@END_MENU_TOKEN@*/)
+        TextField("Blob's grand adventure", text: $trip.name)
       } header: {
         Text("Trip Title")
       }
 
       Section {
-        switch /*@START_MENU_TOKEN@*//*@PLACEHOLDER=purpose@*/({Trip.Purpose.personal()}())/*@END_MENU_TOKEN@*/ {
-        case .personal:
-          Picker("Reason", selection: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=???@*/.constant(Trip.Purpose.Personal.Reason.family)/*@END_MENU_TOKEN@*/) {
+        switch $trip.purpose {
+        case .personal(let $personal):
+          Picker("Reason", selection: $personal.reason) {
             ForEach(Trip.Purpose.Personal.Reason.allCases) { reason in
               Text(reason.rawValue.lowercased())
             }
           }
-        case .business:
+        case .business(let $business):
           LabeledContent {
             Text("Per diem")
           } label: {
             TextField(
               "$42.00",
-              value: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=???@*/.constant(0)/*@END_MENU_TOKEN@*/,
+              value: $business.perdiem,
               format: .currency(code: Locale.current.currency?.identifier ?? "USD")
             )
           }
         }
       } header: {
-        switch /*@START_MENU_TOKEN@*//*@PLACEHOLDER=purpose@*/({Trip.Purpose.personal()}())/*@END_MENU_TOKEN@*/ {
+        switch trip.purpose {
         case .personal:
           Menu("Personal") {
             Label("Personal", systemImage: "checkmark")
             Button("Business") {
-              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Business action@*//*@END_MENU_TOKEN@*/
+              trip.purpose = .business()
             }
           }
         case .business:
           Menu("Business") {
             Button("Personal") {
-              /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Personal action@*//*@END_MENU_TOKEN@*/
+              trip.purpose = .personal()
             }
             Label("Business", systemImage: "checkmark")
           }
@@ -57,44 +59,48 @@ struct TripForm: View {
           showLocationSearch = true
         } label: {
           HStack {
-            Text(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=destination@*/""/*@END_MENU_TOKEN@*/.isEmpty ? "Search for a destination…" : /*@START_MENU_TOKEN@*//*@PLACEHOLDER=destination@*/""/*@END_MENU_TOKEN@*/)
-              .foregroundStyle(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=destination@*/""/*@END_MENU_TOKEN@*/.isEmpty ? .secondary : .primary)
+            Text(trip.destination.isEmpty ? "Search for a destination…" : trip.destination)
+              .foregroundStyle(trip.destination.isEmpty ? .secondary : .primary)
             Spacer()
             Image(systemName: "magnifyingglass")
               .foregroundStyle(.secondary)
           }
         }
-        Map(
-          initialPosition: .region(
-            MKCoordinateRegion(
-              center: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=location@*/Location()/*@END_MENU_TOKEN@*/.coordinate,
-              span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        if let location = trip.location {
+          Map(
+            initialPosition: .region(
+              MKCoordinateRegion(
+                center: location.coordinate,
+                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+              )
             )
-          )
-        ) {
-          Marker(
-            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=destination@*/""/*@END_MENU_TOKEN@*/.isEmpty ? "Location" : /*@START_MENU_TOKEN@*//*@PLACEHOLDER=destination@*/""/*@END_MENU_TOKEN@*/, coordinate: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=location@*/Location()/*@END_MENU_TOKEN@*/.coordinate
-          )
-        }
-        .frame(height: 200)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .allowsHitTesting(false)
-        .listRowInsets(EdgeInsets())
-
-        Button {
-          let request = MKMapItemRequest(mapItemIdentifier: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=mapItemIdentifier@*/MKMapItem.Identifier(rawValue: "I7C250D2CDCB364A")!/*@END_MENU_TOKEN@*/)
-          Task {
-            if let mapItem = try? await request.mapItem {
-              await mapItem.openInMaps(from: nil)
-            }
+          ) {
+            Marker(
+              trip.destination.isEmpty ? "Location" : trip.destination, coordinate: location.coordinate
+            )
           }
-        } label: {
-          Label("Open in Maps", systemImage: "map")
+          .frame(height: 200)
+          .clipShape(RoundedRectangle(cornerRadius: 12))
+          .allowsHitTesting(false)
+          .listRowInsets(EdgeInsets())
+        }
+
+        if let mapItemIdentifier = trip.mapItemIdentifier {
+          Button {
+            let request = MKMapItemRequest(mapItemIdentifier: mapItemIdentifier)
+            Task {
+              if let mapItem = try? await request.mapItem {
+                await mapItem.openInMaps(from: nil)
+              }
+            }
+          } label: {
+            Label("Open in Maps", systemImage: "map")
+          }
         }
       }
 
       Section {
-        TripDatesPicker(startDate: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=$startDate@*/Binding.constant(Date())/*@END_MENU_TOKEN@*/, endDate: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=$endDate@*/Binding.constant(Date())/*@END_MENU_TOKEN@*/)
+        TripDatesPicker(startDate: $trip.startDate, endDate: $trip.endDate)
       } header: {
         Text("Trip Dates")
       }
@@ -102,9 +108,9 @@ struct TripForm: View {
     .sheet(isPresented: $showLocationSearch) {
       NavigationStack {
         LocationSearchSheet(
-          destination: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=$destination@*/Binding.constant("")/*@END_MENU_TOKEN@*/,
-          location: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=$location@*/Binding.constant(Location())/*@END_MENU_TOKEN@*/,
-          mapItemIdentifier: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=$mapItemIdentifier@*/Binding.constant(MKMapItem.Identifier(rawValue: "I7C250D2CDCB364A")!)/*@END_MENU_TOKEN@*/
+          destination: $trip.destination,
+          location: $trip.location,
+          mapItemIdentifier: $trip.mapItemIdentifier
         )
       }
       .presentationDetents([.medium, .large])
@@ -115,7 +121,11 @@ struct TripForm: View {
       }
       ToolbarItem(placement: .topBarTrailing) {
         Button("Save") {
-          /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Save action@*//*@END_MENU_TOKEN@*/
+          withErrorReporting {
+            try database.write { db in
+              try Trip.upsert { trip }.execute(db)
+            }
+          }
         }
       }
     }
@@ -284,8 +294,29 @@ struct LocationSearchSheet: View {
 
 struct TripFormPreviews: PreviewProvider {
   static var previews: some View {
+    let trip = prepareDependencies {
+      try! $0.bootstrapDatabase()
+      return try! $0.defaultDatabase.write { db in
+        try Trip.insert {
+          Trip.Draft(
+            name: "Blob's grand adventure",
+            destination: "NYC",
+            location: Location(
+              latitude: 40.730610,
+              longitude: -73.995242
+            ),
+            startDate: .now,
+            endDate: .now,
+            purpose: .personal(),
+            mapItemIdentifier: MKMapItem.Identifier(rawValue: "I7C250D2CDCB364A")
+          )
+        }
+        .returning(\.self)
+        .fetchOne(db)!
+      }
+    }
     NavigationStack {
-      TripForm(trip: Trip.Draft())
+      TripForm(trip: Trip.Draft(trip))
     }
   }
 }
