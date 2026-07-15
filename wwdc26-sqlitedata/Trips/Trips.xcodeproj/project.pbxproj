@@ -363,6 +363,7 @@
 			};
 			traits = (
 				CasePaths,
+				LazyInitializableByDefault,
 			);
 		};
 /* End XCRemoteSwiftPackageReference section */
