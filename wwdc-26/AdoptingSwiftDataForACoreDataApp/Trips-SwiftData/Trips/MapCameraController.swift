@@ -19,7 +19,10 @@ final class MapCameraController {
 
   init(modelContext: ModelContext) {
     do {
+      var fetchDescriptor = FetchDescriptor<Trip>()
+      fetchDescriptor.propertiesToFetch = [\.location]
       resultsObserver = try ResultsObserver<Trip, Never>(
+        fetchDescriptor: fetchDescriptor,
         modelContext: modelContext
       )
     } catch {

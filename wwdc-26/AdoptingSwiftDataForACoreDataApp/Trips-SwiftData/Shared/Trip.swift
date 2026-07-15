@@ -64,6 +64,7 @@ struct Location: Codable, Hashable {
 
   var color: Color {
     return .yellow
+//    fatalError("Cannot access color on base class")
   }
 }
 

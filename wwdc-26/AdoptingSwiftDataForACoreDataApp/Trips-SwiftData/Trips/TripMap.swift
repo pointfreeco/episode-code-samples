@@ -36,6 +36,13 @@ struct TripMap: View {
         }
       }
     }
+    .task {
+      while true {
+        try! await Task.sleep(for: .seconds(1))
+        mapController?.trips[0].endDate = Date()
+        try! modelContext.save()
+      }
+    }
     .onAppear {
       self.mapController = MapCameraController(modelContext: modelContext)
     }

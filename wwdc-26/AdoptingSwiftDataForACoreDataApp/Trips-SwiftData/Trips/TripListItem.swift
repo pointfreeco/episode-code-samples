@@ -16,7 +16,7 @@ struct TripListItem: View {
     NavigationLink(value: trip) {
       HStack {
         RoundedRectangle(cornerRadius: 8)
-          .fill(trip.color)
+          .fill(trip.color/* ?? .yellow*/)
           .frame(width: 64, height: 64)
           .overlay {
             Text(String(trip.displayName.first!))
