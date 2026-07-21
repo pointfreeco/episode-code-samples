@@ -20,68 +20,48 @@ enum GroupOption: String, CaseIterable {
 }
 
 struct TripListView: View {
-  //@FetchAll(Trip.none) var trips
-  @Fetch var trips = Trips.Value()
+  @FetchAll(Trip.none) var trips
   @State var segment = Segment.all
   @State var sort = SortOption.name
   @State var group = GroupOption.none
 
-  struct Trips: FetchKeyRequest {
-    var segment = Segment.all
-    var sort = SortOption.name
-    var group = GroupOption.none
-    func fetch(_ db: Database) throws -> OrderedDictionary<String, [Trip]> {
-      OrderedDictionary(
-        grouping: try Trip
-          .where {
-            switch segment {
-            case .all: true
-            case .business: $0.purpose.is(\.business)
-            case .personal: $0.purpose.is(\.personal)
-            }
-          }
-          .order {
-            switch group {
-            case .none: true
-            case .destination: $0.destination.desc()
-            case .nameFirstLetter: $0.name.substr(1, 1)
-            }
-          }
-          .order {
-            switch sort {
-            case .endDate: $0.endDate
-            case .startDate: $0.startDate
-            case .name: $0.name
-            }
-          }
-          .fetchAll(db),
-        by: { trip in
-          switch group {
-          case .none: ""
-          case .destination: trip.destination
-          case .nameFirstLetter: trip.name.first.map(String.init) ?? ""
-          }
-        }
-      )
-    }
-  }
-
   var body: some View {
     List {
-      ForEach(trips.keys, id: \.self) { destination in
+      ForEach($trips.sections) { section in
         Section {
-          ForEach(trips[destination] ?? []) { trip in
+          ForEach(section) { trip in
             TripListRow(trip: trip)
           }
         } header: {
-          Text(destination)
+          Text(section.name)
         }
       }
     }
     .task(id: [segment as AnyHashable, sort, group]) {
       await withErrorReporting {
         _ = try await $trips.load(
-          Trips(segment: segment, sort: sort, group: group),
+          Trip
+            .where {
+              switch segment {
+              case .all: true
+              case .business: $0.purpose.is(\.business)
+              case .personal: $0.purpose.is(\.personal)
+              }
+            }
+            .order {
+              switch sort {
+              case .endDate: $0.endDate
+              case .startDate: $0.startDate
+              case .name: $0.name
+              }
+            },
+          sectionBy: {
+            switch group {
+            case .destination: $0.destination.desc()
+            case .nameFirstLetter: $0.name.substr(1, 1).desc()
+            case .none: ""
+            }
+          },
           animation: .default
         )
       }
