@@ -1,6 +1,6 @@
 import Dependencies
 import Foundation
-import MapKit
+@preconcurrency import MapKit
 import OSLog
 import SQLiteData
 import SwiftUINavigation
