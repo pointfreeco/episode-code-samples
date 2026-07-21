@@ -61,6 +61,15 @@ extension DependencyValues {
           purpose: .business(.init(perdiem: 80)),
           mapItemIdentifier: MKMapItem.Identifier(rawValue: "I0F1E2D3C4B5A6978")
         )
+        Trip.Draft(
+          name: "Barclays concert",
+          destination: "Brooklyn, NY",
+          location: Location(latitude: 40.682732, longitude: -73.975876),
+          startDate: previewDate(2026, 2, 9),
+          endDate: previewDate(2026, 2, 11),
+          purpose: .business(.init(perdiem: 80)),
+          mapItemIdentifier: MKMapItem.Identifier(rawValue: "I0F1E2D3C4B5A6978")
+        )
       }
     }
   }
