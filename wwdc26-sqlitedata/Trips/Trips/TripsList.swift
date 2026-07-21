@@ -18,7 +18,9 @@ enum GroupOption: String, CaseIterable {
 }
 
 struct TripListView: View {
-  @FetchAll var trips: [Trip]
+  @FetchAll(Trip.none) var trips
+  @State var segment = Segment.all
+  @State var sort = SortOption.name
 
   var body: some View {
     List {
@@ -26,20 +28,42 @@ struct TripListView: View {
         TripListRow(trip: trip)
       }
     }
+    .task(id: [segment as AnyHashable, sort]) {
+      await withErrorReporting {
+        _ = try await $trips.load(
+          Trip
+            .where {
+              switch segment {
+              case .all: true
+              case .business: $0.purpose.is(\.business)
+              case .personal: $0.purpose.is(\.personal)
+              }
+            }
+            .order {
+              switch sort {
+              case .endDate: $0.endDate
+              case .startDate: $0.startDate
+              case .name: $0.name
+              }
+            },
+          animation: .default
+        )
+      }
+    }
     .toolbar {
       ToolbarItemGroup(placement: .topBarTrailing) {
-          Button {
-            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Add trip action@*//*@END_MENU_TOKEN@*/
-          } label: {
-            Label("Add trip", systemImage: "plus")
-          }
+        Button {
+          /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Add trip action@*//*@END_MENU_TOKEN@*/
+        } label: {
+          Label("Add trip", systemImage: "plus")
+        }
         Menu("Filter", systemImage: "line.3.horizontal.decrease.circle") {
           Section {
             ForEach(Segment.allCases, id: \.self) { segment in
               Button {
-                /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Segment action@*//*@END_MENU_TOKEN@*/
+                self.segment = segment
               } label: {
-                if /*@START_MENU_TOKEN@*//*@PLACEHOLDER=segment is selected@*/false/*@END_MENU_TOKEN@*/ {
+                if self.segment == segment {
                   Label(segment.rawValue, systemImage: "checkmark")
                 } else {
                   Text(segment.rawValue)
@@ -50,9 +74,9 @@ struct TripListView: View {
           Section("Sort By") {
             ForEach(SortOption.allCases, id: \.self) { option in
               Button {
-                /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Sort action@*//*@END_MENU_TOKEN@*/
+                self.sort = option
               } label: {
-                if /*@START_MENU_TOKEN@*//*@PLACEHOLDER=sort is selected@*/false/*@END_MENU_TOKEN@*/ {
+                if self.sort == option {
                   Label(option.rawValue, systemImage: "checkmark")
                 } else {
                   Text(option.rawValue)

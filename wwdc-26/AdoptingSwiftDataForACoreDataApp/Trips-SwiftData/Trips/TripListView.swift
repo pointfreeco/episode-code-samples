@@ -56,7 +56,7 @@ struct TripListView: View {
       searchText: searchText
     )
 
-    _trips = Query(filter: filter, sort: [sortDescriptor], sectionBy: sectionBy)
+    _trips = Query(filter: filter, sort: [sortDescriptor], animation: .default, sectionBy: sectionBy)
   }
 
   var body: some View {
@@ -81,6 +81,7 @@ struct TripListView: View {
         }
       }
     }
+    .animation(.default, value: trips)
     .overlay {
       if trips.isEmpty {
         ContentUnavailableView {
