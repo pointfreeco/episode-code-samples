@@ -21,6 +21,8 @@ import SwiftUI
   var destination = ""
   @Column(as: Location.JSONRepresentation.self)
   var location: Location
+  @Column(as: [Location].JSONBRepresentation.self)
+  var geofence: [Location] = []
   var startDate: Date = .now
   var endDate: Date = .now
   var purpose: Purpose = .personal()
@@ -159,6 +161,15 @@ extension DependencyValues {
       try #sql(
         """
         CREATE INDEX "index_livingAccommodations_on_tripID" ON "livingAccommodations"("tripID")
+        """
+      )
+      .execute(db)
+    }
+    migrator.registerMigration("Add column 'geofence' to 'trips'") { db in
+      try #sql(
+        """
+        ALTER TABLE "trips"
+        ADD COLUMN "geofence" BLOB NOT NULL ON CONFLICT REPLACE DEFAULT X'0B'
         """
       )
       .execute(db)

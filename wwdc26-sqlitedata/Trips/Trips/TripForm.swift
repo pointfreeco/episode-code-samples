@@ -78,6 +78,9 @@ struct TripForm: View {
             Marker(
               trip.destination.isEmpty ? "Location" : trip.destination, coordinate: location.coordinate
             )
+            MapPolygon(coordinates: trip.geofence.map(\.coordinate))
+              .foregroundStyle(.blue.opacity(0.15))
+              .stroke(.blue, lineWidth: 2)
           }
           .frame(height: 200)
           .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -293,30 +296,16 @@ struct LocationSearchSheet: View {
 }
 
 struct TripFormPreviews: PreviewProvider {
-  static var previews: some View {
-    let trip = prepareDependencies {
-      try! $0.bootstrapDatabase()
-      return try! $0.defaultDatabase.write { db in
-        try Trip.insert {
-          Trip.Draft(
-            name: "Blob's grand adventure",
-            destination: "NYC",
-            location: Location(
-              latitude: 40.730610,
-              longitude: -73.995242
-            ),
-            startDate: .now,
-            endDate: .now,
-            purpose: .personal(),
-            mapItemIdentifier: MKMapItem.Identifier(rawValue: "I7C250D2CDCB364A")
-          )
-        }
-        .returning(\.self)
-        .fetchOne(db)!
-      }
+  static let trip = prepareDependencies {
+    try! $0.bootstrapDatabase()
+    try! $0.defaultDatabase.seedDatabase()
+    return try! $0.defaultDatabase.read { db in
+      try Trip.offset(4).fetchOne(db)!
     }
+  }
+  static var previews: some View {
     NavigationStack {
-      TripForm(trip: Trip.Draft(trip))
+      TripForm(trip: Trip.Draft(Self.trip))
     }
   }
 }
