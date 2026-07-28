@@ -19,7 +19,6 @@ import SwiftUI
   let id: UUID
   var name = ""
   var destination = ""
-  @Column(as: Location.JSONRepresentation.self)
   var location: Location
   @Column(as: [Location].JSONBRepresentation.self)
   var geofence: [Location] = []
@@ -170,6 +169,38 @@ extension DependencyValues {
         """
         ALTER TABLE "trips"
         ADD COLUMN "geofence" BLOB NOT NULL ON CONFLICT REPLACE DEFAULT X'0B'
+        """
+      )
+      .execute(db)
+    }
+    migrator.registerMigration(
+      "Replace 'trips.location' with 'latitude' and 'longitude' columns"
+    ) { db in
+      try #sql(
+        """
+        ALTER TABLE "trips"
+        ADD COLUMN "latitude" REAL NOT NULL ON CONFLICT REPLACE DEFAULT 0
+        """
+      )
+      .execute(db)
+      try #sql(
+        """
+        ALTER TABLE "trips"
+        ADD COLUMN "longitude" REAL NOT NULL ON CONFLICT REPLACE DEFAULT 0
+        """
+      )
+      .execute(db)
+      try #sql(
+        """
+        UPDATE "trips" SET
+          "latitude" = json_extract("location", '$.latitude'),
+          "longitude" = json_extract("location", '$.longitude')
+        """
+      )
+      .execute(db)
+      try #sql(
+        """
+        ALTER TABLE "trips" DROP COLUMN "location"
         """
       )
       .execute(db)

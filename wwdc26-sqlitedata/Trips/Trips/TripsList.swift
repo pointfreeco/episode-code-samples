@@ -70,7 +70,7 @@ struct TripListView: View {
               case .startDate: $0.startDate
               case .name: $0.name
               case .proximityToNorthPole:
-                $0.location.jsonExtract(\.latitude).desc()
+                $0.location.latitude.desc()
               case .distanceFromUser:
                 if let currentLocation {
                   $0.location.miles(from: currentLocation)
@@ -185,14 +185,14 @@ struct TripListView: View {
   }
 }
 
-extension QueryExpression<Location.JSONRepresentation> {
+extension ColumnGroup where Values == Location {
   func miles(from location: Location) -> some QueryExpression<Double> {
     #sql(
       """
       3958.8 * acos(
-      sin(radians(\(location.latitude))) * sin(radians(\(jsonExtract(\.latitude))))
-      + cos(radians(\(location.latitude))) * cos(radians(\(jsonExtract(\.latitude))))
-      * cos(radians(\(jsonExtract(\.longitude)) - \(location.longitude)))
+      sin(radians(\(location.latitude))) * sin(radians(\(self.latitude)))
+      + cos(radians(\(location.latitude))) * cos(radians(\(self.latitude)))
+      * cos(radians(\(self.longitude) - \(location.longitude)))
       )
       """
     )
