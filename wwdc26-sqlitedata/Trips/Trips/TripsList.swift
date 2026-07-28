@@ -1,7 +1,8 @@
+import CoreLocation
 import MapKit
 import OrderedCollections
-import SwiftUI
 import SQLiteData
+import SwiftUI
 
 enum Segment: String, CaseIterable {
   case all = "All"
@@ -13,6 +14,7 @@ enum SortOption: String, CaseIterable {
   case endDate = "End Date"
   case name = "Name"
   case proximityToNorthPole = "Proximity to North Pole"
+  case distanceFromUser = "Distance From You"
 }
 enum GroupOption: String, CaseIterable {
   case none = "None"
@@ -25,6 +27,9 @@ struct TripListView: View {
   @State var segment = Segment.all
   @State var sort = SortOption.name
   @State var group = GroupOption.none
+  @State var currentLocation: Location?
+
+  @Dependency(\.defaultDatabase) var defaultDatabase
 
   var body: some View {
     List {
@@ -40,7 +45,7 @@ struct TripListView: View {
         }
       }
     }
-    .task(id: [segment as AnyHashable, sort, group]) {
+    .task(id: [segment as AnyHashable, sort, group, currentLocation]) {
       await withErrorReporting {
         _ = try await $trips.load(
           Trip
@@ -58,6 +63,25 @@ struct TripListView: View {
               case .name: $0.name
               case .proximityToNorthPole:
                 $0.location.jsonExtract(\.latitude).desc()
+              case .distanceFromUser:
+                if let currentLocation {
+                  #sql(
+                    """
+                    acos(
+                    sin(radians(\(currentLocation.latitude))) * sin(radians(\($0.location.jsonExtract(\.latitude))))
+                    + cos(radians(\(currentLocation.latitude))) * cos(radians(\($0.location.jsonExtract(\.latitude))))
+                    * cos(radians(\($0.location.jsonExtract(\.longitude)) - \(currentLocation.longitude)))
+                    )
+                    """
+                  )
+                } else {
+                  $0.name
+                }
+              }
+            }
+            .limit { _ in
+              if sort == .distanceFromUser, currentLocation == nil {
+                0
               }
             },
           sectionBy: {
@@ -71,10 +95,34 @@ struct TripListView: View {
         )
       }
     }
+    .task(id: sort) {
+      guard sort == .distanceFromUser else { return }
+      await withErrorReporting {
+        for try await update in CLLocationUpdate.liveUpdates() {
+          guard let location = update.location else { continue }
+          currentLocation = Location(
+            latitude: location.coordinate.latitude,
+            longitude: location.coordinate.longitude
+          )
+        }
+      }
+    }
     .toolbar {
+      #if DEBUG
+        ToolbarItem(placement: .topBarLeading) {
+          Button {
+            withErrorReporting {
+              try defaultDatabase.seedDatabase()
+            }
+          } label: {
+            Image(systemName: "leaf.circle.fill")
+          }
+        }
+      #endif
       ToolbarItemGroup(placement: .topBarTrailing) {
         Button {
-          /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Add trip action@*//*@END_MENU_TOKEN@*/
+          /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Add trip action@*/
+          /*@END_MENU_TOKEN@*/
         } label: {
           Label("Add trip", systemImage: "plus")
         }
