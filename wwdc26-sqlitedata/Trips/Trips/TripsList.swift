@@ -51,6 +51,13 @@ struct TripListView: View {
         _ = try await $trips.load(
           Trip
             .where {
+              !$0.geofence.jsonEach()
+                .where {
+                  $0.value.jsonExtract(\.latitude).lt(0)
+                }
+                .exists()
+            }
+            .where {
               switch segment {
               case .all: true
               case .business: $0.purpose.is(\.business)

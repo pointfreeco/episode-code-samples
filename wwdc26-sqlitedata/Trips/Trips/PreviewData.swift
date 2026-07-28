@@ -187,6 +187,36 @@ extension DatabaseWriter {
           purpose: .personal(.init(reason: .family)),
           mapItemIdentifier: MKMapItem.Identifier(rawValue: "I5A6B7C8D9E0F1234")
         )
+        Trip.Draft(
+          name: "Sydney Harbour Escape",
+          destination: "Sydney, Australia",
+          location: Location(latitude: -33.8688, longitude: 151.2093),
+          geofence: [
+            Location(latitude: -33.8588, longitude: 151.1993),
+            Location(latitude: -33.8588, longitude: 151.2193),
+            Location(latitude: -33.8788, longitude: 151.2193),
+            Location(latitude: -33.8788, longitude: 151.1993),
+          ],
+          startDate: previewDate(2026, 12, 5),
+          endDate: previewDate(2026, 12, 12),
+          purpose: .personal(.init(reason: .wellness)),
+          mapItemIdentifier: MKMapItem.Identifier(rawValue: "I9D8C7B6A5F4E3210")
+        )
+        Trip.Draft(
+          name: "Equator Crossing",
+          destination: "Pontianak, Indonesia",
+          location: Location(latitude: 0.0, longitude: 109.3425),
+          geofence: [
+            Location(latitude: 0.01, longitude: 109.3325),
+            Location(latitude: 0.01, longitude: 109.3525),
+            Location(latitude: -0.01, longitude: 109.3525),
+            Location(latitude: -0.01, longitude: 109.3325),
+          ],
+          startDate: previewDate(2026, 8, 10),
+          endDate: previewDate(2026, 8, 14),
+          purpose: .personal(.init(reason: .family)),
+          mapItemIdentifier: MKMapItem.Identifier(rawValue: "I2E4F6A8C0B1D3579")
+        )
       }
     }
   }
