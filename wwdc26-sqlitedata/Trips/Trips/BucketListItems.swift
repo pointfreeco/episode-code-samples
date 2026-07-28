@@ -37,7 +37,9 @@ struct BucketListItemsView: View {
             }
           }
         } header: {
-          Text(section.name)
+          if let name = section.name {
+            Text(name)
+          }
         }
       }
     }
@@ -48,7 +50,7 @@ struct BucketListItemsView: View {
 #Preview {
   let _ = prepareDependencies {
     try! $0.bootstrapDatabase()
-    try! $0.seedDatabaseForPreviews()
+    try! $0.defaultDatabase.seedDatabase()
   }
   NavigationStack {
     BucketListItemsView()

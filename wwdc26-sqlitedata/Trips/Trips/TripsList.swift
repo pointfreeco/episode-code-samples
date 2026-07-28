@@ -12,6 +12,7 @@ enum SortOption: String, CaseIterable {
   case startDate = "Start Date"
   case endDate = "End Date"
   case name = "Name"
+  case proximityToNorthPole = "Proximity to North Pole"
 }
 enum GroupOption: String, CaseIterable {
   case none = "None"
@@ -33,7 +34,9 @@ struct TripListView: View {
             TripListRow(trip: trip)
           }
         } header: {
-          Text(section.name)
+          if let name = section.name {
+            Text(name)
+          }
         }
       }
     }
@@ -53,6 +56,8 @@ struct TripListView: View {
               case .endDate: $0.endDate
               case .startDate: $0.startDate
               case .name: $0.name
+              case .proximityToNorthPole:
+                $0.location.jsonExtract(\.latitude).desc()
               }
             },
           sectionBy: {
@@ -165,7 +170,7 @@ private struct TripListRow: View {
 #Preview {
   let _ = prepareDependencies {
     try! $0.bootstrapDatabase()
-    try! $0.seedDatabaseForPreviews()
+    try! $0.defaultDatabase.seedDatabase()
   }
 
   NavigationStack {

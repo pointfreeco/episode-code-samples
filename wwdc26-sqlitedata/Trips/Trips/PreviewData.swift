@@ -3,9 +3,9 @@ import Foundation
 @preconcurrency import MapKit
 import SQLiteData
 
-extension DependencyValues {
-  func seedDatabaseForPreviews() throws {
-    try defaultDatabase.write { db in
+extension DatabaseWriter {
+  func seedDatabase() throws {
+    try write { db in
       try db.seed {
         Trip.Draft(
           id: UUID(1),

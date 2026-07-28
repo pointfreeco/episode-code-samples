@@ -110,6 +110,7 @@
 			packageReferences = (
 				CA455E43300572BE00E46162 /* XCRemoteSwiftPackageReference "sqlite-data" */,
 				4B3840F730082D3200F9A570 /* XCRemoteSwiftPackageReference "swift-navigation" */,
+				4B6DFCF23019406E0018BC3F /* XCRemoteSwiftPackageReference "swift-structured-queries" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -371,15 +372,25 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-navigation.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.10.3;
+				minimumVersion = 2.0.0;
 			};
+		};
+		4B6DFCF23019406E0018BC3F /* XCRemoteSwiftPackageReference "swift-structured-queries" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-structured-queries";
+			requirement = {
+				branch = "json-each";
+				kind = branch;
+			};
+			traits = (
+			);
 		};
 		CA455E43300572BE00E46162 /* XCRemoteSwiftPackageReference "sqlite-data" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/sqlite-data.git";
 			requirement = {
-				branch = "section-by";
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 			traits = (
 				CasePaths,

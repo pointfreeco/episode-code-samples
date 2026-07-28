@@ -6,7 +6,7 @@ import SQLiteData
 import SwiftUINavigation
 import SwiftUI
 
-struct Location: Codable {
+@Selection struct Location: Codable {
   var latitude = 0.0
   var longitude = 0.0
 
