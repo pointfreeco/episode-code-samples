@@ -130,6 +130,15 @@ extension DatabaseWriter {
           purpose: .business(.init(perdiem: 80)),
           mapItemIdentifier: MKMapItem.Identifier(rawValue: "I0F1E2D3C4B5A6978")
         )
+        Trip.Draft(
+          name: "Liberty Bell Getaway",
+          destination: "Philadelphia, PA",
+          location: Location(latitude: 39.9526, longitude: -75.1652),
+          startDate: previewDate(2026, 6, 12),
+          endDate: previewDate(2026, 6, 15),
+          purpose: .personal(.init(reason: .family)),
+          mapItemIdentifier: MKMapItem.Identifier(rawValue: "I5A6B7C8D9E0F1234")
+        )
       }
     }
   }

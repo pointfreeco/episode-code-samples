@@ -20,6 +20,7 @@ enum GroupOption: String, CaseIterable {
   case none = "None"
   case destination = "Destination"
   case nameFirstLetter = "Name"
+  case distanceFromUser = "Distance From You"
 }
 
 struct TripListView: View {
@@ -65,15 +66,7 @@ struct TripListView: View {
                 $0.location.jsonExtract(\.latitude).desc()
               case .distanceFromUser:
                 if let currentLocation {
-                  #sql(
-                    """
-                    acos(
-                    sin(radians(\(currentLocation.latitude))) * sin(radians(\($0.location.jsonExtract(\.latitude))))
-                    + cos(radians(\(currentLocation.latitude))) * cos(radians(\($0.location.jsonExtract(\.latitude))))
-                    * cos(radians(\($0.location.jsonExtract(\.longitude)) - \(currentLocation.longitude)))
-                    )
-                    """
-                  )
+                  $0.location.miles(from: currentLocation)
                 } else {
                   $0.name
                 }
@@ -89,14 +82,27 @@ struct TripListView: View {
             case .destination: $0.destination.desc()
             case .nameFirstLetter: $0.name.substr(1, 1).desc()
             case .none: ""
+            case .distanceFromUser:
+              if let currentLocation {
+                let miles = $0.location.miles(from: currentLocation)
+                Case()
+                  .when(miles.lt(10), then: "<10 miles")
+                  .when(miles.lt(100), then: "<100 miles")
+                  .when(miles.lt(1_000), then: "<1000 miles")
+                  .else("≥1000 miles")
+              } else {
+                ""
+              }
             }
           },
           animation: .default
         )
       }
     }
-    .task(id: sort) {
-      guard sort == .distanceFromUser else { return }
+    .task(id: [sort as AnyHashable, group]) {
+      guard
+        sort == .distanceFromUser || group == .distanceFromUser
+      else { return }
       await withErrorReporting {
         for try await update in CLLocationUpdate.liveUpdates() {
           guard let location = update.location else { continue }
@@ -169,6 +175,20 @@ struct TripListView: View {
         }
       }
     }
+  }
+}
+
+extension QueryExpression<Location.JSONRepresentation> {
+  func miles(from location: Location) -> some QueryExpression<Double> {
+    #sql(
+      """
+      3958.8 * acos(
+      sin(radians(\(location.latitude))) * sin(radians(\(jsonExtract(\.latitude))))
+      + cos(radians(\(location.latitude))) * cos(radians(\(jsonExtract(\.latitude))))
+      * cos(radians(\(jsonExtract(\.longitude)) - \(location.longitude)))
+      )
+      """
+    )
   }
 }
 
