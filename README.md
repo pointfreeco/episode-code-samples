@@ -375,3 +375,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [WWDC26: UIKit](0371-wwdc26-pt2)
 1. [WWDC26: SwiftData](0372-wwdc26-pt3)
 1. [WWDC26: SQLiteData Domain Modeling](0373-wwdc26-pt4)
+1. [WWDC26: SQLiteData Sectioning](0374-wwdc26-pt5)
+1. [WWDC26: SQLiteData Codability](0375-wwdc26-pt6)
