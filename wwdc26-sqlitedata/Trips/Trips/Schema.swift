@@ -14,6 +14,12 @@ import SwiftUI
     CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
   }
 }
+extension Location {
+  init(_ coordinate: CLLocationCoordinate2D) {
+    latitude = coordinate.latitude
+    longitude = coordinate.longitude
+  }
+}
 
 @Table struct Trip: Identifiable {
   let id: UUID
