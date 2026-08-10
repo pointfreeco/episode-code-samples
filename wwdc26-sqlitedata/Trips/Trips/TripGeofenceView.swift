@@ -1,5 +1,6 @@
 import Dependencies
 @preconcurrency import MapKit
+import simd
 import SQLiteData
 import SwiftUI
 
@@ -38,6 +39,79 @@ import SwiftUI
       }
     }
   }
+
+  func mapTapped(coordinate: CLLocationCoordinate2D) {
+    withErrorReporting {
+      try database.write { db in
+        try Trip
+          .find(trip.id)
+          .update {
+            $0.geofence = $0.geofence.jsonbAppend(#bind(Location(coordinate)))
+          }
+          .execute(db)
+      }
+    }
+  }
+
+  func clearVerticesButtonTapped() {
+    withErrorReporting {
+      try database.write { db in
+        try Trip
+          .find(trip.id)
+          .update {
+            $0.geofence = #bind([])
+          }
+          .execute(db)
+      }
+    }
+  }
+
+  var tripInsideGeofence: Bool {
+    tripInside(geofence: trip.geofence)
+  }
+
+  var tripInsideDraggingGeofence: Bool? {
+    guard let draggingVertex else { return nil }
+    var vertices = trip.geofence
+    if vertices.indices.contains(draggingVertex.index) {
+      vertices[draggingVertex.index] = draggingVertex.location
+    }
+    return tripInside(geofence: vertices)
+  }
+
+  private func tripInside(geofence vertices: [Location]) -> Bool {
+    guard vertices.count > 2 else { return false }
+    let point = unitVector(trip.location)
+    var windingAngle = 0.0
+    var previous = unitVector(vertices[vertices.count - 1])
+    for vertex in vertices {
+      let current = unitVector(vertex)
+      defer { previous = current }
+      windingAngle += atan2(
+        simd_dot(point, simd_cross(previous, current)),
+        simd_dot(previous, current) - simd_dot(previous, point) * simd_dot(current, point)
+      )
+    }
+    return abs(windingAngle) > .pi
+    func unitVector(_ location: Location) -> SIMD3<Double> {
+      let latitude = location.latitude * .pi / 180
+      let longitude = location.longitude * .pi / 180
+      return SIMD3(
+        cos(latitude) * cos(longitude),
+        cos(latitude) * sin(longitude),
+        sin(latitude)
+      )
+    }
+  }
+
+  var geofenceColor: Color {
+    tripInsideGeofence ? .blue : .red
+  }
+
+  var draggingGeofenceColor: Color? {
+    guard let tripInsideDraggingGeofence else { return nil }
+    return tripInsideDraggingGeofence ? .blue : .red
+  }
 }
 
 struct TripGeofenceView: View {
@@ -56,7 +130,7 @@ struct TripGeofenceView: View {
       ToolbarItem(placement: .topBarTrailing) {
         Button("Clear", systemImage: "trash", role: .destructive) {
           Task {
-            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Clear vertices button tapped@*//*@END_MENU_TOKEN@*/
+            model.clearVerticesButtonTapped()
           }
         }
       }
@@ -121,11 +195,11 @@ private struct GeofenceMap: View {
         let coordinates = model.trip.geofence.map(\.coordinate)
         if coordinates.count > 2 {
           MapPolygon(coordinates: coordinates)
-            .foregroundStyle(.blue.opacity(0.2))
-            .stroke(.blue, lineWidth: 2)
+            .foregroundStyle(model.geofenceColor.opacity(0.2))
+            .stroke(model.geofenceColor, lineWidth: 2)
         } else if coordinates.count == 2 {
           MapPolyline(coordinates: coordinates)
-            .stroke(.blue, lineWidth: 2)
+            .stroke(model.geofenceColor, lineWidth: 2)
         }
 
         Marker(
@@ -169,8 +243,7 @@ private struct GeofenceMap: View {
       .onTapGesture(coordinateSpace: .global) { point in
         guard let coordinate = proxy.convert(point, from: .global)
         else { return }
-        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=User tapped map@*//*@END_MENU_TOKEN@*/
-        _ = coordinate
+        model.mapTapped(coordinate: coordinate)
       }
     }
   }
@@ -179,7 +252,8 @@ private struct GeofenceMap: View {
   private func dragPreview(_ proxy: MapProxy) -> some View {
     if let draggingVertex = model.draggingVertex,
       model.trip.geofence.indices.contains(draggingVertex.index),
-      let point = proxy.convert(draggingVertex.location.coordinate, to: .local)
+      let point = proxy.convert(draggingVertex.location.coordinate, to: .local),
+       let draggingGeofenceColor = model.draggingGeofenceColor
     {
       var vertices = model.trip.geofence
       let _ = vertices[draggingVertex.index] = draggingVertex.location
@@ -189,8 +263,8 @@ private struct GeofenceMap: View {
         )
         path.closeSubpath()
       }
-      polygon.fill(.blue.opacity(0.2))
-      polygon.stroke(.blue, lineWidth: 2)
+      polygon.fill(draggingGeofenceColor.opacity(0.2))
+      polygon.stroke(draggingGeofenceColor, lineWidth: 2)
       VertexHandle(number: draggingVertex.index + 1, isDragging: true)
         .position(point)
     }
