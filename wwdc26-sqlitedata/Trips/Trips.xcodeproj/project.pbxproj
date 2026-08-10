@@ -8,17 +8,36 @@
 
 /* Begin PBXBuildFile section */
 		4B3840FA30082DB200F9A570 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3840F930082DB200F9A570 /* SwiftUINavigation */; };
+		4BCBD601302A50060012BC71 /* DependenciesTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 4BCBD600302A50060012BC71 /* DependenciesTestSupport */; };
+		4BCBD604302A53E80012BC71 /* DebugSnapshots in Frameworks */ = {isa = PBXBuildFile; productRef = 4BCBD603302A53E80012BC71 /* DebugSnapshots */; };
+		4BCBD619302A552D0012BC71 /* CustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 4BCBD618302A552D0012BC71 /* CustomDump */; };
 		CA455E45300572BE00E46162 /* SQLiteData in Frameworks */ = {isa = PBXBuildFile; productRef = CA455E44300572BE00E46162 /* SQLiteData */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4BCBD5FA302A4EEC0012BC71 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 000000000000000100000000;
+			remoteInfo = Trips;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* Trips.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trips.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4BCBD5F6302A4EEC0012BC71 /* TripsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TripsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		000000000000000000000010 /* Trips */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Trips;
+			sourceTree = "<group>";
+		};
+		4BCBD5F7302A4EEC0012BC71 /* TripsTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TripsTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -29,6 +48,14 @@
 			files = (
 				4B3840FA30082DB200F9A570 /* SwiftUINavigation in Frameworks */,
 				CA455E45300572BE00E46162 /* SQLiteData in Frameworks */,
+				4BCBD604302A53E80012BC71 /* DebugSnapshots in Frameworks */,
+				4BCBD619302A552D0012BC71 /* CustomDump in Frameworks */,
+			);
+		};
+		4BCBD5F3302A4EEC0012BC71 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				4BCBD601302A50060012BC71 /* DependenciesTestSupport in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -38,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000010 /* Trips */,
+				4BCBD5F7302A4EEC0012BC71 /* TripsTests */,
 				4B3840F830082DB200F9A570 /* Frameworks */,
 				000000000000000000000020 /* Products */,
 			);
@@ -47,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000120 /* Trips.app */,
+				4BCBD5F6302A4EEC0012BC71 /* TripsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -78,10 +107,36 @@
 			packageProductDependencies = (
 				CA455E44300572BE00E46162 /* SQLiteData */,
 				4B3840F930082DB200F9A570 /* SwiftUINavigation */,
+				4BCBD603302A53E80012BC71 /* DebugSnapshots */,
+				4BCBD618302A552D0012BC71 /* CustomDump */,
 			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* Trips.app */;
 			productType = "com.apple.product-type.application";
+		};
+		4BCBD5F5302A4EEC0012BC71 /* TripsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4BCBD5FC302A4EEC0012BC71 /* Build configuration list for PBXNativeTarget "TripsTests" */;
+			buildPhases = (
+				4BCBD5F2302A4EEC0012BC71 /* Sources */,
+				4BCBD5F3302A4EEC0012BC71 /* Frameworks */,
+				4BCBD5F4302A4EEC0012BC71 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4BCBD5FB302A4EEC0012BC71 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4BCBD5F7302A4EEC0012BC71 /* TripsTests */,
+			);
+			name = TripsTests;
+			packageProductDependencies = (
+				4BCBD600302A50060012BC71 /* DependenciesTestSupport */,
+			);
+			productName = TripsTests;
+			productReference = 4BCBD5F6302A4EEC0012BC71 /* TripsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -90,11 +145,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2630;
+				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					000000000000000100000000 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					4BCBD5F5302A4EEC0012BC71 = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = 000000000000000100000000;
 					};
 				};
 			};
@@ -111,6 +170,9 @@
 				CA455E43300572BE00E46162 /* XCRemoteSwiftPackageReference "sqlite-data" */,
 				4B3840F730082D3200F9A570 /* XCRemoteSwiftPackageReference "swift-navigation" */,
 				4B6DFCF23019406E0018BC3F /* XCRemoteSwiftPackageReference "swift-structured-queries" */,
+				4BCBD5FF302A50060012BC71 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				4BCBD602302A53E80012BC71 /* XCRemoteSwiftPackageReference "swift-debug-snapshots" */,
+				4BCBD617302A552D0012BC71 /* XCRemoteSwiftPackageReference "swift-custom-dump" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -118,12 +180,18 @@
 			projectRoot = "";
 			targets = (
 				000000000000000100000000 /* Trips */,
+				4BCBD5F5302A4EEC0012BC71 /* TripsTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		000000000000000140000000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		4BCBD5F4302A4EEC0012BC71 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -136,7 +204,20 @@
 			files = (
 			);
 		};
+		4BCBD5F2302A4EEC0012BC71 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4BCBD5FB302A4EEC0012BC71 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 000000000000000100000000 /* Trips */;
+			targetProxy = 4BCBD5FA302A4EEC0012BC71 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		000000000000000011000000 /* Debug configuration for PBXProject "Trips" */ = {
@@ -347,6 +428,49 @@
 			};
 			name = Release;
 		};
+		4BCBD5FD302A4EEC0012BC71 /* Debug configuration for PBXNativeTarget "TripsTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.trip.tests.TripsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Trips.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Trips";
+			};
+			name = Debug;
+		};
+		4BCBD5FE302A4EEC0012BC71 /* Release configuration for PBXNativeTarget "TripsTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.pointfree.trip.tests.TripsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Trips.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Trips";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -366,6 +490,14 @@
 			);
 			defaultConfigurationName = Release;
 		};
+		4BCBD5FC302A4EEC0012BC71 /* Build configuration list for PBXNativeTarget "TripsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4BCBD5FD302A4EEC0012BC71 /* Debug configuration for PBXNativeTarget "TripsTests" */,
+				4BCBD5FE302A4EEC0012BC71 /* Release configuration for PBXNativeTarget "TripsTests" */,
+			);
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -381,13 +513,37 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-structured-queries";
 			requirement = {
-				branch = "json-each";
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.35.0;
 			};
 			traits = (
-				CasePaths,
-				LazyInitializableByDefault,
 			);
+		};
+		4BCBD5FF302A50060012BC71 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.14.1;
+			};
+		};
+		4BCBD602302A53E80012BC71 /* XCRemoteSwiftPackageReference "swift-debug-snapshots" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-debug-snapshots";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.2;
+			};
+			traits = (
+			);
+		};
+		4BCBD617302A552D0012BC71 /* XCRemoteSwiftPackageReference "swift-custom-dump" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-custom-dump";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.0;
+			};
 		};
 		CA455E43300572BE00E46162 /* XCRemoteSwiftPackageReference "sqlite-data" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -408,6 +564,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4B3840F730082D3200F9A570 /* XCRemoteSwiftPackageReference "swift-navigation" */;
 			productName = SwiftUINavigation;
+		};
+		4BCBD600302A50060012BC71 /* DependenciesTestSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BCBD5FF302A50060012BC71 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = DependenciesTestSupport;
+		};
+		4BCBD603302A53E80012BC71 /* DebugSnapshots */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BCBD602302A53E80012BC71 /* XCRemoteSwiftPackageReference "swift-debug-snapshots" */;
+			productName = DebugSnapshots;
+		};
+		4BCBD618302A552D0012BC71 /* CustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BCBD617302A552D0012BC71 /* XCRemoteSwiftPackageReference "swift-custom-dump" */;
+			productName = CustomDump;
 		};
 		CA455E44300572BE00E46162 /* SQLiteData */ = {
 			isa = XCSwiftPackageProductDependency;

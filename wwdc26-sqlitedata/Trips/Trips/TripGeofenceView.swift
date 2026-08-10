@@ -1,10 +1,13 @@
+import DebugSnapshots
 import Dependencies
 @preconcurrency import MapKit
 import simd
 import SQLiteData
 import SwiftUI
 
-@Observable class TripGeofenceModel {
+@DebugSnapshot
+@Observable
+class TripGeofenceModel {
   @ObservationIgnored @FetchOne
   var trip: Trip
   var draggingVertex: DraggingVertex?
@@ -66,10 +69,12 @@ import SwiftUI
     }
   }
 
+  @DebugSnapshotTracked
   var tripInsideGeofence: Bool {
     tripInside(geofence: trip.geofence)
   }
 
+  @DebugSnapshotTracked
   var tripInsideDraggingGeofence: Bool? {
     guard let draggingVertex else { return nil }
     var vertices = trip.geofence
@@ -104,10 +109,12 @@ import SwiftUI
     }
   }
 
+  @DebugSnapshotTracked
   var geofenceColor: Color {
     tripInsideGeofence ? .blue : .red
   }
 
+  @DebugSnapshotTracked
   var draggingGeofenceColor: Color? {
     guard let tripInsideDraggingGeofence else { return nil }
     return tripInsideDraggingGeofence ? .blue : .red
