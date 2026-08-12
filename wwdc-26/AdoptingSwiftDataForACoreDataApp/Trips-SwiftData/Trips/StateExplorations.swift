@@ -10,7 +10,10 @@ import SwiftUI
 }
 
 struct ChildView: View {
-  @State private var model = Model()
+  private var model: Model { __model.wrappedValue }
+  private var __model = LazyState(initialValue: { Model() })
+  private var _$model: Binding<Model> { __model.projectedValue }
+
   init() {
     print("ChildView.init")
   }
