@@ -1,7 +1,9 @@
 import SwiftUI
 
 @Observable class Model {
-  init() {
+  var count: Int
+  init(count: Int) {
+    self.count = count
     print("Model.init")
   }
   deinit {
@@ -10,15 +12,21 @@ import SwiftUI
 }
 
 struct ChildView: View {
-  private var model: Model { __model.wrappedValue }
-  private var __model = LazyState(initialValue: { Model() })
-  private var _$model: Binding<Model> { __model.projectedValue }
-
-  init() {
-    print("ChildView.init")
+  @State private var model: Model?
+  let count: Int
+  init(count: Int) {
+    self.count = count
+    print("ChildView.init(count: \(count))")
   }
   var body: some View {
-    Text("Child")
+    Text("Child \(model?.count ?? 0)")
+      .onAppear {
+        model = Model(count: count)
+      }
+
+    Button("+") {
+      model?.count += 1
+    }
   }
 }
 
@@ -27,7 +35,7 @@ struct ParentView: View {
   var body: some View {
     let _ = print("ParentView.body")
     VStack {
-      ChildView()
+      ChildView(count: perturb)
       Button("Perturb \(perturb)") { perturb += 1 }
     }
   }
