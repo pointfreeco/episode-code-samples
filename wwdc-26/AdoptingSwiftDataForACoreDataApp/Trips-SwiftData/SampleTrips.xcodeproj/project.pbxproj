@@ -17,6 +17,7 @@
 		40ACF1282BEE0E2500602BB2 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EEBA842BEC9EA9000C1150 /* DataModel.swift */; };
 		40ADA88A2FB3F2E200D46B65 /* TripDatesPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADA8892FB3F2DD00D46B65 /* TripDatesPicker.swift */; };
 		40EEBA852BEC9EBA000C1150 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EEBA842BEC9EA9000C1150 /* DataModel.swift */; };
+		4BC09F98302CEF4500AB6CFE /* LazyState in Frameworks */ = {isa = PBXBuildFile; productRef = 4BC09F97302CEF4500AB6CFE /* LazyState */; };
 		4BD5E8F4302A75EC000F80EE /* StateExplorations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD5E8F3302A75E9000F80EE /* StateExplorations.swift */; };
 		6014A81C296E183900696669 /* UpdateTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6014A81B296E183900696669 /* UpdateTripView.swift */; };
 		60449355294A98CF002D030E /* TripsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60449354294A98CF002D030E /* TripsApp.swift */; };
@@ -123,6 +124,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BC09F98302CEF4500AB6CFE /* LazyState in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +307,9 @@
 				Base,
 			);
 			mainGroup = 60449348294A98CF002D030E;
+			packageReferences = (
+				4BC09F96302CEF4500AB6CFE /* XCRemoteSwiftPackageReference "swiftui-lazy-state" */,
+			);
 			productRefGroup = 404D836F29F1B28C00B83906 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -742,6 +747,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4BC09F96302CEF4500AB6CFE /* XCRemoteSwiftPackageReference "swiftui-lazy-state" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swiftui-lazy-state";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4BC09F97302CEF4500AB6CFE /* LazyState */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BC09F96302CEF4500AB6CFE /* XCRemoteSwiftPackageReference "swiftui-lazy-state" */;
+			productName = LazyState;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 60449349294A98CF002D030E /* Project object */;
 }

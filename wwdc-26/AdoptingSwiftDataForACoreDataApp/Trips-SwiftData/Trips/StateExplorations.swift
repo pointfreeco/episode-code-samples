@@ -1,4 +1,5 @@
 import SwiftUI
+import LazyState
 
 @Observable class Model {
   var count: Int
@@ -12,20 +13,18 @@ import SwiftUI
 }
 
 struct ChildView: View {
-  @State private var model: Model?
-  let count: Int
+  @LazyState private var model: Model
+
   init(count: Int) {
-    self.count = count
+    _model = LazyState { Model(count: count) }
     print("ChildView.init(count: \(count))")
   }
   var body: some View {
-    Text("Child \(model?.count ?? 0)")
-      .onAppear {
-        model = Model(count: count)
-      }
+    Text("Child \(model.count)")
+    Stepper("Count", value: $model.count)
 
     Button("+") {
-      model?.count += 1
+      model.count += 1
     }
   }
 }

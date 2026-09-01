@@ -105,7 +105,7 @@ struct ContentView: View {
       }
       Tab("Map", systemImage: "map") {
         NavigationStack {
-          TripMap(selection: $selection)
+          TripMap(selection: $selection, modelContext: modelContext)
             .toolbar {
               mapToolbarItems
             }
@@ -130,7 +130,7 @@ struct ContentView: View {
         }
         .navigationSplitViewColumnWidth(min: 280, ideal: 350)
     } detail: {
-      TripMap(selection: $selection)
+      TripMap(selection: $selection, modelContext: modelContext)
         .inspector(isPresented: $showInspector) {
           if let selection {
             TripDetailView(trip: selection)
