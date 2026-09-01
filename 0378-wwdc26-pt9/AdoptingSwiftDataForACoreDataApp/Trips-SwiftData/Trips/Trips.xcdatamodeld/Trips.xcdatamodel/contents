@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22C50" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="BucketListItem" representedClassName="BucketListItem" syncable="YES" codeGenerationType="class">
+        <attribute name="details" optional="YES" attributeType="String"/>
+        <attribute name="hasReservation" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isInPlan" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="trip" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Trip" inverseName="bucketListItem" inverseEntity="Trip"/>
+    </entity>
+    <entity name="LivingAccommodations" representedClassName="LivingAccommodations" syncable="YES" codeGenerationType="class">
+        <attribute name="address" optional="YES" attributeType="String"/>
+        <attribute name="placeName" optional="YES" attributeType="String"/>
+        <relationship name="trip" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Trip" inverseName="livingAccommodations" inverseEntity="Trip"/>
+    </entity>
+    <entity name="Trip" representedClassName="Trip" syncable="YES" codeGenerationType="class">
+        <attribute name="destination" optional="YES" attributeType="String"/>
+        <attribute name="end_date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="start_date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="bucketListItem" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BucketListItem" inverseName="trip" inverseEntity="BucketListItem"/>
+        <relationship name="livingAccommodations" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LivingAccommodations" inverseName="trip" inverseEntity="LivingAccommodations"/>
+    </entity>
+</model>

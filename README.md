@@ -379,3 +379,5 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [WWDC26: SQLiteData Codability](0375-wwdc26-pt6)
 1. [WWDC26: SQLiteData Advanced Domain Modeling](0376-wwdc26-pt7)
 1. [WWDC26: SQLiteData Observation](0377-wwdc26-pt8)
+1. [WWDC26: SQLiteData The @State Macro](0378-wwdc26-pt9)
+1. [WWDC26: SQLiteData The @LazyState Macro](0379-wwdc26-pt10)
