@@ -43,6 +43,12 @@ struct CounterView: View {
         store.send(.incrementThenDecrementButtonTapped)
         print(store.count) // 0
       }
+      Button("Fact") {
+        store.send(.factButtonTapped)
+      }
+      if let fact = store.fact {
+        Text(fact)
+      }
     }
   }
 }
@@ -51,7 +57,7 @@ struct CounterView: View {
   CounterView(
     store: Store(
       initialState: Counter.State(),
-      feature: Counter()
+      feature: Counter(fact: { "\($0) is a good number!" })
     )
   )
 }

@@ -1,3 +1,4 @@
+@MainActor
 protocol Feature<State, Action> {
   associatedtype State
   associatedtype Action
