@@ -33,7 +33,6 @@ import Testing
     for _ in 1...100 {
       store.send(.incrementThenDecrementButtonTapped)
     }
-    try await Task.sleep(for: .seconds(0.1))
     #expect(store.count == 0)
   }
 
