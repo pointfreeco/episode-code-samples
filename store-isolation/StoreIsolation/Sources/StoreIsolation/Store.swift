@@ -15,6 +15,12 @@ class Store<State, Action> {
   subscript<Member>(dynamicMember keyPath: KeyPath<State, Member>) -> Member {
     state[keyPath: keyPath]
   }
+
+  func addTask(operation: sending @escaping () async throws -> Void) {
+    Task {
+      try await operation()
+    }
+  }
 }
 
 typealias StoreOf<F: Feature> = Store<F.State, F.Action>
