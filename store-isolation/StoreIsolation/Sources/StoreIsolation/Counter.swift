@@ -17,24 +17,24 @@ struct Counter: Feature {
         )
     return String(decoding: data, as: UTF8.self)
   }
-  func _update(_ store: Store<State, Action>, action: Action) {
+  func _update(_ core: Core<State, Action>, action: Action) {
     switch action {
     case .asyncIncrementThenDecrementButtonTapped:
-      store.state.count += 1
-      store.addTask {
+      core.state.count += 1
+      core.addTask {
         await Task.yield()
-        store.state.count -= 1
+        core.state.count -= 1
       }
     case .factButtonTapped:
-      store.addTask {
-        store.state.fact = try await fact(store.count)
+      core.addTask {
+        core.state.fact = try await fact(core.count)
       }
     case .incrementButtonTapped:
-      store.state.count += 1
+      core.state.count += 1
     case .incrementThenDecrementButtonTapped:
-      store.state.count += 1
-      store.addTask {
-        store.state.count -= 1
+      core.state.count += 1
+      core.addTask {
+        core.state.count -= 1
       }
     }
   }

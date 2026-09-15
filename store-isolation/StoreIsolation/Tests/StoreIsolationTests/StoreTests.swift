@@ -1,6 +1,7 @@
 import Testing
 @testable import StoreIsolation
 
+@MainActor
 @Suite struct StoreTests {
   @Test func basics() async throws {
     let store = Store(initialState: Counter.State(), feature: Counter())

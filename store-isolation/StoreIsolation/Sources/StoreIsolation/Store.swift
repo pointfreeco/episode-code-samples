@@ -1,26 +1,21 @@
-import Observation
-
 @dynamicMemberLookup
-@Observable
+@MainActor
 class Store<State, Action> {
-  var state: State
-  var feature: any Feature<State, Action>
+  let core: Core<State, Action>
+  init(core: Core<State, Action>) {
+    self.core = core
+  }
   init(initialState: State, feature: some Feature<State, Action>) {
-    self.state = initialState
-    self.feature = feature
+    core = Core(initialState: initialState, feature: feature)
+  }
+  var state: State {
+    core.state
   }
   func send(_ action: Action) {
-    feature._update(self, action: action)
+    core.send(action)
   }
   subscript<Member>(dynamicMember keyPath: KeyPath<State, Member>) -> Member {
-    state[keyPath: keyPath]
-  }
-
-  func addTask(operation: nonisolated(nonsending) @escaping () async throws -> Void) {
-    nonisolated(unsafe) let operation = operation
-    Task.immediate {
-      try await operation()
-    }
+    core[dynamicMember: keyPath]
   }
 }
 
