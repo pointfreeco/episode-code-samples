@@ -1,7 +1,6 @@
 import Observation
 
 @dynamicMemberLookup
-@MainActor
 @Observable
 class Store<State, Action> {
   var state: State
@@ -17,8 +16,9 @@ class Store<State, Action> {
     state[keyPath: keyPath]
   }
 
-  func addTask(operation: sending @MainActor @escaping () async throws -> Void) {
-    Task {
+  func addTask(operation: nonisolated(nonsending) @escaping () async throws -> Void) {
+    nonisolated(unsafe) let operation = operation
+    Task.immediate {
       try await operation()
     }
   }

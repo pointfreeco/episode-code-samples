@@ -6,6 +6,7 @@ struct Counter: Feature {
     var fact: String?
   }
   enum Action {
+    case asyncIncrementThenDecrementButtonTapped
     case factButtonTapped
     case incrementButtonTapped
     case incrementThenDecrementButtonTapped
@@ -18,6 +19,12 @@ struct Counter: Feature {
   }
   func _update(_ store: Store<State, Action>, action: Action) {
     switch action {
+    case .asyncIncrementThenDecrementButtonTapped:
+      store.state.count += 1
+      store.addTask {
+        await Task.yield()
+        store.state.count -= 1
+      }
     case .factButtonTapped:
       store.addTask {
         store.state.fact = try await fact(store.count)

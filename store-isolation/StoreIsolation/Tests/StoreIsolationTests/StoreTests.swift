@@ -1,7 +1,6 @@
 import Testing
 @testable import StoreIsolation
 
-@MainActor
 @Suite struct StoreTests {
   @Test func basics() async throws {
     let store = Store(initialState: Counter.State(), feature: Counter())
@@ -14,7 +13,6 @@ import Testing
     let store = Store(initialState: Counter.State(), feature: Counter())
 
     store.send(.incrementThenDecrementButtonTapped)
-    try await Task.sleep(for: .seconds(0.01))
     #expect(store.count == 0)
   }
 
@@ -25,7 +23,27 @@ import Testing
     )
 
     store.send(.factButtonTapped)
-    try await Task.sleep(for: .seconds(0.01))
     #expect(store.fact == "0 is a good number!")
   }
+
+  @Test func race() async throws {
+    let store = Store(initialState: Counter.State(), feature: Counter())
+
+    for _ in 1...100 {
+      store.send(.incrementThenDecrementButtonTapped)
+    }
+    try await Task.sleep(for: .seconds(0.1))
+    #expect(store.count == 0)
+  }
+
+  @Test func async() async throws {
+    let store = Store(initialState: Counter.State(), feature: Counter())
+
+    for _ in 1...100 {
+      store.send(.asyncIncrementThenDecrementButtonTapped)
+    }
+    try await Task.sleep(for: .seconds(0.1))
+    #expect(store.count == 0)
+  }
+
 }
