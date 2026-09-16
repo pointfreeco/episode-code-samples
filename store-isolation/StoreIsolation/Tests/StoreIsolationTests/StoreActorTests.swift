@@ -28,7 +28,8 @@ import Testing
     )
 
     await store.send(.factButtonTapped)
-    await #expect(store.state.fact == "0 is a good number!")
+    let fact = await store.state.fact
+    #expect(fact == "0 is a good number!")
   }
 
   @Test func race() async throws {
