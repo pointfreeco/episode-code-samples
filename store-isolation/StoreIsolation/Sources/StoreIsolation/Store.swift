@@ -8,9 +8,9 @@ class Store<State, Action> {
   init(initialState: State, feature: some Feature<State, Action>) {
     core = Core(
       initialState: initialState,
-      feature: feature,
-      isolation: MainActor.shared
+      feature: feature
     )
+    core.setIsolation(MainActor.shared)
   }
   var state: State {
     core.state

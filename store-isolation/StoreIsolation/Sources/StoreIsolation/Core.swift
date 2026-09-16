@@ -5,14 +5,16 @@ import Observation
 class Core<State, Action> {
   var state: State
   var feature: any Feature<State, Action>
-  let isolation: any Actor
+  var isolation: any Actor!
   init(
     initialState: State,
-    feature: some Feature<State, Action>,
-    isolation: isolated any Actor
+    feature: some Feature<State, Action>
   ) {
     self.state = initialState
     self.feature = feature
+  }
+  func setIsolation(_ isolation: isolated any Actor) {
+    precondition(self.isolation == nil)
     self.isolation = isolation
   }
   func send(_ action: Action) {

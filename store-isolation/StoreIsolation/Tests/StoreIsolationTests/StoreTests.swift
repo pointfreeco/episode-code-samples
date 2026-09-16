@@ -1,13 +1,15 @@
+import Foundation
 import Testing
 @testable import StoreIsolation
 
 @MainActor
 @Suite struct StoreTests {
-  @Test func basics() async throws {
+  @Test(arguments: 1...1000) func basics(_: Int) async throws {
     let store = Store(initialState: Counter.State(), feature: Counter())
 
     store.send(.incrementButtonTapped)
     #expect(store.count == 1)
+    _ = {Thread.sleep(forTimeInterval: 0.001)}()
   }
 
   @Test func `increment then decrement`() async throws {
@@ -39,7 +41,7 @@ import Testing
   @Test func async() async throws {
     let store = Store(initialState: Counter.State(), feature: Counter())
 
-    for _ in 1...1 {
+    for _ in 1...100 {
       store.send(.asyncIncrementThenDecrementButtonTapped)
     }
     try await Task.sleep(for: .seconds(0.1))
