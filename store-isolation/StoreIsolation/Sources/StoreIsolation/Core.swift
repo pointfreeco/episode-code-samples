@@ -1,8 +1,23 @@
 import Observation
 
 @dynamicMemberLookup
+protocol Core<State, Action>: AnyObject {
+  associatedtype State
+  associatedtype Action
+  var state: State { get set }
+  func send(_ action: Action) -> Task<Void, Never>
+  func addTask(
+    operation: nonisolated(nonsending) @escaping () async throws -> Void
+  )
+}
+extension Core {
+  subscript<Member>(dynamicMember keyPath: KeyPath<State, Member>) -> Member {
+    state[keyPath: keyPath]
+  }
+}
+
 @Observable
-class Core<State, Action> {
+class RootCore<State, Action>: Core {
   var state: State
   var feature: any Feature<State, Action>
   var isolation: any Actor!
@@ -35,9 +50,6 @@ class Core<State, Action> {
         for task in tasks { try? await task.value }
       }
     }
-  }
-  subscript<Member>(dynamicMember keyPath: KeyPath<State, Member>) -> Member {
-    state[keyPath: keyPath]
   }
 
   func addTask(operation: nonisolated(nonsending) @escaping () async throws -> Void) {

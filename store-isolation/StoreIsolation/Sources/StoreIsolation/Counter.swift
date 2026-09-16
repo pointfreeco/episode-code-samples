@@ -20,21 +20,7 @@ struct Counter: Feature {
     return String(decoding: data, as: UTF8.self)
   }
 
-//  var body: some Feature {
-//    Update { state, action in
-//      state.fact = nil
-//      store.addTask {
-//
-//      }
-//      print(state.fact)
-//    }
-//  }
-
-  func _update(_ core: Core<State, Action>, action: Action) {
-//    print("Starting", action)
-//    defer {
-//      print("Ending", action)
-//    }
+  func _update(_ core: some Core<State, Action>, action: Action) {
     switch action {
     case .asyncIncrementThenDecrementButtonTapped:
       core.state.count += 1
@@ -47,9 +33,7 @@ struct Counter: Feature {
       // Log the previous fact to the console
       // Store the previous fact in user defaults
       defer { core.state.fact = nil }
-//      print("Before addTask", core.fact ?? "(nil)")
       core.addTask {
-        //core.state.fact = try await fact(core.count)
         core.send(.factResponse(try await fact(core.count)))
       }
     case .factResponse(let fact):
