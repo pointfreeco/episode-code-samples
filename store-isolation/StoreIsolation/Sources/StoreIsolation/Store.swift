@@ -1,12 +1,16 @@
 @dynamicMemberLookup
 @MainActor
 class Store<State, Action> {
-  let core: Core<State, Action>
+  private let core: Core<State, Action>
   init(core: Core<State, Action>) {
     self.core = core
   }
   init(initialState: State, feature: some Feature<State, Action>) {
-    core = Core(initialState: initialState, feature: feature)
+    core = Core(
+      initialState: initialState,
+      feature: feature,
+      isolation: MainActor.shared
+    )
   }
   var state: State {
     core.state

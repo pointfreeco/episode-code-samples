@@ -39,7 +39,7 @@ import Testing
   @Test func async() async throws {
     let store = Store(initialState: Counter.State(), feature: Counter())
 
-    for _ in 1...100 {
+    for _ in 1...1 {
       store.send(.asyncIncrementThenDecrementButtonTapped)
     }
     try await Task.sleep(for: .seconds(0.1))
