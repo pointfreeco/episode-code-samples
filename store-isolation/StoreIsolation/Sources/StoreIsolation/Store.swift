@@ -15,7 +15,8 @@ class Store<State, Action> {
   var state: State {
     core.state
   }
-  func send(_ action: Action) {
+  @discardableResult
+  func send(_ action: Action) -> Task<Void, Never> {
     core.send(action)
   }
   subscript<Member>(dynamicMember keyPath: KeyPath<State, Member>) -> Member {
