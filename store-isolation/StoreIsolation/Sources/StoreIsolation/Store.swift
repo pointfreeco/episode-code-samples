@@ -1,15 +1,16 @@
 @dynamicMemberLookup
 @MainActor
 class Store<State, Action> {
-  private let core: Core<State, Action>
-  init(core: Core<State, Action>) {
+  private let core: any Core<State, Action>
+  init(core: some Core<State, Action>) {
     self.core = core
   }
   init(initialState: State, feature: some Feature<State, Action>) {
-    core = Core(
+    let core = RootCore(
       initialState: initialState,
       feature: feature
     )
+    self.core = core
     core.setIsolation(MainActor.shared)
   }
   var state: State {
@@ -21,6 +22,13 @@ class Store<State, Action> {
   }
   subscript<Member>(dynamicMember keyPath: KeyPath<State, Member>) -> Member {
     core[dynamicMember: keyPath]
+  }
+  func scope<ChildState>(
+    _ stateKeyPath: KeyPath<State, ChildState>,
+//    action actionKeyPath: CaseKeyPath<Action, ChildAction>
+  ) -> Store<ChildState, Action> {
+    //Store.init(core: <#T##Core<State, Action>#>)
+    fatalError("Implement")
   }
 }
 

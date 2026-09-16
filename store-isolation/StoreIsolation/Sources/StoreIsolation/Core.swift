@@ -1,8 +1,23 @@
 import Observation
 
 @dynamicMemberLookup
+protocol Core<State, Action>: AnyObject {
+  associatedtype State
+  associatedtype Action
+  var state: State { get set }
+  func send(_ action: Action) -> Task<Void, Never>
+  func addTask(
+    operation: nonisolated(nonsending) @escaping () async throws -> Void
+  )
+}
+extension Core {
+  subscript<Member>(dynamicMember keyPath: KeyPath<State, Member>) -> Member {
+    state[keyPath: keyPath]
+  }
+}
+
 @Observable
-class Core<State, Action> {
+class RootCore<State, Action>: Core {
   var state: State
   var feature: any Feature<State, Action>
   var isolation: any Actor!
@@ -22,20 +37,19 @@ class Core<State, Action> {
     feature._update(self, action: action)
     nonisolated(unsafe) let operations = operations
     self.operations.removeAll()
-    return Task.immediate { [isolation] in
-      let tasks = operations.map { operation in
-        nonisolated(unsafe) let operation = operation
-        return isolation!.assumeIsolated { _ in
-          return Task.immediate {
-            try await operation()
+    return isolation.assumeIsolated { isolation in
+      Task.immediate {
+        let tasks = operations.map { operation in
+          nonisolated(unsafe) let operation = operation
+          return isolation.assumeIsolated { _ in
+            return Task.immediate {
+              try await operation()
+            }
           }
         }
+        for task in tasks { try? await task.value }
       }
-      for task in tasks { try? await task.value }
     }
-  }
-  subscript<Member>(dynamicMember keyPath: KeyPath<State, Member>) -> Member {
-    state[keyPath: keyPath]
   }
 
   func addTask(
