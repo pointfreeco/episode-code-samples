@@ -53,8 +53,7 @@ struct CounterView: View {
   let store: StoreOf<Counter>
   var body: some View {
     Form {
-      Text("\(store.count)")
-      Button("+") { store.send(.incrementButtonTapped) }
+      CountView(store: store.scope(\.count))
       Button("+/-") {
         store.send(.incrementThenDecrementButtonTapped)
         print(store.count) // 0
@@ -79,4 +78,12 @@ struct CounterView: View {
       })
     )
   )
+}
+
+struct CountView: View {
+  let store: Store<Int, Counter.Action>
+  var body: some View {
+    Text("\(store.state)")
+    Button("+") { store.send(.incrementButtonTapped) }
+  }
 }

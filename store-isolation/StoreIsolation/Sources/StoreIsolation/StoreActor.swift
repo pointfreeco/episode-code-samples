@@ -21,4 +21,15 @@ actor StoreActor<State, Action> {
   func send(_ action: Action) -> Task<Void, Never> {
     core.send(action)
   }
+  func scope<ChildState>(
+    _ stateKeyPath: WritableKeyPath<State, ChildState>
+  ) -> StoreActor<ChildState, Action> {
+    nonisolated(unsafe) let core = ScopedCore(
+      base: core,
+      stateKeyPath: stateKeyPath
+    )
+    return StoreActor<ChildState, Action>(
+      core: core
+    )
+  }
 }

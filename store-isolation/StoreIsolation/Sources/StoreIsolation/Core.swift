@@ -56,3 +56,25 @@ class RootCore<State, Action>: Core {
     operations.append(operation)
   }
 }
+
+class ScopedCore<BaseState, BaseAction, ChildState>: Core {
+  let base: any Core<BaseState, BaseAction>
+  let stateKeyPath: WritableKeyPath<BaseState, ChildState>
+  init(
+    base: any Core<BaseState, BaseAction>,
+    stateKeyPath: WritableKeyPath<BaseState, ChildState>
+  ) {
+    self.base = base
+    self.stateKeyPath = stateKeyPath
+  }
+  var state: ChildState {
+    get { base.state[keyPath: stateKeyPath] }
+    set { base.state[keyPath: stateKeyPath] = newValue }
+  }
+  func send(_ action: BaseAction) -> Task<Void, Never> {
+    base.send(action)
+  }
+  func addTask(operation: nonisolated(nonsending) @escaping () async throws -> Void) {
+    base.addTask(operation: operation)
+  }
+}

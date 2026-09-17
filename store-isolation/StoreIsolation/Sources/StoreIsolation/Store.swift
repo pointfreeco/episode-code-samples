@@ -24,11 +24,14 @@ class Store<State, Action> {
     core[dynamicMember: keyPath]
   }
   func scope<ChildState>(
-    _ stateKeyPath: KeyPath<State, ChildState>,
-//    action actionKeyPath: CaseKeyPath<Action, ChildAction>
+    _ stateKeyPath: WritableKeyPath<State, ChildState>
   ) -> Store<ChildState, Action> {
-    //Store.init(core: <#T##Core<State, Action>#>)
-    fatalError("Implement")
+    Store<ChildState, Action>(
+      core: ScopedCore(
+        base: core,
+        stateKeyPath: stateKeyPath
+      )
+    )
   }
 }
 
