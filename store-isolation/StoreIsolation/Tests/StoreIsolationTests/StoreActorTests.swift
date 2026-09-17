@@ -4,7 +4,7 @@ import Testing
 
 @Suite struct StoreActorTests {
   @Test(arguments: 1...1000) func basics(_: Int) async throws {
-    let store = await StoreActor(
+    let store = StoreActor(
       initialState: Counter.State(),
       feature: Counter()
     )
@@ -15,14 +15,14 @@ import Testing
   }
 
   @Test func `increment then decrement`() async throws {
-    let store = await StoreActor(initialState: Counter.State(), feature: Counter())
+    let store = StoreActor(initialState: Counter.State(), feature: Counter())
 
     await store.send(.incrementThenDecrementButtonTapped)
     await #expect(store.state.count == 0)
   }
 
   @Test func fact() async throws {
-    let store = await StoreActor(
+    let store = StoreActor(
       initialState: Counter.State(),
       feature: Counter(fact: { "\($0) is a good number!" })
     )
@@ -33,7 +33,7 @@ import Testing
   }
 
   @Test func race() async throws {
-    let store = await StoreActor(initialState: Counter.State(), feature: Counter())
+    let store = StoreActor(initialState: Counter.State(), feature: Counter())
 
     for _ in 1...100 {
       await store.send(.incrementThenDecrementButtonTapped)
@@ -42,7 +42,7 @@ import Testing
   }
 
   @Test func async() async throws {
-    let store = await StoreActor(initialState: Counter.State(), feature: Counter())
+    let store = StoreActor(initialState: Counter.State(), feature: Counter())
 
     var tasks: [Task<Void, Never>] = []
     for _ in 1...100 {

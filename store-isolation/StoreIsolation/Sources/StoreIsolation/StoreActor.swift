@@ -1,18 +1,25 @@
 actor StoreActor<State, Action> {
   private let core: any Core<State, Action>
-  init(core: some Core<State, Action>) {
+  private let isolation: any Actor
+  init(core: some Core<State, Action>, isolation: any Actor) {
     self.core = core
+    self.isolation = isolation
   }
   init(
     initialState: State,
     feature: some Feature<State, Action>
-  ) async {
+  ) {
+    let rootIsolation = RootIsolation()
     let core = RootCore(
       initialState: initialState,
-      feature: feature
+      feature: feature,
+      isolation: rootIsolation
     )
     self.core = core
-    core.setIsolation(self)
+    self.isolation = rootIsolation
+  }
+  nonisolated var unownedExecutor: UnownedSerialExecutor {
+    isolation.unownedExecutor
   }
   var state: State {
     core.state
@@ -29,7 +36,10 @@ actor StoreActor<State, Action> {
       stateKeyPath: stateKeyPath
     )
     return StoreActor<ChildState, Action>(
-      core: core
+      core: core,
+      isolation: isolation
     )
   }
+
+  private actor RootIsolation {}
 }

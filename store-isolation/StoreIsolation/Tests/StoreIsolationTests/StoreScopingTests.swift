@@ -19,7 +19,7 @@ struct StoreScopingTests {
 
   @Test
   func `store actor scoping`() async throws {
-    let store = await StoreActor(
+    let store = StoreActor(
       initialState: Counter.State(),
       feature: Counter()
     )

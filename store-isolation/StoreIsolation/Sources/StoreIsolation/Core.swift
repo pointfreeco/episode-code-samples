@@ -20,17 +20,15 @@ extension Core {
 class RootCore<State, Action>: Core {
   var state: State
   var feature: any Feature<State, Action>
-  var isolation: any Actor!
+  let isolation: any Actor
   var operations: [nonisolated(nonsending) () async throws -> Void] = []
   init(
     initialState: State,
-    feature: some Feature<State, Action>
+    feature: some Feature<State, Action>,
+    isolation: any Actor
   ) {
     self.state = initialState
     self.feature = feature
-  }
-  func setIsolation(_ isolation: isolated any Actor) {
-    precondition(self.isolation == nil)
     self.isolation = isolation
   }
   func send(_ action: Action) -> Task<Void, Never> {

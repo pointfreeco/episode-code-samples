@@ -34,7 +34,7 @@ struct Counter: Feature {
       // Store the previous fact in user defaults
       defer { core.state.fact = nil }
       core.addTask {
-        core.send(.factResponse(try await fact(core.count)))
+        _ = core.send(.factResponse(try await fact(core.count)))
       }
     case .factResponse(let fact):
       core.state.fact = fact

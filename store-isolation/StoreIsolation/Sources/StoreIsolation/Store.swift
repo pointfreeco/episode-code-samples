@@ -8,10 +8,10 @@ class Store<State, Action> {
   init(initialState: State, feature: some Feature<State, Action>) {
     let core = RootCore(
       initialState: initialState,
-      feature: feature
+      feature: feature,
+      isolation: MainActor.shared
     )
     self.core = core
-    core.setIsolation(MainActor.shared)
   }
   var state: State {
     core.state
