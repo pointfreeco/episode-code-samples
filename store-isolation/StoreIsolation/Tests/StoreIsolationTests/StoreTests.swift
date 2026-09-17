@@ -41,11 +41,12 @@ import Testing
   @Test func async() async throws {
     let store = Store(initialState: Counter.State(), feature: Counter())
 
+    var tasks: [Task<Void, Never>] = []
     for _ in 1...100 {
-      store.send(.asyncIncrementThenDecrementButtonTapped)
+      tasks.append(store.send(.asyncIncrementThenDecrementButtonTapped))
     }
-    try await Task.sleep(for: .seconds(0.1))
-    #expect(store.count == 0)
+    for task in tasks { await task.value }
+    #expect(store.state.count == 0)
   }
 
 }
