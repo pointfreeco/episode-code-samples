@@ -381,3 +381,6 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [WWDC26: SQLiteData Observation](0377-wwdc26-pt8)
 1. [WWDC26: SQLiteData The @State Macro](0378-wwdc26-pt9)
 1. [WWDC26: SQLiteData The @LazyState Macro](0379-wwdc26-pt10)
+1. [Designing for Isolation: The Store](0380-isolation-design-pt1)
+1. [Designing for Isolation: Naively](0381-isolation-design-pt2)
+1. [Designing for Isolation: Nonisolated Core](0382-isolation-design-pt3)
