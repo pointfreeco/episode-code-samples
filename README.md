@@ -384,3 +384,4 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Designing for Isolation: The Store](0380-isolation-design-pt1)
 1. [Designing for Isolation: Naively](0381-isolation-design-pt2)
 1. [Designing for Isolation: Nonisolated Core](0382-isolation-design-pt3)
+1. [Designing for Isolation: Isolated Shell](0383-isolation-design-pt4)
