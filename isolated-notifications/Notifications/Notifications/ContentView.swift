@@ -3,6 +3,8 @@ import SwiftUI
 @MainActor
 @Observable class Model {
   var count = 0
+  let session = Session()
+  var task: Task<Void, Never>?
 
   init() {
     NotificationCenter.default.addObserver(
@@ -14,10 +16,42 @@ import SwiftUI
         self?.count += 1
       }
     }
+    task = Task.immediate { [weak self] in
+      for await _ in NotificationCenter.default.messages(for: IncrementMessage.self, bufferSize: .max) {
+        guard let self else { break }
+        count += 1
+      }
+    }
+    Task.immediate { [weak self] in
+      for await _ in NotificationCenter.default.messages(for: SessionDidChangeMessage.self, bufferSize: .max) {
+        guard let self else { break }
+        print(session.token as Any)
+      }
+    }
+  }
+
+  isolated deinit {
+    task?.cancel()
   }
 
   func incrementButtonTapped() {
     NotificationCenter.default.post(name: .increment, object: nil)
+  }
+
+  func newIncrementButtonTapped() {
+    NotificationCenter.default.post(IncrementMessage())
+  }
+
+  func newIncrement1000ButtonTapped() {
+    for _ in 1...1_000 {
+      Task { @concurrent in
+        NotificationCenter.default.post(IncrementMessage())
+      }
+    }
+  }
+
+  func loginButtonTapped() {
+    session.update(token: "deadbeef")
   }
 }
 
@@ -57,6 +91,15 @@ struct ContentView: View {
           .contentTransition(.numericText())
         Button("+") {
           model.incrementButtonTapped()
+        }
+        Button("+ (new)") {
+          model.newIncrementButtonTapped()
+        }
+        Button("+ 1000 (new)") {
+          model.newIncrement1000ButtonTapped()
+        }
+        Button("Login") {
+          model.loginButtonTapped()
         }
       } header: {
         Text("Observable model")
@@ -112,7 +155,8 @@ final class Session: @unchecked Sendable {
     lock.lock()
     defer { lock.unlock() }
     _token = token
-    NotificationCenter.default.post(name: .sessionDidChange, object: nil)
+//    NotificationCenter.default.post(name: .sessionDidChange, object: nil)
+    NotificationCenter.default.post(SessionDidChangeMessage())
   }
 }
 
@@ -120,4 +164,12 @@ extension Notification.Name {
   static var sessionDidChange: Self {
     Self("sessionDidChange")
   }
+}
+
+struct IncrementMessage: NotificationCenter.AsyncMessage {
+  class Subject {}
+}
+
+struct SessionDidChangeMessage: NotificationCenter.AsyncMessage {
+  class Subject {}
 }
