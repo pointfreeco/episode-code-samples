@@ -37,11 +37,11 @@ class RootCore<State, Action>: Core {
     self.operations.removeAll()
     return isolation.assumeIsolated { isolation in
       Task.immediate {
-        let tasks = operations.map { operation in
+        let tasks = unsafe operations.map { operation in
           nonisolated(unsafe) let operation = operation
           return isolation.assumeIsolated { _ in
             Task.immediate {
-              try await operation()
+              try await unsafe operation()
             }
           }
         }

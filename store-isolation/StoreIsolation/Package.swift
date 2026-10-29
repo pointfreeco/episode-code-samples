@@ -13,7 +13,10 @@ let package = Package(
   ],
   targets: [
     .target(
-      name: "StoreIsolation"
+      name: "StoreIsolation",
+      swiftSettings: [
+        .strictMemorySafety()
+      ]
     ),
     .testTarget(
       name: "StoreIsolationTests",

@@ -19,7 +19,7 @@ actor StoreActor<State, Action> {
     self.isolation = rootIsolation
   }
   nonisolated var unownedExecutor: UnownedSerialExecutor {
-    isolation.unownedExecutor
+    unsafe isolation.unownedExecutor
   }
   var state: State {
     core.state
@@ -36,7 +36,7 @@ actor StoreActor<State, Action> {
       stateKeyPath: stateKeyPath
     )
     return StoreActor<ChildState, Action>(
-      core: core,
+      core: unsafe core,
       isolation: isolation
     )
   }
