@@ -5,6 +5,8 @@ import SwiftUI
   var count = 0
   let session = Session()
   var task: Task<Void, Never>?
+  var token: NotificationCenter.ObservationToken!
+  var sessionToken: NotificationCenter.ObservationToken!
 
   init() {
     NotificationCenter.default.addObserver(
@@ -22,6 +24,16 @@ import SwiftUI
         count += 1
       }
     }
+    token = NotificationCenter.default.addObserver(
+      for: MainActorIncrementMessage.self) { [weak self] message in
+        guard let self else { return }
+        count += 1
+      }
+
+    sessionToken = NotificationCenter.default.addObserver(for: MainActorSessionDidChangeMessage.self) { [weak self] _ in
+      print(self?.session.token as Any)
+    }
+
     Task.immediate { [weak self] in
       for await _ in NotificationCenter.default.messages(for: SessionDidChangeMessage.self, bufferSize: .max) {
         guard let self else { break }
@@ -47,6 +59,16 @@ import SwiftUI
       Task { @concurrent in
         NotificationCenter.default.post(IncrementMessage())
       }
+    }
+  }
+
+  func mainActorIncrementButtonTapped() {
+    NotificationCenter.default.post(MainActorIncrementMessage())
+  }
+
+  func mainActorIncrement1000ButtonTapped() {
+    for _ in 1...1_000 {
+      NotificationCenter.default.post(MainActorIncrementMessage())
     }
   }
 
@@ -90,13 +112,27 @@ struct ContentView: View {
           .monospacedDigit()
           .contentTransition(.numericText())
         Button("+") {
-          model.incrementButtonTapped()
+          withAnimation {
+            model.incrementButtonTapped()
+          }
         }
         Button("+ (new)") {
-          model.newIncrementButtonTapped()
+          withAnimation {
+            model.newIncrementButtonTapped()
+          }
         }
         Button("+ 1000 (new)") {
           model.newIncrement1000ButtonTapped()
+        }
+        Button("+ (main actor)") {
+          withAnimation {
+            model.mainActorIncrementButtonTapped()
+          }
+        }
+        Button("+ 1000 (main actor)") {
+          withAnimation {
+            model.mainActorIncrement1000ButtonTapped()
+          }
         }
         Button("Login") {
           model.loginButtonTapped()
@@ -141,22 +177,15 @@ extension Notification.Name {
 }
 
 
-final class Session: @unchecked Sendable {
-  private let lock = NSLock()
-  private var _token: String?
-
-  var token: String? {
-    lock.lock()
-    defer { lock.unlock() }
-    return _token
-  }
+@MainActor
+final class Session {
+  private(set) var token: String?
 
   func update(token: String?) {
-    lock.lock()
-    defer { lock.unlock() }
-    _token = token
+    self.token = token
 //    NotificationCenter.default.post(name: .sessionDidChange, object: nil)
-    NotificationCenter.default.post(SessionDidChangeMessage())
+//    NotificationCenter.default.post(SessionDidChangeMessage())
+    NotificationCenter.default.post(MainActorSessionDidChangeMessage())
   }
 }
 
@@ -169,7 +198,13 @@ extension Notification.Name {
 struct IncrementMessage: NotificationCenter.AsyncMessage {
   class Subject {}
 }
+struct MainActorIncrementMessage: NotificationCenter.MainActorMessage {
+  class Subject {}
+}
 
 struct SessionDidChangeMessage: NotificationCenter.AsyncMessage {
+  class Subject {}
+}
+struct MainActorSessionDidChangeMessage: NotificationCenter.MainActorMessage {
   class Subject {}
 }
