@@ -385,3 +385,6 @@ This repository is the home of code written on episodes of [Point-Free](https://
 1. [Designing for Isolation: Naively](0381-isolation-design-pt2)
 1. [Designing for Isolation: Nonisolated Core](0382-isolation-design-pt3)
 1. [Designing for Isolation: Isolated Shell](0383-isolation-design-pt4)
+1. [Designing for Isolation: Shared Isolation](0384-isolation-design-pt5)
+1. [Designing for Isolation 2: Notifications](0385-notifications-pt1)
+1. [Designing for Isolation 2: Notifications](0386-notifications-pt2)
