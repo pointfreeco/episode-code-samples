@@ -42,5 +42,37 @@ final class ModernNotificationCenter: Sendable {
   }
 
   protocol MainActorMessage {}
+
+  func post<M: Message>(_ message: M) async {
+
+  }
+
+  func messages<M: Message>(for type: M.Type) -> some AsyncSequence<M, Never> {
+    Messages()
+  }
+
+  struct Messages<M>: AsyncSequence {
+    typealias Element = M
+    typealias Failure = Never
+
+    func makeAsyncIterator() -> AsyncIterator {
+      AsyncIterator()
+    }
+
+    struct AsyncIterator: AsyncIteratorProtocol {
+      typealias Element = M
+      typealias Failure = Never
+
+      func next() async -> M? {
+        await next(isolation: nil)
+      }
+
+      func next(isolation actor: isolated (any Actor)?) async throws(Never) -> M? {
+        nil
+      }
+    }
+  }
+
+  protocol Message {}
 }
 
