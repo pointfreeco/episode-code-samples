@@ -10,6 +10,15 @@
       "Base",
     ],
   },
+  "packages": [
+    {
+      "kind": "remote",
+      "repository": "https://github.com/apple/swift-collections.git",
+      "version": {
+        "up-to-next-major-version": "1.7.6",
+      },
+    },
+  ],
   "files": [
     { "kind": "folder", "path": "Notifications", "target-membership": [ "Notifications" ] },
     { "kind": "folder", "path": "NotificationsTests", "target-membership": [ "NotificationsTests" ] },
@@ -32,6 +41,13 @@
         "compile-sources",
         "frameworks",
         "resources",
+      ],
+      "package-product-members": [
+        {
+          "package": "swift-collections",
+          "product-name": "OrderedCollections",
+          "build-phase": { "build-phase": "frameworks" },
+        },
       ],
       "build-settings": {
         "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
