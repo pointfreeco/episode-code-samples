@@ -176,15 +176,12 @@ extension Notification.Name {
   ContentView()
 }
 
-
 @MainActor
 final class Session {
   private(set) var token: String?
 
   func update(token: String?) {
     self.token = token
-//    NotificationCenter.default.post(name: .sessionDidChange, object: nil)
-//    NotificationCenter.default.post(SessionDidChangeMessage())
     NotificationCenter.default.post(MainActorSessionDidChangeMessage())
   }
 }
