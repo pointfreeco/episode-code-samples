@@ -9,6 +9,13 @@ struct ModernNotificationsTests {
     #expect(model.count == 1)
   }
 
+  @MainActor @Test func modernMessage() async {
+    let model = Model()
+    await model.modernIncrementButtonTapped()
+    #expect(model.count == 1)
+  }
+
+
   @MainActor @Test func `observers are notified in order`() {
     let center = ModernNotificationCenter()
     var values: [Int] = []

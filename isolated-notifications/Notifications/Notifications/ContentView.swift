@@ -4,10 +4,17 @@ import SwiftUI
 @Observable class Model {
   var count = 0
   let session = Session()
+  var task: Task<Void, Never>!
   var token: ModernNotificationCenter.ObservationToken!
   var sessionToken: ModernNotificationCenter.ObservationToken!
 
   init() {
+    task = Task.immediate { [weak self] in
+      for await _ in ModernNotificationCenter.default.messages(for: IncrementMessage.self) {
+        guard let self else { return }
+        count += 1
+      }
+    }
     token = ModernNotificationCenter.default.addObserver(
       for: MainActorIncrementMessage.self) { [weak self] message in
         guard let self else { return }
@@ -17,6 +24,10 @@ import SwiftUI
     sessionToken = ModernNotificationCenter.default.addObserver(for: MainActorSessionDidChangeMessage.self) { [weak self] _ in
       print(self?.session.token as Any)
     }
+  }
+
+  func modernIncrementButtonTapped() async {
+    await ModernNotificationCenter.default.post(IncrementMessage())
   }
 
   func mainActorIncrementButtonTapped() {
@@ -45,6 +56,12 @@ struct ContentView: View {
         Text("\(model.count)")
           .monospacedDigit()
           .contentTransition(.numericText())
+        Button("+") {
+          Task.immediate {
+            await model.modernIncrementButtonTapped()
+            print(model.count)
+          }
+        }
         Button("+ (main actor)") {
           withAnimation {
             model.mainActorIncrementButtonTapped()
@@ -89,6 +106,10 @@ extension Notification.Name {
   static var sessionDidChange: Self {
     Self("sessionDidChange")
   }
+}
+
+
+struct IncrementMessage: ModernNotificationCenter.Message {
 }
 
 struct MainActorIncrementMessage: ModernNotificationCenter.MainActorMessage {
