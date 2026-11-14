@@ -19,7 +19,7 @@ public final class Store<Value, Action>: ObservableObject {
   // ((A) -> B) -> ((Store<A, _>) -> Store<B, _>
   // map: ((A) -> B) -> ((F<A>) -> F<B>
 
-  func view<LocalValue>(
+  public func view<LocalValue>(
     _ f: @escaping (Value) -> LocalValue
   ) -> Store<LocalValue, Action> {
     let localStore = Store<LocalValue, Action>(
